@@ -1,0 +1,15 @@
+{
+  "timestamp": "2025-08-28T10:40:54.570Z",
+  "description": "Backup automático antes de cambios",
+  "files": [
+    "app/page.tsx",
+    "app/preview-dashboard/page.tsx",
+    "app/dashboard-demo/page.tsx",
+    "components/dashboard-demo/sidebar.tsx",
+    "components/dashboard-demo/navbar.tsx",
+    "components/dashboard-demo/sessions-table.tsx",
+    "lib/seed.ts",
+    "lib/types/session.ts"
+  ],
+  "totalFiles": 8
+}

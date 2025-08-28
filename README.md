@@ -29,12 +29,87 @@
 - supabase-ssr. A package to configure Supabase Auth to use cookies
 - Styling with [Tailwind CSS](https://tailwindcss.com)
 - Components with [shadcn/ui](https://ui.shadcn.com/)
+- **Landing & Preview Dashboard** - Página pública con vista previa del dashboard
 - Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
   - Environment variables automatically assigned to Vercel project
 
 ## Demo
 
 You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
+
+## Landing & Preview Dashboard
+
+### Acceso Público
+- **Landing Page**: `/` - Página principal con CTA al dashboard de vista previa
+- **Preview Dashboard**: `/preview-dashboard` - Dashboard público sin login, con datos de ejemplo
+- **Dashboard Demo**: `/dashboard-demo` - Layout profesional con sidebar, navbar y **nueva pestaña Log**
+
+### Características del Preview Dashboard
+- **KPIs en tiempo real**: Distancia total, promedio, sesiones, % técnica vs aeróbico
+- **Gráficos interactivos**: Reutiliza componentes existentes (VolumeBarchart, ChartComponent)
+- **Tabla de sesiones**: Datos de ejemplo con estilos, tipos y métricas
+- **Sin autenticación**: Accesible públicamente para demostración
+- **Responsive**: Adaptado a todos los dispositivos
+
+### Características del Dashboard Demo
+- **Layout profesional**: Sidebar + Navbar estilo dashboard-01
+- **Tabs del Dashboard**: 
+  - **Overview**: KPIs, gráficos existentes y widget "Este Mes"
+  - **Log**: Nueva funcionalidad completa de gestión de entrenamientos
+- **KPIs en Cards**: Métricas clave en grid responsive
+- **Gráficos embebidos**: Tus componentes existentes en Cards elegantes
+- **Tabla avanzada**: Búsqueda y paginación en cliente
+- **Navegación completa**: Enlaces a todas las secciones
+
+### Nueva Pestaña "Log" 🆕
+- **Formulario rápido**: Añadir entrenamientos en segundos (fecha, distancia, estilo, tipo)
+- **Formulario avanzado**: Modal completo con todos los campos (duración, RPE, series, notas)
+- **Calendario anual**: Vista de 12 meses con heatmap por distancia, click para ver sesiones del día
+- **Totales y filtros**: Métricas por período, filtros por estilo/tipo, exportación CSV
+- **Tabla de sesiones**: Historial completo con edición, eliminación y paginación avanzada
+- **Persistencia**: Datos guardados en localStorage (preparado para backend futuro)
+
+> **Nota**: `/preview-dashboard` y `/dashboard-demo` son rutas públicas que no requieren login ni registro.
+
+## Persistencia y Estructura de Datos
+
+### Store de Sesiones (Zustand)
+- **Persistencia**: Datos guardados automáticamente en localStorage
+- **Acciones**: `addSession`, `updateSession`, `deleteSession`, `clearSessions`
+- **Computed**: `getSessionsByDate`, `getSessionsByRange`
+- **Nombre del storage**: `swim-sessions-storage`
+
+### Modelo de Datos
+```typescript
+type Session = {
+  id: string;
+  date: string;            // ISO format
+  swimmer: string;         // Por defecto "Yo"
+  distance: number;        // metros
+  durationMin: number;     // minutos
+  stroke: "freestyle" | "backstroke" | "breaststroke" | "butterfly" | "mixed";
+  sessionType: "aerobic" | "threshold" | "speed" | "technique" | "recovery";
+  mainSet: string;         // Serie principal
+  RPE: 1|2|3|4|5|6|7|8|9|10; // Rate of Perceived Exertion
+  notes?: string;          // Notas opcionales
+}
+```
+
+### Helpers y Utilidades
+- **`/lib/aggregations.ts`**: Cálculos de métricas y totales
+- **`/lib/date.ts`**: Utilidades de fecha con date-fns
+- **`/lib/store/sessions.ts`**: Store Zustand con persistencia
+- **Datos de ejemplo**: 100 sesiones distribuidas a lo largo del año 2025
+
+### Exportación e Importación
+- **Export CSV**: Botón en la pestaña Log para descargar sesiones filtradas
+- **Formato**: Fecha, nadador, distancia, duración, estilo, tipo, serie, RPE, notas
+- **Filtros**: Aplicados antes de la exportación
+
+### Preparado para Backend
+- **Adaptador**: Store diseñado para conectar fácilmente a Supabase/Express
+- **Mismas firmas**: Acciones compatibles con API REST
+- **Migración**: Solo cambiar la implementación del store, no los componentes
 
 ## Deploy to Vercel
 

@@ -1,0 +1,1199 @@
+import { Session } from "./types/session";
+
+export const sessions: Session[] = [
+  // Enero 2025
+  {
+    id: "1",
+    date: "2025-01-15",
+    swimmer: "Yo",
+    distance: 2000,
+    durationMin: 45,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "10x200m @2:30",
+    RPE: 7
+  },
+  {
+    id: "2",
+    date: "2025-01-16",
+    swimmer: "Yo",
+    distance: 1500,
+    durationMin: 35,
+    stroke: "butterfly",
+    sessionType: "technique",
+    mainSet: "8x100m fly @1:45",
+    RPE: 8
+  },
+  {
+    id: "3",
+    date: "2025-01-17",
+    swimmer: "Yo",
+    distance: 3000,
+    durationMin: 60,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "3x1000m @15:00",
+    RPE: 6
+  },
+  {
+    id: "4",
+    date: "2025-01-18",
+    swimmer: "Yo",
+    distance: 1200,
+    durationMin: 30,
+    stroke: "backstroke",
+    sessionType: "technique",
+    mainSet: "6x200m back @4:00",
+    RPE: 7
+  },
+  {
+    id: "5",
+    date: "2025-01-19",
+    swimmer: "Yo",
+    distance: 2500,
+    durationMin: 50,
+    stroke: "breaststroke",
+    sessionType: "aerobic",
+    mainSet: "5x500m breast @8:00",
+    RPE: 6
+  },
+  {
+    id: "6",
+    date: "2025-01-20",
+    swimmer: "Yo",
+    distance: 1800,
+    durationMin: 40,
+    stroke: "freestyle",
+    sessionType: "technique",
+    mainSet: "9x200m free @2:15",
+    RPE: 8
+  },
+  {
+    id: "7",
+    date: "2025-01-21",
+    swimmer: "Yo",
+    distance: 2200,
+    durationMin: 48,
+    stroke: "butterfly",
+    sessionType: "aerobic",
+    mainSet: "11x200m fly @2:00",
+    RPE: 7
+  },
+  {
+    id: "8",
+    date: "2025-01-22",
+    swimmer: "Yo",
+    distance: 1600,
+    durationMin: 38,
+    stroke: "backstroke",
+    sessionType: "technique",
+    mainSet: "8x200m back @3:45",
+    RPE: 6
+  },
+  {
+    id: "9",
+    date: "2025-01-23",
+    swimmer: "Yo",
+    distance: 2800,
+    durationMin: 55,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "4x700m free @12:00",
+    RPE: 5
+  },
+  {
+    id: "10",
+    date: "2025-01-25",
+    swimmer: "Yo",
+    distance: 1900,
+    durationMin: 42,
+    stroke: "mixed",
+    sessionType: "threshold",
+    mainSet: "IM 400m x4 @6:00",
+    RPE: 8
+  },
+  {
+    id: "11",
+    date: "2025-01-27",
+    swimmer: "Yo",
+    distance: 3200,
+    durationMin: 65,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "2x1600m @25:00",
+    RPE: 6
+  },
+  {
+    id: "12",
+    date: "2025-01-29",
+    swimmer: "Yo",
+    distance: 1400,
+    durationMin: 32,
+    stroke: "breaststroke",
+    sessionType: "technique",
+    mainSet: "7x200m breast @4:30",
+    RPE: 7
+  },
+  
+  // Febrero 2025
+  {
+    id: "13",
+    date: "2025-02-01",
+    swimmer: "Yo",
+    distance: 2400,
+    durationMin: 52,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "6x400m @6:00",
+    RPE: 6
+  },
+  {
+    id: "14",
+    date: "2025-02-03",
+    swimmer: "Yo",
+    distance: 1700,
+    durationMin: 38,
+    stroke: "backstroke",
+    sessionType: "technique",
+    mainSet: "8x200m back @4:00",
+    RPE: 7
+  },
+  {
+    id: "15",
+    date: "2025-02-05",
+    swimmer: "Yo",
+    distance: 2600,
+    durationMin: 56,
+    stroke: "freestyle",
+    sessionType: "threshold",
+    mainSet: "5x500m @8:30",
+    RPE: 8
+  },
+  {
+    id: "16",
+    date: "2025-02-07",
+    swimmer: "Yo",
+    distance: 1300,
+    durationMin: 28,
+    stroke: "butterfly",
+    sessionType: "speed",
+    mainSet: "13x100m fly @1:30",
+    RPE: 9
+  },
+  {
+    id: "17",
+    date: "2025-02-09",
+    swimmer: "Yo",
+    distance: 2100,
+    durationMin: 45,
+    stroke: "mixed",
+    sessionType: "aerobic",
+    mainSet: "IM 300m x7 @5:00",
+    RPE: 6
+  },
+  {
+    id: "18",
+    date: "2025-02-11",
+    swimmer: "Yo",
+    distance: 1800,
+    durationMin: 40,
+    stroke: "freestyle",
+    sessionType: "recovery",
+    mainSet: "9x200m @3:00",
+    RPE: 4
+  },
+  {
+    id: "19",
+    date: "2025-02-13",
+    swimmer: "Yo",
+    distance: 2900,
+    durationMin: 58,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "3x900m @14:00",
+    RPE: 6
+  },
+  {
+    id: "20",
+    date: "2025-02-15",
+    swimmer: "Yo",
+    distance: 1500,
+    durationMin: 35,
+    stroke: "breaststroke",
+    sessionType: "technique",
+    mainSet: "10x150m @2:30",
+    RPE: 7
+  },
+  
+  // Marzo 2025
+  {
+    id: "21",
+    date: "2025-03-01",
+    swimmer: "Yo",
+    distance: 2300,
+    durationMin: 48,
+    stroke: "freestyle",
+    sessionType: "threshold",
+    mainSet: "4x550m @9:00",
+    RPE: 8
+  },
+  {
+    id: "22",
+    date: "2025-03-03",
+    swimmer: "Yo",
+    distance: 1600,
+    durationMin: 36,
+    stroke: "backstroke",
+    sessionType: "technique",
+    mainSet: "8x200m back @4:00",
+    RPE: 7
+  },
+  {
+    id: "23",
+    date: "2025-03-05",
+    swimmer: "Yo",
+    distance: 2700,
+    durationMin: 55,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "3x900m @15:00",
+    RPE: 6
+  },
+  {
+    id: "24",
+    date: "2025-03-07",
+    swimmer: "Yo",
+    distance: 1400,
+    durationMin: 30,
+    stroke: "butterfly",
+    sessionType: "speed",
+    mainSet: "14x100m fly @1:20",
+    RPE: 9
+  },
+  {
+    id: "25",
+    date: "2025-03-09",
+    swimmer: "Yo",
+    distance: 2000,
+    durationMin: 42,
+    stroke: "mixed",
+    sessionType: "aerobic",
+    mainSet: "IM 400m x5 @6:00",
+    RPE: 6
+  },
+  {
+    id: "26",
+    date: "2025-03-11",
+    swimmer: "Yo",
+    distance: 1900,
+    durationMin: 40,
+    stroke: "freestyle",
+    sessionType: "recovery",
+    mainSet: "19x100m @2:00",
+    RPE: 4
+  },
+  {
+    id: "27",
+    date: "2025-03-13",
+    swimmer: "Yo",
+    distance: 3100,
+    durationMin: 62,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "2x1500m @25:00",
+    RPE: 6
+  },
+  {
+    id: "28",
+    date: "2025-03-15",
+    swimmer: "Yo",
+    distance: 1700,
+    durationMin: 38,
+    stroke: "breaststroke",
+    sessionType: "technique",
+    mainSet: "8x200m breast @4:30",
+    RPE: 7
+  },
+  
+  // Abril 2025
+  {
+    id: "29",
+    date: "2025-04-01",
+    swimmer: "Yo",
+    distance: 2200,
+    durationMin: 46,
+    stroke: "freestyle",
+    sessionType: "threshold",
+    mainSet: "4x500m @8:00",
+    RPE: 8
+  },
+  {
+    id: "30",
+    date: "2025-04-03",
+    swimmer: "Yo",
+    distance: 1500,
+    durationMin: 34,
+    stroke: "backstroke",
+    sessionType: "technique",
+    mainSet: "10x150m @3:00",
+    RPE: 7
+  },
+  {
+    id: "31",
+    date: "2025-04-05",
+    swimmer: "Yo",
+    distance: 2800,
+    durationMin: 56,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "4x700m @12:00",
+    RPE: 6
+  },
+  {
+    id: "32",
+    date: "2025-04-07",
+    swimmer: "Yo",
+    distance: 1300,
+    durationMin: 28,
+    stroke: "butterfly",
+    sessionType: "speed",
+    mainSet: "13x100m fly @1:30",
+    RPE: 9
+  },
+  {
+    id: "33",
+    date: "2025-04-09",
+    swimmer: "Yo",
+    distance: 2100,
+    durationMin: 44,
+    stroke: "mixed",
+    sessionType: "aerobic",
+    mainSet: "IM 300m x7 @5:00",
+    RPE: 6
+  },
+  {
+    id: "34",
+    date: "2025-04-11",
+    swimmer: "Yo",
+    distance: 1800,
+    durationMin: 38,
+    stroke: "freestyle",
+    sessionType: "recovery",
+    mainSet: "9x200m @3:00",
+    RPE: 4
+  },
+  {
+    id: "35",
+    date: "2025-04-13",
+    swimmer: "Yo",
+    distance: 3000,
+    durationMin: 60,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "3x1000m @15:00",
+    RPE: 6
+  },
+  {
+    id: "36",
+    date: "2025-04-15",
+    swimmer: "Yo",
+    distance: 1600,
+    durationMin: 36,
+    stroke: "breaststroke",
+    sessionType: "technique",
+    mainSet: "8x200m breast @4:00",
+    RPE: 7
+  },
+  
+  // Mayo 2025
+  {
+    id: "37",
+    date: "2025-05-01",
+    swimmer: "Yo",
+    distance: 2400,
+    durationMin: 50,
+    stroke: "freestyle",
+    sessionType: "threshold",
+    mainSet: "6x400m @6:00",
+    RPE: 8
+  },
+  {
+    id: "38",
+    date: "2025-05-03",
+    swimmer: "Yo",
+    distance: 1700,
+    durationMin: 38,
+    stroke: "backstroke",
+    sessionType: "technique",
+    mainSet: "8x200m back @4:00",
+    RPE: 7
+  },
+  {
+    id: "39",
+    date: "2025-05-05",
+    swimmer: "Yo",
+    distance: 2600,
+    durationMin: 54,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "4x600m @11:00",
+    RPE: 6
+  },
+  {
+    id: "40",
+    date: "2025-05-07",
+    swimmer: "Yo",
+    distance: 1400,
+    durationMin: 30,
+    stroke: "butterfly",
+    sessionType: "speed",
+    mainSet: "14x100m fly @1:20",
+    RPE: 9
+  },
+  {
+    id: "41",
+    date: "2025-05-09",
+    swimmer: "Yo",
+    distance: 2000,
+    durationMin: 42,
+    stroke: "mixed",
+    sessionType: "aerobic",
+    mainSet: "IM 400m x5 @6:00",
+    RPE: 6
+  },
+  {
+    id: "42",
+    date: "2025-05-11",
+    swimmer: "Yo",
+    distance: 1900,
+    durationMin: 40,
+    stroke: "freestyle",
+    sessionType: "recovery",
+    mainSet: "19x100m @2:00",
+    RPE: 4
+  },
+  {
+    id: "43",
+    date: "2025-05-13",
+    swimmer: "Yo",
+    distance: 3100,
+    durationMin: 62,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "2x1500m @25:00",
+    RPE: 6
+  },
+  {
+    id: "44",
+    date: "2025-05-15",
+    swimmer: "Yo",
+    distance: 1700,
+    durationMin: 38,
+    stroke: "breaststroke",
+    sessionType: "technique",
+    mainSet: "8x200m breast @4:30",
+    RPE: 7
+  },
+  
+  // Junio 2025
+  {
+    id: "45",
+    date: "2025-06-01",
+    swimmer: "Yo",
+    distance: 2200,
+    durationMin: 46,
+    stroke: "freestyle",
+    sessionType: "threshold",
+    mainSet: "4x500m @8:00",
+    RPE: 8
+  },
+  {
+    id: "46",
+    date: "2025-06-03",
+    swimmer: "Yo",
+    distance: 1500,
+    durationMin: 34,
+    stroke: "backstroke",
+    sessionType: "technique",
+    mainSet: "10x150m @3:00",
+    RPE: 7
+  },
+  {
+    id: "47",
+    date: "2025-06-05",
+    swimmer: "Yo",
+    distance: 2800,
+    durationMin: 56,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "4x700m @12:00",
+    RPE: 6
+  },
+  {
+    id: "48",
+    date: "2025-06-07",
+    swimmer: "Yo",
+    distance: 1300,
+    durationMin: 28,
+    stroke: "butterfly",
+    sessionType: "speed",
+    mainSet: "13x100m fly @1:30",
+    RPE: 9
+  },
+  {
+    id: "49",
+    date: "2025-06-09",
+    swimmer: "Yo",
+    distance: 2100,
+    durationMin: 44,
+    stroke: "mixed",
+    sessionType: "aerobic",
+    mainSet: "IM 300m x7 @5:00",
+    RPE: 6
+  },
+  {
+    id: "50",
+    date: "2025-06-11",
+    swimmer: "Yo",
+    distance: 1800,
+    durationMin: 38,
+    stroke: "freestyle",
+    sessionType: "recovery",
+    mainSet: "9x200m @3:00",
+    RPE: 4
+  },
+  {
+    id: "51",
+    date: "2025-06-13",
+    swimmer: "Yo",
+    distance: 3000,
+    durationMin: 60,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "3x1000m @15:00",
+    RPE: 6
+  },
+  {
+    id: "52",
+    date: "2025-06-15",
+    swimmer: "Yo",
+    distance: 1600,
+    durationMin: 36,
+    stroke: "breaststroke",
+    sessionType: "technique",
+    mainSet: "8x200m breast @4:00",
+    RPE: 7
+  },
+  
+  // Julio 2025
+  {
+    id: "53",
+    date: "2025-07-01",
+    swimmer: "Yo",
+    distance: 2400,
+    durationMin: 50,
+    stroke: "freestyle",
+    sessionType: "threshold",
+    mainSet: "6x400m @6:00",
+    RPE: 8
+  },
+  {
+    id: "54",
+    date: "2025-07-03",
+    swimmer: "Yo",
+    distance: 1700,
+    durationMin: 38,
+    stroke: "backstroke",
+    sessionType: "technique",
+    mainSet: "8x200m back @4:00",
+    RPE: 7
+  },
+  {
+    id: "55",
+    date: "2025-07-05",
+    swimmer: "Yo",
+    distance: 2600,
+    durationMin: 54,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "4x600m @11:00",
+    RPE: 6
+  },
+  {
+    id: "56",
+    date: "2025-07-07",
+    swimmer: "Yo",
+    distance: 1400,
+    durationMin: 30,
+    stroke: "butterfly",
+    sessionType: "speed",
+    mainSet: "14x100m fly @1:20",
+    RPE: 9
+  },
+  {
+    id: "57",
+    date: "2025-07-09",
+    swimmer: "Yo",
+    distance: 2000,
+    durationMin: 42,
+    stroke: "mixed",
+    sessionType: "aerobic",
+    mainSet: "IM 400m x5 @6:00",
+    RPE: 6
+  },
+  {
+    id: "58",
+    date: "2025-07-11",
+    swimmer: "Yo",
+    distance: 1900,
+    durationMin: 40,
+    stroke: "freestyle",
+    sessionType: "recovery",
+    mainSet: "19x100m @2:00",
+    RPE: 4
+  },
+  {
+    id: "59",
+    date: "2025-07-13",
+    swimmer: "Yo",
+    distance: 3100,
+    durationMin: 62,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "2x1500m @25:00",
+    RPE: 6
+  },
+  {
+    id: "60",
+    date: "2025-07-15",
+    swimmer: "Yo",
+    distance: 1700,
+    durationMin: 38,
+    stroke: "breaststroke",
+    sessionType: "technique",
+    mainSet: "8x200m breast @4:30",
+    RPE: 7
+  },
+  
+  // Agosto 2025
+  {
+    id: "61",
+    date: "2025-08-01",
+    swimmer: "Yo",
+    distance: 2200,
+    durationMin: 46,
+    stroke: "freestyle",
+    sessionType: "threshold",
+    mainSet: "4x500m @8:00",
+    RPE: 8
+  },
+  {
+    id: "62",
+    date: "2025-08-03",
+    swimmer: "Yo",
+    distance: 1500,
+    durationMin: 34,
+    stroke: "backstroke",
+    sessionType: "technique",
+    mainSet: "10x150m @3:00",
+    RPE: 7
+  },
+  {
+    id: "63",
+    date: "2025-08-05",
+    swimmer: "Yo",
+    distance: 2800,
+    durationMin: 56,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "4x700m @12:00",
+    RPE: 6
+  },
+  {
+    id: "64",
+    date: "2025-08-07",
+    swimmer: "Yo",
+    distance: 1300,
+    durationMin: 28,
+    stroke: "butterfly",
+    sessionType: "speed",
+    mainSet: "13x100m fly @1:30",
+    RPE: 9
+  },
+  {
+    id: "65",
+    date: "2025-08-09",
+    swimmer: "Yo",
+    distance: 2100,
+    durationMin: 44,
+    stroke: "mixed",
+    sessionType: "aerobic",
+    mainSet: "IM 300m x7 @5:00",
+    RPE: 6
+  },
+  {
+    id: "66",
+    date: "2025-08-11",
+    swimmer: "Yo",
+    distance: 1800,
+    durationMin: 38,
+    stroke: "freestyle",
+    sessionType: "recovery",
+    mainSet: "9x200m @3:00",
+    RPE: 4
+  },
+  {
+    id: "67",
+    date: "2025-08-13",
+    swimmer: "Yo",
+    distance: 3000,
+    durationMin: 60,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "3x1000m @15:00",
+    RPE: 6
+  },
+  {
+    id: "68",
+    date: "2025-08-15",
+    swimmer: "Yo",
+    distance: 1600,
+    durationMin: 36,
+    stroke: "breaststroke",
+    sessionType: "technique",
+    mainSet: "8x200m breast @4:00",
+    RPE: 7
+  },
+  
+  // Septiembre 2025
+  {
+    id: "69",
+    date: "2025-09-01",
+    swimmer: "Yo",
+    distance: 2400,
+    durationMin: 50,
+    stroke: "freestyle",
+    sessionType: "threshold",
+    mainSet: "6x400m @6:00",
+    RPE: 8
+  },
+  {
+    id: "70",
+    date: "2025-09-03",
+    swimmer: "Yo",
+    distance: 1700,
+    durationMin: 38,
+    stroke: "backstroke",
+    sessionType: "technique",
+    mainSet: "8x200m back @4:00",
+    RPE: 7
+  },
+  {
+    id: "71",
+    date: "2025-09-05",
+    swimmer: "Yo",
+    distance: 2600,
+    durationMin: 54,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "4x600m @11:00",
+    RPE: 6
+  },
+  {
+    id: "72",
+    date: "2025-09-07",
+    swimmer: "Yo",
+    distance: 1400,
+    durationMin: 30,
+    stroke: "butterfly",
+    sessionType: "speed",
+    mainSet: "14x100m fly @1:20",
+    RPE: 9
+  },
+  {
+    id: "73",
+    date: "2025-09-09",
+    swimmer: "Yo",
+    distance: 2000,
+    durationMin: 42,
+    stroke: "mixed",
+    sessionType: "aerobic",
+    mainSet: "IM 400m x5 @6:00",
+    RPE: 6
+  },
+  {
+    id: "74",
+    date: "2025-09-11",
+    swimmer: "Yo",
+    distance: 1900,
+    durationMin: 40,
+    stroke: "freestyle",
+    sessionType: "recovery",
+    mainSet: "19x100m @2:00",
+    RPE: 4
+  },
+  {
+    id: "75",
+    date: "2025-09-13",
+    swimmer: "Yo",
+    distance: 3100,
+    durationMin: 62,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "2x1500m @25:00",
+    RPE: 6
+  },
+  {
+    id: "76",
+    date: "2025-09-15",
+    swimmer: "Yo",
+    distance: 1700,
+    durationMin: 38,
+    stroke: "breaststroke",
+    sessionType: "technique",
+    mainSet: "8x200m breast @4:30",
+    RPE: 7
+  },
+  
+  // Octubre 2025
+  {
+    id: "77",
+    date: "2025-10-01",
+    swimmer: "Yo",
+    distance: 2200,
+    durationMin: 46,
+    stroke: "freestyle",
+    sessionType: "threshold",
+    mainSet: "4x500m @8:00",
+    RPE: 8
+  },
+  {
+    id: "78",
+    date: "2025-10-03",
+    swimmer: "Yo",
+    distance: 1500,
+    durationMin: 34,
+    stroke: "backstroke",
+    sessionType: "technique",
+    mainSet: "10x150m @3:00",
+    RPE: 7
+  },
+  {
+    id: "79",
+    date: "2025-10-05",
+    swimmer: "Yo",
+    distance: 2800,
+    durationMin: 56,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "4x700m @12:00",
+    RPE: 6
+  },
+  {
+    id: "80",
+    date: "2025-10-07",
+    swimmer: "Yo",
+    distance: 1300,
+    durationMin: 28,
+    stroke: "butterfly",
+    sessionType: "speed",
+    mainSet: "13x100m fly @1:30",
+    RPE: 9
+  },
+  {
+    id: "81",
+    date: "2025-10-09",
+    swimmer: "Yo",
+    distance: 2100,
+    durationMin: 44,
+    stroke: "mixed",
+    sessionType: "aerobic",
+    mainSet: "IM 300m x7 @5:00",
+    RPE: 6
+  },
+  {
+    id: "82",
+    date: "2025-10-11",
+    swimmer: "Yo",
+    distance: 1800,
+    durationMin: 38,
+    stroke: "freestyle",
+    sessionType: "recovery",
+    mainSet: "9x200m @3:00",
+    RPE: 4
+  },
+  {
+    id: "83",
+    date: "2025-10-13",
+    swimmer: "Yo",
+    distance: 3000,
+    durationMin: 60,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "3x1000m @15:00",
+    RPE: 6
+  },
+  {
+    id: "84",
+    date: "2025-10-15",
+    swimmer: "Yo",
+    distance: 1600,
+    durationMin: 36,
+    stroke: "breaststroke",
+    sessionType: "technique",
+    mainSet: "8x200m breast @4:00",
+    RPE: 7
+  },
+  
+  // Noviembre 2025
+  {
+    id: "85",
+    date: "2025-11-01",
+    swimmer: "Yo",
+    distance: 2400,
+    durationMin: 50,
+    stroke: "freestyle",
+    sessionType: "threshold",
+    mainSet: "6x400m @6:00",
+    RPE: 8
+  },
+  {
+    id: "86",
+    date: "2025-11-03",
+    swimmer: "Yo",
+    distance: 1700,
+    durationMin: 38,
+    stroke: "backstroke",
+    sessionType: "technique",
+    mainSet: "8x200m back @4:00",
+    RPE: 7
+  },
+  {
+    id: "87",
+    date: "2025-11-05",
+    swimmer: "Yo",
+    distance: 2600,
+    durationMin: 54,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "4x600m @11:00",
+    RPE: 6
+  },
+  {
+    id: "88",
+    date: "2025-11-07",
+    swimmer: "Yo",
+    distance: 1400,
+    durationMin: 30,
+    stroke: "butterfly",
+    sessionType: "speed",
+    mainSet: "14x100m fly @1:20",
+    RPE: 9
+  },
+  {
+    id: "89",
+    date: "2025-11-09",
+    swimmer: "Yo",
+    distance: 2000,
+    durationMin: 42,
+    stroke: "mixed",
+    sessionType: "aerobic",
+    mainSet: "IM 400m x5 @6:00",
+    RPE: 6
+  },
+  {
+    id: "90",
+    date: "2025-11-11",
+    swimmer: "Yo",
+    distance: 1900,
+    durationMin: 40,
+    stroke: "freestyle",
+    sessionType: "recovery",
+    mainSet: "19x100m @2:00",
+    RPE: 4
+  },
+  {
+    id: "91",
+    date: "2025-11-13",
+    swimmer: "Yo",
+    distance: 3100,
+    durationMin: 62,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "2x1500m @25:00",
+    RPE: 6
+  },
+  {
+    id: "92",
+    date: "2025-11-15",
+    swimmer: "Yo",
+    distance: 1700,
+    durationMin: 38,
+    stroke: "breaststroke",
+    sessionType: "technique",
+    mainSet: "8x200m breast @4:30",
+    RPE: 7
+  },
+  
+  // Diciembre 2025
+  {
+    id: "93",
+    date: "2025-12-01",
+    swimmer: "Yo",
+    distance: 2200,
+    durationMin: 46,
+    stroke: "freestyle",
+    sessionType: "threshold",
+    mainSet: "4x500m @8:00",
+    RPE: 8
+  },
+  {
+    id: "94",
+    date: "2025-12-03",
+    swimmer: "Yo",
+    distance: 1500,
+    durationMin: 34,
+    stroke: "backstroke",
+    sessionType: "technique",
+    mainSet: "10x150m @3:00",
+    RPE: 7
+  },
+  {
+    id: "95",
+    date: "2025-12-05",
+    swimmer: "Yo",
+    distance: 2800,
+    durationMin: 56,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "4x700m @12:00",
+    RPE: 6
+  },
+  {
+    id: "96",
+    date: "2025-12-07",
+    swimmer: "Yo",
+    distance: 1300,
+    durationMin: 28,
+    stroke: "butterfly",
+    sessionType: "speed",
+    mainSet: "13x100m fly @1:30",
+    RPE: 9
+  },
+  {
+    id: "97",
+    date: "2025-12-09",
+    swimmer: "Yo",
+    distance: 2100,
+    durationMin: 44,
+    stroke: "mixed",
+    sessionType: "aerobic",
+    mainSet: "IM 300m x7 @5:00",
+    RPE: 6
+  },
+  {
+    id: "98",
+    date: "2025-12-11",
+    swimmer: "Yo",
+    distance: 1800,
+    durationMin: 38,
+    stroke: "freestyle",
+    sessionType: "recovery",
+    mainSet: "9x200m @3:00",
+    RPE: 4
+  },
+  {
+    id: "99",
+    date: "2025-12-13",
+    swimmer: "Yo",
+    distance: 3000,
+    durationMin: 60,
+    stroke: "freestyle",
+    sessionType: "aerobic",
+    mainSet: "3x1000m @15:00",
+    RPE: 6
+  },
+  {
+    id: "100",
+    date: "2025-12-15",
+    swimmer: "Yo",
+    distance: 1600,
+    durationMin: 36,
+    stroke: "breaststroke",
+    sessionType: "technique",
+    mainSet: "8x200m breast @4:00",
+    RPE: 7
+  }
+];
+
+export function getSeedData(): Session[] {
+  return sessions;
+}
+
+export interface Aggregations {
+  totalDistance: number;
+  avgDistance: number;
+  totalSessions: number;
+  techniquePercentage: number;
+  sessionsPerStroke: Record<string, number>;
+  minutesPerType: Record<string, number>;
+  distanceByWeek: Array<{ week: string; distance: number }>;
+  distanceByMonth: Array<{ month: string; distance: number; sessions: number }>;
+}
+
+export function getAggregations(sessions: Session[]): Aggregations {
+  const totalDistance = sessions.reduce((sum, session) => sum + session.distance, 0);
+  const avgDistance = Math.round(totalDistance / sessions.length) || 0;
+  const totalSessions = sessions.length;
+  
+  const techniqueSessions = sessions.filter(s => s.sessionType === 'technique').length;
+  const techniquePercentage = Math.round((techniqueSessions / totalSessions) * 100) || 0;
+  
+  const sessionsPerStroke = sessions.reduce((acc, session) => {
+    acc[session.stroke] = (acc[session.stroke] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+  
+  const minutesPerType = sessions.reduce((acc, session) => {
+    acc[session.sessionType] = (acc[session.sessionType] || 0) + session.durationMin;
+    return acc;
+  }, {} as Record<string, number>);
+  
+  // Datos semanales para el gráfico existente
+  const distanceByWeek = [
+    { week: "Semana 1", distance: 3500 },
+    { week: "Semana 2", distance: 4200 },
+    { week: "Semana 3", distance: 3800 },
+    { week: "Semana 4", distance: 4500 }
+  ];
+
+  // Datos mensuales para el calendario
+  const currentYear = new Date().getFullYear();
+  const yearStart = new Date(currentYear, 0, 1);
+  const yearEnd = new Date(currentYear, 11, 31);
+  
+  const months = [];
+  for (let i = 0; i < 12; i++) {
+    const month = new Date(currentYear, i, 1);
+    const monthStr = month.toISOString().slice(0, 7);
+    const monthSessions = sessions.filter(s => s.date.startsWith(monthStr));
+    const monthDistance = monthSessions.reduce((sum, s) => sum + s.distance, 0);
+    
+    months.push({
+      month: month.toLocaleDateString('es-ES', { month: 'short', year: 'numeric' }),
+      distance: monthDistance,
+      sessions: monthSessions.length
+    });
+  }
+  
+  return {
+    totalDistance,
+    avgDistance,
+    totalSessions,
+    techniquePercentage,
+    sessionsPerStroke,
+    minutesPerType,
+    distanceByWeek,
+    distanceByMonth: months
+  };
+}
