@@ -1,182 +1,317 @@
-<a href="https://demo-nextjs-with-supabase.vercel.app/">
-  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Next.js and Supabase Starter Kit</h1>
-</a>
+# 🏊‍♂️ Swim APP - Plataforma de Análisis de Natación
 
-<p align="center">
- The fastest way to build apps with Next.js and Supabase
-</p>
+<div align="center">
+  <img src="https://img.shields.io/badge/Next.js-15.2.1-black?style=for-the-badge&logo=next.js" alt="Next.js 15.2.1" />
+  <img src="https://img.shields.io/badge/TypeScript-5.7.2-blue?style=for-the-badge&logo=typescript" alt="TypeScript 5.7.2" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-3.4.17-38B2AC?style=for-the-badge&logo=tailwind-css" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/Supabase-Latest-green?style=for-the-badge&logo=supabase" alt="Supabase" />
+</div>
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
-</p>
 <br/>
 
-## Features
+<div align="center">
+  <h3>🚀 La plataforma de análisis de natación más avanzada para nadadores de todos los niveles</h3>
+  <p>Analiza, optimiza y mejora tu entrenamiento con datos precisos, visualizaciones profesionales y insights accionables.</p>
+</div>
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Middleware
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Components with [shadcn/ui](https://ui.shadcn.com/)
-- **Landing & Preview Dashboard** - Página pública con vista previa del dashboard
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+<br/>
 
-## Demo
+## ✨ Características Principales
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
+### 🎯 **Dashboard Inteligente**
+- **KPIs en tiempo real** - Métricas clave de rendimiento actualizadas al instante
+- **Gráficos interactivos** - Visualizaciones profesionales con Recharts
+- **Análisis detallado** - Seguimiento completo de sesiones y progreso
+- **Responsive design** - Optimizado para todos los dispositivos
 
-## Landing & Preview Dashboard
+### 📊 **Gestión de Entrenamientos**
+- **Formulario rápido** - Añadir entrenamientos en segundos
+- **Formulario avanzado** - Modal completo con todos los campos
+- **Calendario anual** - Vista de 12 meses con heatmap por distancia
+- **Filtros avanzados** - Por estilo, tipo, fecha y búsqueda de texto
+- **Exportación CSV** - Descarga de datos filtrados
 
-### Acceso Público
-- **Landing Page**: `/` - Página principal con CTA al dashboard de vista previa
-- **Preview Dashboard**: `/preview-dashboard` - Dashboard público sin login, con datos de ejemplo
-- **Dashboard Demo**: `/dashboard-demo` - Layout profesional con sidebar, navbar y **nueva pestaña Log**
+### 🎨 **Interfaz Moderna**
+- **Diseño profesional** - UI/UX inspirada en las mejores prácticas
+- **Componentes shadcn/ui** - Sistema de componentes robusto y accesible
+- **Tema oscuro/claro** - Soporte completo para ambos temas
+- **Animaciones fluidas** - Transiciones suaves y feedback visual
 
-### Características del Preview Dashboard
-- **KPIs en tiempo real**: Distancia total, promedio, sesiones, % técnica vs aeróbico
-- **Gráficos interactivos**: Reutiliza componentes existentes (VolumeBarchart, ChartComponent)
-- **Tabla de sesiones**: Datos de ejemplo con estilos, tipos y métricas
-- **Sin autenticación**: Accesible públicamente para demostración
-- **Responsive**: Adaptado a todos los dispositivos
+### 🔒 **Autenticación y Seguridad**
+- **Supabase Auth** - Sistema de autenticación robusto y seguro
+- **Middleware protegido** - Rutas seguras y control de acceso
+- **Cookies seguras** - Gestión de sesiones con SSR
+- **Variables de entorno** - Configuración segura de credenciales
 
-### Características del Dashboard Demo
-- **Layout profesional**: Sidebar + Navbar estilo dashboard-01
-- **Tabs del Dashboard**: 
-  - **Overview**: KPIs, gráficos existentes y widget "Este Mes"
-  - **Log**: Nueva funcionalidad completa de gestión de entrenamientos
-- **KPIs en Cards**: Métricas clave en grid responsive
-- **Gráficos embebidos**: Tus componentes existentes en Cards elegantes
-- **Tabla avanzada**: Búsqueda y paginación en cliente
-- **Navegación completa**: Enlaces a todas las secciones
+## 🚀 Demo y Acceso
 
-### Nueva Pestaña "Log" 🆕
-- **Formulario rápido**: Añadir entrenamientos en segundos (fecha, distancia, estilo, tipo)
-- **Formulario avanzado**: Modal completo con todos los campos (duración, RPE, series, notas)
-- **Calendario anual**: Vista de 12 meses con heatmap por distancia, click para ver sesiones del día
-- **Totales y filtros**: Métricas por período, filtros por estilo/tipo, exportación CSV
-- **Tabla de sesiones**: Historial completo con edición, eliminación y paginación avanzada
-- **Persistencia**: Datos guardados en localStorage (preparado para backend futuro)
+### **Landing Page Pública**
+- **URL**: `/` - Página principal con información del producto
+- **Características**: Presentación completa, testimonios, CTA
 
-> **Nota**: `/preview-dashboard` y `/dashboard-demo` son rutas públicas que no requieren login ni registro.
+### **Dashboard de Vista Previa**
+- **URL**: `/preview-dashboard` - Dashboard público sin login
+- **Datos**: Ejemplos reales para demostración
+- **Acceso**: Libre para todos los visitantes
 
-## Persistencia y Estructura de Datos
+### **Dashboard Demo Profesional**
+- **URL**: `/dashboard-demo` - Layout completo con sidebar
+- **Funcionalidades**: Todas las características implementadas
+- **Persistencia**: Datos guardados en localStorage
 
-### Store de Sesiones (Zustand)
-- **Persistencia**: Datos guardados automáticamente en localStorage
-- **Acciones**: `addSession`, `updateSession`, `deleteSession`, `clearSessions`
-- **Computed**: `getSessionsByDate`, `getSessionsByRange`
-- **Nombre del storage**: `swim-sessions-storage`
+## 🛠️ Tecnologías Utilizadas
 
-### Modelo de Datos
-```typescript
-type Session = {
-  id: string;
-  date: string;            // ISO format
-  swimmer: string;         // Por defecto "Yo"
-  distance: number;        // metros
-  durationMin: number;     // minutos
-  stroke: "freestyle" | "backstroke" | "breaststroke" | "butterfly" | "mixed";
-  sessionType: "aerobic" | "threshold" | "speed" | "technique" | "recovery";
-  mainSet: string;         // Serie principal
-  RPE: 1|2|3|4|5|6|7|8|9|10; // Rate of Perceived Exertion
-  notes?: string;          // Notas opcionales
+### **Frontend**
+- **Next.js 15** - Framework React con App Router
+- **TypeScript 5.7.2** - Tipado estático y mejor DX
+- **Tailwind CSS 3.4.17** - Framework CSS utility-first
+- **shadcn/ui** - Sistema de componentes profesionales
+
+### **Backend y Base de Datos**
+- **Supabase** - Backend as a Service completo
+- **PostgreSQL** - Base de datos relacional robusta
+- **Row Level Security** - Seguridad a nivel de fila
+- **Real-time subscriptions** - Actualizaciones en tiempo real
+
+### **Estado y Gestión de Datos**
+- **Zustand** - Gestión de estado ligera y eficiente
+- **React Query** - Gestión de datos del servidor
+- **Zod** - Validación de esquemas TypeScript
+
+### **Herramientas de Desarrollo**
+- **ESLint** - Linting y calidad de código
+- **Prettier** - Formateo automático de código
+- **Husky** - Git hooks para calidad
+- **TypeScript** - Verificación de tipos en build
+
+## 📱 Estructura del Proyecto
+
+```
+swimappcursor/
+├── app/                          # App Router de Next.js
+│   ├── (auth-pages)/            # Páginas de autenticación
+│   ├── dashboard/                # Dashboard principal
+│   ├── dashboard-demo/           # Dashboard demo público
+│   ├── preview-dashboard/        # Vista previa del dashboard
+│   ├── protected/                # Rutas protegidas
+│   └── layout.tsx               # Layout principal
+├── components/                   # Componentes reutilizables
+│   ├── ui/                      # Componentes base (shadcn/ui)
+│   ├── dashboard-demo/          # Componentes específicos del dashboard
+│   ├── landing/                 # Componentes de la landing page
+│   └── tutorial/                # Componentes de tutorial
+├── lib/                         # Utilidades y lógica de negocio
+│   ├── store/                   # Stores de Zustand
+│   ├── types/                   # Tipos TypeScript
+│   ├── utils/                   # Funciones utilitarias
+│   └── aggregations.ts          # Cálculos de métricas
+├── hooks/                       # Custom hooks de React
+├── styles/                      # Estilos globales
+└── public/                      # Assets estáticos
+```
+
+## 🎯 Funcionalidades Implementadas
+
+### **Sistema de Sesiones**
+- ✅ Crear, editar y eliminar entrenamientos
+- ✅ Filtros avanzados por múltiples criterios
+- ✅ Exportación de datos a CSV
+- ✅ Persistencia local con localStorage
+- ✅ Validación de datos con Zod
+
+### **Métricas y Análisis**
+- ✅ KPIs en tiempo real
+- ✅ Gráficos interactivos de progreso
+- ✅ Calendario anual con heatmap
+- ✅ Cálculos de totales y promedios
+- ✅ Filtros por período y criterios
+
+### **Interfaz de Usuario**
+- ✅ Diseño responsive y moderno
+- ✅ Tema oscuro/claro
+- ✅ Navegación intuitiva
+- ✅ Componentes accesibles
+- ✅ Animaciones fluidas
+
+## 🚀 Instalación y Configuración
+
+### **Prerrequisitos**
+- Node.js 18+ 
+- npm, yarn o pnpm
+- Cuenta de Supabase
+
+### **1. Clonar el Repositorio**
+```bash
+git clone git@github.com:Joel1993055/swimappcursor.git
+cd swimappcursor
+```
+
+### **2. Instalar Dependencias**
+```bash
+npm install
+# o
+yarn install
+# o
+pnpm install
+```
+
+### **3. Configurar Variables de Entorno**
+```bash
+# Copiar archivo de ejemplo
+cp .env.example .env.local
+
+# Editar .env.local con tus credenciales de Supabase
+NEXT_PUBLIC_SUPABASE_URL=tu_url_de_supabase
+NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_clave_anonima
+```
+
+### **4. Ejecutar en Desarrollo**
+```bash
+npm run dev
+# o
+yarn dev
+# o
+pnpm dev
+```
+
+El proyecto estará disponible en [http://localhost:3000](http://localhost:3000)
+
+## 📊 Scripts Disponibles
+
+```json
+{
+  "dev": "next dev",                    # Servidor de desarrollo
+  "build": "next build",                # Build de producción
+  "start": "next start",                # Servidor de producción
+  "lint": "next lint",                  # Linting del código
+  "type-check": "tsc --noEmit",         # Verificación de tipos
+  "build-check": "npm run type-check && npm run build",  # Build + type check
+  "pre-commit": "npm run lint && npm run type-check"     # Pre-commit hooks
 }
 ```
 
-### Helpers y Utilidades
-- **`/lib/aggregations.ts`**: Cálculos de métricas y totales
-- **`/lib/date.ts`**: Utilidades de fecha con date-fns
-- **`/lib/store/sessions.ts`**: Store Zustand con persistencia
-- **Datos de ejemplo**: 100 sesiones distribuidas a lo largo del año 2025
+## 🌐 Deployment
 
-### Exportación e Importación
-- **Export CSV**: Botón en la pestaña Log para descargar sesiones filtradas
-- **Formato**: Fecha, nadador, distancia, duración, estilo, tipo, serie, RPE, notas
-- **Filtros**: Aplicados antes de la exportación
+### **Vercel (Recomendado)**
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FJoel1993055%2Fswimappcursor)
 
-### Preparado para Backend
-- **Adaptador**: Store diseñado para conectar fácilmente a Supabase/Express
-- **Mismas firmas**: Acciones compatibles con API REST
-- **Migración**: Solo cambiar la implementación del store, no los componentes
+### **Supabase Integration**
+El proyecto incluye integración automática con Supabase:
+- Variables de entorno configuradas automáticamente
+- Base de datos y autenticación listas para usar
+- Real-time subscriptions configuradas
 
-## Deploy to Vercel
+### **Variables de Entorno Requeridas**
+```env
+NEXT_PUBLIC_SUPABASE_URL=tu_url_de_supabase
+NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_clave_anonima
+SUPABASE_SERVICE_ROLE_KEY=tu_clave_de_servicio
+```
 
-Vercel deployment will guide you through creating a Supabase account and project.
+## 🔧 Desarrollo Local
 
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
+### **Estructura de Datos**
+```typescript
+interface Session {
+  id: string;
+  date: string;                    // Formato ISO
+  swimmer: string;                 // Nombre del nadador
+  distance: number;                // Distancia en metros
+  durationMin: number;             // Duración en minutos
+  stroke: StrokeType;              // Estilo de natación
+  sessionType: SessionType;        // Tipo de entrenamiento
+  mainSet: string;                 // Serie principal
+  RPE: number;                     // Rate of Perceived Exertion (1-10)
+  notes?: string;                  // Notas opcionales
+}
+```
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This+starter+configures+Supabase+Auth+to+use+cookies%2C+making+the+user%27s+session+available+throughout+the+entire+Next.js+app+-+Client+Components%2C+Server+Components%2C+Route+Handlers%2C+Server+Actions+and+Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png)
+### **Stores de Estado**
+- **`useSessionsStore`** - Gestión de sesiones de entrenamiento
+- **`useAuthStore`** - Estado de autenticación del usuario
+- **`useThemeStore`** - Gestión del tema (claro/oscuro)
 
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
+### **Componentes Principales**
+- **`DashboardLayout`** - Layout principal del dashboard
+- **`KPICards`** - Tarjetas de métricas clave
+- **`SessionsTable`** - Tabla de sesiones con paginación
+- **`YearCalendar`** - Calendario anual con heatmap
+- **`QuickAddForm`** - Formulario rápido de sesiones
 
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
+## 📈 Roadmap
 
-## Clone and run locally
+### **Fase 1 - Core Features** ✅
+- [x] Sistema de autenticación
+- [x] Dashboard básico
+- [x] Gestión de sesiones
+- [x] Métricas básicas
 
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
+### **Fase 2 - Analytics Avanzados** 🚧
+- [ ] Gráficos de progreso a largo plazo
+- [ ] Análisis de tendencias
+- [ ] Comparativas entre períodos
+- [ ] Metas y objetivos
 
-2. Create a Next.js app using the Supabase Starter template npx command
+### **Fase 3 - Social y Colaboración** 📋
+- [ ] Compartir entrenamientos
+- [ ] Grupos de entrenamiento
+- [ ] Rankings y competencias
+- [ ] Sistema de logros
 
-   ```bash
-   npx create-next-app --example with-supabase with-supabase-app
-   ```
+### **Fase 4 - Mobile y Offline** 📱
+- [ ] PWA completa
+- [ ] Sincronización offline
+- [ ] Notificaciones push
+- [ ] Integración con wearables
 
-   ```bash
-   yarn create next-app --example with-supabase with-supabase-app
-   ```
+## 🤝 Contribuir
 
-   ```bash
-   pnpm create next-app --example with-supabase with-supabase-app
-   ```
+### **Cómo Contribuir**
+1. Fork del repositorio
+2. Crear rama feature (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit cambios (`git commit -am 'Añadir nueva funcionalidad'`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Crear Pull Request
 
-3. Use `cd` to change into the app's directory
+### **Estándares de Código**
+- **TypeScript** - Tipado estricto requerido
+- **ESLint** - Reglas de linting configuradas
+- **Prettier** - Formateo automático
+- **Conventional Commits** - Formato de commits estándar
 
-   ```bash
-   cd with-supabase-app
-   ```
+### **Testing**
+```bash
+# Ejecutar tests
+npm run test
 
-4. Rename `.env.example` to `.env.local` and update the following:
+# Coverage
+npm run test:coverage
 
-   ```
-   NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=[INSERT SUPABASE PROJECT API ANON KEY]
-   ```
+# E2E tests
+npm run test:e2e
+```
 
-   Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` can be found in [your Supabase project's API settings](https://app.supabase.com/project/_/settings/api)
+## 📄 Licencia
 
-5. You can now run the Next.js local development server:
+Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para más detalles.
 
-   ```bash
-   npm run dev
-   ```
+## 🙏 Agradecimientos
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
+- **Next.js Team** - Framework increíble
+- **Supabase** - Backend as a Service
+- **shadcn/ui** - Componentes hermosos
+- **Tailwind CSS** - Framework CSS utility-first
+- **Comunidad open source** - Inspiración y contribuciones
 
-6. This template comes with the default shadcn/ui style initialized. If you instead want other ui.shadcn styles, delete `components.json` and [re-install shadcn/ui](https://ui.shadcn.com/docs/installation/next)
+## 📞 Contacto
 
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
+- **Desarrollador**: Joel
+- **GitHub**: [@Joel1993055](https://github.com/Joel1993055)
+- **Proyecto**: [Swim APP](https://github.com/Joel1993055/swimappcursor)
 
-## Feedback and issues
+---
 
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
-
-## More Supabase examples
-
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
-#   s u p a b a s e c u r s o r o l d  
- #   s u p a b a s e c u r s o r o l d  
- 
+<div align="center">
+  <p>⭐ Si este proyecto te gusta, ¡dale una estrella en GitHub!</p>
+  <p>🏊‍♂️ ¡Nada hacia el éxito con Swim APP!</p>
+</div>
