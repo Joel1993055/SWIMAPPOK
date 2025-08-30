@@ -69,7 +69,7 @@ export function DashboardContent() {
           {/* Charts - REUTILIZANDO TUS COMPONENTES EXISTENTES */}
           <section>
             <h2 className="text-2xl font-bold mb-6">Gráficos de Rendimiento</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="space-y-8">
               <ChartCardWrapper 
                 title="Volumen Semanal" 
                 description="Distancia por semana en kilómetros"
