@@ -19,7 +19,7 @@ export default function Header() {
       </div>
       <h1 className="sr-only">SwimAPP:PRO</h1>
       <p className="text-3xl lg:text-4xl !leading-tight mx-auto max-w-xl text-center">
-        Una manera de controlar el teu plan d'entrenament{" "}
+        Una manera de controlar el teu plan d&apos;entrenament{" "}
         <a
           href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
           target="_blank"

@@ -302,7 +302,7 @@ export function TotalsFilters() {
               )}
               {filters.searchTerm && (
                 <Badge variant="outline" className="text-orange-700 border-orange-300">
-                  Búsqueda: "{filters.searchTerm}"
+                  Búsqueda: &ldquo;{filters.searchTerm}&rdquo;
                 </Badge>
               )}
             </div>
