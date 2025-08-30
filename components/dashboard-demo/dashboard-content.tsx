@@ -52,7 +52,7 @@ export function DashboardContent() {
               </ChartCardWrapper>
               
               <ChartCardWrapper 
-                title="Progreso GA1 vs GA2" 
+                title="Progreso Z1 vs Z2 vs Z3 vs Z4 vs Z5" 
                 description="Análisis temporal de intensidades"
               >
                 <ChartComponent />
