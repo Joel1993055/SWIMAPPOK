@@ -141,13 +141,13 @@ swimappcursor/
 - Cuenta de Supabase
 
 ### **1. Clonar el Repositorio**
-```bash
+   ```bash
 git clone git@github.com:Joel1993055/swimappcursor.git
 cd swimappcursor
-```
+   ```
 
 ### **2. Instalar Dependencias**
-```bash
+   ```bash
 npm install
 # o
 yarn install
@@ -156,7 +156,7 @@ pnpm install
 ```
 
 ### **3. Configurar Variables de Entorno**
-```bash
+   ```bash
 # Copiar archivo de ejemplo
 cp .env.example .env.local
 
@@ -166,7 +166,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_clave_anonima
 ```
 
 ### **4. Ejecutar en Desarrollo**
-```bash
+   ```bash
 npm run dev
 # o
 yarn dev
@@ -280,7 +280,7 @@ interface Session {
 - **Conventional Commits** - Formato de commits estándar
 
 ### **Testing**
-```bash
+   ```bash
 # Ejecutar tests
 npm run test
 
