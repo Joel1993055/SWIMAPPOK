@@ -2,7 +2,7 @@
 
 import { Sidebar } from "@/components/dashboard-demo/sidebar";
 import { Navbar } from "@/components/dashboard-demo/navbar";
-import { SessionsTabs } from "@/components/dashboard-demo/sessions-tabs";
+import { DashboardContent } from "@/components/dashboard-demo/dashboard-content";
 import { StoreInitializer } from "@/components/dashboard-demo/store-initializer";
 
 export default function DashboardDemoPage() {
@@ -20,8 +20,8 @@ export default function DashboardDemoPage() {
             </p>
           </div>
           
-          {/* Tabs del Dashboard */}
-          <SessionsTabs />
+          {/* Contenido del Dashboard */}
+          <DashboardContent />
         </main>
       </div>
     </div>
