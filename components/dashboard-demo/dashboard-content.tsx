@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BarChart3, Calendar, Activity, Target } from "lucide-react";
@@ -7,12 +8,14 @@ import { useSessionsStore } from "@/lib/store/sessions";
 import { useDashboardTabsStore } from "@/lib/store/dashboard-tabs";
 import { getAggregations } from "@/lib/aggregations";
 import { getCurrentYear } from "@/lib/date";
+import { Session } from "@/lib/types/session";
 import { KPICards } from "./kpi-cards";
 import { ChartCardWrapper } from "./chart-card-wrapper";
 import VolumeBarchart from "@/components/barchart";
 import ChartComponent from "@/components/chartcomponent";
 import { QuickAddForm } from "./quick-add-form";
 import { YearCalendar } from "./year-calendar";
+import { DayInfoPanel } from "./day-info-panel";
 import { SessionsTable } from "./sessions-table";
 import { TotalsFilters } from "./totals-filters";
 import { AnalyticsContent } from "./analytics-content";
@@ -21,6 +24,8 @@ export function DashboardContent() {
   const { sessions } = useSessionsStore();
   const { activeTab } = useDashboardTabsStore();
   const currentYear = getCurrentYear();
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedDateSessions, setSelectedDateSessions] = useState<Session[]>([]);
   
   // Calcular métricas del mes actual (kept for potential future use or if other parts need it, but widget removed from UI)
   const currentMonth = new Date().getMonth() + 1;
@@ -28,6 +33,12 @@ export function DashboardContent() {
   const currentMonthSessions = sessions.filter(s => s.date.startsWith(currentMonthStr));
   const currentMonthDistance = currentMonthSessions.reduce((sum, s) => sum + s.distance, 0);
   const currentMonthCount = currentMonthSessions.length;
+
+  // Función para manejar la selección de fecha del calendario
+  const handleDateSelect = (date: string, dateSessions: Session[]) => {
+    setSelectedDate(date);
+    setSelectedDateSessions(dateSessions);
+  };
 
   return (
     <div className="w-full">
@@ -58,6 +69,37 @@ export function DashboardContent() {
                 <ChartComponent />
               </ChartCardWrapper>
             </div>
+          </section>
+
+          {/* Calendario Anual - Vista de Consistencia con Información del Día */}
+          <section>
+            <Card className="border-primary/10 bg-gradient-to-br from-primary/5 to-primary/10">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calendar className="w-5 h-5 text-primary" />
+                  Calendario de Consistencia {currentYear}
+                </CardTitle>
+                <CardDescription>
+                  Visualiza tu consistencia de entrenamiento a lo largo del año
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {/* Columna izquierda: Calendario */}
+                  <div>
+                    <YearCalendar onDateSelect={handleDateSelect} />
+                  </div>
+                  
+                  {/* Columna derecha: Información del día seleccionado */}
+                  <div className="space-y-4">
+                    <DayInfoPanel 
+                      selectedDate={selectedDate} 
+                      sessions={selectedDateSessions} 
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </section>
         </div>
       )}

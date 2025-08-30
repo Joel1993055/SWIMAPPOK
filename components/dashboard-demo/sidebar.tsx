@@ -27,7 +27,7 @@ export function Sidebar() {
       <div className="flex h-16 items-center border-b px-6 bg-gradient-to-r from-primary/5 to-primary/10">
         <Link href="/" className="flex items-center space-x-2 group">
           <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-            <BarChart3 className="h-6 w-6 text-primary" />
+          <BarChart3 className="h-6 w-6 text-primary" />
           </div>
           <span className="font-bold text-lg text-foreground">Swim APP</span>
         </Link>

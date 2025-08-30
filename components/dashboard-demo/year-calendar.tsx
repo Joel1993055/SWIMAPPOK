@@ -11,7 +11,11 @@ import { getCurrentYear, getDaysInMonth, formatDate, isCurrentDate } from "@/lib
 import { Session } from "@/lib/types/session";
 import { Calendar, ChevronLeft, ChevronRight, Plus, Activity } from "lucide-react";
 
-export function YearCalendar() {
+interface YearCalendarProps {
+  onDateSelect?: (date: string, sessions: Session[]) => void;
+}
+
+export function YearCalendar({ onDateSelect }: YearCalendarProps) {
   const { sessions } = useSessionsStore();
   const [selectedYear, setSelectedYear] = useState(getCurrentYear());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -31,6 +35,12 @@ export function YearCalendar() {
   const handleDateClick = (date: string) => {
     setSelectedDate(date);
     setIsDateDialogOpen(true);
+    
+    // Notificar al componente padre sobre la selección
+    if (onDateSelect) {
+      const dateSessions = sessions.filter(s => s.date === date);
+      onDateSelect(date, dateSessions);
+    }
   };
 
   const getDayColor = (distance: number): string => {
