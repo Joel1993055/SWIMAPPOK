@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { BarChart3, Home, Users, Target, Settings, LogOut, Calendar, Activity, TrendingUp } from "lucide-react";
+import { BarChart3, Home, Users, Target, Settings, LogOut, Calendar, Activity, TrendingUp, Zap } from "lucide-react";
 import Link from "next/link";
 import { useSessionsStore } from "@/lib/store/sessions";
 import { useDashboardTabsStore } from "@/lib/store/dashboard-tabs";
@@ -76,7 +76,25 @@ export function Sidebar() {
             <span>Log</span>
           </Button>
 
-          {/* Analytics Tab - NUEVA PESTAÑA */}
+          {/* Insights Tab - NUEVA PESTAÑA */}
+          <Button 
+            variant={activeTab === 'insights' ? 'default' : 'ghost'}
+            className={`w-full justify-start h-12 text-base font-medium transition-all duration-200 ${
+              activeTab === 'insights' 
+                ? 'shadow-md bg-primary text-primary-foreground hover:bg-primary/90' 
+                : 'hover:bg-primary/10 hover:text-primary'
+            }`}
+            onClick={() => setActiveTab('insights')}
+          >
+            <div className={`p-1.5 rounded-md mr-3 transition-colors ${
+              activeTab === 'insights' ? 'bg-primary-foreground/20' : 'bg-primary/10'
+            }`}>
+              <Zap className="h-5 w-5" />
+            </div>
+            <span>Insights</span>
+          </Button>
+
+          {/* Analytics Tab */}
           <Button 
             variant={activeTab === 'analytics' ? 'default' : 'ghost'}
             className={`w-full justify-start h-12 text-base font-medium transition-all duration-200 ${

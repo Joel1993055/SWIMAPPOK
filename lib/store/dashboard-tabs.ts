@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-type DashboardTab = 'overview' | 'log' | 'analytics';
+type DashboardTab = 'overview' | 'log' | 'insights' | 'analytics';
 
 interface DashboardTabsState {
   activeTab: DashboardTab;

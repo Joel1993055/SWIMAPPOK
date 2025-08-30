@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BarChart3, Calendar, Activity, Target } from "lucide-react";
+import { BarChart3, Calendar, Activity, Target, Zap } from "lucide-react";
 import { useSessionsStore } from "@/lib/store/sessions";
 import { useDashboardTabsStore } from "@/lib/store/dashboard-tabs";
 import { getAggregations } from "@/lib/aggregations";
@@ -16,6 +16,7 @@ import ChartComponent from "@/components/chartcomponent";
 import { QuickAddForm } from "./quick-add-form";
 import { YearCalendar } from "./year-calendar";
 import { DayInfoPanel } from "./day-info-panel";
+import { PerformanceInsights } from "./performance-insights";
 import { SessionsTable } from "./sessions-table";
 import { TotalsFilters } from "./totals-filters";
 import { AnalyticsContent } from "./analytics-content";
@@ -101,6 +102,8 @@ export function DashboardContent() {
               </CardContent>
             </Card>
           </section>
+
+
         </div>
       )}
 
@@ -184,7 +187,25 @@ export function DashboardContent() {
         </div>
       )}
 
-      {/* Analytics Tab - NUEVA PESTAÑA */}
+      {/* Insights Tab - NUEVA PESTAÑA */}
+      {activeTab === 'insights' && (
+        <div className="space-y-8">
+          <div className="text-center space-y-4">
+            <div className="space-y-2">
+              <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+                Performance Insights
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Análisis inteligente de tu rendimiento con recomendaciones personalizadas
+              </p>
+            </div>
+          </div>
+          
+          <PerformanceInsights />
+        </div>
+      )}
+
+      {/* Analytics Tab */}
       {activeTab === 'analytics' && (
         <AnalyticsContent />
       )}
