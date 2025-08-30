@@ -15,13 +15,14 @@ import { QuickAddForm } from "./quick-add-form";
 import { YearCalendar } from "./year-calendar";
 import { SessionsTable } from "./sessions-table";
 import { TotalsFilters } from "./totals-filters";
+import { AnalyticsContent } from "./analytics-content";
 
 export function DashboardContent() {
   const { sessions } = useSessionsStore();
   const { activeTab } = useDashboardTabsStore();
   const currentYear = getCurrentYear();
   
-  // Calcular métricas del mes actual
+  // Calcular métricas del mes actual (kept for potential future use or if other parts need it, but widget removed from UI)
   const currentMonth = new Date().getMonth() + 1;
   const currentMonthStr = `${currentYear}-${currentMonth.toString().padStart(2, '0')}`;
   const currentMonthSessions = sessions.filter(s => s.date.startsWith(currentMonthStr));
@@ -139,6 +140,11 @@ export function DashboardContent() {
             </Card>
           </section>
         </div>
+      )}
+
+      {/* Analytics Tab - NUEVA PESTAÑA */}
+      {activeTab === 'analytics' && (
+        <AnalyticsContent />
       )}
     </div>
   );

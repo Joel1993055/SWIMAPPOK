@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { BarChart3, Home, Users, Target, Settings, LogOut, Calendar, Activity } from "lucide-react";
+import { BarChart3, Home, Users, Target, Settings, LogOut, Calendar, Activity, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { useSessionsStore } from "@/lib/store/sessions";
 import { useDashboardTabsStore } from "@/lib/store/dashboard-tabs";
@@ -33,7 +33,7 @@ export function Sidebar() {
         </Link>
       </div>
       
-      {/* Navegación Principal - Overview y Log */}
+      {/* Navegación Principal - Overview, Log y Analytics */}
       <div className="flex-1 space-y-6 p-6">
         <div className="space-y-3">
           <h3 className="px-2 text-sm font-semibold text-foreground uppercase tracking-wider">
@@ -74,6 +74,24 @@ export function Sidebar() {
               <Calendar className="h-5 w-5" />
             </div>
             <span>Log</span>
+          </Button>
+
+          {/* Analytics Tab - NUEVA PESTAÑA */}
+          <Button 
+            variant={activeTab === 'analytics' ? 'default' : 'ghost'}
+            className={`w-full justify-start h-12 text-base font-medium transition-all duration-200 ${
+              activeTab === 'analytics' 
+                ? 'shadow-md bg-primary text-primary-foreground hover:bg-primary/90' 
+                : 'hover:bg-primary/10 hover:text-primary'
+            }`}
+            onClick={() => setActiveTab('analytics')}
+          >
+            <div className={`p-1.5 rounded-md mr-3 transition-colors ${
+              activeTab === 'analytics' ? 'bg-primary-foreground/20' : 'bg-primary/10'
+            }`}>
+              <TrendingUp className="h-5 w-5" />
+            </div>
+            <span>Analytics</span>
           </Button>
         </div>
 
