@@ -15,7 +15,7 @@ export default function Home() {
               <BarChart3 className="w-5 h-5 text-primary-foreground" />
             </div>
             <span className="text-lg font-bold tracking-tight">Swim APP</span>
-            </Link>
+          </Link>
           <div className="flex items-center gap-2">
             <Button variant="ghost" asChild>
               <Link href="/preview-dashboard">Demo</Link>
