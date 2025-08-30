@@ -97,10 +97,10 @@ export function getAggregations(sessions: Session[]): Aggregations {
     const avgDistance = Math.round(totalDistance / totalSessions);
     
     return {
-      totalDistance,
-      avgDistance,
+      totalDistance: Math.round(totalDistance / 1000), // Convertir a KM
+      avgDistance: Math.round(avgDistance / 1000), // Convertir a KM
       totalSessions,
-      techniquePercentage: 25, // 25% técnica vs 75% aeróbico
+      techniquePercentage: 20, // 20% técnica vs 80% aeróbico (más realista)
       sessionsPerStroke: {
         'freestyle': 45,
         'backstroke': 20,
@@ -163,8 +163,8 @@ export function getAggregations(sessions: Session[]): Aggregations {
   });
   
   return {
-    totalDistance,
-    avgDistance,
+    totalDistance: Math.round(totalDistance / 1000), // Convertir a KM
+    avgDistance: Math.round(avgDistance / 1000), // Convertir a KM
     totalSessions,
     techniquePercentage,
     sessionsPerStroke,

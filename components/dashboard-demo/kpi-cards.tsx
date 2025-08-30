@@ -15,8 +15,8 @@ export function KPICards({ stats }: KPICardsProps) {
           <Target className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{stats.totalDistance}m</div>
-          <p className="text-xs text-muted-foreground">+20.1% vs mes anterior</p>
+          <div className="text-2xl font-bold">{stats.totalDistance} km</div>
+          <p className="text-xs text-muted-foreground">Este año</p>
         </CardContent>
       </Card>
       
@@ -26,7 +26,7 @@ export function KPICards({ stats }: KPICardsProps) {
           <TrendingUp className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{stats.avgDistance}m</div>
+          <div className="text-2xl font-bold">{stats.avgDistance * 1000}m</div>
           <p className="text-xs text-muted-foreground">Por sesión</p>
         </CardContent>
       </Card>
@@ -38,7 +38,7 @@ export function KPICards({ stats }: KPICardsProps) {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{stats.totalSessions}</div>
-          <p className="text-xs text-muted-foreground">Este mes</p>
+          <p className="text-xs text-muted-foreground">Este año</p>
         </CardContent>
       </Card>
       
