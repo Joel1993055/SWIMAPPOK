@@ -33,33 +33,6 @@ export function DashboardContent() {
       {/* Overview Tab - Mantiene tus gráficos existentes */}
       {activeTab === 'overview' && (
         <div className="space-y-8">
-          {/* Widget del mes actual */}
-          <section>
-            <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-primary/10">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Target className="w-5 h-5 text-primary" />
-                  Este Mes
-                </CardTitle>
-                <CardDescription>
-                  Resumen de entrenamientos del mes actual
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">{currentMonthDistance}m</div>
-                    <p className="text-sm text-muted-foreground">Total metros</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">{currentMonthCount}</div>
-                    <p className="text-sm text-muted-foreground">Sesiones</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </section>
-
           {/* KPIs - Tus métricas existentes */}
           <section>
             <h2 className="text-2xl font-bold mb-6">Métricas Clave</h2>
