@@ -13,9 +13,10 @@ import { Calendar, ChevronLeft, ChevronRight, Plus, Activity } from "lucide-reac
 
 interface YearCalendarProps {
   onDateSelect?: (date: string, sessions: Session[]) => void;
+  silentMode?: boolean; // Para no abrir popup en Overview
 }
 
-export function YearCalendar({ onDateSelect }: YearCalendarProps) {
+export function YearCalendar({ onDateSelect, silentMode = false }: YearCalendarProps) {
   const { sessions } = useSessionsStore();
   const [selectedYear, setSelectedYear] = useState(getCurrentYear());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -34,7 +35,11 @@ export function YearCalendar({ onDateSelect }: YearCalendarProps) {
 
   const handleDateClick = (date: string) => {
     setSelectedDate(date);
-    setIsDateDialogOpen(true);
+    
+    // Solo abrir popup si NO está en modo silencioso
+    if (!silentMode) {
+      setIsDateDialogOpen(true);
+    }
     
     // Notificar al componente padre sobre la selección
     if (onDateSelect) {

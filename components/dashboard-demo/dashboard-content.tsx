@@ -87,7 +87,7 @@ export function DashboardContent() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   {/* Columna izquierda: Calendario */}
                   <div>
-                    <YearCalendar onDateSelect={handleDateSelect} />
+                    <YearCalendar onDateSelect={handleDateSelect} silentMode={true} />
                   </div>
                   
                   {/* Columna derecha: Información del día seleccionado */}
