@@ -4,8 +4,7 @@ import * as React from "react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 
 // Datos del gráfico corregidos para ser realistas para un nadador
@@ -94,18 +93,36 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export default function VolumeBarchart() {
-  // Estado para las zonas seleccionadas
-  const [selectedZones, setSelectedZones] = React.useState<Set<string>>(new Set(['total', 'Z1', 'Z2']));
+  // Estado para la vista seleccionada
+  const [selectedView, setSelectedView] = React.useState<string>("overview");
 
-  // Función para alternar zona seleccionada
-  const toggleZone = (zone: string) => {
-    const newSelected = new Set(selectedZones);
-    if (newSelected.has(zone)) {
-      newSelected.delete(zone);
-    } else {
-      newSelected.add(zone);
+  // Configuración de vistas
+  const views = {
+    overview: {
+      label: "Overview",
+      zones: ['total', 'Z1', 'Z2'],
+      description: "Vista general con total y zonas principales"
+    },
+    aerobic: {
+      label: "Aeróbico",
+      zones: ['Z1', 'Z2'],
+      description: "Zonas de resistencia base y recuperación"
+    },
+    threshold: {
+      label: "Umbral",
+      zones: ['Z3', 'Z4'],
+      description: "Zonas de tempo y umbral"
+    },
+    vo2max: {
+      label: "VO2 Max",
+      zones: ['Z5'],
+      description: "Zona de máxima intensidad"
+    },
+    all: {
+      label: "Todas",
+      zones: ['Z1', 'Z2', 'Z3', 'Z4', 'Z5', 'total'],
+      description: "Todas las zonas de entrenamiento"
     }
-    setSelectedZones(newSelected);
   };
 
   // Calcular totales
@@ -117,8 +134,9 @@ export default function VolumeBarchart() {
     return result;
   }, []);
 
-  // Filtrar datos para mostrar solo las zonas seleccionadas
+  // Filtrar datos para mostrar solo las zonas de la vista seleccionada
   const filteredData = React.useMemo(() => {
+    const selectedZones = views[selectedView as keyof typeof views].zones;
     return chartData.map(week => {
       const filtered: any = { week };
       selectedZones.forEach(zone => {
@@ -126,38 +144,30 @@ export default function VolumeBarchart() {
       });
       return filtered;
     });
-  }, [selectedZones]);
+  }, [selectedView]);
+
+  const currentView = views[selectedView as keyof typeof views];
 
   return (
-    <Card>
+    <Card className="bg-muted/50 border-muted">
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-          <CardTitle>Weekly Volume - KM</CardTitle>
-          <CardDescription>Showing training volume for each week</CardDescription>
-        </div>
-        
-        {/* Selector de zonas */}
-        <div className="px-6 pb-4">
-          <div className="flex flex-wrap gap-4">
-            {Object.entries(chartConfig).map(([zone, config]) => (
-              <div key={zone} className="flex items-center space-x-2">
-                <Checkbox
-                  id={zone}
-                  checked={selectedZones.has(zone)}
-                  onCheckedChange={() => toggleZone(zone)}
-                />
-                <Label 
-                  htmlFor={zone} 
-                  className="text-sm font-medium cursor-pointer flex items-center gap-2"
-                >
-                  <div 
-                    className="w-3 h-3 rounded-full" 
-                    style={{ backgroundColor: config.color }}
-                  />
-                  {config.label}
-                </Label>
-              </div>
-            ))}
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Weekly Volume - KM</CardTitle>
+              <CardDescription>{currentView.description}</CardDescription>
+            </div>
+            
+            {/* Tabs en la parte superior derecha */}
+            <Tabs value={selectedView} onValueChange={setSelectedView} className="w-auto">
+              <TabsList className="grid w-full grid-cols-5 bg-muted">
+                <TabsTrigger value="overview" className="text-xs">Overview</TabsTrigger>
+                <TabsTrigger value="aerobic" className="text-xs">Aeróbico</TabsTrigger>
+                <TabsTrigger value="threshold" className="text-xs">Umbral</TabsTrigger>
+                <TabsTrigger value="vo2max" className="text-xs">VO2 Max</TabsTrigger>
+                <TabsTrigger value="all" className="text-xs">Todas</TabsTrigger>
+              </TabsList>
+            </Tabs>
           </div>
         </div>
 
@@ -165,7 +175,7 @@ export default function VolumeBarchart() {
         
         {/* Resumen de totales */}
         <div className="flex flex-wrap">
-          {Array.from(selectedZones).map((zone) => {
+          {currentView.zones.map((zone) => {
             const config = chartConfig[zone as keyof typeof chartConfig];
             return (
               <div
@@ -220,8 +230,8 @@ export default function VolumeBarchart() {
             />
             <Legend />
             
-            {/* Renderizar barras para cada zona seleccionada */}
-            {Array.from(selectedZones).map((zone, index) => (
+            {/* Renderizar barras para cada zona de la vista seleccionada */}
+            {currentView.zones.map((zone, index) => (
               <Bar 
                 key={zone}
                 dataKey={zone} 
