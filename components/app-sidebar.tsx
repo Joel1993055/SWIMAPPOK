@@ -4,21 +4,15 @@ import * as React from "react"
 import {
   ArrowUpCircleIcon,
   BarChartIcon,
-  CameraIcon,
   ClipboardListIcon,
-  FileCodeIcon,
-  FileIcon,
-  FileTextIcon,
   HelpCircleIcon,
   LayoutDashboardIcon,
-  SearchIcon,
   SettingsIcon,
   BookOpenIcon,
   CalendarIcon,
   Target,
   Users,
   Plus,
-
 } from "lucide-react"
 
 import { NavDocuments } from "@/components/nav-documents"
@@ -49,11 +43,6 @@ const data = {
       icon: LayoutDashboardIcon,
     },
     {
-      title: "Log",
-      url: "/log",
-      icon: BookOpenIcon,
-    },
-    {
       title: "Calendario",
       url: "/calendario",
       icon: CalendarIcon,
@@ -63,65 +52,32 @@ const data = {
       url: "/planificacion",
       icon: Target,
     },
-
     {
       title: "Análisis",
       url: "/analisis",
       icon: BarChartIcon,
     },
-
     {
       title: "Equipo",
       url: "/equipo",
       icon: Users,
     },
+    {
+      title: "Entrenamientos",
+      url: "/entrenamientos",
+      icon: Plus,
+    },
   ],
-  navClouds: [
+  navTools: [
     {
-      title: "Capture",
-      icon: CameraIcon,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
+      name: "Reports",
+      url: "/reports",
+      icon: ClipboardListIcon,
     },
     {
-      title: "Proposal",
-      icon: FileTextIcon,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: FileCodeIcon,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
+      name: "Log",
+      url: "/log",
+      icon: BookOpenIcon,
     },
   ],
   navSecondary: [
@@ -131,31 +87,9 @@ const data = {
       icon: SettingsIcon,
     },
     {
-      title: "Get Help",
+      title: "Ayuda",
       url: "#",
       icon: HelpCircleIcon,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: SearchIcon,
-    },
-  ],
-  documents: [
-    {
-      name: "Reports",
-      url: "/reports",
-      icon: ClipboardListIcon,
-    },
-    {
-      name: "Entrenamientos",
-      url: "/entrenamientos",
-      icon: Plus,
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: FileIcon,
     },
   ],
 }
@@ -183,10 +117,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
         
         {/* Selectores de Club y Grupo */}
-        <div className="mt-4">
+        <div className="mt-6">
           <NavTeamSelectors 
             selectedClub={selectedClub}
             selectedGroup={selectedGroup}
@@ -194,6 +127,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             onGroupChange={setSelectedGroup}
           />
         </div>
+        
+        <NavDocuments items={data.navTools} />
         
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>

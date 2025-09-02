@@ -3,8 +3,6 @@
 import * as React from "react"
 import { Building2, Users, ChevronDown, Check } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 
 // Datos de ejemplo para clubes y grupos (mismo que en la página de equipo)
 const sampleData = {
@@ -132,136 +130,68 @@ export function NavTeamSelectors({
     }
   }
 
-  const getLevelColor = (level: string) => {
-    switch (level) {
-      case "Avanzado": return "bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300";
-      case "Intermedio": return "bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-300";
-      case "Principiante": return "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-300";
-      case "Mixto": return "bg-purple-100 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300";
-      default: return "bg-gray-100 text-gray-700 dark:bg-gray-900/20 dark:text-gray-300";
-    }
-  };
+
 
   return (
-    <div className="px-3 py-3">
-      <div className="space-y-4">
-        {/* Header Section */}
-        <div className="px-1">
-          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            Mi Equipo
-          </h3>
-        </div>
-
-        {/* Selector de Club */}
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 px-1">
-            <div className="p-1 bg-primary/10 rounded-sm">
-              <Building2 className="h-3 w-3 text-primary" />
+    <div className="px-3 py-2">
+      <div className="space-y-3">
+        {/* Selector de Club - Minimalista */}
+        <Select value={selectedClub} onValueChange={handleClubChange}>
+          <SelectTrigger className="h-8 text-xs border-0 bg-muted/30 hover:bg-muted/50 transition-colors">
+            <div className="flex items-center gap-2">
+              <Building2 className="h-3 w-3 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground truncate">
+                {currentClub?.name}
+              </span>
+              <ChevronDown className="h-3 w-3 text-muted-foreground ml-auto" />
             </div>
-            <span className="text-xs font-medium text-foreground">Club</span>
-          </div>
-          <Select value={selectedClub} onValueChange={handleClubChange}>
-            <SelectTrigger className="h-9 text-sm border-muted-foreground/20 hover:border-muted-foreground/40 transition-colors">
-              <div className="flex items-center gap-2">
-                <Avatar className="h-5 w-5">
-                  <AvatarImage src={currentClub?.logo} />
-                  <AvatarFallback className="text-xs bg-primary/10 text-primary">
-                    {currentClub?.name.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1 text-left">
-                  <div className="text-sm font-medium truncate">{currentClub?.name}</div>
-                  <div className="text-xs text-muted-foreground truncate">{currentClub?.location}</div>
+          </SelectTrigger>
+          <SelectContent className="w-56">
+            {sampleData.clubs.map((club) => (
+              <SelectItem key={club.id} value={club.id} className="p-2">
+                <div className="flex items-center gap-2">
+                  <Building2 className="h-3 w-3 text-muted-foreground" />
+                  <div className="flex-1">
+                    <div className="text-xs font-medium">{club.name}</div>
+                    <div className="text-xs text-muted-foreground">{club.location}</div>
+                  </div>
+                  {selectedClub === club.id && (
+                    <Check className="h-3 w-3 text-primary" />
+                  )}
                 </div>
-                <ChevronDown className="h-3 w-3 text-muted-foreground" />
-              </div>
-            </SelectTrigger>
-            <SelectContent className="w-64">
-              {sampleData.clubs.map((club) => (
-                <SelectItem key={club.id} value={club.id} className="p-3">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-6 w-6">
-                      <AvatarImage src={club.logo} />
-                      <AvatarFallback className="text-xs bg-primary/10 text-primary">
-                        {club.name.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <div className="text-sm font-medium">{club.name}</div>
-                      <div className="text-xs text-muted-foreground">{club.location}</div>
-                      <div className="text-xs text-muted-foreground mt-0.5">
-                        {club.members} miembros • {club.groups} grupos
-                      </div>
-                    </div>
-                    {selectedClub === club.id && (
-                      <Check className="h-4 w-4 text-primary" />
-                    )}
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-        {/* Selector de Grupo */}
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 px-1">
-            <div className="p-1 bg-primary/10 rounded-sm">
-              <Users className="h-3 w-3 text-primary" />
+        {/* Selector de Grupo - Minimalista */}
+        <Select value={selectedGroup} onValueChange={onGroupChange}>
+          <SelectTrigger className="h-8 text-xs border-0 bg-muted/30 hover:bg-muted/50 transition-colors">
+            <div className="flex items-center gap-2">
+              <Users className="h-3 w-3 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground truncate">
+                {currentGroups.find(g => g.id === selectedGroup)?.name}
+              </span>
+              <ChevronDown className="h-3 w-3 text-muted-foreground ml-auto" />
             </div>
-            <span className="text-xs font-medium text-foreground">Grupo</span>
-          </div>
-          <Select value={selectedGroup} onValueChange={onGroupChange}>
-            <SelectTrigger className="h-9 text-sm border-muted-foreground/20 hover:border-muted-foreground/40 transition-colors">
-              <div className="flex items-center gap-2">
-                <div className="flex-1 text-left">
-                  <div className="text-sm font-medium truncate">
-                    {currentGroups.find(g => g.id === selectedGroup)?.name}
+          </SelectTrigger>
+          <SelectContent className="w-56">
+            {currentGroups.map((group) => (
+              <SelectItem key={group.id} value={group.id} className="p-2">
+                <div className="flex items-center gap-2">
+                  <Users className="h-3 w-3 text-muted-foreground" />
+                  <div className="flex-1">
+                    <div className="text-xs font-medium">{group.name}</div>
+                    <div className="text-xs text-muted-foreground">{group.level}</div>
                   </div>
-                  <div className="text-xs text-muted-foreground truncate">
-                    {currentGroups.find(g => g.id === selectedGroup)?.level} • {currentGroups.find(g => g.id === selectedGroup)?.members} miembros
-                  </div>
+                  {selectedGroup === group.id && (
+                    <Check className="h-3 w-3 text-primary" />
+                  )}
                 </div>
-                <ChevronDown className="h-3 w-3 text-muted-foreground" />
-              </div>
-            </SelectTrigger>
-            <SelectContent className="w-64">
-              {currentGroups.map((group) => (
-                <SelectItem key={group.id} value={group.id} className="p-3">
-                  <div className="flex items-center gap-3">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-sm font-medium">{group.name}</span>
-                        <Badge className={`text-xs px-1.5 py-0.5 ${getLevelColor(group.level)}`}>
-                          {group.level}
-                        </Badge>
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {group.ageRange} • {group.members} miembros
-                      </div>
-                      <div className="text-xs text-muted-foreground mt-0.5">
-                        Entrenador: {group.coach}
-                      </div>
-                    </div>
-                    {selectedGroup === group.id && (
-                      <Check className="h-4 w-4 text-primary" />
-                    )}
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Quick Status Indicator */}
-        {currentClub && currentGroups.find(g => g.id === selectedGroup) && (
-          <div className="px-1 pt-2">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span>Activo • {currentGroups.find(g => g.id === selectedGroup)?.focus}</span>
-            </div>
-          </div>
-        )}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     </div>
   )
