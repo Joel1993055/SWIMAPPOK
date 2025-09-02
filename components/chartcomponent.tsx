@@ -25,8 +25,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// Datos del gráfico con Z1, Z2, Z3, Z4, Z5
-const chartData = [
+// Función para generar datos hasta la fecha actual
+const generateDataUntilToday = () => {
+  const data = [
   { date: "2024-04-01", Z1: 222, Z2: 150, Z3: 180, Z4: 120, Z5: 90 },
   { date: "2024-04-02", Z1: 97, Z2: 180, Z3: 140, Z4: 110, Z5: 80 },
   { date: "2024-04-03", Z1: 167, Z2: 120, Z3: 160, Z4: 130, Z5: 100 },
@@ -118,7 +119,41 @@ const chartData = [
   { date: "2024-06-28", Z1: 149, Z2: 200, Z3: 170, Z4: 150, Z5: 120 },
   { date: "2024-06-29", Z1: 103, Z2: 160, Z3: 140, Z4: 120, Z5: 100 },
   { date: "2024-06-30", Z1: 446, Z2: 400, Z3: 340, Z4: 300, Z5: 260 },
-];
+  ];
+
+  // Extender datos hasta la fecha actual
+  const lastDate = new Date("2024-06-30");
+  const today = new Date();
+  
+  // Generar datos desde el 1 de julio de 2024 hasta hoy
+  const currentDate = new Date(lastDate);
+  currentDate.setDate(currentDate.getDate() + 1);
+  
+  while (currentDate <= today) {
+    // Generar valores aleatorios realistas basados en los datos existentes
+    const baseZ1 = 200 + Math.random() * 300;
+    const baseZ2 = 150 + Math.random() * 250;
+    const baseZ3 = 120 + Math.random() * 200;
+    const baseZ4 = 100 + Math.random() * 150;
+    const baseZ5 = 80 + Math.random() * 120;
+    
+    data.push({
+      date: currentDate.toISOString().split('T')[0],
+      Z1: Math.round(baseZ1),
+      Z2: Math.round(baseZ2),
+      Z3: Math.round(baseZ3),
+      Z4: Math.round(baseZ4),
+      Z5: Math.round(baseZ5),
+    });
+    
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  
+  return data;
+};
+
+// Generar los datos completos
+const chartData = generateDataUntilToday();
 
 // Configuración del gráfico con las 5 zonas
 const chartConfig = {
@@ -147,19 +182,140 @@ const chartConfig = {
 export default function ChartComponent() {
   const [timeRange, setTimeRange] = React.useState("90d");
 
+  // Función para agrupar datos por meses
+  const groupDataByMonths = (data: typeof chartData) => {
+    const monthlyData: Record<string, { Z1: number; Z2: number; Z3: number; Z4: number; Z5: number; count: number; month: string }> = {};
+    
+    // Primero, procesar los datos existentes
+    data.forEach(item => {
+      const date = new Date(item.date);
+      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      const monthName = date.toLocaleDateString('es-ES', { month: 'short', year: 'numeric' });
+      
+      if (!monthlyData[monthKey]) {
+        monthlyData[monthKey] = { Z1: 0, Z2: 0, Z3: 0, Z4: 0, Z5: 0, count: 0, month: monthName };
+      }
+      
+      monthlyData[monthKey].Z1 += item.Z1;
+      monthlyData[monthKey].Z2 += item.Z2;
+      monthlyData[monthKey].Z3 += item.Z3;
+      monthlyData[monthKey].Z4 += item.Z4;
+      monthlyData[monthKey].Z5 += item.Z5;
+      monthlyData[monthKey].count += 1;
+    });
+    
+    // Generar meses faltantes según el rango
+    if (timeRange === "1y") {
+      // Todo el año - generar todos los meses desde enero 2024 hasta el mes actual de 2025
+      const currentDate = new Date();
+      const startYear = 2024;
+      const endYear = currentDate.getFullYear();
+      
+      for (let year = startYear; year <= endYear; year++) {
+        const monthsInYear = year === endYear ? currentDate.getMonth() + 1 : 12;
+        
+        for (let month = 0; month < monthsInYear; month++) {
+          const monthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
+          const monthName = new Date(year, month, 1).toLocaleDateString('es-ES', { month: 'short', year: 'numeric' });
+          
+          if (!monthlyData[monthKey]) {
+            monthlyData[monthKey] = { Z1: 0, Z2: 0, Z3: 0, Z4: 0, Z5: 0, count: 1, month: monthName };
+          }
+        }
+      }
+    } else if (timeRange === "180d" || timeRange === "90d") {
+      // Para 6 y 3 meses, generar los meses del rango
+      const currentDate = new Date();
+      const monthsToGenerate = timeRange === "180d" ? 6 : 3;
+      
+      for (let i = 0; i < monthsToGenerate; i++) {
+        const targetDate = new Date(currentDate);
+        targetDate.setMonth(targetDate.getMonth() - i);
+        
+        const monthKey = `${targetDate.getFullYear()}-${String(targetDate.getMonth() + 1).padStart(2, '0')}`;
+        const monthName = targetDate.toLocaleDateString('es-ES', { month: 'short', year: 'numeric' });
+        
+        if (!monthlyData[monthKey]) {
+          monthlyData[monthKey] = { Z1: 0, Z2: 0, Z3: 0, Z4: 0, Z5: 0, count: 1, month: monthName };
+        }
+      }
+    }
+    
+    // Convertir a array y calcular promedios
+    return Object.entries(monthlyData)
+      .map(([key, data]) => ({
+        month: data.month,
+        Z1: data.count > 0 ? Math.round(data.Z1 / data.count) : 0,
+        Z2: data.count > 0 ? Math.round(data.Z2 / data.count) : 0,
+        Z3: data.count > 0 ? Math.round(data.Z3 / data.count) : 0,
+        Z4: data.count > 0 ? Math.round(data.Z4 / data.count) : 0,
+        Z5: data.count > 0 ? Math.round(data.Z5 / data.count) : 0,
+      }))
+      .sort((a, b) => {
+        // Ordenar por fecha real - extraer año y mes correctamente
+        const parseMonth = (monthStr: string) => {
+          const [monthName, year] = monthStr.split(' ');
+          const monthIndex = new Date(`${monthName} 1, 2000`).getMonth();
+          return new Date(parseInt(year), monthIndex, 1);
+        };
+        
+        const dateA = parseMonth(a.month);
+        const dateB = parseMonth(b.month);
+        return dateA.getTime() - dateB.getTime();
+      });
+  };
+
+  // Función para formatear datos diarios
+  const formatDailyData = (data: typeof chartData) => {
+    return data.map(item => ({
+      date: new Date(item.date).toLocaleDateString('es-ES', { month: 'short', day: 'numeric' }),
+      Z1: item.Z1,
+      Z2: item.Z2,
+      Z3: item.Z3,
+      Z4: item.Z4,
+      Z5: item.Z5,
+    }));
+  };
+
   const filteredData = chartData.filter((item) => {
     const date = new Date(item.date);
-    const referenceDate = new Date("2024-06-30");
-    let daysToSubtract = 90;
-    if (timeRange === "30d") {
-      daysToSubtract = 30;
-    } else if (timeRange === "7d") {
-      daysToSubtract = 7;
+    
+    if (timeRange === "1y") {
+      // Todo el año - mostrar todos los datos
+      return true;
     }
-    const startDate = new Date(referenceDate);
-    startDate.setDate(startDate.getDate() - daysToSubtract);
-    return date >= startDate;
+    
+    // Usar la fecha actual como referencia
+    const referenceDate = new Date();
+    
+    if (timeRange === "180d") {
+      // Últimos 6 meses - restar 6 meses
+      const startDate = new Date(referenceDate);
+      startDate.setMonth(startDate.getMonth() - 6);
+      return date >= startDate;
+    } else if (timeRange === "90d") {
+      // Últimos 3 meses - restar 3 meses
+      const startDate = new Date(referenceDate);
+      startDate.setMonth(startDate.getMonth() - 3);
+      return date >= startDate;
+    } else if (timeRange === "30d") {
+      // Últimos 30 días
+      const startDate = new Date(referenceDate);
+      startDate.setDate(startDate.getDate() - 30);
+      return date >= startDate;
+    } else if (timeRange === "7d") {
+      // Últimos 7 días
+      const startDate = new Date(referenceDate);
+      startDate.setDate(startDate.getDate() - 7);
+      return date >= startDate;
+    }
+    
+    return true;
   });
+
+  // Decidir si mostrar datos por meses o por días
+  const shouldGroupByMonths = timeRange === "1y" || timeRange === "180d" || timeRange === "90d";
+  const finalChartData = shouldGroupByMonths ? groupDataByMonths(filteredData) : formatDailyData(filteredData);
 
   return (
     <Card className="bg-muted/50 border-muted">
@@ -167,7 +323,11 @@ export default function ChartComponent() {
         <div className="grid flex-1 gap-1 text-center sm:text-left">
           <CardTitle>Gráfico Volumen total</CardTitle>
           <CardDescription>
-            Mostrando los últimos 3 meses
+            {timeRange === "1y" ? "Mostrando todo el año" :
+             timeRange === "180d" ? "Mostrando los últimos 6 meses" :
+             timeRange === "90d" ? "Mostrando los últimos 3 meses" :
+             timeRange === "30d" ? "Mostrando los últimos 30 días" :
+             "Mostrando los últimos 7 días"}
           </CardDescription>
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>
@@ -178,6 +338,12 @@ export default function ChartComponent() {
             <SelectValue placeholder="Últimos 3 meses" />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
+            <SelectItem value="1y" className="rounded-lg">
+              Todo el año
+            </SelectItem>
+            <SelectItem value="180d" className="rounded-lg">
+              Últimos 6 meses
+            </SelectItem>
             <SelectItem value="90d" className="rounded-lg">
               Últimos 3 meses
             </SelectItem>
@@ -195,7 +361,7 @@ export default function ChartComponent() {
           config={chartConfig}
           className="aspect-auto h-[250px] w-full"
         >
-          <AreaChart data={filteredData}>
+          <AreaChart data={finalChartData}>
             <defs>
               <linearGradient id="fillZ1" x1="0" y1="0" x2="0" y2="1">
                 <stop
@@ -260,29 +426,18 @@ export default function ChartComponent() {
             </defs>
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="date"
+              dataKey={shouldGroupByMonths ? "month" : "date"}
               tickLine={false}
               axisLine={false}
               tickMargin={8}
               minTickGap={32}
-              tickFormatter={(value) => {
-                const date = new Date(value);
-                return date.toLocaleDateString("es-ES", {
-                  month: "short",
-                  day: "numeric",
-                });
-              }}
+              tickFormatter={(value) => value}
             />
             <ChartTooltip
               cursor={false}
               content={
                 <ChartTooltipContent
-                  labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("es-ES", {
-                      month: "short",
-                      day: "numeric",
-                    });
-                  }}
+                  labelFormatter={(value) => value}
                   indicator="dot"
                 />
               }

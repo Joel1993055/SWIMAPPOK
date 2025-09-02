@@ -66,6 +66,11 @@ const data = {
       icon: Target,
     },
     {
+      title: "Reportes",
+      url: "/reports",
+      icon: FileTextIcon,
+    },
+    {
       title: "Análisis",
       url: "#",
       icon: BarChartIcon,
@@ -142,7 +147,7 @@ const data = {
   navSecondary: [
     {
       title: "Settings",
-      url: "#",
+      url: "/settings",
       icon: SettingsIcon,
     },
     {

@@ -3,7 +3,7 @@
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { KPICards } from "@/components/dashboard/kpi-cards";
 import { VisitorsChart } from "@/components/dashboard/visitors-chart";
-import { RecentActivity } from "@/components/dashboard/recent-activity";
+import { DashboardCalendar } from "@/components/dashboard/dashboard-calendar";
 import { ChartsSection } from "@/components/dashboard/charts-section";
 
 export function DashboardOverview() {
@@ -15,10 +15,10 @@ export function DashboardOverview() {
       {/* KPIs Cards - 4 tarjetas arriba */}
       <KPICards />
       
-      {/* Charts Section - Gráfico de visitantes y actividad */}
+      {/* Charts Section - Gráfico de visitantes y calendario */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <VisitorsChart />
-        <RecentActivity />
+        <DashboardCalendar />
       </div>
 
       {/* Swimming Charts Section - Los dos gráficos debajo uno del otro */}
