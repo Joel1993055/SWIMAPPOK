@@ -97,7 +97,7 @@ export default function VolumeBarchart() {
   const [selectedView, setSelectedView] = React.useState<string>("overview");
 
   // Configuración de vistas
-  const views = {
+  const views = React.useMemo(() => ({
     overview: {
       label: "Overview",
       zones: ['total', 'Z1', 'Z2'],
@@ -123,7 +123,7 @@ export default function VolumeBarchart() {
       zones: ['Z1', 'Z2', 'Z3', 'Z4', 'Z5', 'total'],
       description: "Todas las zonas de entrenamiento"
     }
-  };
+  }), []);
 
   // Calcular totales
   const totals = React.useMemo(() => {
@@ -138,7 +138,7 @@ export default function VolumeBarchart() {
   const filteredData = React.useMemo(() => {
     const selectedZones = views[selectedView as keyof typeof views].zones;
     return chartData.map(week => {
-      const filtered: Record<string, any> = { week };
+      const filtered: Record<string, string | number> = { week };
       selectedZones.forEach(zone => {
         filtered[zone] = week[zone as keyof typeof week];
       });
