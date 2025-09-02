@@ -24,6 +24,7 @@ import {
   Heart,
   Activity,
   Users,
+  Building,
 } from "lucide-react"
 
 import { NavDocuments } from "@/components/nav-documents"
@@ -66,6 +67,11 @@ const data = {
       title: "Planificación",
       url: "/planificacion",
       icon: Target,
+    },
+    {
+      title: "Clubes",
+      url: "/clubes",
+      icon: Building,
     },
     {
       title: "Análisis",
