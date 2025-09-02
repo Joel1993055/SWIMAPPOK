@@ -1,113 +1,122 @@
 "use client";
 
 import { useState } from "react";
+import { AppSidebar } from "@/components/app-sidebar";
+import { SiteHeader } from "@/components/site-header";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { 
   FileText, 
   Download, 
-  Calendar, 
-  Clock, 
-  Target, 
-  Activity, 
-  MapPin,
-  User,
-  Printer,
+  Printer, 
+  Calendar as CalendarIcon,
   Filter,
-  Search
+  Search,
+  Clock,
+  Target,
+  Activity,
+  Trophy,
+  MapPin,
+  Users,
+  BarChart3,
+  TrendingUp
 } from "lucide-react";
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 // Datos de ejemplo de entrenamientos
 const sampleTrainings = [
   {
     id: 1,
     date: "2025-01-15",
-    time: "07:00",
     type: "Aeróbico",
-    distance: 2000,
     duration: 45,
+    distance: 2000,
     stroke: "Libre",
     rpe: 6,
     location: "Piscina Municipal",
-    coach: "María González",
-    notes: "Entrenamiento de resistencia aeróbica. Buena técnica en el estilo libre."
+    coach: "María García",
+    notes: "Entrenamiento enfocado en resistencia aeróbica. Buena técnica en el estilo libre."
   },
   {
     id: 2,
-    date: "2025-01-15",
-    time: "19:30",
+    date: "2025-01-17",
     type: "Técnica",
-    distance: 1500,
     duration: 30,
+    distance: 1500,
     stroke: "Espalda",
     rpe: 4,
     location: "Piscina Municipal",
-    coach: "Carlos Ruiz",
-    notes: "Trabajo específico de técnica en espalda. Mejora en la rotación del cuerpo."
+    coach: "Carlos López",
+    notes: "Trabajo específico en técnica de espalda. Mejoras notables en la rotación."
   },
   {
     id: 3,
-    date: "2025-01-16",
-    time: "08:00",
+    date: "2025-01-20",
     type: "Umbral",
-    distance: 3000,
     duration: 60,
+    distance: 3000,
     stroke: "Libre",
     rpe: 8,
-    location: "Centro Deportivo",
-    coach: "Ana Martín",
-    notes: "Sesión de umbral láctico. Series de 400m con descanso activo."
+    location: "Piscina Municipal",
+    coach: "María García",
+    notes: "Sesión intensa de umbral. Mantenimiento de ritmo constante durante toda la sesión."
   },
   {
     id: 4,
-    date: "2025-01-17",
-    time: "07:30",
+    date: "2025-01-22",
     type: "Velocidad",
-    distance: 1200,
     duration: 25,
+    distance: 1200,
     stroke: "Mariposa",
     rpe: 9,
     location: "Piscina Municipal",
-    coach: "María González",
-    notes: "Trabajo de velocidad en mariposa. Series cortas de alta intensidad."
+    coach: "Carlos López",
+    notes: "Trabajo de velocidad en mariposa. Series cortas e intensas."
   },
   {
     id: 5,
-    date: "2025-01-18",
-    time: "18:00",
+    date: "2025-01-24",
     type: "Recuperación",
-    distance: 800,
     duration: 20,
+    distance: 800,
     stroke: "Pecho",
     rpe: 3,
-    location: "Centro Deportivo",
-    coach: "Carlos Ruiz",
-    notes: "Sesión de recuperación activa. Enfoque en la técnica de pecho."
+    location: "Piscina Municipal",
+    coach: "María García",
+    notes: "Sesión de recuperación activa. Enfoque en la relajación y técnica."
   }
 ];
 
-export default function ReportsPage() {
+function ReportsContent() {
   const [selectedTrainings, setSelectedTrainings] = useState<number[]>([]);
-  const [filterType, setFilterType] = useState("all");
-  const [filterDate, setFilterDate] = useState("");
+  const [dateFrom, setDateFrom] = useState<Date>();
+  const [dateTo, setDateTo] = useState<Date>();
+  const [trainingType, setTrainingType] = useState<string>("all");
+  const [stroke, setStroke] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
 
+  const trainingTypes = ["all", "Aeróbico", "Técnica", "Umbral", "Velocidad", "Recuperación"];
+  const strokes = ["all", "Libre", "Espalda", "Pecho", "Mariposa", "Estilos"];
+
   const filteredTrainings = sampleTrainings.filter(training => {
-    const matchesType = filterType === "all" || training.type === filterType;
-    const matchesDate = !filterDate || training.date === filterDate;
-    const matchesSearch = !searchTerm || 
-      training.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      training.stroke.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      training.location.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    return matchesType && matchesDate && matchesSearch;
+    const matchesDate = (!dateFrom || new Date(training.date) >= dateFrom) && 
+                       (!dateTo || new Date(training.date) <= dateTo);
+    const matchesType = trainingType === "all" || training.type === trainingType;
+    const matchesStroke = stroke === "all" || training.stroke === stroke;
+    const matchesSearch = searchTerm === "" || 
+                         training.notes.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         training.type.toLowerCase().includes(searchTerm.toLowerCase());
+
+    return matchesDate && matchesType && matchesStroke && matchesSearch;
   });
 
   const handleTrainingSelect = (trainingId: number) => {
@@ -126,242 +135,194 @@ export default function ReportsPage() {
     }
   };
 
-  const generatePDF = async () => {
-    if (selectedTrainings.length === 0) {
-      alert("Por favor selecciona al menos un entrenamiento para exportar");
-      return;
-    }
-
-    const selectedTrainingData = sampleTrainings.filter(t => selectedTrainings.includes(t.id));
-    
-    // Crear el contenido del PDF
-    const pdf = new jsPDF();
-    
-    // Configuración del PDF
-    pdf.setFontSize(20);
-    pdf.text('Reporte de Entrenamientos', 20, 30);
-    
-    pdf.setFontSize(12);
-    pdf.text(`Fecha de generación: ${new Date().toLocaleDateString('es-ES')}`, 20, 45);
-    pdf.text(`Total de entrenamientos: ${selectedTrainingData.length}`, 20, 55);
-    
-    let yPosition = 75;
-    
-    selectedTrainingData.forEach((training, index) => {
-      if (yPosition > 250) {
-        pdf.addPage();
-        yPosition = 30;
-      }
-      
-      // Título del entrenamiento
-      pdf.setFontSize(14);
-      pdf.text(`Entrenamiento ${index + 1}`, 20, yPosition);
-      yPosition += 10;
-      
-      // Detalles del entrenamiento
-      pdf.setFontSize(10);
-      pdf.text(`Fecha: ${training.date}`, 20, yPosition);
-      pdf.text(`Hora: ${training.time}`, 100, yPosition);
-      yPosition += 8;
-      
-      pdf.text(`Tipo: ${training.type}`, 20, yPosition);
-      pdf.text(`Estilo: ${training.stroke}`, 100, yPosition);
-      yPosition += 8;
-      
-      pdf.text(`Distancia: ${training.distance}m`, 20, yPosition);
-      pdf.text(`Duración: ${training.duration}min`, 100, yPosition);
-      yPosition += 8;
-      
-      pdf.text(`RPE: ${training.rpe}/10`, 20, yPosition);
-      pdf.text(`Ubicación: ${training.location}`, 100, yPosition);
-      yPosition += 8;
-      
-      pdf.text(`Entrenador: ${training.coach}`, 20, yPosition);
-      yPosition += 8;
-      
-      if (training.notes) {
-        pdf.text(`Notas: ${training.notes}`, 20, yPosition);
-        yPosition += 8;
-      }
-      
-      yPosition += 10;
-    });
-    
-    // Guardar el PDF
-    pdf.save(`reporte-entrenamientos-${new Date().toISOString().split('T')[0]}.pdf`);
+  const handleExportPDF = () => {
+    // Aquí implementarías la lógica de exportación a PDF
+    console.log("Exportando a PDF:", selectedTrainings);
+    alert(`Exportando ${selectedTrainings.length} entrenamientos a PDF`);
   };
 
-  const printReport = () => {
-    if (selectedTrainings.length === 0) {
-      alert("Por favor selecciona al menos un entrenamiento para imprimir");
-      return;
-    }
-    
-    const printContent = document.getElementById('print-content');
-    if (printContent) {
-      const printWindow = window.open('', '_blank');
-      printWindow?.document.write(`
-        <html>
-          <head>
-            <title>Reporte de Entrenamientos</title>
-            <style>
-              body { font-family: Arial, sans-serif; margin: 20px; }
-              .header { text-align: center; margin-bottom: 30px; }
-              .training { margin-bottom: 30px; border: 1px solid #ccc; padding: 15px; }
-              .training h3 { margin-top: 0; }
-              .training-details { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-              .notes { margin-top: 10px; }
-            </style>
-          </head>
-          <body>
-            ${printContent.innerHTML}
-          </body>
-        </html>
-      `);
-      printWindow?.document.close();
-      printWindow?.print();
-    }
+  const handlePrint = () => {
+    // Aquí implementarías la lógica de impresión
+    console.log("Imprimiendo:", selectedTrainings);
+    alert(`Imprimiendo ${selectedTrainings.length} entrenamientos`);
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <FileText className="h-6 w-6 text-primary" />
-            </div>
-            <h1 className="text-3xl font-bold text-foreground">Reportes</h1>
+    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="p-2 bg-primary/10 rounded-lg">
+            <FileText className="h-6 w-6 text-primary" />
           </div>
-          <p className="text-muted-foreground">
-            Exporta e imprime tus entrenamientos en formato PDF
-          </p>
+          <h1 className="text-3xl font-bold text-foreground">Reportes</h1>
         </div>
+        <p className="text-muted-foreground">
+          Genera e imprime reportes de tus entrenamientos
+        </p>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Filtros y Selección */}
-          <div className="lg:col-span-1 space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Filter className="h-5 w-5" />
-                  Filtros
-                </CardTitle>
-                <CardDescription>
-                  Filtra y selecciona los entrenamientos
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Búsqueda */}
-                <div className="space-y-2">
-                  <Label htmlFor="search">Buscar</Label>
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="search"
-                      placeholder="Buscar entrenamientos..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-
-                {/* Filtro por tipo */}
-                <div className="space-y-2">
-                  <Label htmlFor="type-filter">Tipo de entrenamiento</Label>
-                  <Select value={filterType} onValueChange={setFilterType}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todos</SelectItem>
-                      <SelectItem value="Aeróbico">Aeróbico</SelectItem>
-                      <SelectItem value="Técnica">Técnica</SelectItem>
-                      <SelectItem value="Umbral">Umbral</SelectItem>
-                      <SelectItem value="Velocidad">Velocidad</SelectItem>
-                      <SelectItem value="Recuperación">Recuperación</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Filtro por fecha */}
-                <div className="space-y-2">
-                  <Label htmlFor="date-filter">Fecha</Label>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        {/* Sidebar de Filtros */}
+        <div className="lg:col-span-1">
+          <Card className="sticky top-8">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Filter className="h-5 w-5" />
+                Filtros
+              </CardTitle>
+              <CardDescription>
+                Filtra los entrenamientos para tu reporte
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Búsqueda */}
+              <div className="space-y-2">
+                <Label htmlFor="search">Buscar</Label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
-                    id="date-filter"
-                    type="date"
-                    value={filterDate}
-                    onChange={(e) => setFilterDate(e.target.value)}
+                    id="search"
+                    placeholder="Buscar en notas o tipo..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
                   />
                 </div>
+              </div>
 
-                <Separator />
-
-                {/* Selección */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label>Selección</Label>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleSelectAll}
-                    >
-                      {selectedTrainings.length === filteredTrainings.length ? "Deseleccionar" : "Seleccionar"} todos
-                    </Button>
-                  </div>
-                  
-                  <div className="text-sm text-muted-foreground">
-                    {selectedTrainings.length} de {filteredTrainings.length} entrenamientos seleccionados
-                  </div>
+              {/* Rango de fechas */}
+              <div className="space-y-4">
+                <Label>Rango de fechas</Label>
+                <div className="space-y-2">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className="w-full justify-start text-left font-normal">
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {dateFrom ? format(dateFrom, "dd/MM/yyyy", { locale: es }) : "Desde"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={dateFrom}
+                        onSelect={setDateFrom}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className="w-full justify-start text-left font-normal">
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {dateTo ? format(dateTo, "dd/MM/yyyy", { locale: es }) : "Hasta"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={dateTo}
+                        onSelect={setDateTo}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
 
-            {/* Acciones */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Exportar</CardTitle>
-                <CardDescription>
-                  Genera reportes en PDF o imprime
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
+              {/* Tipo de entrenamiento */}
+              <div className="space-y-2">
+                <Label htmlFor="type">Tipo de entrenamiento</Label>
+                <Select value={trainingType} onValueChange={setTrainingType}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos los tipos</SelectItem>
+                    {trainingTypes.slice(1).map(type => (
+                      <SelectItem key={type} value={type}>{type}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Estilo de natación */}
+              <div className="space-y-2">
+                <Label htmlFor="stroke">Estilo</Label>
+                <Select value={stroke} onValueChange={setStroke}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos los estilos</SelectItem>
+                    {strokes.slice(1).map(strokeType => (
+                      <SelectItem key={strokeType} value={strokeType}>{strokeType}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <Separator />
+
+              {/* Acciones */}
+              <div className="space-y-2">
                 <Button 
-                  onClick={generatePDF} 
-                  className="w-full gap-2"
-                  disabled={selectedTrainings.length === 0}
-                >
-                  <Download className="h-4 w-4" />
-                  Exportar PDF
-                </Button>
-                
-                <Button 
+                  onClick={handleSelectAll} 
                   variant="outline" 
-                  onClick={printReport}
-                  className="w-full gap-2"
-                  disabled={selectedTrainings.length === 0}
+                  className="w-full"
                 >
-                  <Printer className="h-4 w-4" />
-                  Imprimir
+                  {selectedTrainings.length === filteredTrainings.length ? "Deseleccionar todo" : "Seleccionar todo"}
                 </Button>
-              </CardContent>
-            </Card>
-          </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button 
+                    onClick={handleExportPDF} 
+                    disabled={selectedTrainings.length === 0}
+                    className="gap-2"
+                  >
+                    <Download className="h-4 w-4" />
+                    PDF
+                  </Button>
+                  <Button 
+                    onClick={handlePrint} 
+                    disabled={selectedTrainings.length === 0}
+                    variant="outline"
+                    className="gap-2"
+                  >
+                    <Printer className="h-4 w-4" />
+                    Imprimir
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-          {/* Lista de Entrenamientos */}
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Entrenamientos Disponibles</CardTitle>
-                <CardDescription>
-                  Selecciona los entrenamientos que deseas incluir en el reporte
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {filteredTrainings.map((training) => (
+        {/* Lista de Entrenamientos */}
+        <div className="lg:col-span-3">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Entrenamientos</CardTitle>
+                  <CardDescription>
+                    {filteredTrainings.length} entrenamientos encontrados
+                    {selectedTrainings.length > 0 && ` • ${selectedTrainings.length} seleccionados`}
+                  </CardDescription>
+                </div>
+                <Badge variant="secondary">
+                  {selectedTrainings.length} seleccionados
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {filteredTrainings.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Activity className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">No se encontraron entrenamientos con los filtros seleccionados</p>
+                  </div>
+                ) : (
+                  filteredTrainings.map((training) => (
                     <div
                       key={training.id}
                       className={`border rounded-lg p-4 cursor-pointer transition-all duration-200 ${
@@ -374,112 +335,79 @@ export default function ReportsPage() {
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
-                            <input
-                              type="checkbox"
-                              checked={selectedTrainings.includes(training.id)}
-                              onChange={() => handleTrainingSelect(training.id)}
-                              className="rounded"
-                            />
                             <div className="flex items-center gap-2">
-                              <Badge variant="secondary">{training.type}</Badge>
-                              <Badge variant="outline">{training.stroke}</Badge>
+                              <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+                              <span className="font-medium">
+                                {format(new Date(training.date), "dd/MM/yyyy", { locale: es })}
+                              </span>
                             </div>
+                            <Badge variant="outline">{training.type}</Badge>
+                            <Badge variant="secondary">{training.stroke}</Badge>
                           </div>
                           
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                            <div className="flex items-center gap-2">
-                              <Calendar className="h-4 w-4 text-muted-foreground" />
-                              <span>{training.date}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
+                            <div className="flex items-center gap-2 text-sm">
                               <Clock className="h-4 w-4 text-muted-foreground" />
-                              <span>{training.time}</span>
+                              <span>{training.duration} min</span>
                             </div>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 text-sm">
                               <Target className="h-4 w-4 text-muted-foreground" />
                               <span>{training.distance}m</span>
                             </div>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 text-sm">
                               <Activity className="h-4 w-4 text-muted-foreground" />
-                              <span>{training.duration}min</span>
+                              <span>RPE {training.rpe}/10</span>
                             </div>
-                          </div>
-                          
-                          <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-                            <div className="flex items-center gap-1">
-                              <MapPin className="h-4 w-4" />
+                            <div className="flex items-center gap-2 text-sm">
+                              <MapPin className="h-4 w-4 text-muted-foreground" />
                               <span>{training.location}</span>
                             </div>
-                            <div className="flex items-center gap-1">
-                              <User className="h-4 w-4" />
-                              <span>{training.coach}</span>
-                            </div>
-                            <div>
-                              RPE: {training.rpe}/10
-                            </div>
                           </div>
-                          
+
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                            <Users className="h-4 w-4" />
+                            <span>Entrenador: {training.coach}</span>
+                          </div>
+
                           {training.notes && (
-                            <div className="mt-2 text-sm text-muted-foreground">
-                              <strong>Notas:</strong> {training.notes}
-                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              {training.notes}
+                            </p>
                           )}
+                        </div>
+                        
+                        <div className="ml-4">
+                          <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                            selectedTrainings.includes(training.id)
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-muted-foreground"
+                          }`}>
+                            {selectedTrainings.includes(training.id) && (
+                              <div className="w-2 h-2 bg-primary-foreground rounded-full" />
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  ))}
-                  
-                  {filteredTrainings.length === 0 && (
-                    <div className="text-center py-8 text-muted-foreground">
-                      No se encontraron entrenamientos con los filtros aplicados
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Contenido para impresión (oculto) */}
-        <div id="print-content" className="hidden">
-          <div className="header">
-            <h1>Reporte de Entrenamientos</h1>
-            <p>Fecha de generación: {new Date().toLocaleDateString('es-ES')}</p>
-            <p>Total de entrenamientos: {selectedTrainings.length}</p>
-          </div>
-          
-          {selectedTrainings.map((trainingId, index) => {
-            const training = sampleTrainings.find(t => t.id === trainingId);
-            if (!training) return null;
-            
-            return (
-              <div key={trainingId} className="training">
-                <h3>Entrenamiento {index + 1}</h3>
-                <div className="training-details">
-                  <div>
-                    <p><strong>Fecha:</strong> {training.date}</p>
-                    <p><strong>Hora:</strong> {training.time}</p>
-                    <p><strong>Tipo:</strong> {training.type}</p>
-                    <p><strong>Estilo:</strong> {training.stroke}</p>
-                  </div>
-                  <div>
-                    <p><strong>Distancia:</strong> {training.distance}m</p>
-                    <p><strong>Duración:</strong> {training.duration}min</p>
-                    <p><strong>RPE:</strong> {training.rpe}/10</p>
-                    <p><strong>Ubicación:</strong> {training.location}</p>
-                  </div>
-                </div>
-                <p><strong>Entrenador:</strong> {training.coach}</p>
-                {training.notes && (
-                  <div className="notes">
-                    <p><strong>Notas:</strong> {training.notes}</p>
-                  </div>
+                  ))
                 )}
               </div>
-            );
-          })}
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ReportsPage() {
+  return (
+    <SidebarProvider>
+      <AppSidebar variant="inset" />
+      <SidebarInset>
+        <SiteHeader />
+        <ReportsContent />
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

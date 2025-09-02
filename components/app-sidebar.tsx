@@ -21,6 +21,7 @@ import {
   Heart,
   Activity,
   Users,
+  Plus,
 
 } from "lucide-react"
 
@@ -66,9 +67,9 @@ const data = {
       icon: Target,
     },
     {
-      title: "Reportes",
-      url: "/reports",
-      icon: FileTextIcon,
+      title: "Entrenamientos",
+      url: "/entrenamientos",
+      icon: Plus,
     },
     {
       title: "Análisis",
@@ -169,7 +170,7 @@ const data = {
     },
     {
       name: "Reports",
-      url: "#",
+      url: "/reports",
       icon: ClipboardListIcon,
     },
     {
