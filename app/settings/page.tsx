@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { AppSidebar } from "@/components/app-sidebar";
+import { SiteHeader } from "@/components/site-header";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,7 +31,7 @@ import {
   Settings as SettingsIcon
 } from "lucide-react";
 
-export default function SettingsPage() {
+function SettingsContent() {
   const [activeTab, setActiveTab] = useState("profile");
   const [showPassword, setShowPassword] = useState(false);
   const [notifications, setNotifications] = useState({
@@ -54,25 +57,24 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <SettingsIcon className="h-6 w-6 text-primary" />
-            </div>
-            <h1 className="text-3xl font-bold text-foreground">Configuración</h1>
+    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="p-2 bg-primary/10 rounded-lg">
+            <SettingsIcon className="h-6 w-6 text-primary" />
           </div>
-          <p className="text-muted-foreground">
-            Gestiona tu cuenta, preferencias y configuraciones de la aplicación
-          </p>
+          <h1 className="text-3xl font-bold text-foreground">Configuración</h1>
         </div>
+        <p className="text-muted-foreground">
+          Gestiona tu cuenta, preferencias y configuraciones de la aplicación
+        </p>
+      </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar Navigation */}
           <div className="lg:col-span-1">
-            <Card className="sticky top-8">
+            <Card className="sticky top-8 bg-muted/50">
               <CardContent className="p-0">
                 <nav className="space-y-1 p-4">
                   {tabs.map((tab) => {
@@ -102,7 +104,7 @@ export default function SettingsPage() {
             {/* Profile Tab */}
             {activeTab === "profile" && (
               <div className="space-y-6">
-                <Card>
+                <Card className="bg-muted/50">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <User className="h-5 w-5" />
@@ -178,7 +180,7 @@ export default function SettingsPage() {
             {/* Notifications Tab */}
             {activeTab === "notifications" && (
               <div className="space-y-6">
-                <Card>
+                <Card className="bg-muted/50">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Bell className="h-5 w-5" />
@@ -312,7 +314,7 @@ export default function SettingsPage() {
             {/* Privacy Tab */}
             {activeTab === "privacy" && (
               <div className="space-y-6">
-                <Card>
+                <Card className="bg-muted/50">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Shield className="h-5 w-5" />
@@ -376,7 +378,7 @@ export default function SettingsPage() {
             {/* Appearance Tab */}
             {activeTab === "appearance" && (
               <div className="space-y-6">
-                <Card>
+                <Card className="bg-muted/50">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Palette className="h-5 w-5" />
@@ -470,7 +472,7 @@ export default function SettingsPage() {
             {/* Account Tab */}
             {activeTab === "account" && (
               <div className="space-y-6">
-                <Card>
+                <Card className="bg-muted/50">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Lock className="h-5 w-5" />
@@ -563,7 +565,18 @@ export default function SettingsPage() {
             )}
           </div>
         </div>
-      </div>
     </div>
+  );
+}
+
+export default function SettingsPage() {
+  return (
+    <SidebarProvider>
+      <AppSidebar variant="inset" />
+      <SidebarInset>
+        <SiteHeader />
+        <SettingsContent />
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
