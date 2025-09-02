@@ -32,64 +32,7 @@ import {
   Activity,
   RotateCcw
 } from "lucide-react";
-
-const zoneMethodologies = {
-  "standard": {
-    label: "Sistema Estándar",
-    description: "Zonas tradicionales de entrenamiento de natación",
-    zones: {
-      Z1: "Recuperación",
-      Z2: "Aeróbico Base",
-      Z3: "Aeróbico Umbral",
-      Z4: "VO2 Max",
-      Z5: "Neuromuscular"
-    }
-  },
-  "british-swimming": {
-    label: "British Swimming",
-    description: "Metodología oficial de British Swimming",
-    zones: {
-      Z1: "A1",
-      Z2: "A2", 
-      Z3: "AT",
-      Z4: "VO2",
-      Z5: "Speed"
-    }
-  },
-  "urbanchek": {
-    label: "Urbanchek",
-    description: "Sistema de colores de Urbanchek",
-    zones: {
-      Z1: "Yellow",
-      Z2: "White",
-      Z3: "Pink/Red",
-      Z4: "Blue",
-      Z5: "Platinum"
-    }
-  },
-  "olbrecht": {
-    label: "Olbrecht",
-    description: "Metodología de Jan Olbrecht",
-    zones: {
-      Z1: "AEC",
-      Z2: "AEP",
-      Z3: "ANC", 
-      Z4: "ANP",
-      Z5: "Speed"
-    }
-  },
-  "research-based": {
-    label: "Research-based Zones",
-    description: "Zonas basadas en investigación científica",
-    zones: {
-      Z1: "Up to Lactate Threshold",
-      Z2: "Up to Critical Speed",
-      Z3: "Up to VO2 Max Pace",
-      Z4: "Up to Maximum Speed",
-      Z5: "Maximum Speed"
-    }
-  }
-};
+import { useTrainingZones } from "@/lib/contexts/training-zones-context";
 
 function SettingsContent() {
   const [activeTab, setActiveTab] = useState("profile");
@@ -104,13 +47,15 @@ function SettingsContent() {
     reminders: true
   });
 
-  const [trainingZones, setTrainingZones] = useState({
-    Z1: "Recuperación",
-    Z2: "Aeróbico Base", 
-    Z3: "Aeróbico Umbral",
-    Z4: "VO2 Max",
-    Z5: "Neuromuscular"
-  });
+  const { 
+    selectedMethodology, 
+    currentZones, 
+    methodologies, 
+    setMethodology, 
+    updateZones 
+  } = useTrainingZones();
+
+  const [trainingZones, setTrainingZones] = useState(currentZones);
 
   const tabs = [
     { id: "profile", label: "Perfil", icon: User },
@@ -130,18 +75,18 @@ function SettingsContent() {
   };
 
   const resetZonesToDefault = () => {
-    setTrainingZones({
-      Z1: "Recuperación",
-      Z2: "Aeróbico Base", 
-      Z3: "Aeróbico Umbral",
-      Z4: "VO2 Max",
-      Z5: "Neuromuscular"
-    });
+    const defaultZones = methodologies.standard.zones;
+    setTrainingZones(defaultZones);
+    setMethodology("standard");
   };
 
-  const applyMethodology = (methodologyKey: keyof typeof zoneMethodologies) => {
-    const methodology = zoneMethodologies[methodologyKey];
-    setTrainingZones(methodology.zones);
+  const applyMethodology = (methodologyKey: keyof typeof methodologies) => {
+    setMethodology(methodologyKey);
+    setTrainingZones(methodologies[methodologyKey].zones);
+  };
+
+  const handleSaveZones = () => {
+    updateZones(trainingZones);
   };
 
   return (
@@ -670,7 +615,7 @@ function SettingsContent() {
                     </div>
 
                     <div className="flex justify-end">
-                      <Button className="gap-2">
+                      <Button onClick={handleSaveZones} className="gap-2">
                         <Save className="h-4 w-4" />
                         Guardar configuración
                       </Button>
@@ -690,12 +635,12 @@ function SettingsContent() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {Object.entries(zoneMethodologies).map(([key, methodology]) => (
+                      {Object.entries(methodologies).map(([key, methodology]) => (
                         <Button 
                           key={key}
-                          variant="outline" 
+                          variant={selectedMethodology === key ? "default" : "outline"}
                           className="h-auto p-4 flex flex-col items-start gap-2"
-                          onClick={() => applyMethodology(key as keyof typeof zoneMethodologies)}
+                          onClick={() => applyMethodology(key as keyof typeof methodologies)}
                         >
                           <div className="font-medium">{methodology.label}</div>
                           <div className="text-xs text-muted-foreground text-left">

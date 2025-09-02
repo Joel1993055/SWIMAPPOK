@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { TrainingZoneDetector } from "@/components/training-zone-detector";
 
 // Datos de ejemplo de entrenamientos guardados
 const sampleSavedTrainings = [
@@ -307,9 +308,13 @@ function TrainingContent() {
             </Card>
           </div>
 
-          {/* Panel de Ayuda */}
-          <div className="lg:col-span-1">
-            <Card className="sticky top-8 bg-muted/50">
+          {/* Panel de Detección de Zonas */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Detector de Zonas */}
+            <TrainingZoneDetector content={trainingContent} />
+
+            {/* Panel de Ayuda */}
+            <Card className="bg-muted/50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <FileText className="h-5 w-5" />

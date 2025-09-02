@@ -1,5 +1,6 @@
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
+import { TrainingZonesProvider } from "@/lib/contexts/training-zones-context";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -31,9 +32,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <main className="min-h-screen">
-            {children}
-          </main>
+          <TrainingZonesProvider>
+            <main className="min-h-screen">
+              {children}
+            </main>
+          </TrainingZonesProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -27,6 +27,7 @@ import {
   Clock,
   Trash2
 } from "lucide-react";
+import { useTrainingZones } from "@/lib/contexts/training-zones-context";
 
 // Tipos de datos
 interface TrainingPhase {
@@ -219,6 +220,7 @@ const competitions: Competition[] = [
 ];
 
 export function PlanificacionOverview() {
+  const { currentZones } = useTrainingZones();
   const [selectedPhase, setSelectedPhase] = useState<string>("base");
   const [selectedGoal, setSelectedGoal] = useState<string>("goal-1");
   const [selectedCompetition, setSelectedCompetition] = useState<string>("comp-1");
@@ -1505,6 +1507,27 @@ export function PlanificacionOverview() {
 
         {/* Tab: Carga de Entrenamiento */}
         <TabsContent value="carga" className="space-y-4">
+          {/* Zonas de Entrenamiento Actuales */}
+          <Card className="bg-muted/50 border-muted">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Activity className="h-5 w-5" />
+                Zonas de Entrenamiento
+              </CardTitle>
+              <CardDescription>Metodología actual aplicada en toda la aplicación</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                {Object.entries(currentZones).map(([zone, name]) => (
+                  <div key={zone} className="text-center p-3 border rounded-lg bg-background/50">
+                    <div className="text-lg font-bold text-primary">{zone}</div>
+                    <div className="text-sm text-muted-foreground">{name}</div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
           <div className="grid gap-4 md:grid-cols-2">
             <Card className="bg-muted/50 border-muted">
               <CardHeader>
