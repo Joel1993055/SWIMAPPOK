@@ -162,7 +162,7 @@ function ReportsContent() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Sidebar de Filtros */}
         <div className="lg:col-span-1">
-          <Card className="sticky top-8">
+          <Card className="sticky top-8 bg-muted/50">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Filter className="h-5 w-5" />
@@ -296,7 +296,7 @@ function ReportsContent() {
 
         {/* Lista de Entrenamientos */}
         <div className="lg:col-span-3">
-          <Card>
+          <Card className="bg-muted/50">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
@@ -322,7 +322,7 @@ function ReportsContent() {
                   filteredTrainings.map((training) => (
                     <div
                       key={training.id}
-                      className={`border rounded-lg p-4 cursor-pointer transition-all duration-200 ${
+                      className={`border rounded-lg p-4 cursor-pointer transition-all duration-200 bg-background/50 ${
                         selectedTrainings.includes(training.id)
                           ? "border-primary bg-primary/5"
                           : "border-border hover:border-primary/50"

@@ -28,8 +28,68 @@ import {
   Upload,
   Trash2,
   Download,
-  Settings as SettingsIcon
+  Settings as SettingsIcon,
+  Activity,
+  RotateCcw
 } from "lucide-react";
+
+const zoneMethodologies = {
+  "standard": {
+    label: "Sistema Estándar",
+    description: "Zonas tradicionales de entrenamiento de natación",
+    zones: {
+      Z1: "Recuperación",
+      Z2: "Aeróbico Base",
+      Z3: "Aeróbico Umbral",
+      Z4: "VO2 Max",
+      Z5: "Neuromuscular"
+    }
+  },
+  "british-swimming": {
+    label: "British Swimming",
+    description: "Metodología oficial de British Swimming",
+    zones: {
+      Z1: "A1",
+      Z2: "A2", 
+      Z3: "AT",
+      Z4: "VO2",
+      Z5: "Speed"
+    }
+  },
+  "urbanchek": {
+    label: "Urbanchek",
+    description: "Sistema de colores de Urbanchek",
+    zones: {
+      Z1: "Yellow",
+      Z2: "White",
+      Z3: "Pink/Red",
+      Z4: "Blue",
+      Z5: "Platinum"
+    }
+  },
+  "olbrecht": {
+    label: "Olbrecht",
+    description: "Metodología de Jan Olbrecht",
+    zones: {
+      Z1: "AEC",
+      Z2: "AEP",
+      Z3: "ANC", 
+      Z4: "ANP",
+      Z5: "Speed"
+    }
+  },
+  "research-based": {
+    label: "Research-based Zones",
+    description: "Zonas basadas en investigación científica",
+    zones: {
+      Z1: "Up to Lactate Threshold",
+      Z2: "Up to Critical Speed",
+      Z3: "Up to VO2 Max Pace",
+      Z4: "Up to Maximum Speed",
+      Z5: "Maximum Speed"
+    }
+  }
+};
 
 function SettingsContent() {
   const [activeTab, setActiveTab] = useState("profile");
@@ -44,16 +104,44 @@ function SettingsContent() {
     reminders: true
   });
 
+  const [trainingZones, setTrainingZones] = useState({
+    Z1: "Recuperación",
+    Z2: "Aeróbico Base", 
+    Z3: "Aeróbico Umbral",
+    Z4: "VO2 Max",
+    Z5: "Neuromuscular"
+  });
+
   const tabs = [
     { id: "profile", label: "Perfil", icon: User },
     { id: "notifications", label: "Notificaciones", icon: Bell },
     { id: "privacy", label: "Privacidad", icon: Shield },
     { id: "appearance", label: "Apariencia", icon: Palette },
+    { id: "training", label: "Entrenamiento", icon: Activity },
     { id: "account", label: "Cuenta", icon: Lock }
   ];
 
   const handleNotificationChange = (key: string, value: boolean) => {
     setNotifications(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleZoneChange = (zone: string, value: string) => {
+    setTrainingZones(prev => ({ ...prev, [zone]: value }));
+  };
+
+  const resetZonesToDefault = () => {
+    setTrainingZones({
+      Z1: "Recuperación",
+      Z2: "Aeróbico Base", 
+      Z3: "Aeróbico Umbral",
+      Z4: "VO2 Max",
+      Z5: "Neuromuscular"
+    });
+  };
+
+  const applyMethodology = (methodologyKey: keyof typeof zoneMethodologies) => {
+    const methodology = zoneMethodologies[methodologyKey];
+    setTrainingZones(methodology.zones);
   };
 
   return (
@@ -463,6 +551,158 @@ function SettingsContent() {
                           </Select>
                         </div>
                       </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {/* Training Tab */}
+            {activeTab === "training" && (
+              <div className="space-y-6">
+                <Card className="bg-muted/50">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Activity className="h-5 w-5" />
+                      Configuración de Entrenamiento
+                    </CardTitle>
+                    <CardDescription>
+                      Personaliza los nombres de las zonas de entrenamiento según tu metodología
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-medium text-foreground">Zonas de Intensidad</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Personaliza los nombres de las zonas según tu sistema de entrenamiento
+                          </p>
+                        </div>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={resetZonesToDefault}
+                          className="gap-2"
+                        >
+                          <RotateCcw className="h-4 w-4" />
+                          Restaurar por defecto
+                        </Button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="zone1">Zona 1 (Recuperación)</Label>
+                          <Input 
+                            id="zone1"
+                            value={trainingZones.Z1}
+                            onChange={(e) => handleZoneChange("Z1", e.target.value)}
+                            placeholder="Ej: Recuperación, Regenerativo"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="zone2">Zona 2 (Aeróbico Base)</Label>
+                          <Input 
+                            id="zone2"
+                            value={trainingZones.Z2}
+                            onChange={(e) => handleZoneChange("Z2", e.target.value)}
+                            placeholder="Ej: Aeróbico Base, Resistencia"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="zone3">Zona 3 (Aeróbico Umbral)</Label>
+                          <Input 
+                            id="zone3"
+                            value={trainingZones.Z3}
+                            onChange={(e) => handleZoneChange("Z3", e.target.value)}
+                            placeholder="Ej: Aeróbico Umbral, Tempo"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="zone4">Zona 4 (VO2 Max)</Label>
+                          <Input 
+                            id="zone4"
+                            value={trainingZones.Z4}
+                            onChange={(e) => handleZoneChange("Z4", e.target.value)}
+                            placeholder="Ej: VO2 Max, Intervalos"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="zone5">Zona 5 (Neuromuscular)</Label>
+                          <Input 
+                            id="zone5"
+                            value={trainingZones.Z5}
+                            onChange={(e) => handleZoneChange("Z5", e.target.value)}
+                            placeholder="Ej: Neuromuscular, Velocidad"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <Separator />
+
+                    <div className="space-y-4">
+                      <h4 className="font-medium text-foreground">Vista Previa</h4>
+                      <div className="p-4 bg-muted/30 rounded-lg">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="font-medium">Z1:</span>
+                            <span className="text-muted-foreground">{trainingZones.Z1}</span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="font-medium">Z2:</span>
+                            <span className="text-muted-foreground">{trainingZones.Z2}</span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="font-medium">Z3:</span>
+                            <span className="text-muted-foreground">{trainingZones.Z3}</span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="font-medium">Z4:</span>
+                            <span className="text-muted-foreground">{trainingZones.Z4}</span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="font-medium">Z5:</span>
+                            <span className="text-muted-foreground">{trainingZones.Z5}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end">
+                      <Button className="gap-2">
+                        <Save className="h-4 w-4" />
+                        Guardar configuración
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-muted/50">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Activity className="h-5 w-5" />
+                      Metodologías Científicas
+                    </CardTitle>
+                    <CardDescription>
+                      Selecciona una metodología de entrenamiento basada en investigación científica
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {Object.entries(zoneMethodologies).map(([key, methodology]) => (
+                        <Button 
+                          key={key}
+                          variant="outline" 
+                          className="h-auto p-4 flex flex-col items-start gap-2"
+                          onClick={() => applyMethodology(key as keyof typeof zoneMethodologies)}
+                        >
+                          <div className="font-medium">{methodology.label}</div>
+                          <div className="text-xs text-muted-foreground text-left">
+                            {methodology.description}
+                          </div>
+                        </Button>
+                      ))}
                     </div>
                   </CardContent>
                 </Card>
