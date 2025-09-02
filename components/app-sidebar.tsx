@@ -6,7 +6,6 @@ import {
   BarChartIcon,
   CameraIcon,
   ClipboardListIcon,
-  DatabaseIcon,
   FileCodeIcon,
   FileIcon,
   FileTextIcon,
@@ -143,11 +142,6 @@ const data = {
     },
   ],
   documents: [
-    {
-      name: "Data Library",
-      url: "#",
-      icon: DatabaseIcon,
-    },
     {
       name: "Reports",
       url: "/reports",

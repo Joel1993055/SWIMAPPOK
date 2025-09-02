@@ -21,7 +21,11 @@ import {
   Edit,
   Plus,
   Save,
-  X
+  X,
+  Trophy,
+  MapPin,
+  Clock,
+  Trash2
 } from "lucide-react";
 
 // Tipos de datos
@@ -53,6 +57,24 @@ interface WeeklyPlan {
   sessions: number;
   focus: string;
   intensity: number;
+}
+
+interface Competition {
+  id: string;
+  name: string;
+  date: string;
+  location: string;
+  type: "nacional" | "regional" | "local" | "internacional";
+  events: string[];
+  objectives: string;
+  results?: {
+    event: string;
+    time: string;
+    position: number;
+    personalBest: boolean;
+  }[];
+  status: "upcoming" | "completed" | "cancelled";
+  priority: "high" | "medium" | "low";
 }
 
 // Datos de ejemplo
@@ -146,15 +168,68 @@ const weeklyPlan: WeeklyPlan[] = [
   { week: 14, phase: "Pico", totalDistance: 15000, sessions: 4, focus: "Recuperación", intensity: 5 }
 ];
 
+const competitions: Competition[] = [
+  {
+    id: "comp-1",
+    name: "Campeonato Nacional 2025",
+    date: "2025-06-15",
+    location: "Madrid, España",
+    type: "nacional",
+    events: ["100m Libre", "200m Libre", "4x100m Libre"],
+    objectives: "Objetivo principal del año. Buscar clasificación para el Campeonato de Europa",
+    status: "upcoming",
+    priority: "high"
+  },
+  {
+    id: "comp-2",
+    name: "Copa Regional Primavera",
+    date: "2025-04-20",
+    location: "Barcelona, España",
+    type: "regional",
+    events: ["50m Libre", "100m Libre"],
+    objectives: "Test de forma antes del Nacional. Objetivo: mejorar tiempos personales",
+    status: "upcoming",
+    priority: "medium"
+  },
+  {
+    id: "comp-3",
+    name: "Trofeo Ciudad de Valencia",
+    date: "2025-03-10",
+    location: "Valencia, España",
+    type: "local",
+    events: ["100m Libre", "200m Libre"],
+    objectives: "Primera competición del año. Evaluar forma actual",
+    results: [
+      {
+        event: "100m Libre",
+        time: "52.45",
+        position: 3,
+        personalBest: true
+      },
+      {
+        event: "200m Libre",
+        time: "1:58.32",
+        position: 5,
+        personalBest: false
+      }
+    ],
+    status: "completed",
+    priority: "low"
+  }
+];
+
 export function PlanificacionOverview() {
   const [selectedPhase, setSelectedPhase] = useState<string>("base");
   const [selectedGoal, setSelectedGoal] = useState<string>("goal-1");
+  const [selectedCompetition, setSelectedCompetition] = useState<string>("comp-1");
   
   // Estados para edición
   const [editingPhase, setEditingPhase] = useState<string | null>(null);
   const [editingGoal, setEditingGoal] = useState<string | null>(null);
+  const [editingCompetition, setEditingCompetition] = useState<string | null>(null);
   const [isAddingPhase, setIsAddingPhase] = useState(false);
   const [isAddingGoal, setIsAddingGoal] = useState(false);
+  const [isAddingCompetition, setIsAddingCompetition] = useState(false);
   
   // Estados para formularios
   const [phaseForm, setPhaseForm] = useState({
@@ -175,8 +250,20 @@ export function PlanificacionOverview() {
     progress: 0
   });
 
+  const [competitionForm, setCompetitionForm] = useState({
+    name: "",
+    date: "",
+    location: "",
+    type: "local" as "nacional" | "regional" | "local" | "internacional",
+    events: [] as string[],
+    objectives: "",
+    priority: "medium" as "high" | "medium" | "low",
+    status: "upcoming" as "upcoming" | "completed" | "cancelled"
+  });
+
   const currentPhase = trainingPhases.find(phase => phase.id === selectedPhase);
   const currentGoal = trainingGoals.find(goal => goal.id === selectedGoal);
+  const currentCompetition = competitions.find(comp => comp.id === selectedCompetition);
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -303,6 +390,88 @@ export function PlanificacionOverview() {
     }));
   };
 
+  // Funciones para manejar edición de competiciones
+  const handleEditCompetition = (competition: Competition) => {
+    setCompetitionForm({
+      name: competition.name,
+      date: competition.date,
+      location: competition.location,
+      type: competition.type,
+      events: [...competition.events],
+      objectives: competition.objectives,
+      priority: competition.priority,
+      status: competition.status
+    });
+    setEditingCompetition(competition.id);
+  };
+
+  const handleSaveCompetition = () => {
+    // Aquí se guardaría en la base de datos
+    console.log("Guardando competición:", competitionForm);
+    setEditingCompetition(null);
+    setIsAddingCompetition(false);
+    setCompetitionForm({
+      name: "",
+      date: "",
+      location: "",
+      type: "local",
+      events: [],
+      objectives: "",
+      priority: "medium",
+      status: "upcoming"
+    });
+  };
+
+  const handleCancelCompetition = () => {
+    setEditingCompetition(null);
+    setIsAddingCompetition(false);
+    setCompetitionForm({
+      name: "",
+      date: "",
+      location: "",
+      type: "local",
+      events: [],
+      objectives: "",
+      priority: "medium",
+      status: "upcoming"
+    });
+  };
+
+  const handleAddEvent = (event: string) => {
+    if (!competitionForm.events.includes(event)) {
+      setCompetitionForm(prev => ({
+        ...prev,
+        events: [...prev.events, event]
+      }));
+    }
+  };
+
+  const handleRemoveEvent = (event: string) => {
+    setCompetitionForm(prev => ({
+      ...prev,
+      events: prev.events.filter(e => e !== event)
+    }));
+  };
+
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case "internacional": return "bg-purple-500";
+      case "nacional": return "bg-red-500";
+      case "regional": return "bg-orange-500";
+      case "local": return "bg-green-500";
+      default: return "bg-gray-500";
+    }
+  };
+
+  const getCompetitionStatusColor = (status: string) => {
+    switch (status) {
+      case "completed": return "text-green-600";
+      case "upcoming": return "text-blue-600";
+      case "cancelled": return "text-red-600";
+      default: return "text-gray-600";
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header con objetivos principales */}
@@ -362,9 +531,10 @@ export function PlanificacionOverview() {
 
       {/* Tabs principales */}
       <Tabs defaultValue="fases" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="fases">Fases del Ciclo</TabsTrigger>
           <TabsTrigger value="objetivos">Objetivos</TabsTrigger>
+          <TabsTrigger value="competiciones">Competiciones</TabsTrigger>
           <TabsTrigger value="planificacion">Planificación Semanal</TabsTrigger>
           <TabsTrigger value="carga">Carga de Entrenamiento</TabsTrigger>
         </TabsList>
@@ -817,6 +987,467 @@ export function PlanificacionOverview() {
                   <Button onClick={handleSaveGoal} className="gap-2">
                     <Save className="h-4 w-4" />
                     {isAddingGoal ? "Agregar" : "Guardar"}
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </TabsContent>
+
+        {/* Tab: Competiciones */}
+        <TabsContent value="competiciones" className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Competiciones</h3>
+            <Button 
+              onClick={() => setIsAddingCompetition(true)}
+              className="gap-2"
+              size="sm"
+            >
+              <Plus className="h-4 w-4" />
+              Agregar Competición
+            </Button>
+          </div>
+          
+          <div className="grid gap-4">
+            {competitions.map((competition) => (
+              <Card 
+                key={competition.id} 
+                className={`bg-muted/50 border-muted cursor-pointer transition-all hover:shadow-md ${
+                  selectedCompetition === competition.id ? 'ring-2 ring-primary' : ''
+                }`}
+                onClick={() => setSelectedCompetition(competition.id)}
+              >
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2 flex-1">
+                      <div className="flex items-center gap-2">
+                        <Trophy className="h-5 w-5 text-yellow-500" />
+                        <h3 className="text-lg font-semibold">{competition.name}</h3>
+                        <Badge 
+                          variant="outline" 
+                          className={`${getTypeColor(competition.type)} text-white`}
+                        >
+                          {competition.type === "internacional" ? "Internacional" : 
+                           competition.type === "nacional" ? "Nacional" :
+                           competition.type === "regional" ? "Regional" : "Local"}
+                        </Badge>
+                        <Badge 
+                          variant="outline" 
+                          className={`${getPriorityColor(competition.priority)} text-white`}
+                        >
+                          {competition.priority === "high" ? "Alta" : competition.priority === "medium" ? "Media" : "Baja"}
+                        </Badge>
+                      </div>
+                      
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <Calendar className="w-4 h-4" />
+                          <span>{new Date(competition.date).toLocaleDateString('es-ES')}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <MapPin className="w-4 h-4" />
+                          <span>{competition.location}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Clock className="w-4 h-4" />
+                          <span className={getCompetitionStatusColor(competition.status)}>
+                            {competition.status === "completed" ? "Completada" : 
+                             competition.status === "upcoming" ? "Próxima" : "Cancelada"}
+                          </span>
+                        </div>
+                      </div>
+
+                      <p className="text-muted-foreground">{competition.objectives}</p>
+                      
+                      <div className="space-y-1">
+                        <p className="text-xs font-medium">Eventos:</p>
+                        <div className="flex flex-wrap gap-1">
+                          {competition.events.map((event, index) => (
+                            <Badge key={index} variant="secondary" className="text-xs">
+                              {event}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+
+                      {competition.results && competition.results.length > 0 && (
+                        <div className="space-y-1">
+                          <p className="text-xs font-medium">Resultados:</p>
+                          <div className="space-y-1">
+                            {competition.results.map((result, index) => (
+                              <div key={index} className="flex items-center gap-2 text-sm">
+                                <span className="font-medium">{result.event}:</span>
+                                <span>{result.time}</span>
+                                <Badge variant="outline" className="text-xs">
+                                  {result.position}º
+                                </Badge>
+                                {result.personalBest && (
+                                  <Badge variant="default" className="text-xs bg-green-500">
+                                    PB
+                                  </Badge>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditCompetition(competition);
+                        }}
+                        className="h-8 w-8 p-0"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // Aquí se eliminaría la competición
+                          console.log("Eliminar competición:", competition.id);
+                        }}
+                        className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Detalles de la competición seleccionada */}
+          {currentCompetition && (
+            <Card className="bg-muted/50 border-muted">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Trophy className="h-5 w-5 text-yellow-500" />
+                  {currentCompetition.name} - Detalles
+                </CardTitle>
+                <CardDescription>{currentCompetition.objectives}</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="space-y-2">
+                    <h4 className="font-medium">Fecha</h4>
+                    <p className="font-bold">{new Date(currentCompetition.date).toLocaleDateString('es-ES')}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <h4 className="font-medium">Ubicación</h4>
+                    <p className="font-bold">{currentCompetition.location}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <h4 className="font-medium">Tipo</h4>
+                    <Badge 
+                      variant="outline" 
+                      className={`${getTypeColor(currentCompetition.type)} text-white`}
+                    >
+                      {currentCompetition.type === "internacional" ? "Internacional" : 
+                       currentCompetition.type === "nacional" ? "Nacional" :
+                       currentCompetition.type === "regional" ? "Regional" : "Local"}
+                    </Badge>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h4 className="font-medium">Eventos</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {currentCompetition.events.map((event, index) => (
+                      <Badge key={index} variant="default" className="text-sm">
+                        {event}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {currentCompetition.results && currentCompetition.results.length > 0 && (
+                  <div className="space-y-2">
+                    <h4 className="font-medium">Resultados</h4>
+                    <div className="space-y-2">
+                      {currentCompetition.results.map((result, index) => (
+                        <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <span className="font-medium">{result.event}</span>
+                            <span className="text-lg font-bold">{result.time}</span>
+                            <Badge variant="outline">
+                              {result.position}º puesto
+                            </Badge>
+                            {result.personalBest && (
+                              <Badge variant="default" className="bg-green-500">
+                                Récord Personal
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Modal de Edición de Competiciones */}
+          <Dialog open={editingCompetition !== null || isAddingCompetition} onOpenChange={handleCancelCompetition}>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>
+                  {isAddingCompetition ? "Agregar Nueva Competición" : "Editar Competición"}
+                </DialogTitle>
+                <DialogDescription>
+                  {isAddingCompetition 
+                    ? "Crea una nueva competición" 
+                    : "Modifica los detalles de la competición"
+                  }
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="comp-name">Nombre de la Competición</Label>
+                    <Input
+                      id="comp-name"
+                      value={competitionForm.name}
+                      onChange={(e) => setCompetitionForm(prev => ({ ...prev, name: e.target.value }))}
+                      placeholder="Ej: Campeonato Nacional 2025"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="comp-date">Fecha</Label>
+                    <Input
+                      id="comp-date"
+                      type="date"
+                      value={competitionForm.date}
+                      onChange={(e) => setCompetitionForm(prev => ({ ...prev, date: e.target.value }))}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="comp-location">Ubicación</Label>
+                    <Input
+                      id="comp-location"
+                      value={competitionForm.location}
+                      onChange={(e) => setCompetitionForm(prev => ({ ...prev, location: e.target.value }))}
+                      placeholder="Ej: Madrid, España"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="comp-type">Tipo</Label>
+                    <Select 
+                      value={competitionForm.type} 
+                      onValueChange={(value: "nacional" | "regional" | "local" | "internacional") => 
+                        setCompetitionForm(prev => ({ ...prev, type: value }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="local">Local</SelectItem>
+                        <SelectItem value="regional">Regional</SelectItem>
+                        <SelectItem value="nacional">Nacional</SelectItem>
+                        <SelectItem value="internacional">Internacional</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="comp-objectives">Objetivos</Label>
+                  <Textarea
+                    id="comp-objectives"
+                    value={competitionForm.objectives}
+                    onChange={(e) => setCompetitionForm(prev => ({ ...prev, objectives: e.target.value }))}
+                    placeholder="Describe los objetivos para esta competición..."
+                    className="min-h-[80px]"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Eventos</Label>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {competitionForm.events.map((event, index) => (
+                      <Badge key={index} variant="secondary" className="gap-1">
+                        {event}
+                        <button
+                          onClick={() => handleRemoveEvent(event)}
+                          className="ml-1 hover:text-destructive"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                  
+                  {/* Eventos organizados por categorías */}
+                  <div className="space-y-3">
+                    <div>
+                      <h4 className="text-sm font-medium mb-2">Estilo Libre</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {["50m Libre", "100m Libre", "200m Libre", "400m Libre", "800m Libre", "1500m Libre"].map((event) => (
+                          <Button
+                            key={event}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAddEvent(event)}
+                            disabled={competitionForm.events.includes(event)}
+                            className="text-xs h-7"
+                          >
+                            {event}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h4 className="text-sm font-medium mb-2">Espalda</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {["50m Espalda", "100m Espalda", "200m Espalda"].map((event) => (
+                          <Button
+                            key={event}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAddEvent(event)}
+                            disabled={competitionForm.events.includes(event)}
+                            className="text-xs h-7"
+                          >
+                            {event}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h4 className="text-sm font-medium mb-2">Braza</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {["50m Braza", "100m Braza", "200m Braza"].map((event) => (
+                          <Button
+                            key={event}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAddEvent(event)}
+                            disabled={competitionForm.events.includes(event)}
+                            className="text-xs h-7"
+                          >
+                            {event}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h4 className="text-sm font-medium mb-2">Mariposa</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {["50m Mariposa", "100m Mariposa", "200m Mariposa"].map((event) => (
+                          <Button
+                            key={event}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAddEvent(event)}
+                            disabled={competitionForm.events.includes(event)}
+                            className="text-xs h-7"
+                          >
+                            {event}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h4 className="text-sm font-medium mb-2">Estilos</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {["200m Estilos", "400m Estilos"].map((event) => (
+                          <Button
+                            key={event}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAddEvent(event)}
+                            disabled={competitionForm.events.includes(event)}
+                            className="text-xs h-7"
+                          >
+                            {event}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h4 className="text-sm font-medium mb-2">Relevos</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {["4x100m Libre", "4x200m Libre", "4x100m Estilos"].map((event) => (
+                          <Button
+                            key={event}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAddEvent(event)}
+                            disabled={competitionForm.events.includes(event)}
+                            className="text-xs h-7"
+                          >
+                            {event}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="comp-priority">Prioridad</Label>
+                    <Select 
+                      value={competitionForm.priority} 
+                      onValueChange={(value: "high" | "medium" | "low") => 
+                        setCompetitionForm(prev => ({ ...prev, priority: value }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="high">Alta</SelectItem>
+                        <SelectItem value="medium">Media</SelectItem>
+                        <SelectItem value="low">Baja</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="comp-status">Estado</Label>
+                    <Select 
+                      value={competitionForm.status} 
+                      onValueChange={(value: "upcoming" | "completed" | "cancelled") => 
+                        setCompetitionForm(prev => ({ ...prev, status: value }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="upcoming">Próxima</SelectItem>
+                        <SelectItem value="completed">Completada</SelectItem>
+                        <SelectItem value="cancelled">Cancelada</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-4">
+                  <Button variant="outline" onClick={handleCancelCompetition}>
+                    Cancelar
+                  </Button>
+                  <Button onClick={handleSaveCompetition} className="gap-2">
+                    <Save className="h-4 w-4" />
+                    {isAddingCompetition ? "Agregar" : "Guardar"}
                   </Button>
                 </div>
               </div>
