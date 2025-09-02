@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -14,9 +14,6 @@ import {
   Users, 
   Plus, 
   Edit, 
-  Trash2, 
-  Target,
-  Trophy,
   Activity,
   Calendar,
   MapPin,
@@ -616,7 +613,7 @@ function CreateGroupForm({ onSubmit }: { onSubmit: (data: Partial<Group>) => voi
           <select
             id="type"
             value={formData.type}
-            onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
+            onChange={(e) => setFormData({ ...formData, type: e.target.value as Group['type'] })}
             className="w-full p-2 border rounded-md"
             required
           >
@@ -658,7 +655,7 @@ function CreateGroupForm({ onSubmit }: { onSubmit: (data: Partial<Group>) => voi
           <select
             id="level"
             value={formData.level}
-            onChange={(e) => setFormData({ ...formData, level: e.target.value as any })}
+            onChange={(e) => setFormData({ ...formData, level: e.target.value as Group['level'] })}
             className="w-full p-2 border rounded-md"
             required
           >

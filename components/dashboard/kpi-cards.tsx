@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Target, TrendingUp, Users, Activity, Clock, BarChart3, Calendar, Trophy } from "lucide-react";
+import { Target, Users, Activity, Calendar, Trophy } from "lucide-react";
 import { getSeedData, getAggregations } from "@/lib/seed";
 import { useState } from "react";
 
@@ -50,7 +50,6 @@ export function KPICards() {
 
   // Calcular sesiones por período
   const getSessionsByPeriod = () => {
-    const now = new Date();
     
     switch (selectedPeriod) {
       case 'year':

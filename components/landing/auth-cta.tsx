@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { 
   Users, 
   BarChart3, 
-  Target,
   ArrowRight,
   CheckCircle
 } from "lucide-react";

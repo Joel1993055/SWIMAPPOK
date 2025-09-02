@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,16 +17,11 @@ import {
   Search, 
   Edit, 
   Trash2, 
-  Plus, 
-  Eye, 
   Calendar as CalendarIcon, 
   Activity, 
   Filter, 
   Download, 
-  SortAsc, 
-  SortDesc,
-  X,
-  ChevronDown
+  X
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -124,7 +119,7 @@ export function SessionsTable() {
 
   // Función para filtrar y ordenar sesiones
   const filteredAndSortedSessions = useMemo(() => {
-    let filtered = sessions.filter(session => {
+    const filtered = sessions.filter(session => {
       // Búsqueda por texto
       const matchesSearch = !searchTerm || 
         session.swimmer.toLowerCase().includes(searchTerm.toLowerCase()) ||

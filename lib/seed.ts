@@ -1169,8 +1169,7 @@ export function getAggregations(sessions: Session[]): Aggregations {
 
   // Datos mensuales para el calendario
   const currentYear = new Date().getFullYear();
-  const yearStart = new Date(currentYear, 0, 1);
-  const yearEnd = new Date(currentYear, 11, 31);
+
   
   const months = [];
   for (let i = 0; i < 12; i++) {

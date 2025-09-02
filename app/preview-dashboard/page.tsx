@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, BarChart3, TrendingUp, Users, Target, Clock, Activity } from "lucide-react";
+import { ArrowLeft, BarChart3, TrendingUp, Users, Target, Activity } from "lucide-react";
 import Link from "next/link";
 import { getSeedData, getAggregations } from "@/lib/seed";
 import VolumeBarchart from "@/components/barchart";

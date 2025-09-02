@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Legend } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -138,13 +138,13 @@ export default function VolumeBarchart() {
   const filteredData = React.useMemo(() => {
     const selectedZones = views[selectedView as keyof typeof views].zones;
     return chartData.map(week => {
-      const filtered: any = { week };
+      const filtered: Record<string, any> = { week };
       selectedZones.forEach(zone => {
         filtered[zone] = week[zone as keyof typeof week];
       });
       return filtered;
     });
-  }, [selectedView]);
+  }, [selectedView, views]);
 
   const currentView = views[selectedView as keyof typeof views];
 
@@ -231,7 +231,7 @@ export default function VolumeBarchart() {
             <Legend />
             
             {/* Renderizar barras para cada zona de la vista seleccionada */}
-            {currentView.zones.map((zone, index) => (
+            {currentView.zones.map((zone) => (
               <Bar 
                 key={zone}
                 dataKey={zone} 
