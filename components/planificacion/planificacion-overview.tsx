@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,7 +17,12 @@ import {
   TrendingUp, 
   Activity, 
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  Edit,
+  Plus,
+  Save,
+  X,
+  Trash2
 } from "lucide-react";
 
 // Tipos de datos
@@ -140,6 +150,31 @@ const weeklyPlan: WeeklyPlan[] = [
 export function PlanificacionOverview() {
   const [selectedPhase, setSelectedPhase] = useState<string>("base");
   const [selectedGoal, setSelectedGoal] = useState<string>("goal-1");
+  
+  // Estados para edición
+  const [editingPhase, setEditingPhase] = useState<string | null>(null);
+  const [editingGoal, setEditingGoal] = useState<string | null>(null);
+  const [isAddingPhase, setIsAddingPhase] = useState(false);
+  const [isAddingGoal, setIsAddingGoal] = useState(false);
+  
+  // Estados para formularios
+  const [phaseForm, setPhaseForm] = useState({
+    name: "",
+    duration: 0,
+    description: "",
+    focus: [] as string[],
+    intensity: 5,
+    volume: 0
+  });
+  
+  const [goalForm, setGoalForm] = useState({
+    title: "",
+    description: "",
+    targetDate: "",
+    priority: "medium" as "high" | "medium" | "low",
+    status: "pending" as "pending" | "in-progress" | "completed",
+    progress: 0
+  });
 
   const currentPhase = trainingPhases.find(phase => phase.id === selectedPhase);
   const currentGoal = trainingGoals.find(goal => goal.id === selectedGoal);
@@ -169,6 +204,104 @@ export function PlanificacionOverview() {
       case "pending": return <AlertCircle className="w-4 h-4" />;
       default: return <AlertCircle className="w-4 h-4" />;
     }
+  };
+
+  // Funciones para manejar edición de fases
+  const handleEditPhase = (phase: TrainingPhase) => {
+    setPhaseForm({
+      name: phase.name,
+      duration: phase.duration,
+      description: phase.description,
+      focus: [...phase.focus],
+      intensity: phase.intensity,
+      volume: phase.volume
+    });
+    setEditingPhase(phase.id);
+  };
+
+  const handleSavePhase = () => {
+    // Aquí se guardaría en la base de datos
+    console.log("Guardando fase:", phaseForm);
+    setEditingPhase(null);
+    setIsAddingPhase(false);
+    setPhaseForm({
+      name: "",
+      duration: 0,
+      description: "",
+      focus: [],
+      intensity: 5,
+      volume: 0
+    });
+  };
+
+  const handleCancelPhase = () => {
+    setEditingPhase(null);
+    setIsAddingPhase(false);
+    setPhaseForm({
+      name: "",
+      duration: 0,
+      description: "",
+      focus: [],
+      intensity: 5,
+      volume: 0
+    });
+  };
+
+  // Funciones para manejar edición de objetivos
+  const handleEditGoal = (goal: TrainingGoal) => {
+    setGoalForm({
+      title: goal.title,
+      description: goal.description,
+      targetDate: goal.targetDate,
+      priority: goal.priority,
+      status: goal.status,
+      progress: goal.progress
+    });
+    setEditingGoal(goal.id);
+  };
+
+  const handleSaveGoal = () => {
+    // Aquí se guardaría en la base de datos
+    console.log("Guardando objetivo:", goalForm);
+    setEditingGoal(null);
+    setIsAddingGoal(false);
+    setGoalForm({
+      title: "",
+      description: "",
+      targetDate: "",
+      priority: "medium",
+      status: "pending",
+      progress: 0
+    });
+  };
+
+  const handleCancelGoal = () => {
+    setEditingGoal(null);
+    setIsAddingGoal(false);
+    setGoalForm({
+      title: "",
+      description: "",
+      targetDate: "",
+      priority: "medium",
+      status: "pending",
+      progress: 0
+    });
+  };
+
+  const handleAddFocus = (focus: string) => {
+    if (!phaseForm.focus.includes(focus)) {
+      setPhaseForm(prev => ({
+        ...prev,
+        focus: [...prev.focus, focus]
+      }));
+    }
+  };
+
+  const handleRemoveFocus = (focus: string) => {
+    setPhaseForm(prev => ({
+      ...prev,
+      focus: prev.focus.filter(f => f !== focus)
+    }));
   };
 
   return (
@@ -239,6 +372,18 @@ export function PlanificacionOverview() {
 
         {/* Tab: Fases del Ciclo */}
         <TabsContent value="fases" className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Fases de Entrenamiento</h3>
+            <Button 
+              onClick={() => setIsAddingPhase(true)}
+              className="gap-2"
+              size="sm"
+            >
+              <Plus className="h-4 w-4" />
+              Agregar Fase
+            </Button>
+          </div>
+          
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {trainingPhases.map((phase) => (
               <Card 
@@ -251,7 +396,20 @@ export function PlanificacionOverview() {
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">{phase.name}</CardTitle>
-                    <div className={`w-3 h-3 rounded-full ${phase.color}`}></div>
+                    <div className="flex items-center gap-2">
+                      <div className={`w-3 h-3 rounded-full ${phase.color}`}></div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditPhase(phase);
+                        }}
+                        className="h-6 w-6 p-0"
+                      >
+                        <Edit className="h-3 w-3" />
+                      </Button>
+                    </div>
                   </div>
                   <CardDescription>{phase.duration} semanas</CardDescription>
                 </CardHeader>
@@ -326,10 +484,139 @@ export function PlanificacionOverview() {
               </CardContent>
             </Card>
           )}
+
+          {/* Modal de Edición de Fases */}
+          <Dialog open={editingPhase !== null || isAddingPhase} onOpenChange={handleCancelPhase}>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>
+                  {isAddingPhase ? "Agregar Nueva Fase" : "Editar Fase"}
+                </DialogTitle>
+                <DialogDescription>
+                  {isAddingPhase 
+                    ? "Crea una nueva fase de entrenamiento" 
+                    : "Modifica los detalles de la fase de entrenamiento"
+                  }
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="phase-name">Nombre de la Fase</Label>
+                    <Input
+                      id="phase-name"
+                      value={phaseForm.name}
+                      onChange={(e) => setPhaseForm(prev => ({ ...prev, name: e.target.value }))}
+                      placeholder="Ej: Base, Construcción, Pico"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phase-duration">Duración (semanas)</Label>
+                    <Input
+                      id="phase-duration"
+                      type="number"
+                      value={phaseForm.duration}
+                      onChange={(e) => setPhaseForm(prev => ({ ...prev, duration: parseInt(e.target.value) || 0 }))}
+                      placeholder="8"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="phase-description">Descripción</Label>
+                  <Textarea
+                    id="phase-description"
+                    value={phaseForm.description}
+                    onChange={(e) => setPhaseForm(prev => ({ ...prev, description: e.target.value }))}
+                    placeholder="Describe el objetivo de esta fase..."
+                    className="min-h-[80px]"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="phase-intensity">Intensidad (1-10)</Label>
+                    <Input
+                      id="phase-intensity"
+                      type="number"
+                      min="1"
+                      max="10"
+                      value={phaseForm.intensity}
+                      onChange={(e) => setPhaseForm(prev => ({ ...prev, intensity: parseInt(e.target.value) || 5 }))}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phase-volume">Volumen Semanal (metros)</Label>
+                    <Input
+                      id="phase-volume"
+                      type="number"
+                      value={phaseForm.volume}
+                      onChange={(e) => setPhaseForm(prev => ({ ...prev, volume: parseInt(e.target.value) || 0 }))}
+                      placeholder="25000"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Enfoques de Entrenamiento</Label>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {phaseForm.focus.map((focus, index) => (
+                      <Badge key={index} variant="secondary" className="gap-1">
+                        {focus}
+                        <button
+                          onClick={() => handleRemoveFocus(focus)}
+                          className="ml-1 hover:text-destructive"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    {["Aeróbico", "Técnica", "Fuerza", "Umbral", "VO2 Max", "Velocidad", "Recuperación"].map((focus) => (
+                      <Button
+                        key={focus}
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleAddFocus(focus)}
+                        disabled={phaseForm.focus.includes(focus)}
+                        className="text-xs"
+                      >
+                        {focus}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-4">
+                  <Button variant="outline" onClick={handleCancelPhase}>
+                    Cancelar
+                  </Button>
+                  <Button onClick={handleSavePhase} className="gap-2">
+                    <Save className="h-4 w-4" />
+                    {isAddingPhase ? "Agregar" : "Guardar"}
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </TabsContent>
 
         {/* Tab: Objetivos */}
         <TabsContent value="objetivos" className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Objetivos de Entrenamiento</h3>
+            <Button 
+              onClick={() => setIsAddingGoal(true)}
+              className="gap-2"
+              size="sm"
+            >
+              <Plus className="h-4 w-4" />
+              Agregar Objetivo
+            </Button>
+          </div>
+          
           <div className="grid gap-4">
             {trainingGoals.map((goal) => (
               <Card 
@@ -370,6 +657,17 @@ export function PlanificacionOverview() {
                         <Progress value={goal.progress} className="w-24 h-2 mt-1" />
                         <p className="text-xs text-muted-foreground mt-1">{goal.progress}%</p>
                       </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditGoal(goal);
+                        }}
+                        className="h-8 w-8 p-0"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
@@ -413,6 +711,118 @@ export function PlanificacionOverview() {
               </CardContent>
             </Card>
           )}
+
+          {/* Modal de Edición de Objetivos */}
+          <Dialog open={editingGoal !== null || isAddingGoal} onOpenChange={handleCancelGoal}>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>
+                  {isAddingGoal ? "Agregar Nuevo Objetivo" : "Editar Objetivo"}
+                </DialogTitle>
+                <DialogDescription>
+                  {isAddingGoal 
+                    ? "Crea un nuevo objetivo de entrenamiento" 
+                    : "Modifica los detalles del objetivo"
+                  }
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="goal-title">Título del Objetivo</Label>
+                  <Input
+                    id="goal-title"
+                    value={goalForm.title}
+                    onChange={(e) => setGoalForm(prev => ({ ...prev, title: e.target.value }))}
+                    placeholder="Ej: Campeonato Nacional 2025"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="goal-description">Descripción</Label>
+                  <Textarea
+                    id="goal-description"
+                    value={goalForm.description}
+                    onChange={(e) => setGoalForm(prev => ({ ...prev, description: e.target.value }))}
+                    placeholder="Describe tu objetivo..."
+                    className="min-h-[80px]"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="goal-date">Fecha Objetivo</Label>
+                    <Input
+                      id="goal-date"
+                      type="date"
+                      value={goalForm.targetDate}
+                      onChange={(e) => setGoalForm(prev => ({ ...prev, targetDate: e.target.value }))}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="goal-progress">Progreso (%)</Label>
+                    <Input
+                      id="goal-progress"
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={goalForm.progress}
+                      onChange={(e) => setGoalForm(prev => ({ ...prev, progress: parseInt(e.target.value) || 0 }))}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="goal-priority">Prioridad</Label>
+                    <Select 
+                      value={goalForm.priority} 
+                      onValueChange={(value: "high" | "medium" | "low") => 
+                        setGoalForm(prev => ({ ...prev, priority: value }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="high">Alta</SelectItem>
+                        <SelectItem value="medium">Media</SelectItem>
+                        <SelectItem value="low">Baja</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="goal-status">Estado</Label>
+                    <Select 
+                      value={goalForm.status} 
+                      onValueChange={(value: "pending" | "in-progress" | "completed") => 
+                        setGoalForm(prev => ({ ...prev, status: value }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="pending">Pendiente</SelectItem>
+                        <SelectItem value="in-progress">En Progreso</SelectItem>
+                        <SelectItem value="completed">Completado</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-4">
+                  <Button variant="outline" onClick={handleCancelGoal}>
+                    Cancelar
+                  </Button>
+                  <Button onClick={handleSaveGoal} className="gap-2">
+                    <Save className="h-4 w-4" />
+                    {isAddingGoal ? "Agregar" : "Guardar"}
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </TabsContent>
 
         {/* Tab: Planificación Semanal */}

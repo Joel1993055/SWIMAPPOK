@@ -17,9 +17,6 @@ import {
   BookOpenIcon,
   CalendarIcon,
   Target,
-  Trophy,
-  Heart,
-  Activity,
   Users,
   Plus,
 
@@ -72,21 +69,7 @@ const data = {
       url: "#",
       icon: BarChartIcon,
     },
-    {
-      title: "Competiciones",
-      url: "#",
-      icon: Trophy,
-    },
-    {
-      title: "Salud",
-      url: "#",
-      icon: Heart,
-    },
-    {
-      title: "Técnica",
-      url: "#",
-      icon: Activity,
-    },
+
     {
       title: "Equipo",
       url: "#",
