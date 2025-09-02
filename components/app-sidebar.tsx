@@ -69,27 +69,27 @@ const data = {
     },
     {
       title: "Análisis",
-      url: "/analisis",
+      url: "#",
       icon: BarChartIcon,
     },
     {
       title: "Competiciones",
-      url: "/competiciones",
+      url: "#",
       icon: Trophy,
     },
     {
       title: "Salud",
-      url: "/salud",
+      url: "#",
       icon: Heart,
     },
     {
       title: "Técnica",
-      url: "/tecnica",
+      url: "#",
       icon: Activity,
     },
     {
       title: "Equipo",
-      url: "/equipo",
+      url: "#",
       icon: Users,
     },
   ],
