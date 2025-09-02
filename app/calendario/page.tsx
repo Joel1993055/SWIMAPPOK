@@ -19,15 +19,15 @@ export default function CalendarioPage() {
       enero: { distance: 25100, sessions: 31 },
       febrero: { distance: 16300, sessions: 28 },
       marzo: { distance: 16700, sessions: 31 },
-      abril: { distance: 16300, sessions: 30 },
-      mayo: { distance: 16800, sessions: 31 },
-      junio: { distance: 16300, sessions: 30 },
-      julio: { distance: 17200, sessions: 31 },
-      agosto: { distance: 15800, sessions: 31 },
-      septiembre: { distance: 16500, sessions: 30 },
-      octubre: { distance: 16900, sessions: 31 },
-      noviembre: { distance: 16100, sessions: 30 },
-      diciembre: { distance: 17400, sessions: 31 }
+      abril: { distance: 0, sessions: 0 },
+      mayo: { distance: 0, sessions: 0 },
+      junio: { distance: 0, sessions: 0 },
+      julio: { distance: 0, sessions: 0 },
+      agosto: { distance: 0, sessions: 0 },
+      septiembre: { distance: 0, sessions: 0 },
+      octubre: { distance: 0, sessions: 0 },
+      noviembre: { distance: 0, sessions: 0 },
+      diciembre: { distance: 0, sessions: 0 }
     }
   };
 
@@ -185,7 +185,11 @@ export default function CalendarioPage() {
                             <div
                               key={day}
                               onClick={() => handleDayClick(day, month.name)}
-                              className="aspect-square flex items-center justify-center text-xs font-medium rounded-sm bg-blue-500 text-white hover:bg-blue-600 transition-colors cursor-pointer"
+                              className={`aspect-square flex items-center justify-center text-xs font-medium rounded-sm transition-colors cursor-pointer ${
+                                day !== null && (month.name === "enero" || month.name === "febrero" || month.name === "marzo")
+                                  ? "bg-blue-500 text-white hover:bg-blue-600"
+                                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+                              }`}
                             >
                               {day}
                             </div>
