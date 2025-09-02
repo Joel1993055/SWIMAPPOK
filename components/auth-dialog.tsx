@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { signInAction, signUpAction } from "@/app/actions"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -37,7 +36,7 @@ export function AuthDialog({ trigger, mode }: AuthDialogProps) {
         setIsOpen(false)
         setMessage(null)
       }
-    } catch (error) {
+    } catch {
       setMessage({ error: "An unexpected error occurred. Please try again." })
     }
   }
@@ -51,7 +50,7 @@ export function AuthDialog({ trigger, mode }: AuthDialogProps) {
         setIsOpen(false)
         setMessage(null)
       }
-    } catch (error) {
+    } catch {
       setMessage({ error: "An unexpected error occurred. Please try again." })
     }
   }
@@ -155,7 +154,7 @@ export function AuthDialog({ trigger, mode }: AuthDialogProps) {
           <div className="text-center text-sm">
             {authMode === "signin" ? (
               <>
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <button
                   type="button"
                   onClick={toggleMode}
