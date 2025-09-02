@@ -138,7 +138,7 @@ export default function VolumeBarchart() {
   const filteredData = React.useMemo(() => {
     const selectedZones = views[selectedView as keyof typeof views].zones;
     return chartData.map(week => {
-      const filtered: Record<string, string | number> = { week };
+      const filtered: Record<string, string | number> = { week: week.week };
       selectedZones.forEach(zone => {
         filtered[zone] = week[zone as keyof typeof week];
       });
