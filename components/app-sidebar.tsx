@@ -17,6 +17,8 @@ import {
   SearchIcon,
   SettingsIcon,
   UsersIcon,
+  BookOpenIcon,
+  CalendarIcon,
 } from "lucide-react"
 
 import { NavDocuments } from "@/components/nav-documents"
@@ -42,8 +44,18 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: LayoutDashboardIcon,
+    },
+    {
+      title: "Log",
+      url: "/log",
+      icon: BookOpenIcon,
+    },
+    {
+      title: "Calendario",
+      url: "/calendario",
+      icon: CalendarIcon,
     },
     {
       title: "Lifecycle",
@@ -162,7 +174,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <a href="#">
                 <ArrowUpCircleIcon className="h-5 w-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <span className="text-base font-semibold">Swim:APP</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
