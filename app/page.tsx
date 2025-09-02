@@ -5,31 +5,26 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center">
-      <div className="text-center space-y-8">
+      <div className="text-center space-y-12">
         {/* Logo */}
-        <div className="flex items-center justify-center gap-3 mb-8">
-          <BarChart3 className="w-12 h-12 text-blue-500" />
-          <span className="text-3xl font-bold">Swim:APP</span>
+        <div className="flex items-center justify-center gap-3">
+          <BarChart3 className="w-8 h-8 text-white" />
+          <span className="text-2xl font-bold">Swim:APP</span>
         </div>
         
         {/* Título principal */}
-        <h1 className="text-6xl font-bold text-white">
+        <h1 className="text-5xl font-bold text-white">
           Swim APP PRO
         </h1>
         
-        {/* Subtítulo */}
-        <p className="text-xl text-gray-400 max-w-md mx-auto">
-          Plataforma de análisis de natación
-        </p>
-        
         {/* Botones de navegación */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
-          <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">
+        <div className="flex flex-col sm:flex-row gap-6 justify-center">
+          <Button asChild size="lg" className="bg-white text-black hover:bg-gray-200">
             <Link href="/dashboard">
               Dashboard
             </Link>
           </Button>
-          <Button asChild variant="outline" size="lg" className="border-gray-600 text-white hover:bg-gray-800">
+          <Button asChild variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-black">
             <Link href="/preview-dashboard">
               Preview
             </Link>
