@@ -19,6 +19,11 @@ import {
   UsersIcon,
   BookOpenIcon,
   CalendarIcon,
+  Target,
+  Trophy,
+  Heart,
+  Activity,
+  Users,
 } from "lucide-react"
 
 import { NavDocuments } from "@/components/nav-documents"
@@ -58,24 +63,34 @@ const data = {
       icon: CalendarIcon,
     },
     {
-      title: "Lifecycle",
-      url: "#",
-      icon: ListIcon,
+      title: "Planificación",
+      url: "/planificacion",
+      icon: Target,
     },
     {
-      title: "Analytics",
-      url: "#",
+      title: "Análisis",
+      url: "/analisis",
       icon: BarChartIcon,
     },
     {
-      title: "Projects",
-      url: "#",
-      icon: FolderIcon,
+      title: "Competiciones",
+      url: "/competiciones",
+      icon: Trophy,
     },
     {
-      title: "Team",
-      url: "#",
-      icon: UsersIcon,
+      title: "Salud",
+      url: "/salud",
+      icon: Heart,
+    },
+    {
+      title: "Técnica",
+      url: "/tecnica",
+      icon: Activity,
+    },
+    {
+      title: "Equipo",
+      url: "/equipo",
+      icon: Users,
     },
   ],
   navClouds: [
