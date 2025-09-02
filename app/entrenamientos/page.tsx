@@ -384,7 +384,7 @@ function TrainingContent() {
                   <div className="text-center py-8">
                     <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <p className="text-muted-foreground">No tienes entrenamientos guardados</p>
-                    <p className="text-sm text-muted-foreground">Crea tu primer entrenamiento en la pestaña "Crear Entrenamiento"</p>
+                    <p className="text-sm text-muted-foreground">Crea tu primer entrenamiento en la pestaña &quot;Crear Entrenamiento&quot;</p>
                   </div>
                 ) : (
                   savedTrainings.map((training) => (

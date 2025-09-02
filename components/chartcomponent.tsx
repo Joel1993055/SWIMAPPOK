@@ -243,7 +243,7 @@ export default function ChartComponent() {
     
     // Convertir a array y calcular promedios
     return Object.entries(monthlyData)
-      .map(([key, data]) => ({
+      .map(([, data]) => ({
         month: data.month,
         Z1: data.count > 0 ? Math.round(data.Z1 / data.count) : 0,
         Z2: data.count > 0 ? Math.round(data.Z2 / data.count) : 0,

@@ -23,11 +23,8 @@ import {
   Clock,
   Target,
   Activity,
-  Trophy,
   MapPin,
-  Users,
-  BarChart3,
-  TrendingUp
+  Users
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";

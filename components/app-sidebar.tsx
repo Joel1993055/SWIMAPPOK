@@ -26,6 +26,7 @@ import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
+import { NavTeamSelectors } from "@/components/nav-team-selectors"
 import {
   Sidebar,
   SidebarContent,
@@ -66,13 +67,13 @@ const data = {
 
     {
       title: "Análisis",
-      url: "#",
+      url: "/analisis",
       icon: BarChartIcon,
     },
 
     {
       title: "Equipo",
-      url: "#",
+      url: "/equipo",
       icon: Users,
     },
   ],
@@ -166,6 +167,9 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [selectedClub, setSelectedClub] = React.useState("club-1")
+  const [selectedGroup, setSelectedGroup] = React.useState("group-1-1")
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -186,6 +190,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavDocuments items={data.documents} />
+        
+        {/* Selectores de Club y Grupo */}
+        <div className="mt-4">
+          <NavTeamSelectors 
+            selectedClub={selectedClub}
+            selectedGroup={selectedGroup}
+            onClubChange={setSelectedClub}
+            onGroupChange={setSelectedGroup}
+          />
+        </div>
+        
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

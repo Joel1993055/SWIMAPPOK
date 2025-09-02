@@ -73,9 +73,7 @@ export default function CalendarioPage() {
   const currentMonth = currentDate.getMonth();
   const currentMonthName = months[currentMonth].name;
 
-  const totalTrainings = trainingData[currentYear] 
-    ? Object.values(trainingData[currentYear]).reduce((sum, month) => sum + month.sessions, 0)
-    : 0;
+
 
   const generateCalendarDays = () => {
     const month = months[currentMonth];
