@@ -66,11 +66,7 @@ const data = {
       url: "/planificacion",
       icon: Target,
     },
-    {
-      title: "Entrenamientos",
-      url: "/entrenamientos",
-      icon: Plus,
-    },
+
     {
       title: "Análisis",
       url: "#",
@@ -172,6 +168,11 @@ const data = {
       name: "Reports",
       url: "/reports",
       icon: ClipboardListIcon,
+    },
+    {
+      name: "Entrenamientos",
+      url: "/entrenamientos",
+      icon: Plus,
     },
     {
       name: "Word Assistant",
