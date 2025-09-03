@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
@@ -33,6 +33,7 @@ import { es } from "date-fns/locale";
 import { AdvancedZoneDetector } from "@/components/advanced-zone-detector";
 import { AICoach } from "@/components/ai-coach";
 import { useAICoach } from "@/lib/contexts/ai-coach-context";
+import { createSession, getSessions, updateSession, deleteSession, type Session } from "@/lib/actions/sessions";
 
 // Datos de ejemplo de entrenamientos guardados
 const sampleSavedTrainings = [
@@ -81,10 +82,52 @@ function TrainingContent() {
   const [trainingContent, setTrainingContent] = useState("");
   const [selectedClub, setSelectedClub] = useState("club-1");
   const [selectedGroup, setSelectedGroup] = useState("group-1-1");
-  const [savedTrainings, setSavedTrainings] = useState(sampleSavedTrainings);
-  const [editingTraining, setEditingTraining] = useState<number | null>(null);
+  const [savedTrainings, setSavedTrainings] = useState<Session[]>([]);
+  const [editingTraining, setEditingTraining] = useState<Session | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  
+  // Estados para volúmenes por zona
+  const [zoneVolumes, setZoneVolumes] = useState({
+    z1: 0,
+    z2: 0,
+    z3: 0,
+    z4: 0,
+    z5: 0
+  });
   
   const { analyzeTraining } = useAICoach();
+
+  // Cargar entrenamientos al montar el componente
+  useEffect(() => {
+    loadTrainings();
+  }, []);
+
+  const loadTrainings = async () => {
+    try {
+      setIsLoading(true);
+      const trainings = await getSessions();
+      setSavedTrainings(trainings);
+    } catch (error) {
+      console.error("Error cargando entrenamientos:", error);
+      setError("Error al cargar los entrenamientos");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Calcular total de metros
+  const totalMeters = Object.values(zoneVolumes).reduce((sum, volume) => sum + volume, 0);
+
+  // Función para actualizar volúmenes por zona
+  const handleZoneVolumeChange = (zone: keyof typeof zoneVolumes, value: string) => {
+    const numericValue = parseInt(value) || 0;
+    setZoneVolumes(prev => ({
+      ...prev,
+      [zone]: numericValue
+    }));
+  };
 
   const handleClubChange = (value: string) => {
     setSelectedClub(value);
@@ -124,69 +167,81 @@ function TrainingContent() {
     }
   };
 
-  const handleSaveTraining = () => {
+  const handleSaveTraining = async () => {
     if (!trainingTitle || !trainingContent) {
-      alert("Por favor, completa el título y el contenido del entrenamiento");
+      setError("Por favor, completa el título y el contenido del entrenamiento");
       return;
     }
 
-    const selectedClubData = clubsData[selectedClub as keyof typeof clubsData];
-    const selectedGroupData = selectedClubData?.groups.find(g => g.id === selectedGroup);
+    try {
+      setIsLoading(true);
+      setError(null);
+      setSuccess(null);
 
-    const newTraining = {
-      id: editingTraining || savedTrainings.length + 1,
-      title: trainingTitle,
-      date: trainingDate.toISOString().split('T')[0],
-      type: trainingType || "Personalizado",
-      duration: 0, // Se calcularía automáticamente
-      distance: 0, // Se calcularía automáticamente
-      stroke: "Libre", // Se detectaría automáticamente
-      rpe: 5, // Valor por defecto
-      location: trainingLocation || "No especificado",
-      coach: trainingCoach || "No especificado",
-      club: selectedClubData?.name || "No especificado",
-      group: selectedGroupData?.name || "No especificado",
-      content: trainingContent,
-      createdAt: new Date().toISOString()
-    };
+      const selectedClubData = clubsData[selectedClub as keyof typeof clubsData];
+      const selectedGroupData = selectedClubData?.groups.find(g => g.id === selectedGroup);
 
-    if (editingTraining) {
-      // Editar entrenamiento existente
-      setSavedTrainings(prev => 
-        prev.map(training => 
-          training.id === editingTraining ? newTraining : training
-        )
-      );
+      const formData = new FormData();
+      formData.append("title", trainingTitle);
+      formData.append("date", trainingDate.toISOString().split('T')[0]);
+      formData.append("type", trainingType || "Personalizado");
+      formData.append("duration", "90"); // Valor por defecto
+      formData.append("distance", totalMeters.toString());
+      formData.append("stroke", "Libre");
+      formData.append("rpe", "5");
+      formData.append("location", trainingLocation || "No especificado");
+      formData.append("coach", trainingCoach || "No especificado");
+      formData.append("club", selectedClubData?.name || "No especificado");
+      formData.append("group_name", selectedGroupData?.name || "No especificado");
+      formData.append("content", trainingContent);
+      formData.append("z1", zoneVolumes.z1.toString());
+      formData.append("z2", zoneVolumes.z2.toString());
+      formData.append("z3", zoneVolumes.z3.toString());
+      formData.append("z4", zoneVolumes.z4.toString());
+      formData.append("z5", zoneVolumes.z5.toString());
+
+      if (editingTraining) {
+        await updateSession(editingTraining.id, formData);
+        setSuccess("Entrenamiento actualizado correctamente");
+      } else {
+        await createSession(formData);
+        setSuccess("Entrenamiento guardado correctamente");
+      }
+
+      // Analizar con AI Coach
+      await analyzeTraining({
+        title: trainingTitle,
+        content: trainingContent,
+        type: trainingType,
+        date: trainingDate,
+        totalDistance: totalMeters,
+        detectedZones: [],
+      });
+
+      // Limpiar formulario
+      setTrainingTitle("");
+      setTrainingContent("");
+      setTrainingLocation("");
+      setTrainingCoach("");
+      setTrainingType("");
+      setTrainingDate(new Date());
+      setSelectedClub("club-1");
+      setSelectedGroup("group-1-1");
+      setZoneVolumes({ z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 });
       setEditingTraining(null);
-    } else {
-      // Crear nuevo entrenamiento
-      setSavedTrainings(prev => [...prev, newTraining]);
+      
+      // Recargar entrenamientos
+      await loadTrainings();
+      
+    } catch (error) {
+      console.error("Error guardando entrenamiento:", error);
+      setError("Error al guardar el entrenamiento");
+    } finally {
+      setIsLoading(false);
     }
-
-    // Limpiar formulario
-    setTrainingTitle("");
-    setTrainingContent("");
-    setTrainingLocation("");
-    setTrainingCoach("");
-    setTrainingType("");
-    setTrainingDate(new Date());
-    setSelectedClub("club-1");
-    setSelectedGroup("group-1-1");
-
-    // Analizar entrenamiento con AI Coach
-    analyzeTraining({
-      title: trainingTitle,
-      content: trainingContent,
-      type: trainingType,
-      date: trainingDate,
-      totalDistance: 0, // Se calculará automáticamente
-      detectedZones: [], // Se detectará automáticamente
-    });
-
-    alert(editingTraining ? "Entrenamiento actualizado exitosamente" : "Entrenamiento guardado exitosamente");
   };
 
-  const handleEditTraining = (training: typeof sampleSavedTrainings[0]) => {
+  const handleEditTraining = (training: Session) => {
     setTrainingTitle(training.title);
     setTrainingDate(new Date(training.date));
     setTrainingType(training.type);
@@ -194,25 +249,44 @@ function TrainingContent() {
     setTrainingCoach(training.coach);
     setTrainingContent(training.content);
     
+    // Cargar volúmenes por zona si existen
+    if (training.zone_volumes) {
+      setZoneVolumes(training.zone_volumes);
+    } else {
+      setZoneVolumes({ z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 });
+    }
+    
     // Buscar el club y grupo correspondientes
     const clubEntry = Object.entries(clubsData).find(([, clubData]) => 
-      clubData.name === (training as { club?: string }).club
+      clubData.name === training.club
     );
     if (clubEntry) {
       setSelectedClub(clubEntry[0]);
-      const group = clubEntry[1].groups.find(g => g.name === (training as { group?: string }).group);
+      const group = clubEntry[1].groups.find(g => g.name === training.group_name);
       if (group) {
         setSelectedGroup(group.id);
       }
     }
     
-    setEditingTraining(training.id);
+    setEditingTraining(training);
     setActiveTab("create");
   };
 
-  const handleDeleteTraining = (id: number) => {
-    if (confirm("¿Estás seguro de que quieres eliminar este entrenamiento?")) {
-      setSavedTrainings(prev => prev.filter(training => training.id !== id));
+  const handleDeleteTraining = async (id: string) => {
+    if (!confirm("¿Estás seguro de que quieres eliminar este entrenamiento?")) {
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      await deleteSession(id);
+      setSuccess("Entrenamiento eliminado correctamente");
+      await loadTrainings();
+    } catch (error) {
+      console.error("Error eliminando entrenamiento:", error);
+      setError("Error al eliminar el entrenamiento");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -225,7 +299,10 @@ function TrainingContent() {
     setTrainingDate(new Date());
     setSelectedClub("club-1");
     setSelectedGroup("group-1-1");
+    setZoneVolumes({ z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 });
     setEditingTraining(null);
+    setError(null);
+    setSuccess(null);
   };
 
   return (
@@ -241,6 +318,19 @@ function TrainingContent() {
         <p className="text-muted-foreground">
           Crea y gestiona tus entrenamientos personalizados
         </p>
+
+        {/* Mensajes de error y éxito */}
+        {error && (
+          <div className="mt-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="mt-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded">
+            {success}
+          </div>
+        )}
         
         {/* Tabs Navigation */}
         <div className="flex gap-2 mt-6">
@@ -377,6 +467,46 @@ function TrainingContent() {
 
                 <Separator />
 
+                {/* Volúmenes por zona */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-base font-medium">Volúmenes por Zona de Entrenamiento</Label>
+                    <div className="text-sm text-muted-foreground">
+                      Total: <span className="font-semibold text-foreground">{totalMeters.toLocaleString()}m</span>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    {Object.entries(zoneVolumes).map(([zone, volume]) => (
+                      <div key={zone} className="space-y-2">
+                        <Label htmlFor={`zone-${zone}`} className="text-sm font-medium">
+                          {zone.toUpperCase()}
+                        </Label>
+                        <Input
+                          id={`zone-${zone}`}
+                          type="number"
+                          min="0"
+                          step="50"
+                          placeholder="0"
+                          value={volume || ""}
+                          onChange={(e) => handleZoneVolumeChange(zone as keyof typeof zoneVolumes, e.target.value)}
+                          className="text-center"
+                        />
+                        <div className="text-xs text-muted-foreground text-center">
+                          {volume > 0 && `${volume.toLocaleString()}m`}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="text-xs text-muted-foreground">
+                    💡 <strong>Consejo:</strong> Introduce los metros que nadaste en cada zona de intensidad. 
+                    Esto te ayudará a analizar mejor la distribución de tu entrenamiento.
+                  </div>
+                </div>
+
+                <Separator />
+
                 {/* Editor de contenido */}
                 <div className="space-y-2">
                   <Label htmlFor="training-content">Contenido del entrenamiento</Label>
@@ -403,9 +533,18 @@ function TrainingContent() {
                     <Button variant="outline" onClick={() => setTrainingContent("")}>
                       Limpiar
                     </Button>
-                    <Button onClick={handleSaveTraining} className="gap-2">
-                      <Save className="h-4 w-4" />
-                      {editingTraining ? "Actualizar" : "Guardar"} Entrenamiento
+                    <Button onClick={handleSaveTraining} disabled={isLoading} className="gap-2">
+                      {isLoading ? (
+                        <>
+                          <Clock className="h-4 w-4 animate-spin" />
+                          Guardando...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="h-4 w-4" />
+                          {editingTraining ? "Actualizar" : "Guardar"} Entrenamiento
+                        </>
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -461,12 +600,21 @@ function TrainingContent() {
 
                   <div>
                     <h4 className="font-medium mb-2">Zonas de intensidad:</h4>
-                    <div className="flex flex-wrap gap-1">
-                      <Badge variant="outline">Z1</Badge>
-                      <Badge variant="outline">Z2</Badge>
-                      <Badge variant="outline">Z3</Badge>
-                      <Badge variant="outline">Z4</Badge>
-                      <Badge variant="outline">Z5</Badge>
+                    <div className="space-y-2">
+                      <div className="flex flex-wrap gap-1">
+                        <Badge variant="outline">Z1</Badge>
+                        <Badge variant="outline">Z2</Badge>
+                        <Badge variant="outline">Z3</Badge>
+                        <Badge variant="outline">Z4</Badge>
+                        <Badge variant="outline">Z5</Badge>
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        <div>• <strong>Z1:</strong> Recuperación activa</div>
+                        <div>• <strong>Z2:</strong> Aeróbico base</div>
+                        <div>• <strong>Z3:</strong> Aeróbico umbral</div>
+                        <div>• <strong>Z4:</strong> Anaeróbico láctico</div>
+                        <div>• <strong>Z5:</strong> Anaeróbico aláctico</div>
+                      </div>
                     </div>
                   </div>
 
@@ -498,7 +646,12 @@ function TrainingContent() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {savedTrainings.length === 0 ? (
+                {isLoading ? (
+                  <div className="text-center py-8">
+                    <Clock className="h-8 w-8 animate-spin mx-auto mb-4" />
+                    <p>Cargando entrenamientos...</p>
+                  </div>
+                ) : savedTrainings.length === 0 ? (
                   <div className="text-center py-8">
                     <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <p className="text-muted-foreground">No tienes entrenamientos guardados</p>
@@ -534,21 +687,37 @@ function TrainingContent() {
                             </div>
                           </div>
 
+                          {/* Mostrar volúmenes por zona si existen */}
+                          {training.zone_volumes && (
+                            <div className="mb-3">
+                              <div className="text-sm font-medium mb-2">Distribución por Zonas:</div>
+                              <div className="flex flex-wrap gap-2">
+                                {Object.entries(training.zone_volumes).map(([zone, volume]) => (
+                                  volume > 0 && (
+                                    <Badge key={zone} variant="outline" className="text-xs">
+                                      {zone.toUpperCase()}: {volume.toLocaleString()}m
+                                    </Badge>
+                                  )
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
                           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
                             <MapPin className="h-4 w-4" />
                             <span>{training.location}</span>
                             <Users className="h-4 w-4 ml-4" />
                             <span>{training.coach}</span>
-                            {(training as { club?: string }).club && (
+                            {training.club && (
                               <>
                                 <Building2 className="h-4 w-4 ml-4" />
-                                <span>{(training as { club?: string }).club}</span>
+                                <span>{training.club}</span>
                               </>
                             )}
-                            {(training as { group?: string }).group && (
+                            {training.group_name && (
                               <>
                                 <Users className="h-4 w-4 ml-2" />
-                                <span>{(training as { group?: string }).group}</span>
+                                <span>{training.group_name}</span>
                               </>
                             )}
                           </div>

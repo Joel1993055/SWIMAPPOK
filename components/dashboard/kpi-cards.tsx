@@ -160,7 +160,7 @@ export function KPICards() {
       urgency,
       urgencyColor,
       label: 'Campeonato Nacional',
-      subtitle: `Fase: ${urgency}`
+      subtitle: ''
     };
   };
 
@@ -265,9 +265,6 @@ export function KPICards() {
           </div>
           <p className="text-xs text-muted-foreground">
             {championshipData.label}
-          </p>
-          <p className="text-xs text-muted-foreground mt-1">
-            {championshipData.subtitle}
           </p>
           <div className="mt-2">
             <div className="flex items-center gap-2">
