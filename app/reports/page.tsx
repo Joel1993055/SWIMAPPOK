@@ -18,10 +18,10 @@ import {
   ClipboardListIcon, 
   Download, 
   Printer,
-  Calendar,
-  Clock,
-  Target,
-  Activity,
+  Calendar, 
+  Clock, 
+  Target, 
+  Activity, 
   BarChart3,
   FileText,
   X,
@@ -117,7 +117,7 @@ function ReportsContent() {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      {/* Header */}
+        {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Reportes</h1>
@@ -125,19 +125,19 @@ function ReportsContent() {
             Genera reportes personalizados de gráficos y entrenamientos
           </p>
         </div>
-      </div>
+        </div>
 
       {/* Resumen de selección */}
       <Card className="bg-muted/50">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
             <ClipboardListIcon className="h-5 w-5" />
             Resumen de Selección
-          </CardTitle>
-          <CardDescription>
+                </CardTitle>
+                <CardDescription>
             Elementos seleccionados para tu reporte
-          </CardDescription>
-        </CardHeader>
+                </CardDescription>
+              </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-2">
             {selectedCharts.map((chart) => (
@@ -180,9 +180,9 @@ function ReportsContent() {
                 </CardContent>
               </Card>
             ))}
-          </div>
-        </CardContent>
-      </Card>
+                </div>
+              </CardContent>
+            </Card>
 
       {/* Contenido Principal con Tabs */}
       <Tabs defaultValue="charts" className="space-y-4">
@@ -211,15 +211,15 @@ function ReportsContent() {
             {/* Panel de Selección de Gráficos */}
             <div className="lg:col-span-2">
               <Card className="bg-muted/50">
-                <CardHeader>
+              <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <BarChart3 className="h-5 w-5" />
                     Seleccionar Gráficos
                   </CardTitle>
-                  <CardDescription>
+                <CardDescription>
                     Elige los gráficos que quieres incluir en tu reporte
-                  </CardDescription>
-                </CardHeader>
+                </CardDescription>
+              </CardHeader>
                 <CardContent className="space-y-4">
                   {/* Filtros */}
                   <div className="flex gap-4">
@@ -290,23 +290,23 @@ function ReportsContent() {
                     Acciones
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <Button 
+              <CardContent className="space-y-3">
+                <Button 
                     onClick={exportToPDF} 
-                    className="w-full gap-2"
+                  className="w-full gap-2"
                     disabled={selectedCharts.length === 0 && selectedTrainings.length === 0}
-                  >
-                    <Download className="h-4 w-4" />
+                >
+                  <Download className="h-4 w-4" />
                     Exportar a PDF
-                  </Button>
-                  
-                  <Button 
+                </Button>
+                
+                <Button 
                     onClick={printReport} 
-                    variant="outline" 
-                    className="w-full gap-2"
+                  variant="outline" 
+                  className="w-full gap-2"
                     disabled={selectedCharts.length === 0 && selectedTrainings.length === 0}
-                  >
-                    <Printer className="h-4 w-4" />
+                >
+                  <Printer className="h-4 w-4" />
                     Imprimir Reporte
                   </Button>
                   
@@ -318,9 +318,9 @@ function ReportsContent() {
                   >
                     <X className="h-4 w-4" />
                     Limpiar Selección
-                  </Button>
-                </CardContent>
-              </Card>
+                </Button>
+              </CardContent>
+            </Card>
 
               {/* Consejos */}
               <Card className="bg-muted/50">
@@ -346,17 +346,17 @@ function ReportsContent() {
         <TabsContent value="trainings" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Panel de Selección de Entrenamientos */}
-            <div className="lg:col-span-2">
+          <div className="lg:col-span-2">
               <Card className="bg-muted/50">
-                <CardHeader>
+              <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <FileText className="h-5 w-5" />
                     Seleccionar Entrenamientos
                   </CardTitle>
-                  <CardDescription>
+                <CardDescription>
                     Elige los entrenamientos que quieres incluir en tu reporte
-                  </CardDescription>
-                </CardHeader>
+                </CardDescription>
+              </CardHeader>
                 <CardContent className="space-y-4">
                   {/* Filtros */}
                   <div className="flex gap-4">
@@ -385,8 +385,8 @@ function ReportsContent() {
                     {filteredTrainings.map((training) => {
                       const isSelected = selectedTrainings.some(selected => selected.id === training.id);
                       return (
-                        <div
-                          key={training.id}
+                    <div
+                      key={training.id}
                           className={`p-4 border rounded-lg cursor-pointer transition-colors ${
                             isSelected ? 'border-primary bg-primary/5' : 'border-muted hover:border-muted-foreground/50'
                           }`}
@@ -412,9 +412,9 @@ function ReportsContent() {
                                   <div className="flex items-center gap-1">
                                     <Activity className="h-3 w-3" />
                                     {training.distance}
-                                  </div>
-                                </div>
-                              </div>
+                            </div>
+                          </div>
+                            </div>
                             </div>
                             <div className="flex items-center gap-2">
                               <Badge variant="outline">{training.type}</Badge>
@@ -424,10 +424,10 @@ function ReportsContent() {
                         </div>
                       );
                     })}
-                  </div>
+                      </div>
                 </CardContent>
               </Card>
-            </div>
+                    </div>
 
             {/* Panel lateral */}
             <div className="space-y-4">
@@ -484,11 +484,11 @@ function ReportsContent() {
                     <p>• Incluye entrenamientos del período que quieres analizar</p>
                     <p>• Usa plantillas predefinidas para reportes estándar</p>
                     <p>• Personaliza tu reporte según tus necesidades</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
+        </div>
         </TabsContent>
 
         {/* Tab: Plantillas */}

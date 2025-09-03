@@ -30,7 +30,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { TrainingZoneDetector } from "@/components/training-zone-detector";
+import { AdvancedZoneDetector } from "@/components/advanced-zone-detector";
 import { AICoach } from "@/components/ai-coach";
 import { useAICoach } from "@/lib/contexts/ai-coach-context";
 
@@ -418,8 +418,13 @@ function TrainingContent() {
             {/* AI Coach */}
             <AICoach />
 
-            {/* Detector de Zonas */}
-            <TrainingZoneDetector content={trainingContent} />
+            {/* Detector de Zonas Avanzado */}
+            <AdvancedZoneDetector 
+              content={trainingContent}
+              trainingType={trainingType}
+              phase="base" // Esto se podría obtener del contexto de planificación
+              competition={false}
+            />
 
             {/* Panel de Ayuda */}
             <Card className="bg-muted/50">

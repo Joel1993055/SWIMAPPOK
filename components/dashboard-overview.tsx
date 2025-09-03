@@ -5,6 +5,7 @@ import { KPICards } from "@/components/dashboard/kpi-cards";
 import { VisitorsChart } from "@/components/dashboard/visitors-chart";
 import { DashboardCalendar } from "@/components/dashboard/dashboard-calendar";
 import { ChartsSection } from "@/components/dashboard/charts-section";
+import { WeeklyTrainingSchedule } from "@/components/dashboard/weekly-training-schedule";
 
 export function DashboardOverview() {
   return (
@@ -20,6 +21,9 @@ export function DashboardOverview() {
         <VisitorsChart />
         <DashboardCalendar />
       </div>
+
+      {/* Weekly Training Schedule */}
+      <WeeklyTrainingSchedule />
 
       {/* Swimming Charts Section - Los dos gráficos debajo uno del otro */}
       <div className="space-y-4">
