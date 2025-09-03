@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { BarChart3 } from "lucide-react"
-import { AuthDialog } from "@/components/auth-dialog"
+import Link from "next/link"
 
 export function LandingHeader() {
   return (
@@ -17,22 +17,16 @@ export function LandingHeader() {
           
           {/* Auth Buttons */}
           <div className="flex gap-3">
-            <AuthDialog
-              mode="signin"
-              trigger={
-                <Button variant="outline" size="sm" className="border-white text-white hover:bg-white hover:text-black">
-                  Sign In
-                </Button>
-              }
-            />
-            <AuthDialog
-              mode="signup"
-              trigger={
-                <Button size="sm" className="bg-white text-black hover:bg-gray-200">
-                  Sign Up
-                </Button>
-              }
-            />
+            <Link href="/auth/signin">
+              <Button variant="outline" size="sm" className="border-white text-white hover:bg-white hover:text-black">
+                Sign In
+              </Button>
+            </Link>
+            <Link href="/auth/signup">
+              <Button size="sm" className="bg-white text-black hover:bg-gray-200">
+                Sign Up
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

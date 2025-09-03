@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
-import { revalidatePath } = "next/cache";
+import { revalidatePath } from "next/cache";
 
 // Tipos de datos
 export interface CompetitionData {
