@@ -139,172 +139,315 @@ export function WeeklyTrainingSchedule({ weekStart = new Date() }: WeeklyTrainin
         </CardDescription>
       </CardHeader>
              <CardContent>
-         {/* Headers de días */}
-         <div className="grid grid-cols-8 gap-3 mb-4">
-           <div className="text-center text-sm font-medium text-muted-foreground py-3">
-             {/* Espacio vacío para alinear con las filas */}
-           </div>
-           {dayNames.map((dayName, index) => {
-             const day = days[index];
-             const stats = getDayStats(day);
-             const isCurrentDay = isToday(day);
-             
-             return (
-               <div key={index} className="text-center">
-                 <div className={`p-3 rounded-lg ${isCurrentDay ? 'bg-primary/10 border border-primary' : 'bg-muted/30'}`}>
-                   <div className="text-sm font-medium">{dayName}</div>
-                   <div className="text-xs text-muted-foreground">
-                     {format(day, "dd/MM", { locale: es })}
-                   </div>
-                   {stats.totalTrainings > 0 && (
-                     <div className="text-xs mt-2">
-                       <div className="flex items-center justify-center gap-1">
-                         <Activity className="h-3 w-3" />
-                         <span>{stats.completedTrainings}/{stats.totalTrainings}</span>
-                       </div>
-                       <div className="text-muted-foreground">
-                         {stats.totalDistance}m
-                       </div>
-                     </div>
-                   )}
-                 </div>
-               </div>
-             );
-           })}
-         </div>
+        {/* Vista Desktop/Tablet - Grid 2x7 */}
+        <div className="hidden lg:block">
+          {/* Headers de días */}
+          <div className="grid grid-cols-8 gap-3 mb-4">
+            <div className="text-center text-sm font-medium text-muted-foreground py-3">
+              {/* Espacio vacío para alinear con las filas */}
+            </div>
+            {dayNames.map((dayName, index) => {
+              const day = days[index];
+              const stats = getDayStats(day);
+              const isCurrentDay = isToday(day);
+              
+              return (
+                <div key={index} className="text-center">
+                  <div className={`p-3 rounded-lg ${isCurrentDay ? 'bg-primary/10 border border-primary dark:bg-primary/20' : 'bg-muted/30 dark:bg-muted/50'}`}>
+                    <div className="text-sm font-medium">{dayName}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {format(day, "dd/MM", { locale: es })}
+                    </div>
+                    {stats.totalTrainings > 0 && (
+                      <div className="text-xs mt-2">
+                        <div className="flex items-center justify-center gap-1">
+                          <Activity className="h-3 w-3" />
+                          <span>{stats.completedTrainings}/{stats.totalTrainings}</span>
+                        </div>
+                        <div className="text-muted-foreground">
+                          {stats.totalDistance}m
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
 
-         {/* Fila AM */}
-         <div className="grid grid-cols-8 gap-3 mb-4">
-           <div className="text-center text-sm font-medium text-muted-foreground py-4 flex items-center justify-center bg-muted/30 rounded-lg">
-             AM
-           </div>
-           {days.map((day, index) => {
-             const trainings = getTrainingsForDayAndTime(day, 'AM');
-             const isCurrentDay = isToday(day);
-             
-             return (
-               <div key={`am-${index}`} className="min-h-[180px]">
-                 <div className={`h-full p-4 rounded-lg border ${isCurrentDay ? 'border-primary/50 bg-primary/5' : 'border-muted bg-background/50'}`}>
-                   {trainings.length === 0 ? (
-                     <div className="flex items-center justify-center h-full">
-                       <Button
-                         size="sm"
-                         variant="ghost"
-                         className="h-12 w-12 p-0 opacity-50 hover:opacity-100"
-                       >
-                         <Plus className="h-6 w-6" />
-                       </Button>
-                     </div>
-                   ) : (
-                     <div className="space-y-3">
-                       {trainings.map((training) => (
-                         <div
-                           key={training.id}
-                           className={`p-3 rounded-lg text-sm border ${
-                             training.isCompleted 
-                               ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800' 
-                               : 'bg-background border-muted'
-                           }`}
-                         >
-                           <div className="font-medium truncate mb-2">{training.title}</div>
-                           <div className="flex items-center gap-2 mb-2">
-                             <Clock className="h-4 w-4" />
-                             <span className="text-sm">{training.time}</span>
-                           </div>
-                           <div className="flex items-center gap-2 mb-2">
-                             <Badge className={`${getIntensityColor(training.intensity)} text-sm px-2 py-1`}>
-                               {training.intensity}
-                             </Badge>
-                             <span className="text-sm text-muted-foreground">{training.distance}m</span>
-                           </div>
-                           <div className="flex items-center gap-2">
-                             <MapPin className="h-4 w-4" />
-                             <span className="text-sm truncate">{training.location}</span>
-                           </div>
-                         </div>
-                       ))}
-                     </div>
-                   )}
-                 </div>
-               </div>
-             );
-           })}
-         </div>
+          {/* Fila AM */}
+          <div className="grid grid-cols-8 gap-3 mb-4">
+            <div className="text-center text-sm font-medium text-muted-foreground py-4 flex items-center justify-center bg-muted/30 dark:bg-muted/50 rounded-lg">
+              AM
+            </div>
+            {days.map((day, index) => {
+              const trainings = getTrainingsForDayAndTime(day, 'AM');
+              const isCurrentDay = isToday(day);
+              
+              return (
+                <div key={`am-${index}`} className="min-h-[180px]">
+                  <div className={`h-full p-4 rounded-lg border ${isCurrentDay ? 'border-primary/50 bg-primary/5 dark:bg-primary/10' : 'border-muted bg-background/50 dark:bg-background/80'}`}>
+                    {trainings.length === 0 ? (
+                      <div className="flex items-center justify-center h-full">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-12 w-12 p-0 opacity-50 hover:opacity-100"
+                        >
+                          <Plus className="h-6 w-6" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {trainings.map((training) => (
+                          <div
+                            key={training.id}
+                            className={`p-3 rounded-lg text-sm border ${
+                              training.isCompleted 
+                                ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800' 
+                                : 'bg-background border-muted dark:bg-background/80 dark:border-muted-foreground/20'
+                            }`}
+                          >
+                            <div className="font-medium truncate mb-2">{training.title}</div>
+                            <div className="flex items-center gap-2 mb-2">
+                              <Clock className="h-4 w-4" />
+                              <span className="text-sm">{training.time}</span>
+                            </div>
+                            <div className="flex items-center gap-2 mb-2">
+                              <Badge className={`${getIntensityColor(training.intensity)} text-sm px-2 py-1`}>
+                                {training.intensity}
+                              </Badge>
+                              <span className="text-sm text-muted-foreground">{training.distance}m</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <MapPin className="h-4 w-4" />
+                              <span className="text-sm truncate">{training.location}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
 
-         {/* Fila PM */}
-         <div className="grid grid-cols-8 gap-3">
-           <div className="text-center text-sm font-medium text-muted-foreground py-4 flex items-center justify-center bg-muted/30 rounded-lg">
-             PM
-           </div>
-           {days.map((day, index) => {
-             const trainings = getTrainingsForDayAndTime(day, 'PM');
-             const isCurrentDay = isToday(day);
-             
-             return (
-               <div key={`pm-${index}`} className="min-h-[180px]">
-                 <div className={`h-full p-4 rounded-lg border ${isCurrentDay ? 'border-primary/50 bg-primary/5' : 'border-muted bg-background/50'}`}>
-                   {trainings.length === 0 ? (
-                     <div className="flex items-center justify-center h-full">
-                       <Button
-                         size="sm"
-                         variant="ghost"
-                         className="h-12 w-12 p-0 opacity-50 hover:opacity-100"
-                       >
-                         <Plus className="h-6 w-6" />
-                       </Button>
-                     </div>
-                   ) : (
-                     <div className="space-y-3">
-                       {trainings.map((training) => (
-                         <div
-                           key={training.id}
-                           className={`p-3 rounded-lg text-sm border ${
-                             training.isCompleted 
-                               ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800' 
-                               : 'bg-background border-muted'
-                           }`}
-                         >
-                           <div className="font-medium truncate mb-2">{training.title}</div>
-                           <div className="flex items-center gap-2 mb-2">
-                             <Clock className="h-4 w-4" />
-                             <span className="text-sm">{training.time}</span>
-                           </div>
-                           <div className="flex items-center gap-2 mb-2">
-                             <Badge className={`${getIntensityColor(training.intensity)} text-sm px-2 py-1`}>
-                               {training.intensity}
-                             </Badge>
-                             <span className="text-sm text-muted-foreground">{training.distance}m</span>
-                           </div>
-                           <div className="flex items-center gap-2">
-                             <MapPin className="h-4 w-4" />
-                             <span className="text-sm truncate">{training.location}</span>
-                           </div>
-                         </div>
-                       ))}
-                     </div>
-                   )}
-                 </div>
-               </div>
-             );
-           })}
-         </div>
+          {/* Fila PM */}
+          <div className="grid grid-cols-8 gap-3">
+            <div className="text-center text-sm font-medium text-muted-foreground py-4 flex items-center justify-center bg-muted/30 dark:bg-muted/50 rounded-lg">
+              PM
+            </div>
+            {days.map((day, index) => {
+              const trainings = getTrainingsForDayAndTime(day, 'PM');
+              const isCurrentDay = isToday(day);
+              
+              return (
+                <div key={`pm-${index}`} className="min-h-[180px]">
+                  <div className={`h-full p-4 rounded-lg border ${isCurrentDay ? 'border-primary/50 bg-primary/5 dark:bg-primary/10' : 'border-muted bg-background/50 dark:bg-background/80'}`}>
+                    {trainings.length === 0 ? (
+                      <div className="flex items-center justify-center h-full">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-12 w-12 p-0 opacity-50 hover:opacity-100"
+                        >
+                          <Plus className="h-6 w-6" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {trainings.map((training) => (
+                          <div
+                            key={training.id}
+                            className={`p-3 rounded-lg text-sm border ${
+                              training.isCompleted 
+                                ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800' 
+                                : 'bg-background border-muted dark:bg-background/80 dark:border-muted-foreground/20'
+                            }`}
+                          >
+                            <div className="font-medium truncate mb-2">{training.title}</div>
+                            <div className="flex items-center gap-2 mb-2">
+                              <Clock className="h-4 w-4" />
+                              <span className="text-sm">{training.time}</span>
+                            </div>
+                            <div className="flex items-center gap-2 mb-2">
+                              <Badge className={`${getIntensityColor(training.intensity)} text-sm px-2 py-1`}>
+                                {training.intensity}
+                              </Badge>
+                              <span className="text-sm text-muted-foreground">{training.distance}m</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <MapPin className="h-4 w-4" />
+                              <span className="text-sm truncate">{training.location}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Vista Móvil - Lista vertical */}
+        <div className="lg:hidden space-y-4">
+          {days.map((day, index) => {
+            const dayName = dayNames[index];
+            const amTrainings = getTrainingsForDayAndTime(day, 'AM');
+            const pmTrainings = getTrainingsForDayAndTime(day, 'PM');
+            const isCurrentDay = isToday(day);
+            const stats = getDayStats(day);
+            
+            return (
+              <div key={index} className={`p-4 rounded-lg border ${isCurrentDay ? 'border-primary/50 bg-primary/5 dark:bg-primary/10' : 'border-muted bg-background/50 dark:bg-background/80'}`}>
+                {/* Header del día */}
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="font-semibold text-lg">{dayName}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {format(day, "dd MMMM yyyy", { locale: es })}
+                    </p>
+                  </div>
+                  {stats.totalTrainings > 0 && (
+                    <div className="text-right">
+                      <div className="flex items-center gap-1 text-sm">
+                        <Activity className="h-4 w-4" />
+                        <span>{stats.completedTrainings}/{stats.totalTrainings}</span>
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {stats.totalDistance}m
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Entrenamientos AM */}
+                {amTrainings.length > 0 && (
+                  <div className="mb-4">
+                    <h4 className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2">
+                      <span className="w-8 h-6 bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300 rounded text-xs flex items-center justify-center">AM</span>
+                      Mañana
+                    </h4>
+                    <div className="space-y-2">
+                      {amTrainings.map((training) => (
+                        <div
+                          key={training.id}
+                          className={`p-3 rounded-lg border ${
+                            training.isCompleted 
+                              ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800' 
+                              : 'bg-background border-muted'
+                          }`}
+                        >
+                          <div className="flex items-start justify-between mb-2">
+                            <h5 className="font-medium text-sm">{training.title}</h5>
+                            <Badge className={`${getIntensityColor(training.intensity)} text-xs px-2 py-1`}>
+                              {training.intensity}
+                            </Badge>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                            <div className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              <span>{training.time}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <MapPin className="h-3 w-3" />
+                              <span className="truncate">{training.location}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <span>{training.distance}m</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <span>{training.duration}min</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Entrenamientos PM */}
+                {pmTrainings.length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2">
+                      <span className="w-8 h-6 bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-300 rounded text-xs flex items-center justify-center">PM</span>
+                      Tarde
+                    </h4>
+                    <div className="space-y-2">
+                      {pmTrainings.map((training) => (
+                        <div
+                          key={training.id}
+                          className={`p-3 rounded-lg border ${
+                            training.isCompleted 
+                              ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800' 
+                              : 'bg-background border-muted'
+                          }`}
+                        >
+                          <div className="flex items-start justify-between mb-2">
+                            <h5 className="font-medium text-sm">{training.title}</h5>
+                            <Badge className={`${getIntensityColor(training.intensity)} text-xs px-2 py-1`}>
+                              {training.intensity}
+                            </Badge>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                            <div className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              <span>{training.time}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <MapPin className="h-3 w-3" />
+                              <span className="truncate">{training.location}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <span>{training.distance}m</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <span>{training.duration}min</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Botón para agregar entrenamiento si no hay ninguno */}
+                {amTrainings.length === 0 && pmTrainings.length === 0 && (
+                  <div className="text-center py-8">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="gap-2"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Agregar Entrenamiento
+                    </Button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
 
         {/* Resumen semanal */}
         <div className="mt-6 pt-4 border-t">
-          <div className="grid grid-cols-3 gap-4">
-            <div className="text-center p-3 bg-background/50 rounded-lg">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="text-center p-3 bg-background/50 dark:bg-background/80 rounded-lg">
               <div className="text-2xl font-bold text-primary">
                 {sampleTrainings.length}
               </div>
               <div className="text-sm text-muted-foreground">Entrenamientos</div>
             </div>
-            <div className="text-center p-3 bg-background/50 rounded-lg">
+            <div className="text-center p-3 bg-background/50 dark:bg-background/80 rounded-lg">
               <div className="text-2xl font-bold text-green-600">
                 {sampleTrainings.filter(t => t.isCompleted).length}
               </div>
               <div className="text-sm text-muted-foreground">Completados</div>
             </div>
-            <div className="text-center p-3 bg-background/50 rounded-lg">
+            <div className="text-center p-3 bg-background/50 dark:bg-background/80 rounded-lg">
               <div className="text-2xl font-bold text-blue-600">
                 {sampleTrainings.reduce((sum, t) => sum + t.distance, 0).toLocaleString()}m
               </div>

@@ -289,7 +289,7 @@ function ReportsContent() {
                     <Settings className="h-5 w-5" />
                     Acciones
                   </CardTitle>
-                </CardHeader>
+              </CardHeader>
               <CardContent className="space-y-3">
                 <Button 
                     onClick={exportToPDF} 
