@@ -16,8 +16,6 @@ import {
   Calendar, 
   TrendingUp, 
   Activity, 
-  CheckCircle,
-  AlertCircle,
   Edit,
   Plus,
   Save,
@@ -41,15 +39,7 @@ interface TrainingPhase {
   color: string;
 }
 
-interface TrainingGoal {
-  id: string;
-  title: string;
-  description: string;
-  targetDate: string;
-  priority: "high" | "medium" | "low";
-  status: "pending" | "in-progress" | "completed";
-  progress: number;
-}
+
 
 interface WeeklyPlan {
   week: number;
@@ -122,35 +112,7 @@ const trainingPhases: TrainingPhase[] = [
   }
 ];
 
-const trainingGoals: TrainingGoal[] = [
-  {
-    id: "goal-1",
-    title: "Campeonato Nacional 2025",
-    description: "Objetivo principal del año - 100m libre",
-    targetDate: "2025-06-15",
-    priority: "high",
-    status: "in-progress",
-    progress: 65
-  },
-  {
-    id: "goal-2",
-    title: "Mejorar tiempo en 200m",
-    description: "Bajar de 2:15 a 2:10 en 200m libre",
-    targetDate: "2025-04-20",
-    priority: "medium",
-    status: "in-progress",
-    progress: 40
-  },
-  {
-    id: "goal-3",
-    title: "Técnica de mariposa",
-    description: "Perfeccionar la técnica de mariposa",
-    targetDate: "2025-03-30",
-    priority: "low",
-    status: "pending",
-    progress: 20
-  }
-];
+
 
 const weeklyPlan: WeeklyPlan[] = [
   { week: 1, phase: "Base", totalDistance: 25000, sessions: 6, focus: "Aeróbico", intensity: 4 },
@@ -222,15 +184,17 @@ const competitions: Competition[] = [
 export function PlanificacionOverview() {
   const { currentZones } = useTrainingZones();
   const [selectedPhase, setSelectedPhase] = useState<string>("base");
-  const [selectedGoal, setSelectedGoal] = useState<string>("goal-1");
   const [selectedCompetition, setSelectedCompetition] = useState<string>("comp-1");
+  
+  // Estado para la competición principal (prioridad alta)
+  const [mainCompetition, setMainCompetition] = useState<Competition | null>(
+    competitions.find(comp => comp.priority === "high") || null
+  );
   
   // Estados para edición
   const [editingPhase, setEditingPhase] = useState<string | null>(null);
-  const [editingGoal, setEditingGoal] = useState<string | null>(null);
   const [editingCompetition, setEditingCompetition] = useState<string | null>(null);
   const [isAddingPhase, setIsAddingPhase] = useState(false);
-  const [isAddingGoal, setIsAddingGoal] = useState(false);
   const [isAddingCompetition, setIsAddingCompetition] = useState(false);
   
   // Estados para formularios
@@ -243,14 +207,7 @@ export function PlanificacionOverview() {
     volume: 0
   });
   
-  const [goalForm, setGoalForm] = useState({
-    title: "",
-    description: "",
-    targetDate: "",
-    priority: "medium" as "high" | "medium" | "low",
-    status: "pending" as "pending" | "in-progress" | "completed",
-    progress: 0
-  });
+
 
   const [competitionForm, setCompetitionForm] = useState({
     name: "",
@@ -264,7 +221,6 @@ export function PlanificacionOverview() {
   });
 
   const currentPhase = trainingPhases.find(phase => phase.id === selectedPhase);
-  const currentGoal = trainingGoals.find(goal => goal.id === selectedGoal);
   const currentCompetition = competitions.find(comp => comp.id === selectedCompetition);
 
   const getPriorityColor = (priority: string) => {
@@ -276,23 +232,7 @@ export function PlanificacionOverview() {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "completed": return "text-green-600";
-      case "in-progress": return "text-blue-600";
-      case "pending": return "text-gray-600";
-      default: return "text-gray-600";
-    }
-  };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "completed": return <CheckCircle className="w-4 h-4" />;
-      case "in-progress": return <Activity className="w-4 h-4" />;
-      case "pending": return <AlertCircle className="w-4 h-4" />;
-      default: return <AlertCircle className="w-4 h-4" />;
-    }
-  };
 
   // Funciones para manejar edición de fases
   const handleEditPhase = (phase: TrainingPhase) => {
@@ -335,46 +275,7 @@ export function PlanificacionOverview() {
     });
   };
 
-  // Funciones para manejar edición de objetivos
-  const handleEditGoal = (goal: TrainingGoal) => {
-    setGoalForm({
-      title: goal.title,
-      description: goal.description,
-      targetDate: goal.targetDate,
-      priority: goal.priority,
-      status: goal.status,
-      progress: goal.progress
-    });
-    setEditingGoal(goal.id);
-  };
 
-  const handleSaveGoal = () => {
-    // Aquí se guardaría en la base de datos
-    console.log("Guardando objetivo:", goalForm);
-    setEditingGoal(null);
-    setIsAddingGoal(false);
-    setGoalForm({
-      title: "",
-      description: "",
-      targetDate: "",
-      priority: "medium",
-      status: "pending",
-      progress: 0
-    });
-  };
-
-  const handleCancelGoal = () => {
-    setEditingGoal(null);
-    setIsAddingGoal(false);
-    setGoalForm({
-      title: "",
-      description: "",
-      targetDate: "",
-      priority: "medium",
-      status: "pending",
-      progress: 0
-    });
-  };
 
   const handleAddFocus = (focus: string) => {
     if (!phaseForm.focus.includes(focus)) {
@@ -410,6 +311,23 @@ export function PlanificacionOverview() {
   const handleSaveCompetition = () => {
     // Aquí se guardaría en la base de datos
     console.log("Guardando competición:", competitionForm);
+    
+    // Si la competición tiene prioridad alta, actualizar la competición principal
+    if (competitionForm.priority === "high") {
+      const newMainCompetition: Competition = {
+        id: editingCompetition || `comp-${Date.now()}`,
+        name: competitionForm.name,
+        date: competitionForm.date,
+        location: competitionForm.location,
+        type: competitionForm.type,
+        events: competitionForm.events,
+        objectives: competitionForm.objectives,
+        priority: competitionForm.priority,
+        status: competitionForm.status
+      };
+      setMainCompetition(newMainCompetition);
+    }
+    
     setEditingCompetition(null);
     setIsAddingCompetition(false);
     setCompetitionForm({
@@ -474,20 +392,62 @@ export function PlanificacionOverview() {
     }
   };
 
+  // Función para calcular días restantes hasta la competición principal
+  const getDaysToMainCompetition = () => {
+    if (!mainCompetition) return null;
+    
+    const today = new Date();
+    const competitionDate = new Date(mainCompetition.date);
+    const timeDiff = competitionDate.getTime() - today.getTime();
+    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    
+    return daysDiff;
+  };
+
+  const daysToCompetition = getDaysToMainCompetition();
+
   return (
     <div className="space-y-6">
       {/* Header con objetivos principales */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="bg-muted/50 border-muted">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Objetivo Principal</CardTitle>
+            <CardTitle className="text-sm font-medium">Días al Campeonato</CardTitle>
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">Campeonato Nacional</div>
-            <p className="text-xs text-muted-foreground">15 Junio 2025</p>
-            <Progress value={65} className="h-2 mt-2" />
-            <p className="text-xs text-muted-foreground mt-1">65% completado</p>
+            {mainCompetition ? (
+              <>
+                <div className="text-2xl font-bold">
+                  {daysToCompetition !== null ? (
+                    daysToCompetition > 0 ? `${daysToCompetition} días` : 
+                    daysToCompetition === 0 ? "¡Hoy!" : 
+                    `Hace ${Math.abs(daysToCompetition)} días`
+                  ) : "N/A"}
+                </div>
+                <p className="text-xs text-muted-foreground">{mainCompetition.name}</p>
+                <p className="text-xs text-muted-foreground">
+                  {new Date(mainCompetition.date).toLocaleDateString('es-ES')}
+                </p>
+                <Progress 
+                  value={daysToCompetition !== null && daysToCompetition > 0 ? 
+                    Math.max(0, Math.min(100, (365 - daysToCompetition) / 365 * 100)) : 100
+                  } 
+                  className="h-2 mt-2" 
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  {daysToCompetition !== null && daysToCompetition > 0 ? 
+                    `${Math.round((365 - daysToCompetition) / 365 * 100)}% del año transcurrido` : 
+                    "Competición completada"
+                  }
+                </p>
+              </>
+            ) : (
+              <>
+                <div className="text-2xl font-bold text-muted-foreground">Sin objetivo</div>
+                <p className="text-xs text-muted-foreground">Crea una competición con prioridad alta</p>
+              </>
+            )}
           </CardContent>
         </Card>
 
@@ -533,9 +493,8 @@ export function PlanificacionOverview() {
 
       {/* Tabs principales */}
       <Tabs defaultValue="fases" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="fases">Fases del Ciclo</TabsTrigger>
-          <TabsTrigger value="objetivos">Objetivos</TabsTrigger>
           <TabsTrigger value="competiciones">Competiciones</TabsTrigger>
           <TabsTrigger value="planificacion">Planificación Semanal</TabsTrigger>
           <TabsTrigger value="carga">Carga de Entrenamiento</TabsTrigger>
@@ -774,227 +733,7 @@ export function PlanificacionOverview() {
           </Dialog>
         </TabsContent>
 
-        {/* Tab: Objetivos */}
-        <TabsContent value="objetivos" className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold">Objetivos de Entrenamiento</h3>
-            <Button 
-              onClick={() => setIsAddingGoal(true)}
-              className="gap-2"
-              size="sm"
-            >
-              <Plus className="h-4 w-4" />
-              Agregar Objetivo
-            </Button>
-          </div>
-          
-          <div className="grid gap-4">
-            {trainingGoals.map((goal) => (
-              <Card 
-                key={goal.id} 
-                className={`bg-muted/50 border-muted cursor-pointer transition-all hover:shadow-md ${
-                  selectedGoal === goal.id ? 'ring-2 ring-primary' : ''
-                }`}
-                onClick={() => setSelectedGoal(goal.id)}
-              >
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-2 flex-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-lg font-semibold">{goal.title}</h3>
-                        <Badge 
-                          variant="outline" 
-                          className={`${getPriorityColor(goal.priority)} text-white`}
-                        >
-                          {goal.priority === "high" ? "Alta" : goal.priority === "medium" ? "Media" : "Baja"}
-                        </Badge>
-                      </div>
-                      <p className="text-muted-foreground">{goal.description}</p>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Calendar className="w-4 h-4" />
-                        <span>Objetivo: {new Date(goal.targetDate).toLocaleDateString('es-ES')}</span>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-4">
-                      <div className="text-right">
-                        <div className="flex items-center gap-2">
-                          {getStatusIcon(goal.status)}
-                          <span className={`text-sm font-medium ${getStatusColor(goal.status)}`}>
-                            {goal.status === "completed" ? "Completado" : 
-                             goal.status === "in-progress" ? "En Progreso" : "Pendiente"}
-                          </span>
-                        </div>
-                        <Progress value={goal.progress} className="w-24 h-2 mt-1" />
-                        <p className="text-xs text-muted-foreground mt-1">{goal.progress}%</p>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditGoal(goal);
-                        }}
-                        className="h-8 w-8 p-0"
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
 
-          {/* Detalles del objetivo seleccionado */}
-          {currentGoal && (
-            <Card className="bg-muted/50 border-muted">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  {getStatusIcon(currentGoal.status)}
-                  {currentGoal.title} - Detalles
-                </CardTitle>
-                <CardDescription>{currentGoal.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-3">
-                  <div className="space-y-2">
-                    <h4 className="font-medium">Prioridad</h4>
-                    <Badge 
-                      variant="outline" 
-                      className={`${getPriorityColor(currentGoal.priority)} text-white`}
-                    >
-                      {currentGoal.priority === "high" ? "Alta" : currentGoal.priority === "medium" ? "Media" : "Baja"}
-                    </Badge>
-                  </div>
-                  <div className="space-y-2">
-                    <h4 className="font-medium">Fecha Objetivo</h4>
-                    <p className="font-bold">{new Date(currentGoal.targetDate).toLocaleDateString('es-ES')}</p>
-                  </div>
-                  <div className="space-y-2">
-                    <h4 className="font-medium">Progreso</h4>
-                    <div className="flex items-center gap-2">
-                      <Progress value={currentGoal.progress} className="flex-1" />
-                      <span className="font-bold">{currentGoal.progress}%</span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Modal de Edición de Objetivos */}
-          <Dialog open={editingGoal !== null || isAddingGoal} onOpenChange={handleCancelGoal}>
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>
-                  {isAddingGoal ? "Agregar Nuevo Objetivo" : "Editar Objetivo"}
-                </DialogTitle>
-                <DialogDescription>
-                  {isAddingGoal 
-                    ? "Crea un nuevo objetivo de entrenamiento" 
-                    : "Modifica los detalles del objetivo"
-                  }
-                </DialogDescription>
-              </DialogHeader>
-              
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="goal-title">Título del Objetivo</Label>
-                  <Input
-                    id="goal-title"
-                    value={goalForm.title}
-                    onChange={(e) => setGoalForm(prev => ({ ...prev, title: e.target.value }))}
-                    placeholder="Ej: Campeonato Nacional 2025"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="goal-description">Descripción</Label>
-                  <Textarea
-                    id="goal-description"
-                    value={goalForm.description}
-                    onChange={(e) => setGoalForm(prev => ({ ...prev, description: e.target.value }))}
-                    placeholder="Describe tu objetivo..."
-                    className="min-h-[80px]"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="goal-date">Fecha Objetivo</Label>
-                    <Input
-                      id="goal-date"
-                      type="date"
-                      value={goalForm.targetDate}
-                      onChange={(e) => setGoalForm(prev => ({ ...prev, targetDate: e.target.value }))}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="goal-progress">Progreso (%)</Label>
-                    <Input
-                      id="goal-progress"
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={goalForm.progress}
-                      onChange={(e) => setGoalForm(prev => ({ ...prev, progress: parseInt(e.target.value) || 0 }))}
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="goal-priority">Prioridad</Label>
-                    <Select 
-                      value={goalForm.priority} 
-                      onValueChange={(value: "high" | "medium" | "low") => 
-                        setGoalForm(prev => ({ ...prev, priority: value }))
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="high">Alta</SelectItem>
-                        <SelectItem value="medium">Media</SelectItem>
-                        <SelectItem value="low">Baja</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="goal-status">Estado</Label>
-                    <Select 
-                      value={goalForm.status} 
-                      onValueChange={(value: "pending" | "in-progress" | "completed") => 
-                        setGoalForm(prev => ({ ...prev, status: value }))
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="pending">Pendiente</SelectItem>
-                        <SelectItem value="in-progress">En Progreso</SelectItem>
-                        <SelectItem value="completed">Completado</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <div className="flex justify-end gap-2 pt-4">
-                  <Button variant="outline" onClick={handleCancelGoal}>
-                    Cancelar
-                  </Button>
-                  <Button onClick={handleSaveGoal} className="gap-2">
-                    <Save className="h-4 w-4" />
-                    {isAddingGoal ? "Agregar" : "Guardar"}
-                  </Button>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
-        </TabsContent>
 
         {/* Tab: Competiciones */}
         <TabsContent value="competiciones" className="space-y-4">

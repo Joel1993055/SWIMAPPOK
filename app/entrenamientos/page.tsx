@@ -30,6 +30,8 @@ import {
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { TrainingZoneDetector } from "@/components/training-zone-detector";
+import { AICoach } from "@/components/ai-coach";
+import { useAICoach } from "@/lib/contexts/ai-coach-context";
 
 // Datos de ejemplo de entrenamientos guardados
 const sampleSavedTrainings = [
@@ -78,6 +80,8 @@ function TrainingContent() {
   const [trainingContent, setTrainingContent] = useState("");
   const [savedTrainings, setSavedTrainings] = useState(sampleSavedTrainings);
   const [editingTraining, setEditingTraining] = useState<number | null>(null);
+  
+  const { analyzeTraining } = useAICoach();
 
   const trainingTypes = ["Aeróbico", "Técnica", "Umbral", "Velocidad", "Recuperación", "Fuerza", "Flexibilidad"];
 
@@ -122,6 +126,16 @@ function TrainingContent() {
     setTrainingCoach("");
     setTrainingType("");
     setTrainingDate(new Date());
+
+    // Analizar entrenamiento con AI Coach
+    analyzeTraining({
+      title: trainingTitle,
+      content: trainingContent,
+      type: trainingType,
+      date: trainingDate,
+      totalDistance: 0, // Se calculará automáticamente
+      detectedZones: [], // Se detectará automáticamente
+    });
 
     alert(editingTraining ? "Entrenamiento actualizado exitosamente" : "Entrenamiento guardado exitosamente");
   };
@@ -310,6 +324,9 @@ function TrainingContent() {
 
           {/* Panel de Detección de Zonas */}
           <div className="lg:col-span-1 space-y-6">
+            {/* AI Coach */}
+            <AICoach />
+
             {/* Detector de Zonas */}
             <TrainingZoneDetector content={trainingContent} />
 
