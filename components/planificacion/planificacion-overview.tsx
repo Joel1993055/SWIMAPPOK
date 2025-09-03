@@ -531,7 +531,7 @@ export function PlanificacionOverview() {
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">{phase.name}</CardTitle>
                     <div className="flex items-center gap-2">
-                      <div className={`w-3 h-3 rounded-full ${phase.color}`}></div>
+                    <div className={`w-3 h-3 rounded-full ${phase.color}`}></div>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -838,13 +838,13 @@ export function PlanificacionOverview() {
                       
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
+                        <Calendar className="w-4 h-4" />
                           <span>{new Date(competition.date).toLocaleDateString('es-ES')}</span>
-                        </div>
+                      </div>
                         <div className="flex items-center gap-1">
                           <MapPin className="w-4 h-4" />
                           <span>{competition.location}</span>
-                        </div>
+                    </div>
                         <div className="flex items-center gap-1">
                           <Clock className="w-4 h-4" />
                           <span className={getCompetitionStatusColor(competition.status)}>
@@ -954,7 +954,7 @@ export function PlanificacionOverview() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
+                  <div className="space-y-2">
                   <h4 className="font-medium">Eventos</h4>
                   <div className="flex flex-wrap gap-2">
                     {currentCompetition.events.map((event, index) => (
@@ -982,10 +982,10 @@ export function PlanificacionOverview() {
                                 Récord Personal
                               </Badge>
                             )}
-                          </div>
-                        </div>
-                      ))}
                     </div>
+                  </div>
+                      ))}
+                </div>
                   </div>
                 )}
               </CardContent>

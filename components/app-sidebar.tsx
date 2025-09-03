@@ -13,6 +13,7 @@ import {
   Target,
   Users,
   Plus,
+  Wrench,
 } from "lucide-react"
 
 import { NavDocuments } from "@/components/nav-documents"
@@ -66,6 +67,11 @@ const data = {
       title: "Entrenamientos",
       url: "/entrenamientos",
       icon: Plus,
+    },
+    {
+      title: "Herramientas",
+      url: "/herramientas",
+      icon: Wrench,
     },
   ],
   navTools: [
