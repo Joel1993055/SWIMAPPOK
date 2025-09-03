@@ -12,6 +12,8 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useReports, sampleCharts, sampleTrainings } from "@/lib/contexts/reports-context";
+import { TemplateManager } from "@/components/reports/template-manager";
+import { TemplateEditor } from "@/components/reports/template-editor";
 import { 
   ClipboardListIcon, 
   Download, 
@@ -24,7 +26,9 @@ import {
   FileText,
   X,
   Check,
-  Settings
+  Settings,
+  Layout,
+  Wrench
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -33,108 +37,145 @@ function ReportsContent() {
   const {
     selectedCharts,
     selectedTrainings,
-    reportTemplates,
-    currentTemplate,
     addChart,
     removeChart,
     addTraining,
     removeTraining,
-    createReport,
-    exportToPDF,
-    printReport,
     clearSelection
   } = useReports();
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedType, setSelectedType] = useState("all");
+  const [selectedType, setSelectedType] = useState<string>("all");
+  const [selectedPeriod, setSelectedPeriod] = useState<string>("all");
+  const [selectedTemplate] = useState<string>("default");
 
+  // Filtrar datos
+  const filteredCharts = sampleCharts.filter(chart => {
+    const matchesSearch = chart.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = selectedType === "all" || chart.type === selectedType;
+    return matchesSearch && matchesType;
+  });
 
-  const filteredCharts = sampleCharts.filter(chart => 
-    chart.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    (selectedType === "all" || chart.type === selectedType)
-  );
+  const filteredTrainings = sampleTrainings.filter(training => {
+    const matchesSearch = training.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         training.type.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    // Filtro por período basado en la fecha
+    let matchesPeriod = true;
+    if (selectedPeriod !== "all") {
+      const trainingDate = new Date(training.date);
+      const now = new Date();
+      
+      switch (selectedPeriod) {
+        case "week":
+          const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          matchesPeriod = trainingDate >= weekAgo;
+          break;
+        case "month":
+          const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          matchesPeriod = trainingDate >= monthAgo;
+          break;
+        case "quarter":
+          const quarterAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+          matchesPeriod = trainingDate >= quarterAgo;
+          break;
+      }
+    }
+    
+    return matchesSearch && matchesPeriod;
+  });
 
-  const filteredTrainings = sampleTrainings.filter(training => 
-    training.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    (selectedType === "all" || training.type === selectedType)
-  );
-
-  const handleChartToggle = (chart: typeof sampleCharts[0]) => {
-    if (selectedCharts.find(c => c.id === chart.id)) {
-      removeChart(chart.id);
+  const handleChartToggle = (chartId: string) => {
+    const isSelected = selectedCharts.some(chart => chart.id === chartId);
+    if (isSelected) {
+      removeChart(chartId);
     } else {
-      addChart(chart);
+      const chart = sampleCharts.find(c => c.id === chartId);
+      if (chart) addChart(chart);
     }
   };
 
-  const handleTrainingToggle = (training: typeof sampleTrainings[0]) => {
-    if (selectedTrainings.find(t => t.id === training.id)) {
-      removeTraining(training.id);
+  const handleTrainingToggle = (trainingId: string) => {
+    const isSelected = selectedTrainings.some(training => training.id === trainingId);
+    if (isSelected) {
+      removeTraining(trainingId);
     } else {
-      addTraining(training);
+      const training = sampleTrainings.find(t => t.id === trainingId);
+      if (training) addTraining(training);
     }
   };
+
+  const exportToPDF = () => {
+    console.log('Exportando a PDF:', { selectedCharts, selectedTrainings, selectedTemplate });
+  };
+
+  const printReport = () => {
+    console.log('Imprimiendo reporte:', { selectedCharts, selectedTrainings, selectedTemplate });
+  };
+
+
 
   return (
-    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+    <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <ClipboardListIcon className="h-6 w-6 text-primary" />
-          </div>
-          <h1 className="text-3xl font-bold text-foreground">Reportes</h1>
-          <Badge variant="secondary" className="gap-1">
-            <FileText className="h-3 w-3" />
-            {selectedCharts.length + selectedTrainings.length} elementos
-          </Badge>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Reportes</h1>
+          <p className="text-muted-foreground">
+            Genera reportes personalizados de gráficos y entrenamientos
+          </p>
         </div>
-        <p className="text-muted-foreground">
-          Crea reportes personalizados con gráficos y entrenamientos
-        </p>
       </div>
 
-      {/* Plantillas de Reportes */}
+      {/* Resumen de selección */}
       <Card className="bg-muted/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Settings className="h-5 w-5" />
-            Plantillas de Reportes
+            <ClipboardListIcon className="h-5 w-5" />
+            Resumen de Selección
           </CardTitle>
           <CardDescription>
-            Selecciona una plantilla predefinida o crea tu propio reporte
+            Elementos seleccionados para tu reporte
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {reportTemplates.map((template) => (
-              <Card 
-                key={template.id} 
-                className={`cursor-pointer transition-all hover:shadow-md ${
-                  currentTemplate?.id === template.id ? 'ring-2 ring-primary' : ''
-                }`}
-                onClick={() => createReport(template)}
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold">{template.name}</h3>
-                    {currentTemplate?.id === template.id && (
-                      <Check className="h-4 w-4 text-primary" />
-                    )}
+          <div className="grid gap-4 md:grid-cols-2">
+            {selectedCharts.map((chart) => (
+              <Card key={chart.id} className="bg-background/50">
+                <CardContent className="p-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">{chart.title}</h4>
+                      <p className="text-sm text-muted-foreground">{chart.type}</p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => removeChart(chart.id)}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
                   </div>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    {template.description}
-                  </p>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <BarChart3 className="h-3 w-3" />
-                    <span>{template.charts.length} gráficos</span>
-                    {template.trainings && (
-                      <>
-                        <span>•</span>
-                        <FileText className="h-3 w-3" />
-                        <span>Entrenamientos</span>
-                      </>
-                    )}
+                </CardContent>
+              </Card>
+            ))}
+            {selectedTrainings.map((training) => (
+              <Card key={training.id} className="bg-background/50">
+                <CardContent className="p-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">{training.title}</h4>
+                      <p className="text-sm text-muted-foreground">
+                        {format(new Date(training.date), "dd MMM yyyy", { locale: es })}
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => removeTraining(training.id)}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -143,24 +184,32 @@ function ReportsContent() {
         </CardContent>
       </Card>
 
-      {/* Contenido Principal */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Panel de Selección */}
-        <div className="lg:col-span-2">
-          <Tabs defaultValue="charts" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="charts" className="gap-2">
-                <BarChart3 className="h-4 w-4" />
-                Gráficos ({selectedCharts.length})
-              </TabsTrigger>
-              <TabsTrigger value="trainings" className="gap-2">
-                <FileText className="h-4 w-4" />
-                Entrenamientos ({selectedTrainings.length})
-              </TabsTrigger>
-            </TabsList>
+      {/* Contenido Principal con Tabs */}
+      <Tabs defaultValue="charts" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="charts" className="gap-2">
+            <BarChart3 className="h-4 w-4" />
+            Gráficos ({selectedCharts.length})
+          </TabsTrigger>
+          <TabsTrigger value="trainings" className="gap-2">
+            <FileText className="h-4 w-4" />
+            Entrenamientos ({selectedTrainings.length})
+          </TabsTrigger>
+          <TabsTrigger value="templates" className="gap-2">
+            <Layout className="h-4 w-4" />
+            Plantillas
+          </TabsTrigger>
+          <TabsTrigger value="editor" className="gap-2">
+            <Wrench className="h-4 w-4" />
+            Editor
+          </TabsTrigger>
+        </TabsList>
 
-            {/* Tab: Gráficos */}
-            <TabsContent value="charts" className="space-y-4">
+        {/* Tab: Gráficos */}
+        <TabsContent value="charts" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Panel de Selección de Gráficos */}
+            <div className="lg:col-span-2">
               <Card className="bg-muted/50">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -179,7 +228,6 @@ function ReportsContent() {
                         placeholder="Buscar gráficos..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="gap-2"
                       />
                     </div>
                     <Select value={selectedType} onValueChange={setSelectedType}>
@@ -188,53 +236,117 @@ function ReportsContent() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">Todos los tipos</SelectItem>
-                        <SelectItem value="volume">Volumen</SelectItem>
-                        <SelectItem value="sessions">Sesiones</SelectItem>
-                        <SelectItem value="progress">Progreso</SelectItem>
-                        <SelectItem value="zones">Zonas</SelectItem>
-                        <SelectItem value="performance">Rendimiento</SelectItem>
+                        <SelectItem value="line">Línea</SelectItem>
+                        <SelectItem value="bar">Barras</SelectItem>
+                        <SelectItem value="area">Área</SelectItem>
+                        <SelectItem value="pie">Circular</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
-                  {/* Lista de Gráficos */}
+                  {/* Lista de gráficos */}
                   <div className="space-y-3">
-                    {filteredCharts.map((chart) => (
-                      <div 
-                        key={chart.id}
-                        className={`p-4 border rounded-lg cursor-pointer transition-all hover:shadow-md ${
-                          selectedCharts.find(c => c.id === chart.id) 
-                            ? 'bg-primary/10 border-primary' 
-                            : 'bg-background/50'
-                        }`}
-                        onClick={() => handleChartToggle(chart)}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <Checkbox 
-                              checked={selectedCharts.find(c => c.id === chart.id) !== undefined}
-                              onChange={() => handleChartToggle(chart)}
-                            />
-                            <div>
-                              <h3 className="font-medium">{chart.title}</h3>
-                              <p className="text-sm text-muted-foreground">
-                                {chart.description}
-                              </p>
+                    {filteredCharts.map((chart) => {
+                      const isSelected = selectedCharts.some(selected => selected.id === chart.id);
+                      return (
+                        <div
+                          key={chart.id}
+                          className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                            isSelected ? 'border-primary bg-primary/5' : 'border-muted hover:border-muted-foreground/50'
+                          }`}
+                          onClick={() => handleChartToggle(chart.id)}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <Checkbox
+                                checked={isSelected}
+                                onChange={() => handleChartToggle(chart.id)}
+                              />
+                              <div>
+                                <h4 className="font-medium">{chart.title}</h4>
+                                <p className="text-sm text-muted-foreground">{chart.description}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline">{chart.type}</Badge>
+                              {isSelected && <Check className="h-4 w-4 text-primary" />}
                             </div>
                           </div>
-                          <Badge variant="outline">
-                            {chart.type}
-                          </Badge>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>
-            </TabsContent>
+            </div>
 
-            {/* Tab: Entrenamientos */}
-            <TabsContent value="trainings" className="space-y-4">
+            {/* Panel lateral */}
+            <div className="space-y-4">
+              {/* Panel de acciones */}
+              <Card className="bg-muted/50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Settings className="h-5 w-5" />
+                    Acciones
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Button 
+                    onClick={exportToPDF} 
+                    className="w-full gap-2"
+                    disabled={selectedCharts.length === 0 && selectedTrainings.length === 0}
+                  >
+                    <Download className="h-4 w-4" />
+                    Exportar a PDF
+                  </Button>
+                  
+                  <Button 
+                    onClick={printReport} 
+                    variant="outline" 
+                    className="w-full gap-2"
+                    disabled={selectedCharts.length === 0 && selectedTrainings.length === 0}
+                  >
+                    <Printer className="h-4 w-4" />
+                    Imprimir Reporte
+                  </Button>
+                  
+                  <Button 
+                    onClick={clearSelection} 
+                    variant="outline" 
+                    className="w-full gap-2"
+                    disabled={selectedCharts.length === 0 && selectedTrainings.length === 0}
+                  >
+                    <X className="h-4 w-4" />
+                    Limpiar Selección
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Consejos */}
+              <Card className="bg-muted/50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="h-5 w-5" />
+                    Consejos
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="text-sm text-muted-foreground">
+                    <p>• Selecciona gráficos relevantes para tu análisis</p>
+                    <p>• Usa plantillas predefinidas para reportes estándar</p>
+                    <p>• Personaliza tu reporte según tus necesidades</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </TabsContent>
+
+        {/* Tab: Entrenamientos */}
+        <TabsContent value="trainings" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Panel de Selección de Entrenamientos */}
+            <div className="lg:col-span-2">
               <Card className="bg-muted/50">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -255,199 +367,140 @@ function ReportsContent() {
                         onChange={(e) => setSearchTerm(e.target.value)}
                       />
                     </div>
-                    <Select value={selectedType} onValueChange={setSelectedType}>
+                    <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
                       <SelectTrigger className="w-48">
-                        <SelectValue placeholder="Tipo de entrenamiento" />
+                        <SelectValue placeholder="Período" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">Todos los tipos</SelectItem>
-                        <SelectItem value="Aeróbico">Aeróbico</SelectItem>
-                        <SelectItem value="Técnica">Técnica</SelectItem>
-                        <SelectItem value="Velocidad">Velocidad</SelectItem>
-                        <SelectItem value="Umbral">Umbral</SelectItem>
-                        <SelectItem value="Recuperación">Recuperación</SelectItem>
+                        <SelectItem value="all">Todos los períodos</SelectItem>
+                        <SelectItem value="week">Esta semana</SelectItem>
+                        <SelectItem value="month">Este mes</SelectItem>
+                        <SelectItem value="quarter">Este trimestre</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
-                  {/* Lista de Entrenamientos */}
+                  {/* Lista de entrenamientos */}
                   <div className="space-y-3">
-                    {filteredTrainings.map((training) => (
-                      <div 
-                        key={training.id}
-                        className={`p-4 border rounded-lg cursor-pointer transition-all hover:shadow-md ${
-                          selectedTrainings.find(t => t.id === training.id) 
-                            ? 'bg-primary/10 border-primary' 
-                            : 'bg-background/50'
-                        }`}
-                        onClick={() => handleTrainingToggle(training)}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <Checkbox 
-                              checked={selectedTrainings.find(t => t.id === training.id) !== undefined}
-                              onChange={() => handleTrainingToggle(training)}
-                            />
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <h3 className="font-medium">{training.title}</h3>
-                                <Badge variant="outline">{training.type}</Badge>
-                              </div>
-                              <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                                <div className="flex items-center gap-1">
-                                  <Calendar className="h-3 w-3" />
-                                  <span>{format(new Date(training.date), "dd/MM/yyyy", { locale: es })}</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <Clock className="h-3 w-3" />
-                                  <span>{training.duration}min</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <Target className="h-3 w-3" />
-                                  <span>{training.distance}m</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <Activity className="h-3 w-3" />
-                                  <span>RPE {training.rpe}/10</span>
+                    {filteredTrainings.map((training) => {
+                      const isSelected = selectedTrainings.some(selected => selected.id === training.id);
+                      return (
+                        <div
+                          key={training.id}
+                          className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                            isSelected ? 'border-primary bg-primary/5' : 'border-muted hover:border-muted-foreground/50'
+                          }`}
+                          onClick={() => handleTrainingToggle(training.id)}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <Checkbox
+                                checked={isSelected}
+                                onChange={() => handleTrainingToggle(training.id)}
+                              />
+                              <div>
+                                <h4 className="font-medium">{training.title}</h4>
+                                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                  <div className="flex items-center gap-1">
+                                    <Calendar className="h-3 w-3" />
+                                    {format(new Date(training.date), "dd MMM yyyy", { locale: es })}
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <Clock className="h-3 w-3" />
+                                    {training.duration}
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <Activity className="h-3 w-3" />
+                                    {training.distance}
+                                  </div>
                                 </div>
                               </div>
                             </div>
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline">{training.type}</Badge>
+                              {isSelected && <Check className="h-4 w-4 text-primary" />}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>
-            </TabsContent>
-          </Tabs>
-        </div>
+            </div>
 
-        {/* Panel de Acciones */}
-        <div className="lg:col-span-1 space-y-6">
-          {/* Resumen del Reporte */}
-          <Card className="bg-muted/50">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                Resumen del Reporte
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Gráficos seleccionados:</span>
-                  <Badge variant="secondary">{selectedCharts.length}</Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Entrenamientos seleccionados:</span>
-                  <Badge variant="secondary">{selectedTrainings.length}</Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Plantilla activa:</span>
-                  <Badge variant={currentTemplate ? "default" : "outline"}>
-                    {currentTemplate ? currentTemplate.name : "Personalizado"}
-                  </Badge>
-                </div>
-              </div>
+            {/* Panel lateral */}
+            <div className="space-y-4">
+              {/* Panel de acciones */}
+              <Card className="bg-muted/50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Settings className="h-5 w-5" />
+                    Acciones
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Button 
+                    onClick={exportToPDF} 
+                    className="w-full gap-2"
+                    disabled={selectedCharts.length === 0 && selectedTrainings.length === 0}
+                  >
+                    <Download className="h-4 w-4" />
+                    Exportar a PDF
+                  </Button>
+                  
+                  <Button 
+                    onClick={printReport} 
+                    variant="outline" 
+                    className="w-full gap-2"
+                    disabled={selectedCharts.length === 0 && selectedTrainings.length === 0}
+                  >
+                    <Printer className="h-4 w-4" />
+                    Imprimir Reporte
+                  </Button>
+                  
+                  <Button 
+                    onClick={clearSelection} 
+                    variant="outline" 
+                    className="w-full gap-2"
+                    disabled={selectedCharts.length === 0 && selectedTrainings.length === 0}
+                  >
+                    <X className="h-4 w-4" />
+                    Limpiar Selección
+                  </Button>
+                </CardContent>
+              </Card>
 
-              {(selectedCharts.length > 0 || selectedTrainings.length > 0) && (
-                <div className="pt-4 border-t">
-                  <h4 className="font-medium mb-2">Elementos incluidos:</h4>
-                  <div className="space-y-2">
-                    {selectedCharts.map((chart) => (
-                      <div key={chart.id} className="flex items-center gap-2 text-sm">
-                        <BarChart3 className="h-3 w-3 text-blue-500" />
-                        <span>{chart.title}</span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeChart(chart.id)}
-                          className="h-6 w-6 p-0 ml-auto"
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    ))}
-                    {selectedTrainings.map((training) => (
-                      <div key={training.id} className="flex items-center gap-2 text-sm">
-                        <FileText className="h-3 w-3 text-green-500" />
-                        <span>{training.title}</span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeTraining(training.id)}
-                          className="h-6 w-6 p-0 ml-auto"
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    ))}
+              {/* Consejos */}
+              <Card className="bg-muted/50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="h-5 w-5" />
+                    Consejos
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="text-sm text-muted-foreground">
+                    <p>• Incluye entrenamientos del período que quieres analizar</p>
+                    <p>• Usa plantillas predefinidas para reportes estándar</p>
+                    <p>• Personaliza tu reporte según tus necesidades</p>
                   </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </TabsContent>
 
-          {/* Acciones */}
-          <Card className="bg-muted/50">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="h-5 w-5" />
-                Acciones
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button 
-                onClick={exportToPDF} 
-                className="w-full gap-2"
-                disabled={selectedCharts.length === 0 && selectedTrainings.length === 0}
-              >
-                <Download className="h-4 w-4" />
-                Exportar a PDF
-              </Button>
-              
-              <Button 
-                onClick={printReport} 
-                variant="outline" 
-                className="w-full gap-2"
-                disabled={selectedCharts.length === 0 && selectedTrainings.length === 0}
-              >
-                <Printer className="h-4 w-4" />
-                Imprimir Reporte
-              </Button>
-              
-              <Button 
-                onClick={clearSelection} 
-                variant="outline" 
-                className="w-full gap-2"
-                disabled={selectedCharts.length === 0 && selectedTrainings.length === 0}
-              >
-                <X className="h-4 w-4" />
-                Limpiar Selección
-              </Button>
-            </CardContent>
-          </Card>
+        {/* Tab: Plantillas */}
+        <TabsContent value="templates" className="space-y-4">
+          <TemplateManager />
+        </TabsContent>
 
-          {/* Consejos */}
-          <Card className="bg-muted/50">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="h-5 w-5" />
-                Consejos
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="text-sm text-muted-foreground">
-                <p>• Selecciona gráficos relevantes para tu análisis</p>
-                <p>• Incluye entrenamientos del período que quieres analizar</p>
-                <p>• Usa las plantillas predefinidas para reportes estándar</p>
-                <p>• Personaliza tu reporte según tus necesidades</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+        {/* Tab: Editor */}
+        <TabsContent value="editor" className="space-y-4">
+          <TemplateEditor />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
