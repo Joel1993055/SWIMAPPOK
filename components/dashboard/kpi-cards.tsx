@@ -5,12 +5,14 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Target, Users, Activity, Calendar, Trophy } from "lucide-react";
 import { getSeedData, getAggregations } from "@/lib/seed";
 import { useState } from "react";
+import { useTrainingPhases } from "@/lib/contexts/training-phases-context";
 
 export function KPICards() {
   const sessions = getSeedData();
   const stats = getAggregations(sessions);
   const [selectedPeriod, setSelectedPeriod] = useState<'year' | 'month' | 'week'>('year');
   const [selectedDistancePeriod, setSelectedDistancePeriod] = useState<'year' | 'month' | 'week'>('year');
+  const { getCurrentPhase, getPhaseProgress } = useTrainingPhases();
 
   // Calcular distancia por período
   const getDistanceByPeriod = () => {
@@ -83,41 +85,51 @@ export function KPICards() {
     }
   };
 
-  // Calcular estado del ciclo de entrenamiento
+  // Calcular estado del ciclo de entrenamiento usando las fases reales
   const getTrainingCycleStatus = () => {
-    const now = new Date();
-    const year = now.getFullYear();
+    const currentPhase = getCurrentPhase();
+    const cycleProgress = getPhaseProgress();
     
-    // Simular fechas de ciclo (ejemplo: ciclo de 16 semanas)
-    const cycleStart = new Date(year, 0, 1); // 1 enero
-    const cycleEnd = new Date(year, 3, 30); // 30 abril (16 semanas)
-    const totalCycleDays = Math.ceil((cycleEnd.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24));
-    const daysPassed = Math.ceil((now.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24));
-    const cycleProgress = Math.min(Math.max((daysPassed / totalCycleDays) * 100, 0), 100);
-    
-    // Determinar fase del ciclo
-    let phase = '';
-    let phaseColor = '';
-    if (cycleProgress < 25) {
-      phase = 'Base';
-      phaseColor = 'text-blue-600';
-    } else if (cycleProgress < 50) {
-      phase = 'Construcción';
-      phaseColor = 'text-green-600';
-    } else if (cycleProgress < 75) {
-      phase = 'Específico';
-      phaseColor = 'text-orange-600';
-    } else {
-      phase = 'Pico';
-      phaseColor = 'text-red-600';
+    if (!currentPhase) {
+      return {
+        phase: 'Sin fase activa',
+        phaseColor: 'text-gray-600',
+        progress: 0,
+        label: 'Estado del ciclo',
+        subtitle: 'No hay fase activa en este momento'
+      };
     }
     
+    // Determinar color basado en la fase actual
+    let phaseColor = '';
+    switch (currentPhase.name.toLowerCase()) {
+      case 'base':
+        phaseColor = 'text-blue-600';
+        break;
+      case 'construcción':
+        phaseColor = 'text-green-600';
+        break;
+      case 'específico':
+        phaseColor = 'text-orange-600';
+        break;
+      case 'pico':
+        phaseColor = 'text-red-600';
+        break;
+      default:
+        phaseColor = 'text-purple-600';
+    }
+    
+    // Calcular días transcurridos en la fase actual
+    const now = new Date();
+    const phaseStart = new Date(currentPhase.startDate!);
+    const daysInPhase = Math.ceil((now.getTime() - phaseStart.getTime()) / (1000 * 60 * 60 * 24));
+    
     return {
-      phase,
+      phase: currentPhase.name,
       phaseColor,
       progress: Math.round(cycleProgress),
       label: 'Fase del ciclo actual',
-      subtitle: `${daysPassed} días transcurridos`
+      subtitle: `Semana ${Math.ceil(daysInPhase / 7)} de ${currentPhase.duration}`
     };
   };
 

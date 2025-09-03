@@ -14,9 +14,9 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { 
-  Plus, 
-  Save, 
+import {
+  Plus,
+  Save,
   Calendar as CalendarIcon,
   Clock,
   Target,
@@ -25,7 +25,8 @@ import {
   Users,
   FileText,
   Trash2,
-  Edit
+  Edit,
+  Building2
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -78,18 +79,59 @@ function TrainingContent() {
   const [trainingLocation, setTrainingLocation] = useState("");
   const [trainingCoach, setTrainingCoach] = useState("");
   const [trainingContent, setTrainingContent] = useState("");
+  const [selectedClub, setSelectedClub] = useState("club-1");
+  const [selectedGroup, setSelectedGroup] = useState("group-1-1");
   const [savedTrainings, setSavedTrainings] = useState(sampleSavedTrainings);
   const [editingTraining, setEditingTraining] = useState<number | null>(null);
   
   const { analyzeTraining } = useAICoach();
 
+  const handleClubChange = (value: string) => {
+    setSelectedClub(value);
+    const newGroups = clubsData[value as keyof typeof clubsData];
+    if (newGroups && newGroups.groups.length > 0) {
+      setSelectedGroup(newGroups.groups[0].id);
+    }
+  };
+
   const trainingTypes = ["Aeróbico", "Técnica", "Umbral", "Velocidad", "Recuperación", "Fuerza", "Flexibilidad"];
+
+  // Datos de ejemplo para clubs y grupos
+  const clubsData = {
+    "club-1": {
+      name: "Club Natación Madrid",
+      groups: [
+        { id: "group-1-1", name: "Grupo A - Competición" },
+        { id: "group-1-2", name: "Grupo B - Desarrollo" },
+        { id: "group-1-3", name: "Grupo C - Iniciación" }
+      ]
+    },
+    "club-2": {
+      name: "Club Acuático Barcelona",
+      groups: [
+        { id: "group-2-1", name: "Elite" },
+        { id: "group-2-2", name: "Promesas" },
+        { id: "group-2-3", name: "Base" }
+      ]
+    },
+    "club-3": {
+      name: "Centro Deportivo Valencia",
+      groups: [
+        { id: "group-3-1", name: "Senior" },
+        { id: "group-3-2", name: "Junior" },
+        { id: "group-3-3", name: "Infantil" }
+      ]
+    }
+  };
 
   const handleSaveTraining = () => {
     if (!trainingTitle || !trainingContent) {
       alert("Por favor, completa el título y el contenido del entrenamiento");
       return;
     }
+
+    const selectedClubData = clubsData[selectedClub as keyof typeof clubsData];
+    const selectedGroupData = selectedClubData?.groups.find(g => g.id === selectedGroup);
 
     const newTraining = {
       id: editingTraining || savedTrainings.length + 1,
@@ -102,6 +144,8 @@ function TrainingContent() {
       rpe: 5, // Valor por defecto
       location: trainingLocation || "No especificado",
       coach: trainingCoach || "No especificado",
+      club: selectedClubData?.name || "No especificado",
+      group: selectedGroupData?.name || "No especificado",
       content: trainingContent,
       createdAt: new Date().toISOString()
     };
@@ -126,6 +170,8 @@ function TrainingContent() {
     setTrainingCoach("");
     setTrainingType("");
     setTrainingDate(new Date());
+    setSelectedClub("club-1");
+    setSelectedGroup("group-1-1");
 
     // Analizar entrenamiento con AI Coach
     analyzeTraining({
@@ -147,6 +193,19 @@ function TrainingContent() {
     setTrainingLocation(training.location);
     setTrainingCoach(training.coach);
     setTrainingContent(training.content);
+    
+    // Buscar el club y grupo correspondientes
+    const clubEntry = Object.entries(clubsData).find(([, clubData]) => 
+      clubData.name === (training as { club?: string }).club
+    );
+    if (clubEntry) {
+      setSelectedClub(clubEntry[0]);
+      const group = clubEntry[1].groups.find(g => g.name === (training as { group?: string }).group);
+      if (group) {
+        setSelectedGroup(group.id);
+      }
+    }
+    
     setEditingTraining(training.id);
     setActiveTab("create");
   };
@@ -164,6 +223,8 @@ function TrainingContent() {
     setTrainingCoach("");
     setTrainingType("");
     setTrainingDate(new Date());
+    setSelectedClub("club-1");
+    setSelectedGroup("group-1-1");
     setEditingTraining(null);
   };
 
@@ -281,6 +342,36 @@ function TrainingContent() {
                       value={trainingCoach}
                       onChange={(e) => setTrainingCoach(e.target.value)}
                     />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="training-club">Club</Label>
+                    <Select value={selectedClub} onValueChange={handleClubChange}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona el club" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(clubsData).map(([clubId, club]) => (
+                          <SelectItem key={clubId} value={clubId}>
+                            {club.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="training-group">Grupo</Label>
+                    <Select value={selectedGroup} onValueChange={setSelectedGroup}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona el grupo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {clubsData[selectedClub as keyof typeof clubsData]?.groups.map((group) => (
+                          <SelectItem key={group.id} value={group.id}>
+                            {group.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
@@ -443,6 +534,18 @@ function TrainingContent() {
                             <span>{training.location}</span>
                             <Users className="h-4 w-4 ml-4" />
                             <span>{training.coach}</span>
+                            {(training as { club?: string }).club && (
+                              <>
+                                <Building2 className="h-4 w-4 ml-4" />
+                                <span>{(training as { club?: string }).club}</span>
+                              </>
+                            )}
+                            {(training as { group?: string }).group && (
+                              <>
+                                <Users className="h-4 w-4 ml-2" />
+                                <span>{(training as { group?: string }).group}</span>
+                              </>
+                            )}
                           </div>
 
                           <div className="bg-muted/50 rounded-lg p-3">

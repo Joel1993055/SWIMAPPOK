@@ -26,6 +26,7 @@ import {
   Trash2
 } from "lucide-react";
 import { useTrainingZones } from "@/lib/contexts/training-zones-context";
+import { useTrainingPhases } from "@/lib/contexts/training-phases-context";
 
 // Tipos de datos
 interface TrainingPhase {
@@ -37,6 +38,9 @@ interface TrainingPhase {
   intensity: number; // 1-10
   volume: number; // metros por semana
   color: string;
+  startDate?: string; // Fecha de inicio (opcional)
+  endDate?: string; // Fecha de fin (calculada automáticamente)
+  order: number; // Orden de las fases
 }
 
 
@@ -68,49 +72,7 @@ interface Competition {
   priority: "high" | "medium" | "low";
 }
 
-// Datos de ejemplo
-const trainingPhases: TrainingPhase[] = [
-  {
-    id: "base",
-    name: "Base",
-    duration: 8,
-    description: "Desarrollo de la resistencia aeróbica base",
-    focus: ["Aeróbico", "Técnica", "Fuerza"],
-    intensity: 4,
-    volume: 25000,
-    color: "bg-blue-500"
-  },
-  {
-    id: "construccion",
-    name: "Construcción",
-    duration: 6,
-    description: "Aumento gradual de la intensidad y volumen",
-    focus: ["Aeróbico", "Umbral", "Técnica"],
-    intensity: 6,
-    volume: 30000,
-    color: "bg-green-500"
-  },
-  {
-    id: "especifico",
-    name: "Específico",
-    duration: 4,
-    description: "Entrenamiento específico para la competición",
-    focus: ["Umbral", "VO2 Max", "Velocidad"],
-    intensity: 8,
-    volume: 28000,
-    color: "bg-orange-500"
-  },
-  {
-    id: "pico",
-    name: "Pico",
-    duration: 2,
-    description: "Máxima intensidad y tapering",
-    focus: ["Velocidad", "VO2 Max", "Recuperación"],
-    intensity: 9,
-    volume: 20000,
-    color: "bg-red-500"
-  }
-];
+// Los datos de ejemplo ahora están en el contexto
 
 
 
@@ -183,6 +145,7 @@ const competitions: Competition[] = [
 
 export function PlanificacionOverview() {
   const { currentZones } = useTrainingZones();
+  const { phases, addPhase, updatePhase, deletePhase } = useTrainingPhases();
   const [selectedPhase, setSelectedPhase] = useState<string>("base");
   const [selectedCompetition, setSelectedCompetition] = useState<string>("comp-1");
   
@@ -204,7 +167,9 @@ export function PlanificacionOverview() {
     description: "",
     focus: [] as string[],
     intensity: 5,
-    volume: 0
+    volume: 0,
+    startDate: "",
+    order: 1
   });
   
 
@@ -220,7 +185,7 @@ export function PlanificacionOverview() {
     status: "upcoming" as "upcoming" | "completed" | "cancelled"
   });
 
-  const currentPhase = trainingPhases.find(phase => phase.id === selectedPhase);
+  const currentPhase = phases.find(phase => phase.id === selectedPhase);
   const currentCompetition = competitions.find(comp => comp.id === selectedCompetition);
 
   const getPriorityColor = (priority: string) => {
@@ -232,6 +197,8 @@ export function PlanificacionOverview() {
     }
   };
 
+  // Las fases ya vienen con fechas calculadas del contexto
+
 
 
   // Funciones para manejar edición de fases
@@ -242,14 +209,43 @@ export function PlanificacionOverview() {
       description: phase.description,
       focus: [...phase.focus],
       intensity: phase.intensity,
-      volume: phase.volume
+      volume: phase.volume,
+      startDate: phase.startDate || "",
+      order: phase.order
     });
     setEditingPhase(phase.id);
   };
 
   const handleSavePhase = () => {
-    // Aquí se guardaría en la base de datos
-    console.log("Guardando fase:", phaseForm);
+    if (isAddingPhase) {
+      // Crear nueva fase
+      const newPhase: TrainingPhase = {
+        id: `phase-${Date.now()}`,
+        name: phaseForm.name,
+        duration: phaseForm.duration,
+        description: phaseForm.description,
+        focus: phaseForm.focus,
+        intensity: phaseForm.intensity,
+        volume: phaseForm.volume,
+        color: "bg-purple-500", // Color por defecto
+        startDate: phaseForm.startDate,
+        order: phaseForm.order
+      };
+      addPhase(newPhase);
+    } else if (editingPhase) {
+      // Actualizar fase existente
+      updatePhase(editingPhase, {
+        name: phaseForm.name,
+        duration: phaseForm.duration,
+        description: phaseForm.description,
+        focus: phaseForm.focus,
+        intensity: phaseForm.intensity,
+        volume: phaseForm.volume,
+        startDate: phaseForm.startDate,
+        order: phaseForm.order
+      });
+    }
+    
     setEditingPhase(null);
     setIsAddingPhase(false);
     setPhaseForm({
@@ -258,7 +254,9 @@ export function PlanificacionOverview() {
       description: "",
       focus: [],
       intensity: 5,
-      volume: 0
+      volume: 0,
+      startDate: "",
+      order: 1
     });
   };
 
@@ -271,8 +269,14 @@ export function PlanificacionOverview() {
       description: "",
       focus: [],
       intensity: 5,
-      volume: 0
+      volume: 0,
+      startDate: "",
+      order: 1
     });
+  };
+
+  const handleDeletePhase = (phaseId: string) => {
+    deletePhase(phaseId);
   };
 
 
@@ -515,7 +519,7 @@ export function PlanificacionOverview() {
           </div>
           
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {trainingPhases.map((phase) => (
+            {phases.map((phase) => (
               <Card 
                 key={phase.id} 
                 className={`bg-muted/50 border-muted cursor-pointer transition-all hover:shadow-md ${
@@ -539,12 +543,35 @@ export function PlanificacionOverview() {
                       >
                         <Edit className="h-3 w-3" />
                       </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeletePhase(phase.id);
+                        }}
+                        className="h-6 w-6 p-0 text-red-500 hover:text-red-700"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
                     </div>
                   </div>
                   <CardDescription>{phase.duration} semanas</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <p className="text-sm text-muted-foreground">{phase.description}</p>
+                  
+                  {phase.startDate && phase.endDate && (
+                    <div className="text-xs text-muted-foreground bg-muted/30 rounded p-2">
+                      <div className="flex items-center gap-1 mb-1">
+                        <Calendar className="h-3 w-3" />
+                        <span className="font-medium">Período:</span>
+                      </div>
+                      <div>
+                        {new Date(phase.startDate).toLocaleDateString('es-ES')} - {new Date(phase.endDate).toLocaleDateString('es-ES')}
+                      </div>
+                    </div>
+                  )}
                   
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
@@ -684,6 +711,35 @@ export function PlanificacionOverview() {
                       value={phaseForm.volume}
                       onChange={(e) => setPhaseForm(prev => ({ ...prev, volume: parseInt(e.target.value) || 0 }))}
                       placeholder="25000"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="phase-start-date">Fecha de Inicio (solo primera fase)</Label>
+                    <Input
+                      id="phase-start-date"
+                      type="date"
+                      value={phaseForm.startDate}
+                      onChange={(e) => setPhaseForm(prev => ({ ...prev, startDate: e.target.value }))}
+                      disabled={phaseForm.order > 1}
+                    />
+                    {phaseForm.order > 1 && (
+                      <p className="text-xs text-muted-foreground">
+                        Las fases posteriores se calculan automáticamente
+                      </p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phase-order">Orden de la Fase</Label>
+                    <Input
+                      id="phase-order"
+                      type="number"
+                      min="1"
+                      value={phaseForm.order}
+                      onChange={(e) => setPhaseForm(prev => ({ ...prev, order: parseInt(e.target.value) || 1 }))}
+                      placeholder="1"
                     />
                   </div>
                 </div>
