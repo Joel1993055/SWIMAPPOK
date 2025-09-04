@@ -197,6 +197,22 @@ export function PlanificacionOverview() {
     setMainCompetition(getMainCompetition());
   }, [competitions, getMainCompetition]);
 
+  // Reiniciar formulario cuando se abra el modal de agregar fase
+  useEffect(() => {
+    if (isAddingPhase && !editingPhase) {
+      setPhaseForm({
+        name: "",
+        duration: 0,
+        description: "",
+        focus: [],
+        intensity: 5,
+        volume: 0,
+        startDate: "",
+        order: phases.length + 1 // Orden automático basado en el número de fases existentes
+      });
+    }
+  }, [isAddingPhase, editingPhase, phases.length]);
+
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "high": return "bg-red-500";
@@ -226,52 +242,68 @@ export function PlanificacionOverview() {
   };
 
   const handleSavePhase = () => {
-    if (isAddingPhase) {
-      // Crear nueva fase
-      const newPhase: TrainingPhase = {
-        id: `phase-${Date.now()}`,
-        name: phaseForm.name,
-        duration: phaseForm.duration,
-        description: phaseForm.description,
-        focus: phaseForm.focus,
-        intensity: phaseForm.intensity,
-        volume: phaseForm.volume,
-        color: "bg-purple-500", // Color por defecto
-        startDate: phaseForm.startDate,
-        order: phaseForm.order
-      };
-      addPhase(newPhase);
-    } else if (editingPhase) {
-      // Actualizar fase existente
-      updatePhase(editingPhase, {
-        name: phaseForm.name,
-        duration: phaseForm.duration,
-        description: phaseForm.description,
-        focus: phaseForm.focus,
-        intensity: phaseForm.intensity,
-        volume: phaseForm.volume,
-        startDate: phaseForm.startDate,
-        order: phaseForm.order
-      });
+    // Validar que todos los campos requeridos estén llenos
+    if (!phaseForm.name.trim()) {
+      console.warn("Por favor, ingresa el nombre de la fase");
+      return;
     }
-    
-    setEditingPhase(null);
-    setIsAddingPhase(false);
-    setPhaseForm({
-      name: "",
-      duration: 0,
-      description: "",
-      focus: [],
-      intensity: 5,
-      volume: 0,
-      startDate: "",
-      order: 1
-    });
+    if (phaseForm.duration <= 0) {
+      console.warn("Por favor, ingresa una duración válida");
+      return;
+    }
+    if (phaseForm.order <= 0) {
+      console.warn("Por favor, ingresa un orden válido");
+      return;
+    }
+
+    try {
+      if (isAddingPhase) {
+        // Crear nueva fase
+        const newPhase: TrainingPhase = {
+          id: `phase-${Date.now()}`,
+          name: phaseForm.name,
+          duration: phaseForm.duration,
+          description: phaseForm.description,
+          focus: phaseForm.focus,
+          intensity: phaseForm.intensity,
+          volume: phaseForm.volume,
+          color: "bg-purple-500", // Color por defecto
+          startDate: phaseForm.startDate,
+          order: phaseForm.order
+        };
+        addPhase(newPhase);
+        console.log("Fase agregada:", newPhase);
+      } else if (editingPhase) {
+        // Actualizar fase existente
+        updatePhase(editingPhase, {
+          name: phaseForm.name,
+          duration: phaseForm.duration,
+          description: phaseForm.description,
+          focus: phaseForm.focus,
+          intensity: phaseForm.intensity,
+          volume: phaseForm.volume,
+          startDate: phaseForm.startDate,
+          order: phaseForm.order
+        });
+        console.log("Fase actualizada:", editingPhase);
+      }
+      
+      // Cerrar el modal pero NO reiniciar el formulario inmediatamente
+      setEditingPhase(null);
+      setIsAddingPhase(false);
+      
+      // Mostrar mensaje de éxito (sin alert)
+      console.log("Fase guardada correctamente");
+      
+    } catch (error) {
+      console.error("Error guardando fase:", error);
+    }
   };
 
   const handleCancelPhase = () => {
     setEditingPhase(null);
     setIsAddingPhase(false);
+    // Solo reiniciar el formulario cuando se cancele, no cuando se guarde
     setPhaseForm({
       name: "",
       duration: 0,

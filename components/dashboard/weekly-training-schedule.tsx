@@ -29,6 +29,7 @@ interface TrainingSession {
   intensity: 'Z1' | 'Z2' | 'Z3' | 'Z4' | 'Z5';
   distance: number;
   isCompleted: boolean;
+  timeSlot?: 'AM' | 'PM';
 }
 
 interface WeeklyTrainingScheduleProps {
@@ -76,7 +77,7 @@ export function WeeklyTrainingSchedule({ weekStart = new Date() }: WeeklyTrainin
     return {
       id: session.id,
       title: session.title,
-      time: "09:00", // Por ahora fijo, podríamos agregar campo de hora
+      time: (session as any).time_slot === 'AM' ? "09:00" : "18:00", // Usar time_slot para determinar hora
       duration: session.duration || 60,
       type: session.type,
       location: session.location || "No especificado",
@@ -85,7 +86,8 @@ export function WeeklyTrainingSchedule({ weekStart = new Date() }: WeeklyTrainin
       objective: session.objective || "otro",
       intensity: getIntensityFromRPE(session.rpe || 5),
       distance: session.distance || 0,
-      isCompleted: new Date(session.date) < new Date()
+      isCompleted: new Date(session.date) < new Date(),
+      timeSlot: (session as any).time_slot || 'AM' // Agregar timeSlot para filtrar
     };
   });
 
@@ -193,10 +195,10 @@ export function WeeklyTrainingSchedule({ weekStart = new Date() }: WeeklyTrainin
   const getTrainingsForDayAndTime = (day: Date, timeSlot: string): TrainingSession[] => {
     const dayString = format(day, 'yyyy-MM-dd');
     
-    // Filtrar entrenamientos reales para este día
+    // Filtrar entrenamientos reales para este día y horario
     const dayTrainings = weeklyTrainings.filter(training => {
       const session = sessions.find(s => s.id === training.id);
-      return session && session.date === dayString;
+      return session && session.date === dayString && training.timeSlot === timeSlot;
     });
 
     // Si no hay entrenamientos reales, mostrar algunos de ejemplo
@@ -211,11 +213,7 @@ export function WeeklyTrainingSchedule({ weekStart = new Date() }: WeeklyTrainin
       });
     }
     
-    // Para entrenamientos reales, distribuir entre AM y PM basado en el ID
-    return dayTrainings.filter(training => {
-      const isAM = training.id.charCodeAt(0) % 2 === 0; // Distribución simple
-      return (timeSlot === 'AM' && isAM) || (timeSlot === 'PM' && !isAM);
-    });
+    return dayTrainings;
   };
 
   const getDayStats = (day: Date) => {
@@ -503,28 +501,41 @@ export function WeeklyTrainingSchedule({ weekStart = new Date() }: WeeklyTrainin
           })}
         </div>
 
-        {/* Resumen semanal */}
+        {/* Resumen semanal - Conectado a datos reales */}
         <div className="mt-6 pt-4 border-t">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="text-center p-3 bg-background/50 dark:bg-background/80 rounded-lg">
-              <div className="text-2xl font-bold text-primary">
-                {sampleTrainings.length}
+          {(() => {
+            // Calcular estadísticas reales de la semana actual
+            const weekStats = days.reduce((acc, day) => {
+              const dayStats = getDayStats(day);
+              acc.totalTrainings += dayStats.totalTrainings;
+              acc.completedTrainings += dayStats.completedTrainings;
+              acc.totalDistance += dayStats.totalDistance;
+              return acc;
+            }, { totalTrainings: 0, completedTrainings: 0, totalDistance: 0 });
+            
+            return (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="text-center p-2 bg-muted/30 dark:bg-muted/50 rounded-lg">
+                  <div className="text-lg font-semibold text-muted-foreground">
+                    {weekStats.totalTrainings}
+                  </div>
+                  <div className="text-xs text-muted-foreground">Entrenamientos</div>
+                </div>
+                <div className="text-center p-2 bg-muted/30 dark:bg-muted/50 rounded-lg">
+                  <div className="text-lg font-semibold text-muted-foreground">
+                    {weekStats.completedTrainings}
+                  </div>
+                  <div className="text-xs text-muted-foreground">Completados</div>
+                </div>
+                <div className="text-center p-2 bg-muted/30 dark:bg-muted/50 rounded-lg">
+                  <div className="text-lg font-semibold text-muted-foreground">
+                    {(weekStats.totalDistance / 1000).toFixed(1)}km
+                  </div>
+                  <div className="text-xs text-muted-foreground">Distancia Total</div>
+                </div>
               </div>
-              <div className="text-sm text-muted-foreground">Entrenamientos</div>
-            </div>
-            <div className="text-center p-3 bg-background/50 dark:bg-background/80 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">
-                {sampleTrainings.filter(t => t.isCompleted).length}
-              </div>
-              <div className="text-sm text-muted-foreground">Completados</div>
-            </div>
-            <div className="text-center p-3 bg-background/50 dark:bg-background/80 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">
-                {sampleTrainings.reduce((sum, t) => sum + t.distance, 0).toLocaleString()}m
-              </div>
-              <div className="text-sm text-muted-foreground">Distancia Total</div>
-            </div>
-          </div>
+            );
+          })()}
         </div>
       </CardContent>
     </Card>

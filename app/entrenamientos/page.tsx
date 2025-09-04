@@ -88,6 +88,7 @@ function TrainingContent() {
   const [selectedClub, setSelectedClub] = useState("club-1");
   const [selectedGroup, setSelectedGroup] = useState("group-1-1");
   const [trainingObjective, setTrainingObjective] = useState("");
+  const [trainingTimeSlot, setTrainingTimeSlot] = useState<"AM" | "PM">("AM");
   const [savedTrainings, setSavedTrainings] = useState<Session[]>([]);
   const [editingTraining, setEditingTraining] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -215,6 +216,7 @@ function TrainingContent() {
       formData.append("club", selectedClubData?.name || "No especificado");
       formData.append("group_name", selectedGroupData?.name || "No especificado");
       formData.append("objective", trainingObjective || "otro");
+      formData.append("time_slot", trainingTimeSlot);
       formData.append("content", trainingContent);
       formData.append("z1", zoneVolumes.z1.toString());
       formData.append("z2", zoneVolumes.z2.toString());
@@ -246,6 +248,7 @@ function TrainingContent() {
       setTrainingLocation("");
       setTrainingCoach("");
       setTrainingObjective("");
+      setTrainingTimeSlot("AM");
       // No resetear la fecha para mantener la selección del usuario
       // setTrainingDate(new Date());
       setSelectedClub("club-1");
@@ -270,6 +273,7 @@ function TrainingContent() {
     setTrainingLocation(training.location);
     setTrainingCoach(training.coach);
     setTrainingObjective(training.objective || "otro");
+    setTrainingTimeSlot((training as any).time_slot || "AM");
     setTrainingContent(training.content);
     
     // Cargar volúmenes por zona si existen
@@ -319,6 +323,7 @@ function TrainingContent() {
     setTrainingLocation("");
     setTrainingCoach("");
     setTrainingObjective("");
+    setTrainingTimeSlot("AM");
     setTrainingDate(new Date());
     setSelectedClub("club-1");
     setSelectedGroup("group-1-1");
@@ -502,6 +507,18 @@ function TrainingContent() {
                         <SelectItem value="competicion">Competición</SelectItem>
                         <SelectItem value="test">Test</SelectItem>
                         <SelectItem value="otro">Otro</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="training-time-slot">Horario</Label>
+                    <Select value={trainingTimeSlot} onValueChange={(value) => setTrainingTimeSlot(value as "AM" | "PM")}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona el horario" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="AM">AM (Mañana)</SelectItem>
+                        <SelectItem value="PM">PM (Tarde/Noche)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

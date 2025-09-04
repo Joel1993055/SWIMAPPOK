@@ -5,6 +5,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Target, Users, Activity, Calendar, Trophy } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTrainingPhases } from "@/lib/contexts/training-phases-context";
+import { useCompetitions } from "@/lib/contexts/competitions-context";
 import { getSessions } from "@/lib/actions/sessions";
 import type { Session } from "@/lib/actions/sessions";
 
@@ -39,6 +40,7 @@ export function KPICards() {
   const [selectedPeriod, setSelectedPeriod] = useState<'year' | 'month' | 'week'>('year');
   const [selectedDistancePeriod, setSelectedDistancePeriod] = useState<'year' | 'month' | 'week'>('year');
   const { getCurrentPhase, getPhaseProgress } = useTrainingPhases();
+  const { competitions } = useCompetitions();
 
   // Calcular distancia por período usando datos reales
   const getDistanceByPeriod = () => {
@@ -212,40 +214,93 @@ export function KPICards() {
     return {
       phase: currentPhase.name,
       phaseColor,
-      progress: Math.round(cycleProgress),
+      progress: Math.round(phaseProgress),
       label: 'Fase del ciclo actual',
       subtitle: `Semana ${Math.ceil(daysInPhase / 7)} de ${currentPhase.duration} - ${Math.round(phaseProgress)}% completado`
     };
   };
 
-  // Calcular días hasta campeonato
+  // Calcular días hasta campeonato usando competiciones reales
   const getDaysToChampionship = () => {
     const now = new Date();
-    const championship = new Date(2025, 5, 15); // 15 junio 2025 (ejemplo)
-    const daysUntil = Math.ceil((championship.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
     
+    // Obtener la próxima competición (más cercana en el tiempo)
+    const upcomingCompetitions = competitions
+      .filter(comp => comp.status === 'upcoming' && new Date(comp.date) > now)
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    
+    if (upcomingCompetitions.length === 0) {
+      return {
+        days: 0,
+        urgency: 'Sin eventos',
+        urgencyColor: 'text-gray-600',
+        label: 'Sin competiciones',
+        subtitle: 'No hay eventos programados'
+      };
+    }
+    
+    const nextCompetition = upcomingCompetitions[0];
+    const competitionDate = new Date(nextCompetition.date);
+    const daysUntil = Math.ceil((competitionDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    
+    // Determinar urgencia basada en prioridad y días restantes
     let urgency = '';
     let urgencyColor = '';
-    if (daysUntil > 60) {
-      urgency = 'Preparación';
-      urgencyColor = 'text-green-600';
-    } else if (daysUntil > 30) {
-      urgency = 'Intensificación';
-      urgencyColor = 'text-orange-600';
-    } else if (daysUntil > 14) {
-      urgency = 'Afino';
-      urgencyColor = 'text-red-600';
+    
+    if (nextCompetition.priority === 'high') {
+      if (daysUntil > 60) {
+        urgency = 'Preparación';
+        urgencyColor = 'text-red-600';
+      } else if (daysUntil > 30) {
+        urgency = 'Intensificación';
+        urgencyColor = 'text-red-500';
+      } else if (daysUntil > 14) {
+        urgency = 'Afino';
+        urgencyColor = 'text-red-400';
+      } else {
+        urgency = 'Taper';
+        urgencyColor = 'text-red-300';
+      }
+    } else if (nextCompetition.priority === 'medium') {
+      if (daysUntil > 60) {
+        urgency = 'Preparación';
+        urgencyColor = 'text-yellow-600';
+      } else if (daysUntil > 30) {
+        urgency = 'Intensificación';
+        urgencyColor = 'text-yellow-500';
+      } else if (daysUntil > 14) {
+        urgency = 'Afino';
+        urgencyColor = 'text-yellow-400';
+      } else {
+        urgency = 'Taper';
+        urgencyColor = 'text-yellow-300';
+      }
     } else {
-      urgency = 'Taper';
-      urgencyColor = 'text-purple-600';
+      if (daysUntil > 60) {
+        urgency = 'Preparación';
+        urgencyColor = 'text-green-600';
+      } else if (daysUntil > 30) {
+        urgency = 'Intensificación';
+        urgencyColor = 'text-green-500';
+      } else if (daysUntil > 14) {
+        urgency = 'Afino';
+        urgencyColor = 'text-green-400';
+      } else {
+        urgency = 'Taper';
+        urgencyColor = 'text-green-300';
+      }
     }
     
     return {
       days: daysUntil,
       urgency,
       urgencyColor,
-      label: 'Campeonato Nacional',
-      subtitle: ''
+      label: nextCompetition.name,
+      subtitle: competitionDate.toLocaleDateString('es-ES', { 
+        day: 'numeric', 
+        month: 'long', 
+        year: 'numeric' 
+      })
     };
   };
 
@@ -352,9 +407,6 @@ export function KPICards() {
                 style={{ width: `${cycleData.progress}%` }}
               ></div>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              {cycleData.progress}% completado
-            </p>
           </div>
         </CardContent>
       </Card>
@@ -371,16 +423,35 @@ export function KPICards() {
           <p className="text-xs text-muted-foreground">
             {championshipData.label}
           </p>
-          <div className="mt-2">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-3 w-3 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground">
-                15 Junio 2025
-              </span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+                     <div className="mt-2">
+             <div className="flex items-center gap-2">
+               <Calendar className="h-3 w-3 text-muted-foreground" />
+               <span className="text-xs text-muted-foreground">
+                 {championshipData.subtitle}
+               </span>
+             </div>
+           </div>
+           
+           {/* Leyenda de prioridades */}
+           <div className="mt-3 pt-2 border-t border-muted">
+             <div className="text-xs text-muted-foreground mb-2">Prioridad:</div>
+             <div className="flex gap-3 text-xs">
+               <div className="flex items-center gap-1">
+                 <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                 <span className="text-muted-foreground">Alta</span>
+               </div>
+               <div className="flex items-center gap-1">
+                 <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+                 <span className="text-muted-foreground">Media</span>
+               </div>
+               <div className="flex items-center gap-1">
+                 <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                 <span className="text-muted-foreground">Baja</span>
+               </div>
+             </div>
+           </div>
+         </CardContent>
+       </Card>
     </div>
   );
 }
