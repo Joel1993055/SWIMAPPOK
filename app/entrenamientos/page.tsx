@@ -26,7 +26,9 @@ import {
   FileText,
   Trash2,
   Edit,
-  Building2
+  Building2,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -75,7 +77,11 @@ Vuelta a la calma: 200m libre Z1`,
 function TrainingContent() {
   const [activeTab, setActiveTab] = useState<"create" | "saved">("create");
   const [trainingTitle, setTrainingTitle] = useState("");
-  const [trainingDate, setTrainingDate] = useState<Date>(new Date());
+  const [trainingDate, setTrainingDate] = useState<Date>(() => {
+    const today = new Date();
+    console.log("Inicializando trainingDate con:", today);
+    return today;
+  });
   const [trainingLocation, setTrainingLocation] = useState("");
   const [trainingCoach, setTrainingCoach] = useState("");
   const [trainingContent, setTrainingContent] = useState("");
@@ -98,6 +104,12 @@ function TrainingContent() {
   });
   
   const { analyzeTraining } = useAICoach();
+
+  // Debug: Monitorear cambios en trainingDate
+  useEffect(() => {
+    console.log("trainingDate cambió a:", trainingDate);
+    console.log("Fecha formateada:", trainingDate.toISOString().split('T')[0]);
+  }, [trainingDate]);
 
   // Cargar entrenamientos al montar el componente
   useEffect(() => {
@@ -180,6 +192,16 @@ function TrainingContent() {
       const selectedClubData = clubsData[selectedClub as keyof typeof clubsData];
       const selectedGroupData = selectedClubData?.groups.find(g => g.id === selectedGroup);
 
+
+      // Debug detallado de la fecha
+      console.log("=== DEBUG FECHA ===");
+      console.log("trainingDate objeto:", trainingDate);
+      console.log("trainingDate tipo:", typeof trainingDate);
+      console.log("trainingDate instanceof Date:", trainingDate instanceof Date);
+      console.log("trainingDate.toISOString():", trainingDate.toISOString());
+      console.log("Fecha formateada para guardar:", trainingDate.toISOString().split('T')[0]);
+      console.log("==================");
+
       const formData = new FormData();
       formData.append("title", trainingTitle);
       formData.append("date", trainingDate.toISOString().split('T')[0]);
@@ -224,7 +246,8 @@ function TrainingContent() {
       setTrainingLocation("");
       setTrainingCoach("");
       setTrainingObjective("");
-      setTrainingDate(new Date());
+      // No resetear la fecha para mantener la selección del usuario
+      // setTrainingDate(new Date());
       setSelectedClub("club-1");
       setSelectedGroup("group-1-1");
       setZoneVolumes({ z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 });
@@ -385,22 +408,36 @@ function TrainingContent() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="training-date">Fecha</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" className="w-full justify-start text-left font-normal">
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {format(trainingDate, "dd/MM/yyyy", { locale: es })}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          selected={trainingDate}
-                          onSelect={(date) => date && setTrainingDate(date)}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
+                    <div className="flex gap-2">
+                      <Input
+                        type="date"
+                        value={trainingDate ? trainingDate.toISOString().split('T')[0] : ''}
+                        onChange={(e) => {
+                          const dateValue = e.target.value;
+                          console.log("Input date value:", dateValue);
+                          if (dateValue) {
+                            const newDate = new Date(dateValue);
+                            console.log("New date created:", newDate);
+                            setTrainingDate(newDate);
+                          }
+                        }}
+                        className="flex-1"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          const today = new Date();
+                          console.log("Setting to today:", today);
+                          setTrainingDate(today);
+                        }}
+                      >
+                        Hoy
+                      </Button>
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Fecha seleccionada: {trainingDate ? format(trainingDate, "dd/MM/yyyy", { locale: es }) : "Ninguna"}
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="training-location">Ubicación</Label>

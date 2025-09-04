@@ -30,12 +30,12 @@ export function KPICards() {
   }, []);
 
   // Calcular estadísticas desde datos reales
-  const stats = {
-    totalSessions: sessions.length,
-    totalDistance: sessions.reduce((sum, session) => sum + (session.distance || 0), 0),
-    totalDuration: sessions.reduce((sum, session) => sum + (session.duration || 0), 0),
-    averageRPE: sessions.length > 0 ? sessions.reduce((sum, session) => sum + (session.rpe || 0), 0) / sessions.length : 0
-  };
+  // const stats = {
+  //   totalSessions: sessions.length,
+  //   totalDistance: sessions.reduce((sum, session) => sum + (session.distance || 0), 0),
+  //   totalDuration: sessions.reduce((sum, session) => sum + (session.duration || 0), 0),
+  //   averageRPE: sessions.length > 0 ? sessions.reduce((sum, session) => sum + (session.rpe || 0), 0) / sessions.length : 0
+  // };
   const [selectedPeriod, setSelectedPeriod] = useState<'year' | 'month' | 'week'>('year');
   const [selectedDistancePeriod, setSelectedDistancePeriod] = useState<'year' | 'month' | 'week'>('year');
   const { getCurrentPhase, getPhaseProgress } = useTrainingPhases();

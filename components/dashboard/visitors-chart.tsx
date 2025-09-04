@@ -1,7 +1,7 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import { TrendingUp, BarChart3, AreaChart as AreaChartIcon } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, XAxis, Area, AreaChart } from "recharts";
 import { useState, useEffect } from "react";
 
 import {
@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   ChartConfig,
   ChartContainer,
@@ -22,7 +23,7 @@ import {
 } from "@/components/ui/chart";
 import { getSessions } from "@/lib/actions/sessions";
 import type { Session } from "@/lib/actions/sessions";
-import { calculateZoneVolumes, metersToKm, zoneLabels, zoneColors } from "@/lib/utils/zone-detection";
+import { metersToKm, zoneLabels, zoneColors } from "@/lib/utils/zone-detection";
 
 // Función para generar datos de la semana actual usando volúmenes manuales
 const generateWeeklyData = (sessions: Session[]) => {
@@ -96,9 +97,13 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+// Usar la misma configuración que el gráfico de barras
+const areaChartConfig = chartConfig;
+
 export function VisitorsChart() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [chartType, setChartType] = useState<"bar" | "area">("bar");
 
   // Cargar sesiones reales desde Supabase
   useEffect(() => {
@@ -119,6 +124,17 @@ export function VisitorsChart() {
 
   // Generar datos de la semana actual
   const chartData = generateWeeklyData(sessions);
+  
+  // Generar datos para el área chart (con todas las zonas)
+  const areaChartData = chartData.map(day => ({
+    day: day.day,
+    Z1: day.Z1,
+    Z2: day.Z2,
+    Z3: day.Z3,
+    Z4: day.Z4,
+    Z5: day.Z5,
+    totalMeters: day.totalMeters
+  }));
   
   // Debug temporal (comentado para producción)
   // console.log("=== DEBUG PROGRESO SEMANAL ===");
@@ -161,62 +177,186 @@ export function VisitorsChart() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={chartData}>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="day"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value, index) => {
-                const data = chartData[index];
-                const totalKm = data ? (data.totalMeters / 1000).toFixed(1) : '0';
-                return `${value.slice(0, 3)}\n${totalKm}km`;
-              }}
-            />
-            <ChartTooltip 
-              content={<ChartTooltipContent 
-                hideLabel 
-                formatter={(value, name) => [
-                  `${value} km`,
-                  chartConfig[name as keyof typeof chartConfig]?.label || name
-                ]}
-              />} 
-            />
-            <ChartLegend content={<ChartLegendContent />} />
-            <Bar
-              dataKey="Z1"
-              stackId="a"
-              fill="var(--color-Z1)"
-              radius={[0, 0, 4, 4]}
-            />
-            <Bar
-              dataKey="Z2"
-              stackId="a"
-              fill="var(--color-Z2)"
-              radius={[0, 0, 0, 0]}
-            />
-            <Bar
-              dataKey="Z3"
-              stackId="a"
-              fill="var(--color-Z3)"
-              radius={[0, 0, 0, 0]}
-            />
-            <Bar
-              dataKey="Z4"
-              stackId="a"
-              fill="var(--color-Z4)"
-              radius={[0, 0, 0, 0]}
-            />
-            <Bar
-              dataKey="Z5"
-              stackId="a"
-              fill="var(--color-Z5)"
-              radius={[4, 4, 0, 0]}
-            />
-          </BarChart>
-        </ChartContainer>
+        <div className="space-y-4">
+          {/* Selector de tipo de gráfico */}
+          <div className="flex justify-end">
+            <Select value={chartType} onValueChange={(value) => setChartType(value as "bar" | "area")}>
+              <SelectTrigger className="w-48">
+                <SelectValue>
+                  <div className="flex items-center gap-2">
+                    {chartType === "bar" ? (
+                      <>
+                        <BarChart3 className="h-4 w-4" />
+                        Gráfico de Barras
+                      </>
+                    ) : (
+                      <>
+                        <AreaChartIcon className="h-4 w-4" />
+                        Gráfico de Área
+                      </>
+                    )}
+                  </div>
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="bar">
+                  <div className="flex items-center gap-2">
+                    <BarChart3 className="h-4 w-4" />
+                    Gráfico de Barras
+                  </div>
+                </SelectItem>
+                <SelectItem value="area">
+                  <div className="flex items-center gap-2">
+                    <AreaChartIcon className="h-4 w-4" />
+                    Gráfico de Área
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Gráfico de Barras */}
+          {chartType === "bar" && (
+            <ChartContainer config={chartConfig}>
+              <BarChart accessibilityLayer data={chartData}>
+                <CartesianGrid vertical={false} />
+                <XAxis
+                  dataKey="day"
+                  tickLine={false}
+                  tickMargin={10}
+                  axisLine={false}
+                  tickFormatter={(value, index) => {
+                    const data = chartData[index];
+                    const totalKm = data ? (data.totalMeters / 1000).toFixed(1) : '0';
+                    return `${value.slice(0, 3)}\n${totalKm}km`;
+                  }}
+                />
+                <ChartTooltip 
+                  content={<ChartTooltipContent 
+                    hideLabel 
+                    formatter={(value, name) => [
+                      `${value} km`,
+                      chartConfig[name as keyof typeof chartConfig]?.label || name
+                    ]}
+                  />} 
+                />
+                <ChartLegend content={<ChartLegendContent />} />
+                <Bar
+                  dataKey="Z1"
+                  stackId="a"
+                  fill="var(--color-Z1)"
+                  radius={[0, 0, 4, 4]}
+                />
+                <Bar
+                  dataKey="Z2"
+                  stackId="a"
+                  fill="var(--color-Z2)"
+                  radius={[0, 0, 0, 0]}
+                />
+                <Bar
+                  dataKey="Z3"
+                  stackId="a"
+                  fill="var(--color-Z3)"
+                  radius={[0, 0, 0, 0]}
+                />
+                <Bar
+                  dataKey="Z4"
+                  stackId="a"
+                  fill="var(--color-Z4)"
+                  radius={[0, 0, 0, 0]}
+                />
+                <Bar
+                  dataKey="Z5"
+                  stackId="a"
+                  fill="var(--color-Z5)"
+                  radius={[4, 4, 0, 0]}
+                />
+              </BarChart>
+            </ChartContainer>
+          )}
+
+          {/* Gráfico de Área */}
+          {chartType === "area" && (
+            <ChartContainer config={areaChartConfig}>
+              <AreaChart
+                data={areaChartData}
+                margin={{
+                  left: 12,
+                  right: 12,
+                }}
+              >
+                <CartesianGrid vertical={false} />
+                <XAxis
+                  dataKey="day"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tickFormatter={(value, index) => {
+                    const data = areaChartData[index];
+                    const totalKm = data ? (data.totalMeters / 1000).toFixed(1) : '0';
+                    return `${value.slice(0, 3)}\n${totalKm}km`;
+                  }}
+                />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent 
+                    hideLabel 
+                    formatter={(value, name) => [
+                      `${value} km`,
+                      chartConfig[name as keyof typeof chartConfig]?.label || name
+                    ]}
+                  />}
+                />
+                <ChartLegend content={<ChartLegendContent />} />
+                <Area
+                  dataKey="Z1"
+                  stackId="a"
+                  type="monotone"
+                  fill="var(--color-Z1)"
+                  fillOpacity={0.8}
+                  stroke="var(--color-Z1)"
+                  strokeWidth={1}
+                />
+                <Area
+                  dataKey="Z2"
+                  stackId="a"
+                  type="monotone"
+                  fill="var(--color-Z2)"
+                  fillOpacity={0.8}
+                  stroke="var(--color-Z2)"
+                  strokeWidth={1}
+                />
+                <Area
+                  dataKey="Z3"
+                  stackId="a"
+                  type="monotone"
+                  fill="var(--color-Z3)"
+                  fillOpacity={0.8}
+                  stroke="var(--color-Z3)"
+                  strokeWidth={1}
+                />
+                <Area
+                  dataKey="Z4"
+                  stackId="a"
+                  type="monotone"
+                  fill="var(--color-Z4)"
+                  fillOpacity={0.8}
+                  stroke="var(--color-Z4)"
+                  strokeWidth={1}
+                />
+                <Area
+                  dataKey="Z5"
+                  stackId="a"
+                  type="monotone"
+                  fill="var(--color-Z5)"
+                  fillOpacity={0.8}
+                  stroke="var(--color-Z5)"
+                  strokeWidth={1}
+                />
+              </AreaChart>
+            </ChartContainer>
+          )}
+        </div>
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 leading-none font-medium">

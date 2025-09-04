@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { getSeedData } from "@/lib/seed";
+import { getSessions, updateSession, deleteSession, type Session as SupabaseSession } from "@/lib/actions/sessions";
 import { 
   Search, 
   Edit, 
@@ -26,35 +26,24 @@ import {
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
-// Tipos de datos para las sesiones
-interface Session {
-  id: string;
-  date: string;
-  swimmer: string;
-  distance: number;
-  durationMin: number;
-  stroke: "freestyle" | "backstroke" | "breaststroke" | "butterfly" | "mixed";
-  sessionType: "aerobic" | "threshold" | "speed" | "technique" | "recovery";
-  RPE: number;
-  mainSet: string;
-  notes?: string;
-}
+// Tipos de datos para las sesiones (usando la interfaz de Supabase)
+type Session = SupabaseSession;
 
-// Opciones para filtros
+// Opciones para filtros (adaptadas a los datos reales)
 const STROKE_OPTIONS = [
-  { value: "freestyle", label: "Libre" },
-  { value: "backstroke", label: "Espalda" },
-  { value: "breaststroke", label: "Pecho" },
-  { value: "butterfly", label: "Mariposa" },
-  { value: "mixed", label: "Mixto" }
+  { value: "Libre", label: "Libre" },
+  { value: "Espalda", label: "Espalda" },
+  { value: "Pecho", label: "Pecho" },
+  { value: "Mariposa", label: "Mariposa" },
+  { value: "Mixto", label: "Mixto" }
 ];
 
 const SESSION_TYPE_OPTIONS = [
-  { value: "aerobic", label: "Aeróbico" },
-  { value: "threshold", label: "Umbral" },
-  { value: "speed", label: "Velocidad" },
-  { value: "technique", label: "Técnica" },
-  { value: "recovery", label: "Recuperación" }
+  { value: "Aeróbico", label: "Aeróbico" },
+  { value: "Umbral", label: "Umbral" },
+  { value: "Velocidad", label: "Velocidad" },
+  { value: "Técnica", label: "Técnica" },
+  { value: "Recuperación", label: "Recuperación" }
 ];
 
 const RPE_OPTIONS = Array.from({ length: 10 }, (_, i) => i + 1);
@@ -80,22 +69,26 @@ function formatDate(dateString: string, formatStr: string = 'dd/MM/yyyy'): strin
 }
 
 export function SessionsTable() {
-  // Obtener datos de sesiones desde el seed
-  const seedSessions = getSeedData();
-  
-  // Convertir datos del seed al formato de Session
-  const sessions: Session[] = seedSessions.map((session, index) => ({
-    id: `session-${index + 1}`,
-    date: session.date,
-    swimmer: session.swimmer,
-    distance: session.distance,
-    durationMin: session.durationMin,
-    stroke: session.stroke as Session["stroke"],
-    sessionType: session.sessionType as Session["sessionType"],
-    RPE: session.RPE,
-    mainSet: session.mainSet,
-    notes: session.notes
-  }));
+  // Estados para datos reales
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Cargar sesiones reales desde Supabase
+  useEffect(() => {
+    const loadSessions = async () => {
+      try {
+        const data = await getSessions();
+        setSessions(data);
+      } catch (error) {
+        console.error("Error cargando sesiones:", error);
+        setSessions([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadSessions();
+  }, []);
 
   // Estados para búsqueda y filtros
   const [searchTerm, setSearchTerm] = useState("");
@@ -122,20 +115,20 @@ export function SessionsTable() {
     const filtered = sessions.filter(session => {
       // Búsqueda por texto
       const matchesSearch = !searchTerm || 
-        session.swimmer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        session.stroke.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        session.sessionType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        session.mainSet.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (session.notes && session.notes.toLowerCase().includes(searchTerm.toLowerCase()));
+        session.coach?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        session.stroke?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        session.type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        session.content?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (session.title && session.title.toLowerCase().includes(searchTerm.toLowerCase()));
 
       // Filtros por estilo
-      const matchesStroke = selectedStrokes.length === 0 || selectedStrokes.includes(session.stroke);
+      const matchesStroke = selectedStrokes.length === 0 || selectedStrokes.includes(session.stroke || "");
 
       // Filtros por tipo de sesión
-      const matchesSessionType = selectedSessionTypes.length === 0 || selectedSessionTypes.includes(session.sessionType);
+      const matchesSessionType = selectedSessionTypes.length === 0 || selectedSessionTypes.includes(session.type || "");
 
       // Filtros por RPE
-      const matchesRPE = selectedRPEs.length === 0 || selectedRPEs.includes(session.RPE);
+      const matchesRPE = selectedRPEs.length === 0 || selectedRPEs.includes(session.rpe || 0);
 
       // Filtros por fecha
       const sessionDate = new Date(session.date);
@@ -162,9 +155,9 @@ export function SessionsTable() {
         case 'distance':
           return isAsc ? a.distance - b.distance : b.distance - a.distance;
         case 'duration':
-          return isAsc ? a.durationMin - b.durationMin : b.durationMin - a.durationMin;
+          return isAsc ? (a.duration || 0) - (b.duration || 0) : (b.duration || 0) - (a.duration || 0);
         case 'rpe':
-          return isAsc ? a.RPE - b.RPE : b.RPE - a.RPE;
+          return isAsc ? (a.rpe || 0) - (b.rpe || 0) : (b.rpe || 0) - (a.rpe || 0);
         default:
           return 0;
       }
@@ -234,39 +227,77 @@ export function SessionsTable() {
     setIsDeleteDialogOpen(true);
   };
 
-  const handleEditSubmit = (e: React.FormEvent) => {
+  const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingSession) return;
-    console.log("Actualizando sesión:", editingSession);
-    setIsEditDialogOpen(false);
-    setEditingSession(null);
+    
+    try {
+      // Convertir objeto a FormData
+      const formData = new FormData();
+      formData.append("title", editingSession.title || "");
+      formData.append("date", editingSession.date);
+      formData.append("type", editingSession.type || "Aeróbico");
+      formData.append("duration", (editingSession.duration || 0).toString());
+      formData.append("distance", editingSession.distance.toString());
+      formData.append("stroke", editingSession.stroke || "Libre");
+      formData.append("rpe", (editingSession.rpe || 5).toString());
+      formData.append("location", editingSession.location || "");
+      formData.append("coach", editingSession.coach || "");
+      formData.append("club", editingSession.club || "");
+      formData.append("group_name", editingSession.group_name || "");
+      formData.append("objective", editingSession.objective || "otro");
+      formData.append("content", editingSession.content || "");
+      formData.append("zone_volumes", JSON.stringify(editingSession.zone_volumes || { z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 }));
+      
+      await updateSession(editingSession.id, formData);
+      
+      // Recargar sesiones
+      const data = await getSessions();
+      setSessions(data);
+      
+      setIsEditDialogOpen(false);
+      setEditingSession(null);
+    } catch (error) {
+      console.error("Error actualizando sesión:", error);
+    }
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (!sessionToDelete) return;
-    console.log("Eliminando sesión:", sessionToDelete);
-    setIsDeleteDialogOpen(false);
-    setSessionToDelete(null);
     
-    if (paginatedSessions.length === 1 && currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+    try {
+      await deleteSession(sessionToDelete.id);
+      
+      // Recargar sesiones
+      const data = await getSessions();
+      setSessions(data);
+      
+      setIsDeleteDialogOpen(false);
+      setSessionToDelete(null);
+      
+      if (paginatedSessions.length === 1 && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      }
+    } catch (error) {
+      console.error("Error eliminando sesión:", error);
     }
   };
 
   const exportToCSV = () => {
-    const headers = ['Fecha', 'Nadador', 'Distancia (m)', 'Duración (min)', 'Estilo', 'Tipo', 'RPE', 'Serie Principal', 'Notas'];
+    const headers = ['Fecha', 'Título', 'Distancia (m)', 'Duración (min)', 'Estilo', 'Tipo', 'RPE', 'Entrenador', 'Objetivo', 'Contenido'];
     const csvContent = [
       headers.join(','),
       ...filteredAndSortedSessions.map(session => [
         formatDate(session.date),
-        session.swimmer,
+        `"${session.title || ''}"`,
         session.distance,
-        session.durationMin,
-        STROKE_OPTIONS.find(s => s.value === session.stroke)?.label || session.stroke,
-        SESSION_TYPE_OPTIONS.find(s => s.value === session.sessionType)?.label || session.sessionType,
-        session.RPE,
-        `"${session.mainSet}"`,
-        `"${session.notes || ''}"`
+        session.duration || 0,
+        STROKE_OPTIONS.find(s => s.value === session.stroke)?.label || session.stroke || "",
+        SESSION_TYPE_OPTIONS.find(s => s.value === session.type)?.label || session.type || "",
+        session.rpe || 0,
+        `"${session.coach || ''}"`,
+        session.objective || "otro",
+        `"${session.content || ''}"`
       ].join(','))
     ].join('\n');
 
@@ -516,19 +547,29 @@ export function SessionsTable() {
             <thead className="bg-muted/50">
               <tr>
                 <th className="text-left p-3 font-medium text-sm">Fecha</th>
-                <th className="text-left p-3 font-medium text-sm">Nadador</th>
+                <th className="text-left p-3 font-medium text-sm">Título</th>
                 <th className="text-left p-3 font-medium text-sm">Distancia</th>
                 <th className="text-left p-3 font-medium text-sm">Duración</th>
                 <th className="text-left p-3 font-medium text-sm">Estilo</th>
                 <th className="text-left p-3 font-medium text-sm">Tipo</th>
                 <th className="text-left p-3 font-medium text-sm">RPE</th>
+                <th className="text-left p-3 font-medium text-sm">Objetivo</th>
                 <th className="text-left p-3 font-medium text-sm">Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {paginatedSessions.length === 0 ? (
+              {isLoading ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-8">
+                  <td colSpan={9} className="text-center py-8">
+                    <div className="flex flex-col items-center gap-2">
+                      <Activity className="w-8 h-8 text-muted-foreground animate-pulse" />
+                      <p className="text-muted-foreground">Cargando sesiones...</p>
+                    </div>
+                  </td>
+                </tr>
+              ) : paginatedSessions.length === 0 ? (
+                <tr>
+                  <td colSpan={9} className="text-center py-8">
                     <div className="flex flex-col items-center gap-2">
                       <Activity className="w-8 h-8 text-muted-foreground" />
                       <p className="text-muted-foreground">
@@ -551,28 +592,33 @@ export function SessionsTable() {
                         {formatDate(session.date, 'dd/MM/yyyy')}
                       </div>
                     </td>
-                    <td className="p-3 font-medium">{session.swimmer}</td>
+                    <td className="p-3 font-medium">{session.title || "Sin título"}</td>
                     <td className="p-3">
                       <Badge variant="outline">{session.distance}m</Badge>
                     </td>
                     <td className="p-3">
-                      {session.durationMin > 0 ? `${session.durationMin}min` : '-'}
+                      {session.duration && session.duration > 0 ? `${session.duration}min` : '-'}
                     </td>
                     <td className="p-3">
                       <Badge variant="outline" className="capitalize">
-                        {STROKE_OPTIONS.find(s => s.value === session.stroke)?.label || session.stroke}
+                        {STROKE_OPTIONS.find(s => s.value === session.stroke)?.label || session.stroke || "N/A"}
                       </Badge>
                     </td>
                     <td className="p-3">
                       <Badge 
-                        variant={session.sessionType === 'technique' ? 'default' : 'secondary'}
+                        variant={session.type === 'Técnica' ? 'default' : 'secondary'}
                         className="capitalize"
                       >
-                        {SESSION_TYPE_OPTIONS.find(s => s.value === session.sessionType)?.label || session.sessionType}
+                        {SESSION_TYPE_OPTIONS.find(s => s.value === session.type)?.label || session.type || "N/A"}
                       </Badge>
                     </td>
                     <td className="p-3">
-                      <Badge variant="outline">RPE {session.RPE}/10</Badge>
+                      <Badge variant="outline">RPE {session.rpe || 0}/10</Badge>
+                    </td>
+                    <td className="p-3">
+                      <Badge variant="outline" className="capitalize">
+                        {session.objective || "otro"}
+                      </Badge>
                     </td>
                     <td className="p-3">
                       <div className="flex items-center gap-2">
@@ -694,6 +740,19 @@ export function SessionsTable() {
                 </div>
                 
                 <div className="space-y-2">
+                  <Label htmlFor="edit-title">Título</Label>
+                  <Input
+                    id="edit-title"
+                    type="text"
+                    value={editingSession.title || ""}
+                    onChange={(e) => setEditingSession({ ...editingSession, title: e.target.value })}
+                    placeholder="Título del entrenamiento"
+                  />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
                   <Label htmlFor="edit-distance">Distancia (m)</Label>
                   <Input
                     id="edit-distance"
@@ -704,6 +763,17 @@ export function SessionsTable() {
                     min="1"
                   />
                 </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="edit-coach">Entrenador</Label>
+                  <Input
+                    id="edit-coach"
+                    type="text"
+                    value={editingSession.coach || ""}
+                    onChange={(e) => setEditingSession({ ...editingSession, coach: e.target.value })}
+                    placeholder="Nombre del entrenador"
+                  />
+                </div>
               </div>
               
               <div className="grid grid-cols-2 gap-4">
@@ -712,8 +782,8 @@ export function SessionsTable() {
                   <Input
                     id="edit-duration"
                     type="number"
-                    value={editingSession.durationMin}
-                    onChange={(e) => setEditingSession({ ...editingSession, durationMin: parseInt(e.target.value) })}
+                    value={editingSession.duration || 0}
+                    onChange={(e) => setEditingSession({ ...editingSession, duration: parseInt(e.target.value) })}
                     min="1"
                   />
                 </div>
@@ -721,8 +791,8 @@ export function SessionsTable() {
                 <div className="space-y-2">
                   <Label htmlFor="edit-rpe">RPE (1-10)</Label>
                   <Select 
-                    value={editingSession.RPE.toString()} 
-                    onValueChange={(value) => setEditingSession({ ...editingSession, RPE: parseInt(value) as Session["RPE"] })}
+                    value={(editingSession.rpe || 5).toString()} 
+                    onValueChange={(value) => setEditingSession({ ...editingSession, rpe: parseInt(value) })}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -742,8 +812,8 @@ export function SessionsTable() {
                 <div className="space-y-2">
                   <Label htmlFor="edit-stroke">Estilo</Label>
                   <Select 
-                    value={editingSession.stroke} 
-                    onValueChange={(value: Session["stroke"]) => setEditingSession({ ...editingSession, stroke: value })}
+                    value={editingSession.stroke || "Libre"} 
+                    onValueChange={(value) => setEditingSession({ ...editingSession, stroke: value })}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -761,8 +831,8 @@ export function SessionsTable() {
                 <div className="space-y-2">
                   <Label htmlFor="edit-sessionType">Tipo</Label>
                   <Select 
-                    value={editingSession.sessionType} 
-                    onValueChange={(value: Session["sessionType"]) => setEditingSession({ ...editingSession, sessionType: value })}
+                    value={editingSession.type || "Aeróbico"} 
+                    onValueChange={(value) => setEditingSession({ ...editingSession, type: value })}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -779,22 +849,12 @@ export function SessionsTable() {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="edit-mainSet">Serie Principal</Label>
-                <Input
-                  id="edit-mainSet"
-                  value={editingSession.mainSet}
-                  onChange={(e) => setEditingSession({ ...editingSession, mainSet: e.target.value })}
-                  placeholder="10x200m @2:30"
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="edit-notes">Notas</Label>
+                <Label htmlFor="edit-content">Contenido del Entrenamiento</Label>
                 <Textarea
-                  id="edit-notes"
-                  value={editingSession.notes || ""}
-                  onChange={(e) => setEditingSession({ ...editingSession, notes: e.target.value })}
-                  placeholder="Observaciones del entrenamiento..."
+                  id="edit-content"
+                  value={editingSession.content || ""}
+                  onChange={(e) => setEditingSession({ ...editingSession, content: e.target.value })}
+                  placeholder="Descripción detallada del entrenamiento..."
                   rows={3}
                 />
               </div>
@@ -829,12 +889,12 @@ export function SessionsTable() {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium">{sessionToDelete.distance}m {STROKE_OPTIONS.find(s => s.value === sessionToDelete.stroke)?.label || sessionToDelete.stroke}</p>
+                      <p className="font-medium">{sessionToDelete.distance}m {STROKE_OPTIONS.find(s => s.value === sessionToDelete.stroke)?.label || sessionToDelete.stroke || "N/A"}</p>
                       <p className="text-sm text-muted-foreground">
-                        {formatDate(sessionToDelete.date, 'dd/MM/yyyy')} - {sessionToDelete.swimmer}
+                        {formatDate(sessionToDelete.date, 'dd/MM/yyyy')} - {sessionToDelete.title || "Sin título"}
                       </p>
                     </div>
-                    <Badge variant="outline">RPE {sessionToDelete.RPE}/10</Badge>
+                    <Badge variant="outline">RPE {sessionToDelete.rpe || 0}/10</Badge>
                   </div>
                 </CardContent>
               </Card>

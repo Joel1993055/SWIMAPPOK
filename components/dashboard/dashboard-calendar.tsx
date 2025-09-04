@@ -21,7 +21,7 @@ export function DashboardCalendar() {
   const [selectedDate, setSelectedDate] = useState<{ day: number; month: string; year: number } | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [sessions, setSessions] = useState<Session[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const { getCompetitionsByDate } = useCompetitions();
 
   const months = [
@@ -51,7 +51,7 @@ export function DashboardCalendar() {
         console.error("Error cargando sesiones:", error);
         setSessions([]);
       } finally {
-        setIsLoading(false);
+        // setIsLoading(false);
       }
     };
 
