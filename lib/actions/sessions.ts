@@ -17,6 +17,7 @@ export interface SessionData {
   coach: string;
   club: string;
   group_name: string;
+  objective: string;
   content: string;
   zone_volumes: {
     z1: number;
@@ -59,6 +60,7 @@ export async function createSession(formData: FormData) {
     coach: formData.get("coach") as string || "No especificado",
     club: formData.get("club") as string || "No especificado",
     group_name: formData.get("group_name") as string || "No especificado",
+    objective: formData.get("objective") as string || "otro",
     content: formData.get("content") as string,
     zone_volumes: {
       z1: parseInt(formData.get("z1") as string) || 0,
@@ -171,6 +173,7 @@ export async function updateSession(id: string, formData: FormData) {
     coach: formData.get("coach") as string || "No especificado",
     club: formData.get("club") as string || "No especificado",
     group_name: formData.get("group_name") as string || "No especificado",
+    objective: formData.get("objective") as string || "otro",
     content: formData.get("content") as string,
     zone_volumes: {
       z1: parseInt(formData.get("z1") as string) || 0,

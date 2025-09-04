@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,11 +12,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, Target, Activity } from "lucide-react";
+import { getSessions } from "@/lib/actions/sessions";
+import type { Session } from "@/lib/actions/sessions";
 
 export function DashboardCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<{ day: number; month: string; year: number } | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const months = [
     { name: "enero", short: "ene", days: 31 },
@@ -35,30 +39,49 @@ export function DashboardCalendar() {
 
   const weekDays = ["L", "M", "X", "J", "V", "S", "D"];
 
+  // Cargar sesiones reales desde Supabase
+  useEffect(() => {
+    const loadSessions = async () => {
+      try {
+        const data = await getSessions();
+        setSessions(data);
+      } catch (error) {
+        console.error("Error cargando sesiones:", error);
+        setSessions([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadSessions();
+  }, []);
+
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
   const currentMonthName = months[currentMonth].name;
 
-  // Datos de ejemplo para entrenamientos específicos por día
-  const dailyTrainingData = {
-    "2025-01-15": {
-      sessions: [
-        { time: "07:00", type: "Aeróbico", distance: 2000, duration: 45, stroke: "Libre", rpe: 6 },
-        { time: "19:30", type: "Técnica", distance: 1500, duration: 30, stroke: "Espalda", rpe: 4 }
-      ]
-    },
-    "2025-02-20": {
-      sessions: [
-        { time: "08:00", type: "Umbral", distance: 3000, duration: 60, stroke: "Libre", rpe: 8 }
-      ]
-    },
-    "2025-03-10": {
-      sessions: [
-        { time: "07:30", type: "Velocidad", distance: 1200, duration: 25, stroke: "Mariposa", rpe: 9 },
-        { time: "18:00", type: "Recuperación", distance: 800, duration: 20, stroke: "Pecho", rpe: 3 }
-      ]
+  // Convertir sesiones reales a formato para el calendario
+  const dailyTrainingData = sessions.reduce((acc, session) => {
+    const dateKey = session.date;
+    if (!acc[dateKey]) {
+      acc[dateKey] = { sessions: [] };
     }
-  };
+    
+    acc[dateKey].sessions.push({
+      time: "09:00", // Podríamos agregar un campo de hora a las sesiones
+      type: session.type,
+      distance: session.distance || 0,
+      duration: session.duration || 0,
+      stroke: session.stroke || "Libre",
+      rpe: session.rpe || 5
+    });
+    
+    return acc;
+  }, {} as Record<string, { sessions: Array<{ time: string; type: string; distance: number; duration: number; stroke: string; rpe: number }> }>);
+
+  // Debug temporal (comentado para producción)
+  // console.log("Sessions en calendario:", sessions);
+  // console.log("Datos diarios del calendario:", dailyTrainingData);
 
   const generateCalendarDays = () => {
     const month = months[currentMonth];
@@ -166,24 +189,32 @@ export function DashboardCalendar() {
            {/* Días del mes */}
            <div className="grid grid-cols-7 gap-2 flex-1">
              {generateCalendarDays().map((day, index) => {
-               const hasTraining = day !== null && (currentMonthName === "enero" || currentMonthName === "febrero" || currentMonthName === "marzo");
+               // Verificar si hay entrenamientos en este día
+               const hasTraining = day !== null && (() => {
+                 const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                 return dailyTrainingData[dateKey] && dailyTrainingData[dateKey].sessions.length > 0;
+               })();
+               
                const isToday = day === new Date().getDate() && currentMonth === new Date().getMonth() && currentYear === new Date().getFullYear();
                
                return (
                  <div
                    key={index}
                    onClick={() => day && handleDayClick(day)}
-                   className={`h-12 w-full flex items-center justify-center text-sm font-medium rounded-lg transition-all duration-200 ${
+                   className={`h-12 w-full flex items-center justify-center text-sm font-medium rounded-lg transition-all duration-200 relative ${
                      day === null 
                        ? "invisible" 
-                       : hasTraining
-                         ? "bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer shadow-sm"
-                         : isToday
-                           ? "bg-accent text-accent-foreground border-2 border-primary cursor-pointer"
-                           : "text-foreground hover:bg-accent cursor-pointer"
+                       : isToday
+                         ? "bg-accent text-accent-foreground border-2 border-primary cursor-pointer"
+                         : "text-foreground hover:bg-accent cursor-pointer"
                    }`}
                  >
-                   {day}
+                   <div className="flex flex-col items-center">
+                     <span>{day}</span>
+                     {hasTraining && (
+                       <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></div>
+                     )}
+                   </div>
                  </div>
                );
              })}
@@ -193,7 +224,7 @@ export function DashboardCalendar() {
            <div className="mt-4 pt-4 border-t border-border">
              <div className="flex items-center gap-4 text-xs text-muted-foreground">
                <div className="flex items-center gap-2">
-                 <div className="w-3 h-3 bg-primary rounded-full"></div>
+                 <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
                  <span>Días con entrenamiento</span>
                </div>
                <div className="flex items-center gap-2">

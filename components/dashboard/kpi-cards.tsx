@@ -3,82 +3,164 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Target, Users, Activity, Calendar, Trophy } from "lucide-react";
-import { getSeedData, getAggregations } from "@/lib/seed";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTrainingPhases } from "@/lib/contexts/training-phases-context";
+import { getSessions } from "@/lib/actions/sessions";
+import type { Session } from "@/lib/actions/sessions";
 
 export function KPICards() {
-  const sessions = getSeedData();
-  const stats = getAggregations(sessions);
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Cargar sesiones reales desde Supabase
+  useEffect(() => {
+    const loadSessions = async () => {
+      try {
+        const data = await getSessions();
+        setSessions(data);
+      } catch (error) {
+        console.error("Error cargando sesiones:", error);
+        setSessions([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadSessions();
+  }, []);
+
+  // Calcular estadísticas desde datos reales
+  const stats = {
+    totalSessions: sessions.length,
+    totalDistance: sessions.reduce((sum, session) => sum + (session.distance || 0), 0),
+    totalDuration: sessions.reduce((sum, session) => sum + (session.duration || 0), 0),
+    averageRPE: sessions.length > 0 ? sessions.reduce((sum, session) => sum + (session.rpe || 0), 0) / sessions.length : 0
+  };
   const [selectedPeriod, setSelectedPeriod] = useState<'year' | 'month' | 'week'>('year');
   const [selectedDistancePeriod, setSelectedDistancePeriod] = useState<'year' | 'month' | 'week'>('year');
   const { getCurrentPhase, getPhaseProgress } = useTrainingPhases();
 
-  // Calcular distancia por período
+  // Calcular distancia por período usando datos reales
   const getDistanceByPeriod = () => {
-    const totalDistanceKm = stats.totalDistance / 1000;
+    const now = new Date();
+    let filteredSessions = sessions;
+
+    // Filtrar sesiones por período
+    switch (selectedDistancePeriod) {
+      case 'year':
+        filteredSessions = sessions.filter(session => {
+          const sessionDate = new Date(session.date);
+          return sessionDate.getFullYear() === now.getFullYear();
+        });
+        break;
+      case 'month':
+        filteredSessions = sessions.filter(session => {
+          const sessionDate = new Date(session.date);
+          return sessionDate.getFullYear() === now.getFullYear() && 
+                 sessionDate.getMonth() === now.getMonth();
+        });
+        break;
+      case 'week':
+        const weekStart = new Date(now);
+        weekStart.setDate(now.getDate() - now.getDay());
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekStart.getDate() + 6);
+        
+        filteredSessions = sessions.filter(session => {
+          const sessionDate = new Date(session.date);
+          return sessionDate >= weekStart && sessionDate <= weekEnd;
+        });
+        break;
+    }
+
+    const periodDistance = filteredSessions.reduce((sum, session) => sum + (session.distance || 0), 0);
+    const periodDistanceKm = periodDistance / 1000;
     
     switch (selectedDistancePeriod) {
       case 'year':
         return {
-          distance: totalDistanceKm.toFixed(1),
+          distance: periodDistanceKm.toFixed(1),
           label: 'Total acumulado este año',
-          subtitle: `${stats.totalDistance.toLocaleString()} metros`
+          subtitle: `${periodDistance.toLocaleString()} metros`
         };
       case 'month':
-        // Aproximación: dividir distancia anual entre 12
-        const monthlyDistance = totalDistanceKm / 12;
         return {
-          distance: monthlyDistance.toFixed(1),
+          distance: periodDistanceKm.toFixed(1),
           label: 'Total este mes',
-          subtitle: `${Math.round(monthlyDistance * 1000).toLocaleString()} metros`
+          subtitle: `${periodDistance.toLocaleString()} metros`
         };
       case 'week':
-        // Aproximación: dividir distancia anual entre 52
-        const weeklyDistance = totalDistanceKm / 52;
         return {
-          distance: weeklyDistance.toFixed(1),
+          distance: periodDistanceKm.toFixed(1),
           label: 'Total esta semana',
-          subtitle: `${Math.round(weeklyDistance * 1000).toLocaleString()} metros`
+          subtitle: `${periodDistance.toLocaleString()} metros`
         };
       default:
         return {
-          distance: totalDistanceKm.toFixed(1),
+          distance: periodDistanceKm.toFixed(1),
           label: 'Total acumulado',
-          subtitle: `${stats.totalDistance.toLocaleString()} metros`
+          subtitle: `${periodDistance.toLocaleString()} metros`
         };
     }
   };
 
-  // Calcular sesiones por período
+  // Calcular sesiones por período usando datos reales
   const getSessionsByPeriod = () => {
+    const now = new Date();
+    let filteredSessions = sessions;
+
+    // Filtrar sesiones por período
+    switch (selectedPeriod) {
+      case 'year':
+        filteredSessions = sessions.filter(session => {
+          const sessionDate = new Date(session.date);
+          return sessionDate.getFullYear() === now.getFullYear();
+        });
+        break;
+      case 'month':
+        filteredSessions = sessions.filter(session => {
+          const sessionDate = new Date(session.date);
+          return sessionDate.getFullYear() === now.getFullYear() && 
+                 sessionDate.getMonth() === now.getMonth();
+        });
+        break;
+      case 'week':
+        const weekStart = new Date(now);
+        weekStart.setDate(now.getDate() - now.getDay());
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekStart.getDate() + 6);
+        
+        filteredSessions = sessions.filter(session => {
+          const sessionDate = new Date(session.date);
+          return sessionDate >= weekStart && sessionDate <= weekEnd;
+        });
+        break;
+    }
+
+    const periodSessions = filteredSessions.length;
     
     switch (selectedPeriod) {
       case 'year':
         return {
-          total: stats.totalSessions,
+          total: periodSessions,
           label: 'Total acumulado este año',
           subtitle: 'Sesiones registradas'
         };
       case 'month':
-        // Aproximación: dividir sesiones anuales entre 12
-        const monthlySessions = Math.round(stats.totalSessions / 12);
         return {
-          total: monthlySessions,
+          total: periodSessions,
           label: 'Total este mes',
           subtitle: 'Sesiones del mes actual'
         };
       case 'week':
-        // Aproximación: dividir sesiones anuales entre 52
-        const weeklySessions = Math.round(stats.totalSessions / 52);
         return {
-          total: weeklySessions,
+          total: periodSessions,
           label: 'Total esta semana',
           subtitle: 'Sesiones de la semana'
         };
       default:
         return {
-          total: stats.totalSessions,
+          total: periodSessions,
           label: 'Total acumulado',
           subtitle: 'Sesiones registradas'
         };
@@ -163,6 +245,26 @@ export function KPICards() {
       subtitle: ''
     };
   };
+
+  // Mostrar estado de carga
+  if (isLoading) {
+    return (
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {[...Array(4)].map((_, i) => (
+          <Card key={i} className="bg-muted/50 border-muted">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <div className="h-4 w-24 bg-muted animate-pulse rounded"></div>
+              <div className="h-4 w-4 bg-muted animate-pulse rounded"></div>
+            </CardHeader>
+            <CardContent>
+              <div className="h-8 w-16 bg-muted animate-pulse rounded mb-2"></div>
+              <div className="h-3 w-32 bg-muted animate-pulse rounded"></div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
 
   const distanceData = getDistanceByPeriod();
   const sessionsData = getSessionsByPeriod();

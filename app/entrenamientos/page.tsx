@@ -76,12 +76,12 @@ function TrainingContent() {
   const [activeTab, setActiveTab] = useState<"create" | "saved">("create");
   const [trainingTitle, setTrainingTitle] = useState("");
   const [trainingDate, setTrainingDate] = useState<Date>(new Date());
-  const [trainingType, setTrainingType] = useState("");
   const [trainingLocation, setTrainingLocation] = useState("");
   const [trainingCoach, setTrainingCoach] = useState("");
   const [trainingContent, setTrainingContent] = useState("");
   const [selectedClub, setSelectedClub] = useState("club-1");
   const [selectedGroup, setSelectedGroup] = useState("group-1-1");
+  const [trainingObjective, setTrainingObjective] = useState("");
   const [savedTrainings, setSavedTrainings] = useState<Session[]>([]);
   const [editingTraining, setEditingTraining] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -137,7 +137,6 @@ function TrainingContent() {
     }
   };
 
-  const trainingTypes = ["Aeróbico", "Técnica", "Umbral", "Velocidad", "Recuperación", "Fuerza", "Flexibilidad"];
 
   // Datos de ejemplo para clubs y grupos
   const clubsData = {
@@ -184,7 +183,7 @@ function TrainingContent() {
       const formData = new FormData();
       formData.append("title", trainingTitle);
       formData.append("date", trainingDate.toISOString().split('T')[0]);
-      formData.append("type", trainingType || "Personalizado");
+      formData.append("type", "Personalizado");
       formData.append("duration", "90"); // Valor por defecto
       formData.append("distance", totalMeters.toString());
       formData.append("stroke", "Libre");
@@ -193,6 +192,7 @@ function TrainingContent() {
       formData.append("coach", trainingCoach || "No especificado");
       formData.append("club", selectedClubData?.name || "No especificado");
       formData.append("group_name", selectedGroupData?.name || "No especificado");
+      formData.append("objective", trainingObjective || "otro");
       formData.append("content", trainingContent);
       formData.append("z1", zoneVolumes.z1.toString());
       formData.append("z2", zoneVolumes.z2.toString());
@@ -212,7 +212,7 @@ function TrainingContent() {
       await analyzeTraining({
         title: trainingTitle,
         content: trainingContent,
-        type: trainingType,
+        type: "Personalizado",
         date: trainingDate,
         totalDistance: totalMeters,
         detectedZones: [],
@@ -223,7 +223,7 @@ function TrainingContent() {
       setTrainingContent("");
       setTrainingLocation("");
       setTrainingCoach("");
-      setTrainingType("");
+      setTrainingObjective("");
       setTrainingDate(new Date());
       setSelectedClub("club-1");
       setSelectedGroup("group-1-1");
@@ -244,9 +244,9 @@ function TrainingContent() {
   const handleEditTraining = (training: Session) => {
     setTrainingTitle(training.title);
     setTrainingDate(new Date(training.date));
-    setTrainingType(training.type);
     setTrainingLocation(training.location);
     setTrainingCoach(training.coach);
+    setTrainingObjective(training.objective || "otro");
     setTrainingContent(training.content);
     
     // Cargar volúmenes por zona si existen
@@ -295,7 +295,7 @@ function TrainingContent() {
     setTrainingContent("");
     setTrainingLocation("");
     setTrainingCoach("");
-    setTrainingType("");
+    setTrainingObjective("");
     setTrainingDate(new Date());
     setSelectedClub("club-1");
     setSelectedGroup("group-1-1");
@@ -403,19 +403,6 @@ function TrainingContent() {
                     </Popover>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="training-type">Tipo de entrenamiento</Label>
-                    <Select value={trainingType} onValueChange={setTrainingType}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecciona el tipo" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {trainingTypes.map(type => (
-                          <SelectItem key={type} value={type}>{type}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
                     <Label htmlFor="training-location">Ubicación</Label>
                     <Input
                       id="training-location"
@@ -460,6 +447,24 @@ function TrainingContent() {
                             {group.name}
                           </SelectItem>
                         ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="training-objective">Objetivo del Entrenamiento</Label>
+                    <Select value={trainingObjective} onValueChange={setTrainingObjective}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona el objetivo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="resistencia">Resistencia</SelectItem>
+                        <SelectItem value="velocidad">Velocidad</SelectItem>
+                        <SelectItem value="tecnica">Técnica</SelectItem>
+                        <SelectItem value="fuerza">Fuerza</SelectItem>
+                        <SelectItem value="recuperacion">Recuperación</SelectItem>
+                        <SelectItem value="competicion">Competición</SelectItem>
+                        <SelectItem value="test">Test</SelectItem>
+                        <SelectItem value="otro">Otro</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -560,7 +565,7 @@ function TrainingContent() {
             {/* Detector de Zonas Avanzado */}
             <AdvancedZoneDetector 
               content={trainingContent}
-              trainingType={trainingType}
+              trainingType="Personalizado"
               phase="base" // Esto se podría obtener del contexto de planificación
               competition={false}
             />

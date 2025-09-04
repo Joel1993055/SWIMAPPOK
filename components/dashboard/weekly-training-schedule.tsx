@@ -12,6 +12,9 @@ import {
 } from "lucide-react";
 import { format, startOfWeek, addDays, isToday, isSameDay } from "date-fns";
 import { es } from "date-fns/locale";
+import { useState, useEffect } from "react";
+import { getSessions } from "@/lib/actions/sessions";
+import type { Session } from "@/lib/actions/sessions";
 
 interface TrainingSession {
   id: string;
@@ -22,6 +25,7 @@ interface TrainingSession {
   location: string;
   coach: string;
   group: string;
+  objective: string;
   intensity: 'Z1' | 'Z2' | 'Z3' | 'Z4' | 'Z5';
   distance: number;
   isCompleted: boolean;
@@ -32,12 +36,60 @@ interface WeeklyTrainingScheduleProps {
 }
 
 export function WeeklyTrainingSchedule({ weekStart = new Date() }: WeeklyTrainingScheduleProps) {
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  
   const startWeek = startOfWeek(weekStart, { weekStartsOn: 1 }); // Lunes
   const days = Array.from({ length: 7 }, (_, i) => addDays(startWeek, i));
   
   const dayNames = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
-  // Datos de ejemplo de entrenamientos
+  // Cargar sesiones reales desde Supabase
+  useEffect(() => {
+    const loadSessions = async () => {
+      try {
+        const data = await getSessions();
+        setSessions(data);
+      } catch (error) {
+        console.error("Error cargando sesiones:", error);
+        setSessions([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadSessions();
+  }, []);
+
+  // Convertir sesiones reales a formato para el horario semanal
+  const weeklyTrainings: TrainingSession[] = sessions.map(session => {
+    // Calcular intensidad basada en RPE
+    const getIntensityFromRPE = (rpe: number): 'Z1' | 'Z2' | 'Z3' | 'Z4' | 'Z5' => {
+      if (rpe <= 3) return 'Z1';
+      if (rpe >= 4 && rpe <= 5) return 'Z2';
+      if (rpe >= 6 && rpe <= 7) return 'Z3';
+      if (rpe >= 8 && rpe <= 9) return 'Z4';
+      if (rpe >= 10) return 'Z5';
+      return 'Z2';
+    };
+
+    return {
+      id: session.id,
+      title: session.title,
+      time: "09:00", // Por ahora fijo, podríamos agregar campo de hora
+      duration: session.duration || 60,
+      type: session.type,
+      location: session.location || "No especificado",
+      coach: session.coach || "No especificado",
+      group: session.group_name || "No especificado",
+      objective: session.objective || "otro",
+      intensity: getIntensityFromRPE(session.rpe || 5),
+      distance: session.distance || 0,
+      isCompleted: new Date(session.date) < new Date()
+    };
+  });
+
+  // Datos de ejemplo de entrenamientos (mantener algunos para demo)
   const sampleTrainings: TrainingSession[] = [
     {
       id: '1',
@@ -48,6 +100,7 @@ export function WeeklyTrainingSchedule({ weekStart = new Date() }: WeeklyTrainin
       location: 'Piscina Municipal',
       coach: 'María García',
       group: 'Grupo A',
+      objective: 'resistencia',
       intensity: 'Z2',
       distance: 3000,
       isCompleted: true
@@ -61,6 +114,7 @@ export function WeeklyTrainingSchedule({ weekStart = new Date() }: WeeklyTrainin
       location: 'Piscina Municipal',
       coach: 'Carlos López',
       group: 'Grupo A',
+      objective: 'tecnica',
       intensity: 'Z1',
       distance: 2000,
       isCompleted: false
@@ -74,6 +128,7 @@ export function WeeklyTrainingSchedule({ weekStart = new Date() }: WeeklyTrainin
       location: 'Piscina Municipal',
       coach: 'Ana Martín',
       group: 'Grupo A',
+      objective: 'velocidad',
       intensity: 'Z4',
       distance: 2500,
       isCompleted: false
@@ -87,6 +142,7 @@ export function WeeklyTrainingSchedule({ weekStart = new Date() }: WeeklyTrainin
       location: 'Piscina Municipal',
       coach: 'María García',
       group: 'Grupo A',
+      objective: 'resistencia',
       intensity: 'Z2',
       distance: 5000,
       isCompleted: false
@@ -104,16 +160,61 @@ export function WeeklyTrainingSchedule({ weekStart = new Date() }: WeeklyTrainin
     }
   };
 
+  const getObjectiveColor = (objective: string) => {
+    switch (objective) {
+      case 'resistencia': return 'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800';
+      case 'velocidad': return 'bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800';
+      case 'tecnica': return 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800';
+      case 'fuerza': return 'bg-purple-50 border-purple-200 dark:bg-purple-900/20 dark:border-purple-800';
+      case 'recuperacion': return 'bg-gray-50 border-gray-200 dark:bg-gray-900/20 dark:border-gray-800';
+      case 'competicion': return 'bg-yellow-50 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-800';
+      case 'test': return 'bg-orange-50 border-orange-200 dark:bg-orange-900/20 dark:border-orange-800';
+      case 'otro': return 'bg-slate-50 border-slate-200 dark:bg-slate-900/20 dark:border-slate-800';
+      default: return 'bg-slate-50 border-slate-200 dark:bg-slate-900/20 dark:border-slate-800';
+    }
+  };
+
+  const getObjectiveBadgeColor = (objective: string) => {
+    switch (objective) {
+      case 'resistencia': return 'bg-blue-500 text-white hover:bg-blue-600';
+      case 'velocidad': return 'bg-red-500 text-white hover:bg-red-600';
+      case 'tecnica': return 'bg-green-500 text-white hover:bg-green-600';
+      case 'fuerza': return 'bg-purple-500 text-white hover:bg-purple-600';
+      case 'recuperacion': return 'bg-gray-500 text-white hover:bg-gray-600';
+      case 'competicion': return 'bg-yellow-500 text-white hover:bg-yellow-600';
+      case 'test': return 'bg-orange-500 text-white hover:bg-orange-600';
+      case 'otro': return 'bg-slate-500 text-white hover:bg-slate-600';
+      default: return 'bg-slate-500 text-white hover:bg-slate-600';
+    }
+  };
+
 
 
   const getTrainingsForDayAndTime = (day: Date, timeSlot: string): TrainingSession[] => {
-    return sampleTrainings.filter(training => {
-      const trainingDate = new Date(2024, 0, 15); // Fecha de ejemplo
-      const isAM = training.time.includes('07:00') || training.time.includes('09:00');
-      const isPM = training.time.includes('18:30');
-      
-      return isSameDay(trainingDate, day) && 
-             ((timeSlot === 'AM' && isAM) || (timeSlot === 'PM' && isPM));
+    const dayString = format(day, 'yyyy-MM-dd');
+    
+    // Filtrar entrenamientos reales para este día
+    const dayTrainings = weeklyTrainings.filter(training => {
+      const session = sessions.find(s => s.id === training.id);
+      return session && session.date === dayString;
+    });
+
+    // Si no hay entrenamientos reales, mostrar algunos de ejemplo
+    if (dayTrainings.length === 0) {
+      return sampleTrainings.filter(training => {
+        const trainingDate = new Date(2024, 0, 15); // Fecha de ejemplo
+        const isAM = training.time.includes('07:00') || training.time.includes('09:00');
+        const isPM = training.time.includes('18:30');
+        
+        return isSameDay(trainingDate, day) && 
+               ((timeSlot === 'AM' && isAM) || (timeSlot === 'PM' && isPM));
+      });
+    }
+    
+    // Para entrenamientos reales, distribuir entre AM y PM basado en el ID
+    return dayTrainings.filter(training => {
+      const isAM = training.id.charCodeAt(0) % 2 === 0; // Distribución simple
+      return (timeSlot === 'AM' && isAM) || (timeSlot === 'PM' && !isAM);
     });
   };
 
@@ -132,7 +233,7 @@ export function WeeklyTrainingSchedule({ weekStart = new Date() }: WeeklyTrainin
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Calendar className="h-5 w-5" />
-          Horario Semanal de Entrenamientos
+          Plan Semanal
         </CardTitle>
         <CardDescription>
           {format(startWeek, "dd MMM", { locale: es })} - {format(addDays(startWeek, 6), "dd MMM yyyy", { locale: es })}
@@ -202,26 +303,15 @@ export function WeeklyTrainingSchedule({ weekStart = new Date() }: WeeklyTrainin
                         {trainings.map((training) => (
                           <div
                             key={training.id}
-                            className={`p-3 rounded-lg text-sm border ${
-                              training.isCompleted 
-                                ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800' 
-                                : 'bg-background border-muted dark:bg-background/80 dark:border-muted-foreground/20'
-                            }`}
+                            className={`p-3 rounded-lg text-sm border ${getObjectiveColor(training.objective)}`}
                           >
-                            <div className="font-medium truncate mb-2">{training.title}</div>
-                            <div className="flex items-center gap-2 mb-2">
-                              <Clock className="h-4 w-4" />
-                              <span className="text-sm">{training.time}</span>
-                            </div>
-                            <div className="flex items-center gap-2 mb-2">
-                              <Badge className={`${getIntensityColor(training.intensity)} text-sm px-2 py-1`}>
-                                {training.intensity}
+                            <div className="flex items-center justify-center mb-2">
+                              <Badge className={`${getObjectiveBadgeColor(training.objective)} text-sm px-3 py-1 font-medium`}>
+                                {training.objective}
                               </Badge>
-                              <span className="text-sm text-muted-foreground">{training.distance}m</span>
                             </div>
-                            <div className="flex items-center gap-2">
-                              <MapPin className="h-4 w-4" />
-                              <span className="text-sm truncate">{training.location}</span>
+                            <div className="flex items-center justify-center">
+                              <span className="text-sm text-muted-foreground">{training.distance}m</span>
                             </div>
                           </div>
                         ))}
@@ -260,26 +350,15 @@ export function WeeklyTrainingSchedule({ weekStart = new Date() }: WeeklyTrainin
                         {trainings.map((training) => (
                           <div
                             key={training.id}
-                            className={`p-3 rounded-lg text-sm border ${
-                              training.isCompleted 
-                                ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800' 
-                                : 'bg-background border-muted dark:bg-background/80 dark:border-muted-foreground/20'
-                            }`}
+                            className={`p-3 rounded-lg text-sm border ${getObjectiveColor(training.objective)}`}
                           >
-                            <div className="font-medium truncate mb-2">{training.title}</div>
-                            <div className="flex items-center gap-2 mb-2">
-                              <Clock className="h-4 w-4" />
-                              <span className="text-sm">{training.time}</span>
-                            </div>
-                            <div className="flex items-center gap-2 mb-2">
-                              <Badge className={`${getIntensityColor(training.intensity)} text-sm px-2 py-1`}>
-                                {training.intensity}
+                            <div className="flex items-center justify-center mb-2">
+                              <Badge className={`${getObjectiveBadgeColor(training.objective)} text-sm px-3 py-1 font-medium`}>
+                                {training.objective}
                               </Badge>
-                              <span className="text-sm text-muted-foreground">{training.distance}m</span>
                             </div>
-                            <div className="flex items-center gap-2">
-                              <MapPin className="h-4 w-4" />
-                              <span className="text-sm truncate">{training.location}</span>
+                            <div className="flex items-center justify-center">
+                              <span className="text-sm text-muted-foreground">{training.distance}m</span>
                             </div>
                           </div>
                         ))}
@@ -335,11 +414,7 @@ export function WeeklyTrainingSchedule({ weekStart = new Date() }: WeeklyTrainin
                       {amTrainings.map((training) => (
                         <div
                           key={training.id}
-                          className={`p-3 rounded-lg border ${
-                            training.isCompleted 
-                              ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800' 
-                              : 'bg-background border-muted'
-                          }`}
+                          className={`p-3 rounded-lg border ${getObjectiveColor(training.objective)}`}
                         >
                           <div className="flex items-start justify-between mb-2">
                             <h5 className="font-medium text-sm">{training.title}</h5>
@@ -380,11 +455,7 @@ export function WeeklyTrainingSchedule({ weekStart = new Date() }: WeeklyTrainin
                       {pmTrainings.map((training) => (
                         <div
                           key={training.id}
-                          className={`p-3 rounded-lg border ${
-                            training.isCompleted 
-                              ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800' 
-                              : 'bg-background border-muted'
-                          }`}
+                          className={`p-3 rounded-lg border ${getObjectiveColor(training.objective)}`}
                         >
                           <div className="flex items-start justify-between mb-2">
                             <h5 className="font-medium text-sm">{training.title}</h5>

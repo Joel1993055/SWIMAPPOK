@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useState, useEffect } from "react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 import {
   Card,
@@ -24,8 +25,85 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { getSessions } from "@/lib/actions/sessions";
+import type { Session } from "@/lib/actions/sessions";
+import { calculateZoneVolumes, metersToKm, zoneLabels, zoneColors } from "@/lib/utils/zone-detection";
 
-// Función para generar datos hasta la fecha actual
+// Función para generar datos reales basados en las sesiones usando sistema unificado de zonas
+const generateRealData = (sessions: Session[], period: string) => {
+  const now = new Date();
+  
+  if (period === '7days') {
+    // Últimos 7 días
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(now);
+      date.setDate(now.getDate() - i);
+      const dateString = date.toISOString().split('T')[0];
+      
+      const daySessions = sessions.filter(s => s.date === dateString);
+      const zoneVolumes = calculateZoneVolumes(daySessions);
+      
+      days.push({
+        date: dateString,
+        Z1: metersToKm(zoneVolumes.Z1),
+        Z2: metersToKm(zoneVolumes.Z2),
+        Z3: metersToKm(zoneVolumes.Z3),
+        Z4: metersToKm(zoneVolumes.Z4),
+        Z5: metersToKm(zoneVolumes.Z5),
+      });
+    }
+    return days;
+  } else if (period === '30days') {
+    // Últimos 30 días
+    const days = [];
+    for (let i = 29; i >= 0; i--) {
+      const date = new Date(now);
+      date.setDate(now.getDate() - i);
+      const dateString = date.toISOString().split('T')[0];
+      
+      const daySessions = sessions.filter(s => s.date === dateString);
+      const zoneVolumes = calculateZoneVolumes(daySessions);
+      
+      days.push({
+        date: dateString,
+        Z1: metersToKm(zoneVolumes.Z1),
+        Z2: metersToKm(zoneVolumes.Z2),
+        Z3: metersToKm(zoneVolumes.Z3),
+        Z4: metersToKm(zoneVolumes.Z4),
+        Z5: metersToKm(zoneVolumes.Z5),
+      });
+    }
+    return days;
+  } else {
+    // Todo el año - por meses
+    const months = [];
+    for (let i = 11; i >= 0; i--) {
+      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
+      const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+      
+      const monthSessions = sessions.filter(s => {
+        const sessionDate = new Date(s.date);
+        return sessionDate >= monthStart && sessionDate <= monthEnd;
+      });
+      
+      const zoneVolumes = calculateZoneVolumes(monthSessions);
+      
+      months.push({
+        date: date.toISOString().split('T')[0],
+        Z1: metersToKm(zoneVolumes.Z1),
+        Z2: metersToKm(zoneVolumes.Z2),
+        Z3: metersToKm(zoneVolumes.Z3),
+        Z4: metersToKm(zoneVolumes.Z4),
+        Z5: metersToKm(zoneVolumes.Z5),
+      });
+    }
+    return months;
+  }
+};
+
+// Función para generar datos de ejemplo (fallback)
 const generateDataUntilToday = () => {
   const data = [
   { date: "2024-04-01", Z1: 222, Z2: 150, Z3: 180, Z4: 120, Z5: 90 },
@@ -119,7 +197,7 @@ const generateDataUntilToday = () => {
   { date: "2024-06-28", Z1: 149, Z2: 200, Z3: 170, Z4: 150, Z5: 120 },
   { date: "2024-06-29", Z1: 103, Z2: 160, Z3: 140, Z4: 120, Z5: 100 },
   { date: "2024-06-30", Z1: 446, Z2: 400, Z3: 340, Z4: 300, Z5: 260 },
-  ];
+];
 
   // Extender datos hasta la fecha actual
   const lastDate = new Date("2024-06-30");
@@ -158,29 +236,52 @@ const chartData = generateDataUntilToday();
 // Configuración del gráfico con las 5 zonas
 const chartConfig = {
   Z1: {
-    label: "Z1 - Recuperación",
-    color: "hsl(var(--chart-1))",
+    label: zoneLabels.Z1,
+    color: zoneColors.Z1,
   },
   Z2: {
-    label: "Z2 - Resistencia Base",
-    color: "hsl(var(--chart-2))",
+    label: zoneLabels.Z2,
+    color: zoneColors.Z2,
   },
   Z3: {
-    label: "Z3 - Tempo",
-    color: "hsl(var(--chart-3))",
+    label: zoneLabels.Z3,
+    color: zoneColors.Z3,
   },
   Z4: {
-    label: "Z4 - Umbral",
-    color: "hsl(var(--chart-4))",
+    label: zoneLabels.Z4,
+    color: zoneColors.Z4,
   },
   Z5: {
-    label: "Z5 - VO2 Max",
-    color: "hsl(var(--chart-5))",
+    label: zoneLabels.Z5,
+    color: zoneColors.Z5,
   },
 } satisfies ChartConfig;
 
 export default function ChartComponent() {
-  const [timeRange, setTimeRange] = React.useState("90d");
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [timeRange, setTimeRange] = React.useState("30days");
+
+  // Cargar sesiones reales desde Supabase
+  useEffect(() => {
+    const loadSessions = async () => {
+      try {
+        const data = await getSessions();
+        setSessions(data);
+      } catch (error) {
+        console.error("Error cargando sesiones:", error);
+        setSessions([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadSessions();
+  }, []);
+
+  // Generar datos reales basados en el rango de tiempo
+  const realData = generateRealData(sessions, timeRange);
+  const chartData = realData.length > 0 ? realData : generateDataUntilToday();
 
   // Función para agrupar datos por meses
   const groupDataByMonths = (data: typeof chartData) => {
@@ -314,19 +415,40 @@ export default function ChartComponent() {
   });
 
   // Decidir si mostrar datos por meses o por días
-  const shouldGroupByMonths = timeRange === "1y" || timeRange === "180d" || timeRange === "90d";
+  const shouldGroupByMonths = timeRange === "year";
   const finalChartData = shouldGroupByMonths ? groupDataByMonths(filteredData) : formatDailyData(filteredData);
+
+  // Mostrar estado de carga
+  if (isLoading) {
+    return (
+      <Card className="bg-muted/50 border-muted">
+        <CardHeader>
+          <CardTitle>Distribución por Zonas</CardTitle>
+          <CardDescription>
+            Volumen de entrenamiento por zonas de intensidad
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[400px] flex items-center justify-center">
+            <div className="animate-pulse text-muted-foreground">Cargando datos...</div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="bg-muted/50 border-muted">
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
-          <CardTitle>Gráfico Volumen total</CardTitle>
+          <CardTitle>
+            {timeRange === '7days' ? 'Volumen 7 Días' : 
+             timeRange === '30days' ? 'Volumen 30 Días' : 
+             'Volumen Anual'} - Distribución por Zonas
+          </CardTitle>
           <CardDescription>
-            {timeRange === "1y" ? "Mostrando todo el año" :
-             timeRange === "180d" ? "Mostrando los últimos 6 meses" :
-             timeRange === "90d" ? "Mostrando los últimos 3 meses" :
-             timeRange === "30d" ? "Mostrando los últimos 30 días" :
+            {timeRange === "year" ? "Mostrando todo el año" :
+             timeRange === "30days" ? "Mostrando los últimos 30 días" :
              "Mostrando los últimos 7 días"}
           </CardDescription>
         </div>
@@ -335,22 +457,16 @@ export default function ChartComponent() {
             className="w-[160px] rounded-lg sm:ml-auto"
             aria-label="Selecciona un rango"
           >
-            <SelectValue placeholder="Últimos 3 meses" />
+            <SelectValue placeholder="Últimos 30 días" />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
-            <SelectItem value="1y" className="rounded-lg">
+            <SelectItem value="year" className="rounded-lg">
               Todo el año
             </SelectItem>
-            <SelectItem value="180d" className="rounded-lg">
-              Últimos 6 meses
-            </SelectItem>
-            <SelectItem value="90d" className="rounded-lg">
-              Últimos 3 meses
-            </SelectItem>
-            <SelectItem value="30d" className="rounded-lg">
+            <SelectItem value="30days" className="rounded-lg">
               Últimos 30 días
             </SelectItem>
-            <SelectItem value="7d" className="rounded-lg">
+            <SelectItem value="7days" className="rounded-lg">
               Últimos 7 días
             </SelectItem>
           </SelectContent>
