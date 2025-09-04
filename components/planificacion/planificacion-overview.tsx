@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { useTrainingZones } from "@/lib/contexts/training-zones-context";
 import { useTrainingPhases } from "@/lib/contexts/training-phases-context";
+import { useCompetitions } from "@/lib/contexts/competitions-context";
 
 // Tipos de datos
 interface TrainingPhase {
@@ -146,12 +147,15 @@ const competitions: Competition[] = [
 export function PlanificacionOverview() {
   const { currentZones } = useTrainingZones();
   const { phases, addPhase, updatePhase, deletePhase } = useTrainingPhases();
+  const { competitions, addCompetition, updateCompetition, deleteCompetition, getMainCompetition } = useCompetitions();
   const [selectedPhase, setSelectedPhase] = useState<string>("base");
-  const [selectedCompetition, setSelectedCompetition] = useState<string>("comp-1");
+  const [selectedCompetition, setSelectedCompetition] = useState<string>(
+    competitions.length > 0 ? competitions[0].id : ""
+  );
   
   // Estado para la competición principal (prioridad alta)
   const [mainCompetition, setMainCompetition] = useState<Competition | null>(
-    competitions.find(comp => comp.priority === "high") || null
+    getMainCompetition()
   );
   
   // Estados para edición
@@ -187,6 +191,11 @@ export function PlanificacionOverview() {
 
   const currentPhase = phases.find(phase => phase.id === selectedPhase);
   const currentCompetition = competitions.find(comp => comp.id === selectedCompetition);
+
+  // Sincronizar la competición principal cuando cambien las competiciones
+  useEffect(() => {
+    setMainCompetition(getMainCompetition());
+  }, [competitions, getMainCompetition]);
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -313,23 +322,27 @@ export function PlanificacionOverview() {
   };
 
   const handleSaveCompetition = () => {
-    // Aquí se guardaría en la base de datos
-    console.log("Guardando competición:", competitionForm);
+    const competitionData: Competition = {
+      id: editingCompetition || `comp-${Date.now()}`,
+      name: competitionForm.name,
+      date: competitionForm.date,
+      location: competitionForm.location,
+      type: competitionForm.type,
+      events: competitionForm.events,
+      objectives: competitionForm.objectives,
+      priority: competitionForm.priority,
+      status: competitionForm.status
+    };
+    
+    if (isAddingCompetition) {
+      addCompetition(competitionData);
+    } else if (editingCompetition) {
+      updateCompetition(editingCompetition, competitionData);
+    }
     
     // Si la competición tiene prioridad alta, actualizar la competición principal
     if (competitionForm.priority === "high") {
-      const newMainCompetition: Competition = {
-        id: editingCompetition || `comp-${Date.now()}`,
-        name: competitionForm.name,
-        date: competitionForm.date,
-        location: competitionForm.location,
-        type: competitionForm.type,
-        events: competitionForm.events,
-        objectives: competitionForm.objectives,
-        priority: competitionForm.priority,
-        status: competitionForm.status
-      };
-      setMainCompetition(newMainCompetition);
+      setMainCompetition(competitionData);
     }
     
     setEditingCompetition(null);
@@ -907,8 +920,7 @@ export function PlanificacionOverview() {
                         size="sm"
                         onClick={(e) => {
                           e.stopPropagation();
-                          // Aquí se eliminaría la competición
-                          console.log("Eliminar competición:", competition.id);
+                          deleteCompetition(competition.id);
                         }}
                         className="h-8 w-8 p-0 text-destructive hover:text-destructive"
                       >

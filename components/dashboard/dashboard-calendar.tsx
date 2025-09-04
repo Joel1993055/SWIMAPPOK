@@ -14,6 +14,7 @@ import {
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, Target, Activity } from "lucide-react";
 import { getSessions } from "@/lib/actions/sessions";
 import type { Session } from "@/lib/actions/sessions";
+import { useCompetitions } from "@/lib/contexts/competitions-context";
 
 export function DashboardCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -21,6 +22,7 @@ export function DashboardCalendar() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [sessions, setSessions] = useState<Session[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { getCompetitionsByDate } = useCompetitions();
 
   const months = [
     { name: "enero", short: "ene", days: 31 },
@@ -131,7 +133,15 @@ export function DashboardCalendar() {
     return dailyTrainingData[dateKey as keyof typeof dailyTrainingData] || null;
   };
 
+  const getSelectedDayCompetitions = () => {
+    if (!selectedDate) return [];
+    
+    const dateKey = `${selectedDate.year}-${String(months.findIndex(m => m.name === selectedDate.month) + 1).padStart(2, '0')}-${String(selectedDate.day).padStart(2, '0')}`;
+    return getCompetitionsByDate(dateKey);
+  };
+
   const selectedDayData = getSelectedDayData();
+  const selectedDayCompetitions = getSelectedDayCompetitions();
 
   return (
     <>
@@ -189,11 +199,17 @@ export function DashboardCalendar() {
            {/* Días del mes */}
            <div className="grid grid-cols-7 gap-2 flex-1">
              {generateCalendarDays().map((day, index) => {
-               // Verificar si hay entrenamientos en este día
-               const hasTraining = day !== null && (() => {
+               // Obtener el número de entrenamientos en este día
+               const trainingCount = day !== null ? (() => {
                  const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                 return dailyTrainingData[dateKey] && dailyTrainingData[dateKey].sessions.length > 0;
-               })();
+                 return dailyTrainingData[dateKey] ? dailyTrainingData[dateKey].sessions.length : 0;
+               })() : 0;
+               
+               // Obtener competiciones en este día
+               const competitionsOnDay = day !== null ? (() => {
+                 const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                 return getCompetitionsByDate(dateKey);
+               })() : [];
                
                const isToday = day === new Date().getDate() && currentMonth === new Date().getMonth() && currentYear === new Date().getFullYear();
                
@@ -211,9 +227,38 @@ export function DashboardCalendar() {
                  >
                    <div className="flex flex-col items-center">
                      <span>{day}</span>
-                     {hasTraining && (
-                       <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1"></div>
-                     )}
+                     <div className="flex gap-0.5 mt-1">
+                       {/* Puntos de entrenamientos */}
+                       {trainingCount > 0 && (
+                         <>
+                           {Array.from({ length: Math.min(trainingCount, 3) }, (_, i) => (
+                             <div 
+                               key={`training-${i}`} 
+                               className="w-1.5 h-1.5 bg-blue-500 rounded-full"
+                             ></div>
+                           ))}
+                           {trainingCount > 3 && (
+                             <div className="w-1.5 h-1.5 bg-blue-300 rounded-full"></div>
+                           )}
+                         </>
+                       )}
+                       
+                       {/* Puntos de competiciones */}
+                       {competitionsOnDay.length > 0 && (
+                         <>
+                           {competitionsOnDay.map((comp, i) => (
+                             <div 
+                               key={`comp-${comp.id}`} 
+                               className={`w-1.5 h-1.5 rounded-full ${
+                                 comp.priority === 'high' ? 'bg-red-500' :
+                                 comp.priority === 'medium' ? 'bg-orange-500' : 'bg-green-500'
+                               }`}
+                               title={comp.name}
+                             ></div>
+                           ))}
+                         </>
+                       )}
+                     </div>
                    </div>
                  </div>
                );
@@ -222,14 +267,44 @@ export function DashboardCalendar() {
            
            {/* Leyenda del calendario */}
            <div className="mt-4 pt-4 border-t border-border">
-             <div className="flex items-center gap-4 text-xs text-muted-foreground">
-               <div className="flex items-center gap-2">
-                 <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                 <span>Días con entrenamiento</span>
+             <div className="flex flex-col gap-2 text-xs text-muted-foreground">
+               <div className="flex items-center gap-4">
+                 <div className="flex items-center gap-2">
+                   <div className="flex gap-0.5">
+                     <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                     <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                   </div>
+                   <span>2 entrenamientos</span>
+                 </div>
+                 <div className="flex items-center gap-2">
+                   <div className="w-3 h-3 bg-accent border border-primary rounded-full"></div>
+                   <span>Hoy</span>
+                 </div>
                </div>
-               <div className="flex items-center gap-2">
-                 <div className="w-3 h-3 bg-accent border border-primary rounded-full"></div>
-                 <span>Hoy</span>
+               <div className="flex items-center gap-4">
+                 <div className="flex items-center gap-2">
+                   <div className="flex gap-0.5">
+                     <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                     <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                     <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                     <div className="w-1.5 h-1.5 bg-blue-300 rounded-full"></div>
+                   </div>
+                   <span>4+ entrenamientos</span>
+                 </div>
+                 <div className="flex items-center gap-2">
+                   <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+                   <span>Competición alta prioridad</span>
+                 </div>
+               </div>
+               <div className="flex items-center gap-4">
+                 <div className="flex items-center gap-2">
+                   <div className="w-1.5 h-1.5 bg-orange-500 rounded-full"></div>
+                   <span>Competición media prioridad</span>
+                 </div>
+                 <div className="flex items-center gap-2">
+                   <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                   <span>Competición baja prioridad</span>
+                 </div>
                </div>
              </div>
            </div>
@@ -252,53 +327,122 @@ export function DashboardCalendar() {
           </DialogHeader>
           
           <div className="space-y-4">
-            {selectedDate && selectedDayData ? (
+            {selectedDate && (selectedDayData || selectedDayCompetitions.length > 0) ? (
               <>
-                <div className="flex items-center gap-3 p-3 bg-primary/10 rounded-lg">
-                  <div className="p-2 bg-primary rounded-full">
-                    <Activity className="h-4 w-4 text-primary-foreground" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-foreground">
-                      {selectedDayData.sessions.length} sesión{selectedDayData.sessions.length !== 1 ? 'es' : ''}
-                    </p>
-                    <p className="text-sm text-muted-foreground">Entrenamientos programados</p>
-                  </div>
-                </div>
-                
-                <div className="space-y-3">
-                  {selectedDayData.sessions.map((session, index) => (
-                    <div key={index} className="border rounded-xl p-4 space-y-3 bg-muted/50">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Clock className="h-4 w-4 text-muted-foreground" />
-                          <span className="font-semibold text-foreground">{session.time}</span>
-                        </div>
-                        <Badge variant="secondary">
-                          {session.type}
-                        </Badge>
+                {/* Entrenamientos */}
+                {selectedDayData && selectedDayData.sessions.length > 0 && (
+                  <>
+                    <div className="flex items-center gap-3 p-3 bg-primary/10 rounded-lg">
+                      <div className="p-2 bg-primary rounded-full">
+                        <Activity className="h-4 w-4 text-primary-foreground" />
                       </div>
-                      
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="flex items-center gap-2 text-sm">
-                          <Target className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-foreground">{session.distance}m</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm">
-                          <Clock className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-foreground">{session.duration}min</span>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground font-medium">{session.stroke}</span>
-                        <Badge variant="outline" className="text-xs">
-                          RPE {session.rpe}/10
-                        </Badge>
+                      <div>
+                        <p className="font-semibold text-foreground">
+                          {selectedDayData.sessions.length} sesión{selectedDayData.sessions.length !== 1 ? 'es' : ''}
+                        </p>
+                        <p className="text-sm text-muted-foreground">Entrenamientos programados</p>
                       </div>
                     </div>
-                  ))}
-                </div>
+                    
+                    <div className="space-y-3">
+                      {selectedDayData.sessions.map((session, index) => (
+                        <div key={index} className="border rounded-xl p-4 space-y-3 bg-muted/50">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Clock className="h-4 w-4 text-muted-foreground" />
+                              <span className="font-semibold text-foreground">{session.time}</span>
+                            </div>
+                            <Badge variant="secondary">
+                              {session.type}
+                            </Badge>
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="flex items-center gap-2 text-sm">
+                              <Target className="h-4 w-4 text-muted-foreground" />
+                              <span className="text-foreground">{session.distance}m</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm">
+                              <Clock className="h-4 w-4 text-muted-foreground" />
+                              <span className="text-foreground">{session.duration}min</span>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground font-medium">{session.stroke}</span>
+                            <Badge variant="outline" className="text-xs">
+                              RPE {session.rpe}/10
+                            </Badge>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {/* Competiciones */}
+                {selectedDayCompetitions.length > 0 && (
+                  <>
+                    <div className="flex items-center gap-3 p-3 bg-orange-100 dark:bg-orange-900/20 rounded-lg">
+                      <div className="p-2 bg-orange-500 rounded-full">
+                        <CalendarIcon className="h-4 w-4 text-white" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-foreground">
+                          {selectedDayCompetitions.length} competición{selectedDayCompetitions.length !== 1 ? 'es' : ''}
+                        </p>
+                        <p className="text-sm text-muted-foreground">Eventos programados</p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      {selectedDayCompetitions.map((competition, index) => (
+                        <div key={index} className="border rounded-xl p-4 space-y-3 bg-muted/50">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+                              <span className="font-semibold text-foreground">{competition.name}</span>
+                            </div>
+                            <Badge 
+                              variant="outline" 
+                              className={`${
+                                competition.priority === 'high' ? 'bg-red-500 text-white' :
+                                competition.priority === 'medium' ? 'bg-orange-500 text-white' : 'bg-green-500 text-white'
+                              }`}
+                            >
+                              {competition.priority === 'high' ? 'Alta' : 
+                               competition.priority === 'medium' ? 'Media' : 'Baja'}
+                            </Badge>
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2 text-sm">
+                              <Target className="h-4 w-4 text-muted-foreground" />
+                              <span className="text-foreground">{competition.location}</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm">
+                              <Clock className="h-4 w-4 text-muted-foreground" />
+                              <span className="text-foreground">{competition.type}</span>
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-1">
+                            <p className="text-xs font-medium text-muted-foreground">Eventos:</p>
+                            <div className="flex flex-wrap gap-1">
+                              {competition.events.map((event, eventIndex) => (
+                                <Badge key={eventIndex} variant="secondary" className="text-xs">
+                                  {event}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                          
+                          <p className="text-sm text-muted-foreground">{competition.objectives}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
               </>
             ) : selectedDate ? (
               <div className="text-center py-8">
@@ -306,7 +450,7 @@ export function DashboardCalendar() {
                   <CalendarIcon className="h-8 w-8 text-muted-foreground" />
                 </div>
                 <p className="text-foreground font-medium">
-                  No hay entrenamientos registrados
+                  No hay actividades registradas
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">
                   para este día

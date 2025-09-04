@@ -201,17 +201,20 @@ export function KPICards() {
         phaseColor = 'text-purple-600';
     }
     
-    // Calcular días transcurridos en la fase actual
+    // Calcular progreso de la fase actual
     const now = new Date();
     const phaseStart = new Date(currentPhase.startDate!);
+    const phaseEnd = new Date(currentPhase.endDate!);
+    const totalPhaseDays = Math.ceil((phaseEnd.getTime() - phaseStart.getTime()) / (1000 * 60 * 60 * 24));
     const daysInPhase = Math.ceil((now.getTime() - phaseStart.getTime()) / (1000 * 60 * 60 * 24));
+    const phaseProgress = Math.min(Math.max((daysInPhase / totalPhaseDays) * 100, 0), 100);
     
     return {
       phase: currentPhase.name,
       phaseColor,
       progress: Math.round(cycleProgress),
       label: 'Fase del ciclo actual',
-      subtitle: `Semana ${Math.ceil(daysInPhase / 7)} de ${currentPhase.duration}`
+      subtitle: `Semana ${Math.ceil(daysInPhase / 7)} de ${currentPhase.duration} - ${Math.round(phaseProgress)}% completado`
     };
   };
 
