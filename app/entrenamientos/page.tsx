@@ -95,14 +95,16 @@ function TrainingContent() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   
-  // Estados para volúmenes por zona
-  const [zoneVolumes, setZoneVolumes] = useState({
-    z1: 0,
-    z2: 0,
-    z3: 0,
-    z4: 0,
-    z5: 0
-  });
+  // Estados para volúmenes por zona - 10 filas
+  const [zoneVolumes, setZoneVolumes] = useState(
+    Array.from({ length: 10 }, () => ({
+      z1: 0,
+      z2: 0,
+      z3: 0,
+      z4: 0,
+      z5: 0
+    }))
+  );
   
   const { analyzeTraining } = useAICoach();
 
@@ -130,16 +132,19 @@ function TrainingContent() {
     }
   };
 
-  // Calcular total de metros
-  const totalMeters = Object.values(zoneVolumes).reduce((sum, volume) => sum + volume, 0);
+  // Calcular total de metros de todas las filas
+  const totalMeters = zoneVolumes.reduce((total, row) => {
+    return total + Object.values(row).reduce((sum, volume) => sum + volume, 0);
+  }, 0);
 
-  // Función para actualizar volúmenes por zona
-  const handleZoneVolumeChange = (zone: keyof typeof zoneVolumes, value: string) => {
+  // Función para actualizar volúmenes por zona en una fila específica
+  const handleZoneVolumeChange = (rowIndex: number, zone: 'z1' | 'z2' | 'z3' | 'z4' | 'z5', value: string) => {
     const numericValue = parseInt(value) || 0;
-    setZoneVolumes(prev => ({
-      ...prev,
-      [zone]: numericValue
-    }));
+    setZoneVolumes(prev => prev.map((row, index) => 
+      index === rowIndex 
+        ? { ...row, [zone]: numericValue }
+        : row
+    ));
   };
 
   const handleClubChange = (value: string) => {
@@ -218,11 +223,18 @@ function TrainingContent() {
       formData.append("objective", trainingObjective || "otro");
       formData.append("time_slot", trainingTimeSlot);
       formData.append("content", trainingContent);
-      formData.append("z1", zoneVolumes.z1.toString());
-      formData.append("z2", zoneVolumes.z2.toString());
-      formData.append("z3", zoneVolumes.z3.toString());
-      formData.append("z4", zoneVolumes.z4.toString());
-      formData.append("z5", zoneVolumes.z5.toString());
+      // Calcular totales de las 10 filas
+      const totalZ1 = zoneVolumes.reduce((sum, row) => sum + row.z1, 0);
+      const totalZ2 = zoneVolumes.reduce((sum, row) => sum + row.z2, 0);
+      const totalZ3 = zoneVolumes.reduce((sum, row) => sum + row.z3, 0);
+      const totalZ4 = zoneVolumes.reduce((sum, row) => sum + row.z4, 0);
+      const totalZ5 = zoneVolumes.reduce((sum, row) => sum + row.z5, 0);
+      
+      formData.append("z1", totalZ1.toString());
+      formData.append("z2", totalZ2.toString());
+      formData.append("z3", totalZ3.toString());
+      formData.append("z4", totalZ4.toString());
+      formData.append("z5", totalZ5.toString());
 
       if (editingTraining) {
         await updateSession(editingTraining.id, formData);
@@ -253,7 +265,7 @@ function TrainingContent() {
       // setTrainingDate(new Date());
       setSelectedClub("club-1");
       setSelectedGroup("group-1-1");
-      setZoneVolumes({ z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 });
+      setZoneVolumes(Array.from({ length: 10 }, () => ({ z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 })));
       setEditingTraining(null);
       
       // Recargar entrenamientos
@@ -276,11 +288,14 @@ function TrainingContent() {
     setTrainingTimeSlot((training as any).time_slot || "AM");
     setTrainingContent(training.content);
     
-    // Cargar volúmenes por zona si existen
+    // Cargar volúmenes por zona si existen (en la primera fila)
     if (training.zone_volumes) {
-      setZoneVolumes(training.zone_volumes);
+      const newZoneVolumes = Array.from({ length: 10 }, (_, index) => 
+        index === 0 ? training.zone_volumes as { z1: number; z2: number; z3: number; z4: number; z5: number } : { z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 }
+      );
+      setZoneVolumes(newZoneVolumes);
     } else {
-      setZoneVolumes({ z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 });
+      setZoneVolumes(Array.from({ length: 10 }, () => ({ z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 })));
     }
     
     // Buscar el club y grupo correspondientes
@@ -327,7 +342,7 @@ function TrainingContent() {
     setTrainingDate(new Date());
     setSelectedClub("club-1");
     setSelectedGroup("group-1-1");
-    setZoneVolumes({ z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 });
+    setZoneVolumes(Array.from({ length: 10 }, () => ({ z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 })));
     setEditingTraining(null);
     setError(null);
     setSuccess(null);
@@ -526,56 +541,87 @@ function TrainingContent() {
 
                 <Separator />
 
-                {/* Volúmenes por zona */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-base font-medium">Volúmenes por Zona de Entrenamiento</Label>
-                    <div className="text-sm text-muted-foreground">
-                      Total: <span className="font-semibold text-foreground">{totalMeters.toLocaleString()}m</span>
-                    </div>
+                {/* Editor de contenido y Volúmenes por zona - Layout lado a lado */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Editor de contenido - Ocupa 2 columnas */}
+                  <div className="lg:col-span-2 space-y-2">
+                    <Label htmlFor="training-content">Contenido del entrenamiento</Label>
+                    <Textarea
+                      id="training-content"
+                      placeholder="Escribe tu entrenamiento aquí... Ejemplo:&#10;&#10;Calentamiento: 200m libre Z1&#10;Serie principal: 8x100m libre Z3 con 20s descanso&#10;Vuelta a la calma: 200m espalda Z1&#10;&#10;Puedes incluir:&#10;- Distancias (200m, 1.5km)&#10;- Tiempos (45min, 1h 30min)&#10;- Zonas (Z1, Z2, Z3, Z4, Z5)&#10;- Estilos (libre, espalda, pecho, mariposa)"
+                      value={trainingContent}
+                      onChange={(e) => setTrainingContent(e.target.value)}
+                      className="min-h-[400px] resize-none"
+                    />
                   </div>
-                  
-                  <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                    {Object.entries(zoneVolumes).map(([zone, volume]) => (
-                      <div key={zone} className="space-y-2">
-                        <Label htmlFor={`zone-${zone}`} className="text-sm font-medium">
-                          {zone.toUpperCase()}
-                        </Label>
-                        <Input
-                          id={`zone-${zone}`}
-                          type="number"
-                          min="0"
-                          step="50"
-                          placeholder="0"
-                          value={volume || ""}
-                          onChange={(e) => handleZoneVolumeChange(zone as keyof typeof zoneVolumes, e.target.value)}
-                          className="text-center"
-                        />
-                        <div className="text-xs text-muted-foreground text-center">
-                          {volume > 0 && `${volume.toLocaleString()}m`}
+
+                  {/* Volúmenes por zona - Estilo Google Sheets */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-base font-medium">Volúmenes por Zona</Label>
+                      <div className="text-sm text-muted-foreground">
+                        Total: <span className="font-semibold text-foreground">{totalMeters.toLocaleString()}m</span>
+                      </div>
+                    </div>
+                    
+                    {/* Tabla estilo Google Sheets */}
+                    <div className="border border-muted rounded-lg overflow-hidden">
+                      {/* Header */}
+                      <div className="grid grid-cols-5 bg-muted/50 dark:bg-muted/30">
+                        <div className="p-2 text-xs font-medium text-muted-foreground border-r border-muted text-center">
+                          Z1
+                        </div>
+                        <div className="p-2 text-xs font-medium text-muted-foreground border-r border-muted text-center">
+                          Z2
+                        </div>
+                        <div className="p-2 text-xs font-medium text-muted-foreground border-r border-muted text-center">
+                          Z3
+                        </div>
+                        <div className="p-2 text-xs font-medium text-muted-foreground border-r border-muted text-center">
+                          Z4
+                        </div>
+                        <div className="p-2 text-xs font-medium text-muted-foreground text-center">
+                          Z5
                         </div>
                       </div>
-                    ))}
+                      
+                      {/* 10 filas de datos */}
+                      {zoneVolumes.map((row, rowIndex) => (
+                        <div key={rowIndex} className="grid grid-cols-5 bg-background border-t border-muted">
+                          {Object.entries(row).map(([zone, volume]) => (
+                            <div key={`${rowIndex}-${zone}`} className="p-0.5 border-r border-muted last:border-r-0">
+                              <Input
+                                id={`zone-${rowIndex}-${zone}`}
+                                type="number"
+                                min="0"
+                                step="50"
+                                placeholder="0"
+                                value={volume || ""}
+                                onChange={(e) => handleZoneVolumeChange(rowIndex, zone as 'z1' | 'z2' | 'z3' | 'z4' | 'z5', e.target.value)}
+                                className="text-center border-0 focus:ring-1 focus:ring-primary h-8 text-[8px] font-mono [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield] bg-transparent hover:bg-muted/50 focus:bg-background transition-colors px-1"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      ))}
+                      
+                      {/* Fila de totales */}
+                      <div className="grid grid-cols-5 bg-muted/30 dark:bg-muted/20 border-t border-muted">
+                        {['z1', 'z2', 'z3', 'z4', 'z5'].map((zone) => {
+                          const total = zoneVolumes.reduce((sum, row) => sum + row[zone as keyof typeof row], 0);
+                          return (
+                            <div key={`total-${zone}`} className="p-1 text-[12px] font-semibold text-foreground border-r border-muted last:border-r-0 text-center font-mono">
+                              {total > 0 ? `${total.toLocaleString()}` : '0'}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    
+                    <div className="text-xs text-muted-foreground">
+                      💡 <strong>Consejo:</strong> Introduce los metros que nadaste en cada zona de intensidad.
+                    </div>
                   </div>
-                  
-                  <div className="text-xs text-muted-foreground">
-                    💡 <strong>Consejo:</strong> Introduce los metros que nadaste en cada zona de intensidad. 
-                    Esto te ayudará a analizar mejor la distribución de tu entrenamiento.
-                  </div>
-                </div>
-
-                <Separator />
-
-                {/* Editor de contenido */}
-                <div className="space-y-2">
-                  <Label htmlFor="training-content">Contenido del entrenamiento</Label>
-                  <Textarea
-                    id="training-content"
-                    placeholder="Escribe tu entrenamiento aquí... Ejemplo:&#10;&#10;Calentamiento: 200m libre Z1&#10;Serie principal: 8x100m libre Z3 con 20s descanso&#10;Vuelta a la calma: 200m espalda Z1&#10;&#10;Puedes incluir:&#10;- Distancias (200m, 1.5km)&#10;- Tiempos (45min, 1h 30min)&#10;- Zonas (Z1, Z2, Z3, Z4, Z5)&#10;- Estilos (libre, espalda, pecho, mariposa)"
-                    value={trainingContent}
-                    onChange={(e) => setTrainingContent(e.target.value)}
-                    className="min-h-[400px] resize-none"
-                  />
                 </div>
 
                 {/* Botones de acción */}

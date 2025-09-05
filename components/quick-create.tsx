@@ -19,127 +19,107 @@ import {
   Save,
   X
 } from "lucide-react";
+import { createSession } from "@/lib/actions/sessions";
 
 // Tipos de datos
 interface QuickSession {
   date: string;
   distance: number;
-  duration: number;
-  stroke: string;
-  sessionType: string;
-  rpe: number;
-  mainSet: string;
-  notes: string;
+  objective: string;
+  time_slot: "AM" | "PM";
+  content: string;
+  zone_volumes: {
+    z1: number;
+    z2: number;
+    z3: number;
+    z4: number;
+    z5: number;
+  };
 }
 
 // Opciones predefinidas
-const STROKE_OPTIONS = [
-  { value: "freestyle", label: "Libre", icon: "🏊‍♂️" },
-  { value: "backstroke", label: "Espalda", icon: "🏊‍♀️" },
-  { value: "breaststroke", label: "Pecho", icon: "🐸" },
-  { value: "butterfly", label: "Mariposa", icon: "🦋" },
-  { value: "mixed", label: "Mixto", icon: "🔄" }
-];
-
-const SESSION_TYPE_OPTIONS = [
-  { value: "aerobic", label: "Aeróbico", color: "bg-blue-500", description: "Resistencia base" },
-  { value: "threshold", label: "Umbral", color: "bg-green-500", description: "Intensidad moderada" },
-  { value: "speed", label: "Velocidad", color: "bg-orange-500", description: "Alta intensidad" },
-  { value: "technique", label: "Técnica", color: "bg-purple-500", description: "Perfeccionamiento" },
-  { value: "recovery", label: "Recuperación", color: "bg-gray-500", description: "Descanso activo" }
-];
-
-const QUICK_TEMPLATES = [
-  {
-    name: "Aeróbico Base",
-    distance: 2000,
-    duration: 45,
-    stroke: "freestyle",
-    sessionType: "aerobic",
-    rpe: 5,
-    mainSet: "4x500m @1:30",
-    description: "Sesión de resistencia base"
-  },
-  {
-    name: "Umbral",
-    distance: 1500,
-    duration: 35,
-    stroke: "freestyle",
-    sessionType: "threshold",
-    rpe: 7,
-    mainSet: "3x500m @1:15",
-    description: "Trabajo de umbral"
-  },
-  {
-    name: "Velocidad",
-    distance: 800,
-    duration: 25,
-    stroke: "freestyle",
-    sessionType: "speed",
-    rpe: 9,
-    mainSet: "8x100m @1:45",
-    description: "Sprint y velocidad"
-  },
-  {
-    name: "Técnica",
-    distance: 1200,
-    duration: 30,
-    stroke: "mixed",
-    sessionType: "technique",
-    rpe: 4,
-    mainSet: "Drills técnicos",
-    description: "Perfeccionamiento técnico"
-  }
+const OBJECTIVE_OPTIONS = [
+  { value: "Resistencia", label: "Resistencia", color: "bg-blue-500" },
+  { value: "Velocidad", label: "Velocidad", color: "bg-red-500" },
+  { value: "Técnica", label: "Técnica", color: "bg-purple-500" },
+  { value: "Fuerza", label: "Fuerza", color: "bg-orange-500" },
+  { value: "Recuperación", label: "Recuperación", color: "bg-green-500" },
+  { value: "Competición", label: "Competición", color: "bg-yellow-500" }
 ];
 
 export function QuickCreate() {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
   const [session, setSession] = useState<QuickSession>({
     date: new Date().toISOString().split('T')[0],
     distance: 0,
-    duration: 0,
-    stroke: "",
-    sessionType: "",
-    rpe: 5,
-    mainSet: "",
-    notes: ""
+    objective: "",
+    time_slot: "AM",
+    content: "",
+    zone_volumes: { z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 }
   });
 
-  const handleTemplateSelect = (template: typeof QUICK_TEMPLATES[0]) => {
-    setSession({
-      ...session,
-      distance: template.distance,
-      duration: template.duration,
-      stroke: template.stroke,
-      sessionType: template.sessionType,
-      rpe: template.rpe,
-      mainSet: template.mainSet
-    });
-    setSelectedTemplate(template.name);
+  const handleZoneVolumeChange = (zone: 'z1' | 'z2' | 'z3' | 'z4' | 'z5', value: string) => {
+    const numericValue = parseInt(value) || 0;
+    setSession(prev => ({
+      ...prev,
+      zone_volumes: {
+        ...prev.zone_volumes,
+        [zone]: numericValue
+      }
+    }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const calculateTotalMeters = () => {
+    return Object.values(session.zone_volumes).reduce((sum, volume) => sum + volume, 0);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Guardando sesión:", session);
-    // Aquí se implementaría la lógica para guardar la sesión
-    setIsOpen(false);
-    // Reset form
-    setSession({
-      date: new Date().toISOString().split('T')[0],
-      distance: 0,
-      duration: 0,
-      stroke: "",
-      sessionType: "",
-      rpe: 5,
-      mainSet: "",
-      notes: ""
-    });
-    setSelectedTemplate("");
+    setIsLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("date", session.date);
+      formData.append("distance", session.distance.toString());
+      formData.append("stroke", "Libre"); // Default stroke
+      formData.append("rpe", "5"); // Default RPE
+      formData.append("objective", session.objective);
+      formData.append("time_slot", session.time_slot);
+      formData.append("content", session.content);
+
+      // Agregar volúmenes por zona
+      formData.append("z1", session.zone_volumes.z1.toString());
+      formData.append("z2", session.zone_volumes.z2.toString());
+      formData.append("z3", session.zone_volumes.z3.toString());
+      formData.append("z4", session.zone_volumes.z4.toString());
+      formData.append("z5", session.zone_volumes.z5.toString());
+
+      await createSession(formData);
+      
+          // Reset form
+      setSession({
+        date: new Date().toISOString().split('T')[0],
+        distance: 0,
+        objective: "",
+        time_slot: "AM",
+        content: "",
+        zone_volumes: { z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 }
+      });
+      setIsOpen(false);
+      
+      // Recargar la página para mostrar el nuevo entrenamiento
+      window.location.reload();
+    } catch (error) {
+      console.error("Error guardando entrenamiento:", error);
+      alert("Error al guardar el entrenamiento. Por favor, inténtalo de nuevo.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const selectedStroke = STROKE_OPTIONS.find(s => s.value === session.stroke);
-  const selectedSessionType = SESSION_TYPE_OPTIONS.find(s => s.value === session.sessionType);
+  const selectedObjective = OBJECTIVE_OPTIONS.find(s => s.value === session.objective);
+  const totalMeters = calculateTotalMeters();
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -164,90 +144,44 @@ export function QuickCreate() {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          {/* Panel izquierdo: Plantillas rápidas */}
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-lg font-semibold mb-3">Plantillas Rápidas</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Selecciona una plantilla para rellenar automáticamente los campos
-              </p>
-            </div>
-            
-            <div className="grid gap-3">
-              {QUICK_TEMPLATES.map((template) => (
-                <Card 
-                  key={template.name}
-                  className={`cursor-pointer transition-all hover:shadow-md ${
-                    selectedTemplate === template.name ? 'ring-2 ring-primary bg-primary/5' : 'hover:bg-muted/50'
-                  }`}
-                  onClick={() => handleTemplateSelect(template)}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <h4 className="font-medium">{template.name}</h4>
-                          <Badge variant="outline" className="text-xs">
-                            {template.distance}m
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {template.description}
-                        </p>
-                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            {template.duration}min
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Activity className="w-3 h-3" />
-                            RPE {template.rpe}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <Badge 
-                          variant="outline" 
-                          className={`${SESSION_TYPE_OPTIONS.find(s => s.value === template.sessionType)?.color} text-white`}
-                        >
-                          {SESSION_TYPE_OPTIONS.find(s => s.value === template.sessionType)?.label}
-                        </Badge>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-
-          {/* Panel derecho: Formulario */}
+        <div className="space-y-6">
+          {/* Formulario principal */}
           <div className="space-y-4">
             <div>
               <h3 className="text-lg font-semibold mb-3">Detalles del Entrenamiento</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                Personaliza los detalles de tu sesión
+                Información básica de la sesión
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Fecha */}
-              <div className="space-y-2">
-                <Label htmlFor="date" className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  Fecha
-                </Label>
-                <Input
-                  id="date"
-                  type="date"
-                  value={session.date}
-                  onChange={(e) => setSession({ ...session, date: e.target.value })}
-                  required
-                />
-              </div>
-
-              {/* Distancia y Duración */}
+              {/* Fecha, Horario, Distancia y Objetivo */}
               <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="date" className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4" />
+                    Fecha
+                  </Label>
+                  <Input
+                    id="date"
+                    type="date"
+                    value={session.date}
+                    onChange={(e) => setSession({ ...session, date: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="time-slot">Horario</Label>
+                  <Select value={session.time_slot} onValueChange={(value) => setSession({ ...session, time_slot: value as "AM" | "PM" })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona el horario" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="AM">AM (Mañana)</SelectItem>
+                      <SelectItem value="PM">PM (Tarde/Noche)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div className="space-y-2">
                   <Label htmlFor="distance" className="flex items-center gap-2">
                     <Target className="w-4 h-4" />
@@ -263,48 +197,13 @@ export function QuickCreate() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="duration" className="flex items-center gap-2">
-                    <Clock className="w-4 h-4" />
-                    Duración (min)
-                  </Label>
-                  <Input
-                    id="duration"
-                    type="number"
-                    value={session.duration || ""}
-                    onChange={(e) => setSession({ ...session, duration: parseInt(e.target.value) || 0 })}
-                    placeholder="45"
-                  />
-                </div>
-              </div>
-
-              {/* Estilo y Tipo */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Estilo</Label>
-                  <Select value={session.stroke} onValueChange={(value) => setSession({ ...session, stroke: value })}>
+                  <Label>Objetivo del Entrenamiento</Label>
+                  <Select value={session.objective} onValueChange={(value) => setSession({ ...session, objective: value })}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar estilo" />
+                      <SelectValue placeholder="Seleccionar objetivo" />
                     </SelectTrigger>
                     <SelectContent>
-                      {STROKE_OPTIONS.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          <span className="flex items-center gap-2">
-                            <span>{option.icon}</span>
-                            {option.label}
-                          </span>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Tipo de Sesión</Label>
-                  <Select value={session.sessionType} onValueChange={(value) => setSession({ ...session, sessionType: value })}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar tipo" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {SESSION_TYPE_OPTIONS.map((option) => (
+                      {OBJECTIVE_OPTIONS.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
                           <span className="flex items-center gap-2">
                             <div className={`w-3 h-3 rounded-full ${option.color}`}></div>
@@ -317,84 +216,91 @@ export function QuickCreate() {
                 </div>
               </div>
 
-              {/* RPE */}
+              {/* Contenido del entrenamiento - MÁS GRANDE */}
               <div className="space-y-2">
-                <Label>RPE (1-10)</Label>
-                <Select value={session.rpe.toString()} onValueChange={(value) => setSession({ ...session, rpe: parseInt(value) })}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Array.from({ length: 10 }, (_, i) => i + 1).map((rpe) => (
-                      <SelectItem key={rpe} value={rpe.toString()}>
-                        RPE {rpe}/10
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Serie Principal */}
-              <div className="space-y-2">
-                <Label htmlFor="mainSet">Serie Principal</Label>
-                <Input
-                  id="mainSet"
-                  value={session.mainSet}
-                  onChange={(e) => setSession({ ...session, mainSet: e.target.value })}
-                  placeholder="4x500m @1:30"
-                />
-              </div>
-
-              {/* Notas */}
-              <div className="space-y-2">
-                <Label htmlFor="notes">Notas</Label>
+                <Label htmlFor="content" className="text-base font-medium">Contenido del entrenamiento</Label>
                 <Textarea
-                  id="notes"
-                  value={session.notes}
-                  onChange={(e) => setSession({ ...session, notes: e.target.value })}
-                  placeholder="Observaciones del entrenamiento..."
-                  rows={3}
+                  id="content"
+                  value={session.content}
+                  onChange={(e) => setSession({ ...session, content: e.target.value })}
+                  placeholder="Escribe tu entrenamiento aquí... Ejemplo:&#10;&#10;Calentamiento: 200m libre Z1&#10;Serie principal: 8x100m libre Z3 con 20s descanso&#10;Vuelta a la calma: 200m espalda Z1&#10;&#10;Puedes incluir:&#10;- Distancias (200m, 1.5km)&#10;- Tiempos (45min, 1h 30min)&#10;- Zonas (Z1, Z2, Z3, Z4, Z5)&#10;- Estilos (libre, espalda, pecho, mariposa)"
+                  rows={8}
+                  className="min-h-[200px] resize-none"
                 />
               </div>
+            </form>
+          </div>
 
-              {/* Resumen visual */}
-              {(session.distance > 0 || session.stroke || session.sessionType) && (
-                <Card className="bg-muted/50 border-muted">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-base">Resumen</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <span>Distancia:</span>
-                      <Badge variant="outline">{session.distance}m</Badge>
-                    </div>
-                    {session.duration > 0 && (
-                      <div className="flex items-center justify-between text-sm">
-                        <span>Duración:</span>
-                        <Badge variant="outline">{session.duration}min</Badge>
-                      </div>
-                    )}
-                    {selectedStroke && (
-                      <div className="flex items-center justify-between text-sm">
-                        <span>Estilo:</span>
-                        <Badge variant="outline">{selectedStroke.icon} {selectedStroke.label}</Badge>
-                      </div>
-                    )}
-                    {selectedSessionType && (
-                      <div className="flex items-center justify-between text-sm">
-                        <span>Tipo:</span>
-                        <Badge variant="outline" className={`${selectedSessionType.color} text-white`}>
-                          {selectedSessionType.label}
-                        </Badge>
-                      </div>
-                    )}
-                    <div className="flex items-center justify-between text-sm">
-                      <span>RPE:</span>
-                      <Badge variant="outline">RPE {session.rpe}/10</Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+          {/* Volúmenes por zona - Minimalista */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label className="text-sm font-medium text-muted-foreground">Volúmenes por Zona</Label>
+              <div className="text-xs text-muted-foreground">
+                Total: <span className="font-medium text-foreground">{totalMeters.toLocaleString()}m</span>
+              </div>
+            </div>
+            
+            {/* Grid compacto de zonas */}
+            <div className="grid grid-cols-5 gap-2">
+              {[
+                { zone: 'z1', label: 'Z1', color: 'bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800' },
+                { zone: 'z2', label: 'Z2', color: 'bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800' },
+                { zone: 'z3', label: 'Z3', color: 'bg-yellow-50 dark:bg-yellow-950/20 border-yellow-200 dark:border-yellow-800' },
+                { zone: 'z4', label: 'Z4', color: 'bg-orange-50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-800' },
+                { zone: 'z5', label: 'Z5', color: 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800' }
+              ].map(({ zone, label, color }) => (
+                <div key={zone} className={`p-2 rounded border ${color}`}>
+                  <div className="text-xs text-muted-foreground text-center mb-1">
+                    {label}
+                  </div>
+                  <Input
+                    id={zone}
+                    type="number"
+                    min="0"
+                    step="50"
+                    placeholder="0"
+                    value={session.zone_volumes[zone as keyof typeof session.zone_volumes] || ""}
+                    onChange={(e) => handleZoneVolumeChange(zone as 'z1' | 'z2' | 'z3' | 'z4' | 'z5', e.target.value)}
+                    className="text-center text-xs font-mono h-8 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+                      {/* Resumen visual */}
+        {(session.distance > 0 || session.objective) && (
+          <Card className="bg-muted/50 border-muted mt-6">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Resumen del Entrenamiento</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="flex items-center justify-between">
+                  <span>Distancia:</span>
+                  <Badge variant="outline">{session.distance}m</Badge>
+                </div>
+                {selectedObjective && (
+                  <div className="flex items-center justify-between">
+                    <span>Objetivo:</span>
+                    <Badge variant="outline" className={`${selectedObjective.color} text-white`}>
+                      {selectedObjective.label}
+                    </Badge>
+                  </div>
+                )}
+                <div className="flex items-center justify-between">
+                  <span>Horario:</span>
+                  <Badge variant="outline">{session.time_slot}</Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>Total Zonas:</span>
+                  <Badge variant="outline">{totalMeters.toLocaleString()}m</Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
               {/* Botones */}
               <div className="flex justify-end gap-2 pt-4">
@@ -402,13 +308,10 @@ export function QuickCreate() {
                   <X className="w-4 h-4 mr-2" />
                   Cancelar
                 </Button>
-                <Button type="submit">
+          <Button type="submit" onClick={handleSubmit} disabled={isLoading}>
                   <Save className="w-4 h-4 mr-2" />
-                  Guardar Entrenamiento
+            {isLoading ? "Guardando..." : "Guardar Entrenamiento"}
                 </Button>
-              </div>
-            </form>
-          </div>
         </div>
       </DialogContent>
     </Dialog>
