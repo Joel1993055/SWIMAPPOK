@@ -3,8 +3,8 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { BarChart3 } from "lucide-react"
-import { SignInDialog } from "@/components/auth/signin-dialog"
-import { SignUpDialog } from "@/components/auth/signup-dialog"
+import { SignInDialog } from "@/components/features/auth/signin-dialog"
+import { SignUpDialog } from "@/components/features/auth/signup-dialog"
 
 export function LandingHeader() {
   const [signInOpen, setSignInOpen] = useState(false)

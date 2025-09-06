@@ -4,8 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, BarChart3, TrendingUp, Users, Target, Activity } from "lucide-react";
 import Link from "next/link";
 import { getSeedData, getAggregations } from "@/lib/seed";
-import VolumeBarchart from "@/components/barchart";
-import ChartComponent from "@/components/chartcomponent";
+import VolumeBarchart from "@/components/charts/barchart";
+import ChartComponent from "@/components/charts/chartcomponent";
 
 export default async function PreviewDashboardPage() {
   const sessions = getSeedData();

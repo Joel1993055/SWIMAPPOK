@@ -1,11 +1,11 @@
 "use client";
 
-import { DashboardHeader } from "@/components/dashboard/dashboard-header";
-import { KPICards } from "@/components/dashboard/kpi-cards";
-import { VisitorsChart } from "@/components/dashboard/visitors-chart";
-import { DashboardCalendar } from "@/components/dashboard/dashboard-calendar";
-import { ChartsSection } from "@/components/dashboard/charts-section";
-import { WeeklyTrainingSchedule } from "@/components/dashboard/weekly-training-schedule";
+import { DashboardHeader } from "@/components/features/dashboard/dashboard-header";
+import { KPICards } from "@/components/features/dashboard/kpi-cards";
+import { VisitorsChart } from "@/components/features/dashboard/visitors-chart";
+import { DashboardCalendar } from "@/components/features/dashboard/dashboard-calendar";
+import { ChartsSection } from "@/components/features/dashboard/charts-section";
+import { WeeklyTrainingSchedule } from "@/components/features/dashboard/weekly-training-schedule";
 
 export function DashboardOverview() {
   return (

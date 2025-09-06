@@ -11,7 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { QuickCreate } from "@/components/quick-create"
+import { QuickCreate } from "@/components/forms/quick-create"
 
 export function NavMain({
   items,

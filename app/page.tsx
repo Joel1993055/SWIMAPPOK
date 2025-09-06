@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { LandingHeader } from "@/components/landing-header";
+import { LandingHeader } from "@/components/layout/landing-header";
 
 export default function Home() {
   return (
