@@ -1,3 +1,4 @@
+import { MigrationProvider } from "@/components/migration/migration-provider";
 import { AICoachProvider } from "@/lib/contexts/ai-coach-context";
 import { TrainingPhasesProvider } from "@/lib/contexts/training-phases-context";
 import { TrainingZonesProvider } from "@/lib/contexts/training-zones-context";
@@ -35,13 +36,15 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <TrainingZonesProvider>
-            <AICoachProvider>
+          <MigrationProvider>
+            <TrainingZonesProvider>
               <TrainingPhasesProvider>
-                <main className="min-h-screen">{children}</main>
+                <AICoachProvider>
+                  <main className="min-h-screen">{children}</main>
+                </AICoachProvider>
               </TrainingPhasesProvider>
-            </AICoachProvider>
-          </TrainingZonesProvider>
+            </TrainingZonesProvider>
+          </MigrationProvider>
         </ThemeProvider>
       </body>
     </html>

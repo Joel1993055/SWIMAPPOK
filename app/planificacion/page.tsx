@@ -2,8 +2,6 @@ import { PlanificacionOverview } from "@/components/features/planificacion/plani
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { CompetitionsProvider } from "@/lib/contexts/competitions-context";
-import { TrainingPhasesProvider } from "@/lib/contexts/training-phases-context";
 
 export default function PlanificacionPage() {
   return (
@@ -15,11 +13,7 @@ export default function PlanificacionPage() {
           <h1 className="text-3xl font-bold tracking-tight mb-6">
             Planificación de Entrenamientos
           </h1>
-          <TrainingPhasesProvider>
-            <CompetitionsProvider>
-              <PlanificacionOverview />
-            </CompetitionsProvider>
-          </TrainingPhasesProvider>
+          <PlanificacionOverview />
         </div>
       </SidebarInset>
     </SidebarProvider>
