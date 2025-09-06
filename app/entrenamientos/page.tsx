@@ -1,9 +1,10 @@
 "use client";
-
-import { useState, useEffect } from "react";
+import { AICoach } from "@/components/features/ai-coach";
+import { AdvancedZoneDetector } from "@/components/features/training/advanced-zone-detector";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { SiteHeader } from "@/components/layout/site-header";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,10 +12,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -23,33 +22,33 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import {
-  Plus,
-  Save,
-  Calendar as CalendarIcon,
-  Clock,
-  Target,
-  Activity,
-  MapPin,
-  Users,
-  FileText,
-  Trash2,
-  Edit,
-  Building2,
-} from "lucide-react";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import { AdvancedZoneDetector } from "@/components/advanced-zone-detector";
-import { AICoach } from "@/components/ai-coach";
-import { useAICoach } from "@/lib/contexts/ai-coach-context";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { Textarea } from "@/components/ui/textarea";
 import {
   createSession,
+  deleteSession,
   getSessions,
   updateSession,
-  deleteSession,
   type Session,
 } from "@/lib/actions/sessions";
+import { useAICoach } from "@/lib/contexts/ai-coach-context";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import {
+  Activity,
+  Building2,
+  Calendar as CalendarIcon,
+  Clock,
+  Edit,
+  FileText,
+  MapPin,
+  Plus,
+  Save,
+  Target,
+  Trash2,
+  Users,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 
 // Datos de ejemplo de entrenamientos guardados (comentado para evitar warning)
 /*

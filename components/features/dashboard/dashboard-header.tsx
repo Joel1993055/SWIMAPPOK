@@ -1,7 +1,7 @@
 "use client";
 
+import { ThemeToggle } from "@/components/common/theme-toggle";
 import { Badge } from "@/components/ui/badge";
-import { ThemeToggle } from "@/components/theme-toggle";
 
 export function DashboardHeader() {
   return (

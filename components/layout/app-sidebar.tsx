@@ -1,34 +1,34 @@
 "use client";
 
-import * as React from "react";
 import {
-  ArrowUpCircleIcon,
-  BarChartIcon,
-  ClipboardListIcon,
-  HelpCircleIcon,
-  LayoutDashboardIcon,
-  SettingsIcon,
-  BookOpenIcon,
-  CalendarIcon,
-  Target,
-  Users,
-  Plus,
-  Wrench,
+    ArrowUpCircleIcon,
+    BarChartIcon,
+    BookOpenIcon,
+    CalendarIcon,
+    ClipboardListIcon,
+    HelpCircleIcon,
+    LayoutDashboardIcon,
+    Plus,
+    SettingsIcon,
+    Target,
+    Users,
+    Wrench,
 } from "lucide-react";
+import * as React from "react";
 
-import { NavDocuments } from "@/components/nav-documents";
-import { NavMain } from "@/components/nav-main";
-import { NavSecondary } from "@/components/nav-secondary";
-import { NavUser } from "@/components/nav-user";
-import { NavTeamSelectors } from "@/components/nav-team-selectors";
+import { NavDocuments } from "@/components/navigation/nav-documents";
+import { NavMain } from "@/components/navigation/nav-main";
+import { NavSecondary } from "@/components/navigation/nav-secondary";
+import { NavTeamSelectors } from "@/components/navigation/nav-team-selectors";
+import { NavUser } from "@/components/navigation/nav-user";
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
 const data = {

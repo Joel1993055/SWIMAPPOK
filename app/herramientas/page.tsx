@@ -1,12 +1,12 @@
 "use client";
 
+import { FinaPointsCalculator } from "@/components/features/tools/fina-points-calculator";
+import { RelativeSpeedCalculator } from "@/components/features/tools/relative-speed-calculator";
 import { AppSidebar } from "@/components/layout/app-sidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { SiteHeader } from "@/components/layout/site-header";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FinaPointsCalculator } from "@/components/herramientas/fina-points-calculator";
-import { RelativeSpeedCalculator } from "@/components/herramientas/relative-speed-calculator";
-import { Wrench, Calculator, Timer } from "lucide-react";
+import { Calculator, Timer, Wrench } from "lucide-react";
 
 export default function HerramientasPage() {
   return (

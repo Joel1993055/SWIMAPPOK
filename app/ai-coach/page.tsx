@@ -1,10 +1,10 @@
 "use client";
 
+import { AICoach } from "@/components/features/ai-coach";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { SiteHeader } from "@/components/layout/site-header";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { AICoach } from "@/components/ai-coach";
-import { useAICoach } from "@/lib/contexts/ai-coach-context";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -12,18 +12,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { useAICoach } from "@/lib/contexts/ai-coach-context";
 import {
+  Activity,
+  BarChart3,
   Bot,
-  TrendingUp,
-  Target,
   Heart,
   Lightbulb,
-  Sparkles,
   Settings,
-  BarChart3,
-  Activity,
+  Sparkles,
+  Target,
+  TrendingUp,
 } from "lucide-react";
 
 function AICoachContent() {
