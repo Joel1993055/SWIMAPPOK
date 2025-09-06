@@ -1,14 +1,18 @@
 {
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "explicit"
   },
+
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.preferences.organizeImports": true,
+
   "prettier.requireConfig": true,
   "prettier.useEditorConfig": false,
+
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true
@@ -46,3 +50,4 @@
     "editor.formatOnSave": true
   }
 }
+

@@ -1,12 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { BarChart3 } from "lucide-react";
+import { LandingSwitch } from "@/components/common/landing-switch";
 import { SignInDialog } from "@/components/features/auth/signin-dialog";
 import { SignUpDialog } from "@/components/features/auth/signup-dialog";
+import { Button } from "@/components/ui/button";
+import { BarChart3 } from "lucide-react";
+import { useState } from "react";
 
-export function LandingHeader() {
+interface LandingHeaderProps {
+  onLandingToggle?: (showMarketing: boolean) => void;
+}
+
+export function LandingHeader({ onLandingToggle }: LandingHeaderProps) {
   const [signInOpen, setSignInOpen] = useState(false);
   const [signUpOpen, setSignUpOpen] = useState(false);
 
@@ -39,23 +44,31 @@ export function LandingHeader() {
               <span className="text-xl font-bold text-white">Swim:APP</span>
             </div>
 
-            {/* Auth Buttons */}
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-white text-white hover:bg-white hover:text-black"
-                onClick={handleSignInClick}
-              >
-                Sign In
-              </Button>
-              <Button
-                size="sm"
-                className="bg-white text-black hover:bg-gray-200"
-                onClick={handleSignUpClick}
-              >
-                Sign Up
-              </Button>
+            {/* Right side - Switch and Auth Buttons */}
+            <div className="flex items-center gap-4">
+              {/* Landing Switch */}
+              {onLandingToggle && (
+                <LandingSwitch onToggle={onLandingToggle} />
+              )}
+              
+              {/* Auth Buttons */}
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-white text-white hover:bg-white hover:text-black"
+                  onClick={handleSignInClick}
+                >
+                  Sign In
+                </Button>
+                <Button
+                  size="sm"
+                  className="bg-white text-black hover:bg-gray-200"
+                  onClick={handleSignUpClick}
+                >
+                  Sign Up
+                </Button>
+              </div>
             </div>
           </div>
         </div>
