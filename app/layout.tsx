@@ -1,9 +1,8 @@
-import { Geist } from "next/font/google";
-import { ThemeProvider } from "next-themes";
-import { TrainingZonesProvider } from "@/lib/contexts/training-zones-context";
 import { AICoachProvider } from "@/lib/contexts/ai-coach-context";
-import { ReportsProvider } from "@/lib/contexts/reports-context";
 import { TrainingPhasesProvider } from "@/lib/contexts/training-phases-context";
+import { TrainingZonesProvider } from "@/lib/contexts/training-zones-context";
+import { ThemeProvider } from "next-themes";
+import { Geist } from "next/font/google";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -38,11 +37,9 @@ export default function RootLayout({
         >
           <TrainingZonesProvider>
             <AICoachProvider>
-              <ReportsProvider>
-                <TrainingPhasesProvider>
-                  <main className="min-h-screen">{children}</main>
-                </TrainingPhasesProvider>
-              </ReportsProvider>
+              <TrainingPhasesProvider>
+                <main className="min-h-screen">{children}</main>
+              </TrainingPhasesProvider>
             </AICoachProvider>
           </TrainingZonesProvider>
         </ThemeProvider>

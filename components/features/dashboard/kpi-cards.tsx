@@ -27,12 +27,8 @@ const mapSupabaseToSession = (supabaseSession: SupabaseSession): Session => ({
 });
 
 export function KPICards() {
-  // NUEVO: Usar el store unificado
-  const { sessions: storeSessions, isLoading: storeLoading, setSessions } = useSessionsStore();
-  
-  // MANTENER: Estado local para compatibilidad
-  const [sessions, setSessionsLocal] = useState<Session[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // OPTIMIZADO: Usar solo el store unificado
+  const { sessions, isLoading, setSessions } = useSessionsStore();
 
   // Cargar sesiones reales desde Supabase
   useEffect(() => {
@@ -40,15 +36,11 @@ export function KPICards() {
       try {
         const data = await getSessions();
         const mappedSessions = data.map(mapSupabaseToSession);
-        setSessionsLocal(mappedSessions);
-        // NUEVO: Sincronizar con el store
+        // OPTIMIZADO: Usar directamente el store
         setSessions(mappedSessions);
       } catch (error) {
         console.error("Error cargando sesiones:", error);
-        setSessionsLocal([]);
         setSessions([]);
-      } finally {
-        setIsLoading(false);
       }
     };
 

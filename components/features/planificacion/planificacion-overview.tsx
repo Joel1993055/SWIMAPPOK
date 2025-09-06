@@ -273,19 +273,15 @@ export function PlanificacionOverview() {
     getMainCompetition,
   } = useCompetitions();
 
-  // NUEVO: Store unificado
+  // OPTIMIZADO: Solo usar lo necesario del store
   const { 
     phases: storePhases, 
-    addPhase: storeAddPhase, 
-    updatePhase: storeUpdatePhase, 
-    deletePhase: storeDeletePhase 
+    addPhase: storeAddPhase 
   } = useTrainingStore();
   
   const { 
     competitions: storeCompetitions, 
-    addCompetition: storeAddCompetition, 
-    updateCompetition: storeUpdateCompetition, 
-    deleteCompetition: storeDeleteCompetition 
+    addCompetition: storeAddCompetition 
   } = useCompetitionsStore();
   // NUEVO: Funciones de sincronización
   const syncPhasesToStore = () => {

@@ -1,4 +1,3 @@
-import { TrainingPhasesProvider } from "@/lib/contexts/training-phases-context";
 import { CompetitionsProvider } from "@/lib/contexts/competitions-context";
 
 export default function DashboardLayout({
@@ -7,8 +6,6 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <TrainingPhasesProvider>
-      <CompetitionsProvider>{children}</CompetitionsProvider>
-    </TrainingPhasesProvider>
+    <CompetitionsProvider>{children}</CompetitionsProvider>
   );
 }

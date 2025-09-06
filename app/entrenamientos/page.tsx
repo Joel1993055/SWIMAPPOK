@@ -135,14 +135,8 @@ const mapSessionToSupabase = (session: Session): SupabaseSession => ({
 });
 
 function TrainingContent() {
-  // NUEVO: Store unificado
-  const { 
-    sessions: storeSessions, 
-    addSession: storeAddSession, 
-    updateSession: storeUpdateSession, 
-    deleteSession: storeDeleteSession,
-    setSessions: storeSetSessions 
-  } = useSessionsStore();
+  // OPTIMIZADO: Solo usar lo necesario del store
+  const { setSessions } = useSessionsStore();
 
   const [activeTab, setActiveTab] = useState<"create" | "saved">("create");
   const [trainingTitle, setTrainingTitle] = useState("");
@@ -196,8 +190,8 @@ function TrainingContent() {
       const trainings = await getSessions();
       const mappedTrainings = trainings.map(mapSupabaseToSession);
       setSavedTrainings(mappedTrainings);
-      // NUEVO: Sincronizar con el store
-      storeSetSessions(mappedTrainings);
+      // OPTIMIZADO: Sincronizar con el store
+      setSessions(mappedTrainings);
     } catch (error) {
       console.error("Error cargando entrenamientos:", error);
       setError("Error al cargar los entrenamientos");

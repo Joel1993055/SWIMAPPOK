@@ -45,11 +45,8 @@ export function DashboardCalendar() {
   // MANTENER: Context existente
   const { getCompetitionsByDate } = useCompetitions();
   
-  // NUEVO: Store unificado
-  const { 
-    competitions: storeCompetitions, 
-    addCompetition: storeAddCompetition 
-  } = useCompetitionsStore();
+  // OPTIMIZADO: Solo usar lo necesario del store
+  const { competitions: storeCompetitions } = useCompetitionsStore();
 
   // NUEVO: Sincronizar datos del context al store
   React.useEffect(() => {

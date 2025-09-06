@@ -34,11 +34,8 @@ export function TrainingZoneDetector({ content }: TrainingZoneDetectorProps) {
   // MANTENER: Context existente
   const { currentZones } = useTrainingZones();
   
-  // NUEVO: Store unificado
-  const { 
-    phases: storePhases, 
-    addPhase: storeAddPhase 
-  } = useTrainingStore();
+  // OPTIMIZADO: Solo usar lo necesario del store
+  const { phases: storePhases } = useTrainingStore();
 
   // NUEVO: Sincronizar datos del context al store
   React.useEffect(() => {
