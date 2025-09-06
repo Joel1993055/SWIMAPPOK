@@ -1,6 +1,10 @@
 "use client";
 
-import { TrendingUp, BarChart3, AreaChart as AreaChartIcon } from "lucide-react";
+import {
+  TrendingUp,
+  BarChart3,
+  AreaChart as AreaChartIcon,
+} from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, Area, AreaChart } from "recharts";
 import { useState, useEffect } from "react";
 
@@ -12,7 +16,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   ChartConfig,
   ChartContainer,
@@ -30,26 +40,34 @@ const generateWeeklyData = (sessions: Session[]) => {
   const now = new Date();
   const startOfWeek = new Date(now);
   startOfWeek.setDate(now.getDate() - now.getDay() + 1); // Lunes
-  
-  const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-  
+
+  const days = [
+    "Lunes",
+    "Martes",
+    "Miércoles",
+    "Jueves",
+    "Viernes",
+    "Sábado",
+    "Domingo",
+  ];
+
   return days.map((dayName, index) => {
     const dayDate = new Date(startOfWeek);
     dayDate.setDate(startOfWeek.getDate() + index);
-    const dayString = dayDate.toISOString().split('T')[0];
-    
+    const dayString = dayDate.toISOString().split("T")[0];
+
     // Filtrar sesiones de este día
     const daySessions = sessions.filter(session => session.date === dayString);
-    
+
     // Sumar volúmenes manuales por zona (no detección automática)
     const zoneVolumes = {
       Z1: 0,
       Z2: 0,
       Z3: 0,
       Z4: 0,
-      Z5: 0
+      Z5: 0,
     };
-    
+
     daySessions.forEach(session => {
       // Usar los volúmenes manuales que introduces en el formulario
       zoneVolumes.Z1 += session.zone_volumes?.z1 || 0;
@@ -58,10 +76,15 @@ const generateWeeklyData = (sessions: Session[]) => {
       zoneVolumes.Z4 += session.zone_volumes?.z4 || 0;
       zoneVolumes.Z5 += session.zone_volumes?.z5 || 0;
     });
-    
+
     // Calcular total del día en metros
-    const totalDayMeters = zoneVolumes.Z1 + zoneVolumes.Z2 + zoneVolumes.Z3 + zoneVolumes.Z4 + zoneVolumes.Z5;
-    
+    const totalDayMeters =
+      zoneVolumes.Z1 +
+      zoneVolumes.Z2 +
+      zoneVolumes.Z3 +
+      zoneVolumes.Z4 +
+      zoneVolumes.Z5;
+
     return {
       day: dayName,
       Z1: metersToKm(zoneVolumes.Z1),
@@ -69,7 +92,7 @@ const generateWeeklyData = (sessions: Session[]) => {
       Z3: metersToKm(zoneVolumes.Z3),
       Z4: metersToKm(zoneVolumes.Z4),
       Z5: metersToKm(zoneVolumes.Z5),
-      totalMeters: totalDayMeters
+      totalMeters: totalDayMeters,
     };
   });
 };
@@ -124,7 +147,7 @@ export function VisitorsChart() {
 
   // Generar datos de la semana actual
   const chartData = generateWeeklyData(sessions);
-  
+
   // Generar datos para el área chart (con todas las zonas)
   const areaChartData = chartData.map(day => ({
     day: day.day,
@@ -133,9 +156,9 @@ export function VisitorsChart() {
     Z3: day.Z3,
     Z4: day.Z4,
     Z5: day.Z5,
-    totalMeters: day.totalMeters
+    totalMeters: day.totalMeters,
   }));
-  
+
   // Debug temporal (comentado para producción)
   // console.log("=== DEBUG PROGRESO SEMANAL ===");
   // console.log("Sessions cargadas:", sessions);
@@ -155,13 +178,15 @@ export function VisitorsChart() {
       <Card className="col-span-4 bg-muted/50 border-muted">
         <CardHeader>
           <CardTitle>Progreso Semanal</CardTitle>
-                  <CardDescription>
-          Distancia por zonas de entrenamiento (kilómetros)
-        </CardDescription>
+          <CardDescription>
+            Distancia por zonas de entrenamiento (kilómetros)
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="h-[300px] flex items-center justify-center">
-            <div className="animate-pulse text-muted-foreground">Cargando datos...</div>
+            <div className="animate-pulse text-muted-foreground">
+              Cargando datos...
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -180,7 +205,10 @@ export function VisitorsChart() {
         <div className="space-y-4">
           {/* Selector de tipo de gráfico */}
           <div className="flex justify-end">
-            <Select value={chartType} onValueChange={(value) => setChartType(value as "bar" | "area")}>
+            <Select
+              value={chartType}
+              onValueChange={value => setChartType(value as "bar" | "area")}
+            >
               <SelectTrigger className="w-48">
                 <SelectValue>
                   <div className="flex items-center gap-2">
@@ -227,18 +255,23 @@ export function VisitorsChart() {
                   axisLine={false}
                   tickFormatter={(value, index) => {
                     const data = chartData[index];
-                    const totalKm = data ? (data.totalMeters / 1000).toFixed(1) : '0';
+                    const totalKm = data
+                      ? (data.totalMeters / 1000).toFixed(1)
+                      : "0";
                     return `${value.slice(0, 3)}\n${totalKm}km`;
                   }}
                 />
-                <ChartTooltip 
-                  content={<ChartTooltipContent 
-                    hideLabel 
-                    formatter={(value, name) => [
-                      `${value} km`,
-                      chartConfig[name as keyof typeof chartConfig]?.label || name
-                    ]}
-                  />} 
+                <ChartTooltip
+                  content={
+                    <ChartTooltipContent
+                      hideLabel
+                      formatter={(value, name) => [
+                        `${value} km`,
+                        chartConfig[name as keyof typeof chartConfig]?.label ||
+                          name,
+                      ]}
+                    />
+                  }
                 />
                 <ChartLegend content={<ChartLegendContent />} />
                 <Bar
@@ -293,19 +326,24 @@ export function VisitorsChart() {
                   tickMargin={8}
                   tickFormatter={(value, index) => {
                     const data = areaChartData[index];
-                    const totalKm = data ? (data.totalMeters / 1000).toFixed(1) : '0';
+                    const totalKm = data
+                      ? (data.totalMeters / 1000).toFixed(1)
+                      : "0";
                     return `${value.slice(0, 3)}\n${totalKm}km`;
                   }}
                 />
                 <ChartTooltip
                   cursor={false}
-                  content={<ChartTooltipContent 
-                    hideLabel 
-                    formatter={(value, name) => [
-                      `${value} km`,
-                      chartConfig[name as keyof typeof chartConfig]?.label || name
-                    ]}
-                  />}
+                  content={
+                    <ChartTooltipContent
+                      hideLabel
+                      formatter={(value, name) => [
+                        `${value} km`,
+                        chartConfig[name as keyof typeof chartConfig]?.label ||
+                          name,
+                      ]}
+                    />
+                  }
                 />
                 <ChartLegend content={<ChartLegendContent />} />
                 <Area
@@ -360,7 +398,8 @@ export function VisitorsChart() {
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 leading-none font-medium">
-          Total semanal: {totalSemanal.toLocaleString()} km <TrendingUp className="h-4 w-4" />
+          Total semanal: {totalSemanal.toLocaleString()} km{" "}
+          <TrendingUp className="h-4 w-4" />
         </div>
         <div className="text-muted-foreground leading-none">
           Promedio diario: {promedioDiario.toLocaleString()} km

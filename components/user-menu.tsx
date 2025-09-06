@@ -25,7 +25,9 @@ export function UserMenu() {
 
     // Obtener usuario actual
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       setUser(user);
       setIsLoading(false);
     };
@@ -33,12 +35,12 @@ export function UserMenu() {
     getUser();
 
     // Escuchar cambios de autenticación
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setUser(session?.user ?? null);
-        setIsLoading(false);
-      }
-    );
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+      setIsLoading(false);
+    });
 
     return () => subscription.unsubscribe();
   }, []);
@@ -48,25 +50,24 @@ export function UserMenu() {
   };
 
   if (isLoading) {
-    return (
-      <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
-    );
+    return <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />;
   }
 
   if (!user) {
     return null;
   }
 
-  const userInitials = user.email
-    ? user.email.charAt(0).toUpperCase()
-    : "U";
+  const userInitials = user.email ? user.email.charAt(0).toUpperCase() : "U";
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={user.user_metadata?.avatar_url} alt={user.email} />
+            <AvatarImage
+              src={user.user_metadata?.avatar_url}
+              alt={user.email}
+            />
             <AvatarFallback>{userInitials}</AvatarFallback>
           </Avatar>
         </Button>

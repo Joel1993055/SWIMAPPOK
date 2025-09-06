@@ -12,10 +12,10 @@ export function DashboardOverview() {
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
       {/* Header */}
       <DashboardHeader />
-      
+
       {/* KPIs Cards - 4 tarjetas arriba */}
       <KPICards />
-      
+
       {/* Charts Section - Gráfico de visitantes y calendario */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <VisitorsChart />

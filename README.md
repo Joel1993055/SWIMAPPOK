@@ -19,12 +19,14 @@
 ## ✨ Características Principales
 
 ### 🎯 **Dashboard Inteligente**
+
 - **KPIs en tiempo real** - Métricas clave de rendimiento actualizadas al instante
 - **Gráficos interactivos** - Visualizaciones profesionales con Recharts
 - **Análisis detallado** - Seguimiento completo de sesiones y progreso
 - **Responsive design** - Optimizado para todos los dispositivos
 
 ### 📊 **Gestión de Entrenamientos**
+
 - **Formulario rápido** - Añadir entrenamientos en segundos
 - **Formulario avanzado** - Modal completo con todos los campos
 - **Calendario anual** - Vista de 12 meses con heatmap por distancia
@@ -32,12 +34,14 @@
 - **Exportación CSV** - Descarga de datos filtrados
 
 ### 🎨 **Interfaz Moderna**
+
 - **Diseño profesional** - UI/UX inspirada en las mejores prácticas
 - **Componentes shadcn/ui** - Sistema de componentes robusto y accesible
 - **Tema oscuro/claro** - Soporte completo para ambos temas
 - **Animaciones fluidas** - Transiciones suaves y feedback visual
 
 ### 🔒 **Autenticación y Seguridad**
+
 - **Supabase Auth** - Sistema de autenticación robusto y seguro
 - **Middleware protegido** - Rutas seguras y control de acceso
 - **Cookies seguras** - Gestión de sesiones con SSR
@@ -46,15 +50,18 @@
 ## 🚀 Demo y Acceso
 
 ### **Landing Page Pública**
+
 - **URL**: `/` - Página principal con información del producto
 - **Características**: Presentación completa, testimonios, CTA
 
 ### **Dashboard de Vista Previa**
+
 - **URL**: `/preview-dashboard` - Dashboard público sin login
 - **Datos**: Ejemplos reales para demostración
 - **Acceso**: Libre para todos los visitantes
 
 ### **Dashboard Demo Profesional**
+
 - **URL**: `/dashboard-demo` - Layout completo con sidebar
 - **Funcionalidades**: Todas las características implementadas
 - **Persistencia**: Datos guardados en localStorage
@@ -62,23 +69,27 @@
 ## 🛠️ Tecnologías Utilizadas
 
 ### **Frontend**
+
 - **Next.js 15** - Framework React con App Router
 - **TypeScript 5.7.2** - Tipado estático y mejor DX
 - **Tailwind CSS 3.4.17** - Framework CSS utility-first
 - **shadcn/ui** - Sistema de componentes profesionales
 
 ### **Backend y Base de Datos**
+
 - **Supabase** - Backend as a Service completo
 - **PostgreSQL** - Base de datos relacional robusta
 - **Row Level Security** - Seguridad a nivel de fila
 - **Real-time subscriptions** - Actualizaciones en tiempo real
 
 ### **Estado y Gestión de Datos**
+
 - **Zustand** - Gestión de estado ligera y eficiente
 - **React Query** - Gestión de datos del servidor
 - **Zod** - Validación de esquemas TypeScript
 
 ### **Herramientas de Desarrollo**
+
 - **ESLint** - Linting y calidad de código
 - **Prettier** - Formateo automático de código
 - **Husky** - Git hooks para calidad
@@ -113,6 +124,7 @@ swimappcursor/
 ## 🎯 Funcionalidades Implementadas
 
 ### **Sistema de Sesiones**
+
 - ✅ Crear, editar y eliminar entrenamientos
 - ✅ Filtros avanzados por múltiples criterios
 - ✅ Exportación de datos a CSV
@@ -120,6 +132,7 @@ swimappcursor/
 - ✅ Validación de datos con Zod
 
 ### **Métricas y Análisis**
+
 - ✅ KPIs en tiempo real
 - ✅ Gráficos interactivos de progreso
 - ✅ Calendario anual con heatmap
@@ -127,6 +140,7 @@ swimappcursor/
 - ✅ Filtros por período y criterios
 
 ### **Interfaz de Usuario**
+
 - ✅ Diseño responsive y moderno
 - ✅ Tema oscuro/claro
 - ✅ Navegación intuitiva
@@ -136,18 +150,21 @@ swimappcursor/
 ## 🚀 Instalación y Configuración
 
 ### **Prerrequisitos**
-- Node.js 18+ 
+
+- Node.js 18+
 - npm, yarn o pnpm
 - Cuenta de Supabase
 
 ### **1. Clonar el Repositorio**
-   ```bash
+
+```bash
 git clone git@github.com:Joel1993055/swimappcursor.git
 cd swimappcursor
-   ```
+```
 
 ### **2. Instalar Dependencias**
-   ```bash
+
+```bash
 npm install
 # o
 yarn install
@@ -156,7 +173,8 @@ pnpm install
 ```
 
 ### **3. Configurar Variables de Entorno**
-   ```bash
+
+```bash
 # Copiar archivo de ejemplo
 cp .env.example .env.local
 
@@ -166,7 +184,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_clave_anonima
 ```
 
 ### **4. Ejecutar en Desarrollo**
-   ```bash
+
+```bash
 npm run dev
 # o
 yarn dev
@@ -193,15 +212,19 @@ El proyecto estará disponible en [http://localhost:3000](http://localhost:3000)
 ## 🌐 Deployment
 
 ### **Vercel (Recomendado)**
+
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FJoel1993055%2Fswimappcursor)
 
 ### **Supabase Integration**
+
 El proyecto incluye integración automática con Supabase:
+
 - Variables de entorno configuradas automáticamente
 - Base de datos y autenticación listas para usar
 - Real-time subscriptions configuradas
 
 ### **Variables de Entorno Requeridas**
+
 ```env
 NEXT_PUBLIC_SUPABASE_URL=tu_url_de_supabase
 NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_clave_anonima
@@ -211,27 +234,30 @@ SUPABASE_SERVICE_ROLE_KEY=tu_clave_de_servicio
 ## 🔧 Desarrollo Local
 
 ### **Estructura de Datos**
+
 ```typescript
 interface Session {
   id: string;
-  date: string;                    // Formato ISO
-  swimmer: string;                 // Nombre del nadador
-  distance: number;                // Distancia en metros
-  durationMin: number;             // Duración en minutos
-  stroke: StrokeType;              // Estilo de natación
-  sessionType: SessionType;        // Tipo de entrenamiento
-  mainSet: string;                 // Serie principal
-  RPE: number;                     // Rate of Perceived Exertion (1-10)
-  notes?: string;                  // Notas opcionales
+  date: string; // Formato ISO
+  swimmer: string; // Nombre del nadador
+  distance: number; // Distancia en metros
+  durationMin: number; // Duración en minutos
+  stroke: StrokeType; // Estilo de natación
+  sessionType: SessionType; // Tipo de entrenamiento
+  mainSet: string; // Serie principal
+  RPE: number; // Rate of Perceived Exertion (1-10)
+  notes?: string; // Notas opcionales
 }
 ```
 
 ### **Stores de Estado**
+
 - **`useSessionsStore`** - Gestión de sesiones de entrenamiento
 - **`useAuthStore`** - Estado de autenticación del usuario
 - **`useThemeStore`** - Gestión del tema (claro/oscuro)
 
 ### **Componentes Principales**
+
 - **`DashboardLayout`** - Layout principal del dashboard
 - **`KPICards`** - Tarjetas de métricas clave
 - **`SessionsTable`** - Tabla de sesiones con paginación
@@ -241,24 +267,28 @@ interface Session {
 ## 📈 Roadmap
 
 ### **Fase 1 - Core Features** ✅
+
 - [x] Sistema de autenticación
 - [x] Dashboard básico
 - [x] Gestión de sesiones
 - [x] Métricas básicas
 
 ### **Fase 2 - Analytics Avanzados** 🚧
+
 - [ ] Gráficos de progreso a largo plazo
 - [ ] Análisis de tendencias
 - [ ] Comparativas entre períodos
 - [ ] Metas y objetivos
 
 ### **Fase 3 - Social y Colaboración** 📋
+
 - [ ] Compartir entrenamientos
 - [ ] Grupos de entrenamiento
 - [ ] Rankings y competencias
 - [ ] Sistema de logros
 
 ### **Fase 4 - Mobile y Offline** 📱
+
 - [ ] PWA completa
 - [ ] Sincronización offline
 - [ ] Notificaciones push
@@ -267,6 +297,7 @@ interface Session {
 ## 🤝 Contribuir
 
 ### **Cómo Contribuir**
+
 1. Fork del repositorio
 2. Crear rama feature (`git checkout -b feature/nueva-funcionalidad`)
 3. Commit cambios (`git commit -am 'Añadir nueva funcionalidad'`)
@@ -274,13 +305,15 @@ interface Session {
 5. Crear Pull Request
 
 ### **Estándares de Código**
+
 - **TypeScript** - Tipado estricto requerido
 - **ESLint** - Reglas de linting configuradas
 - **Prettier** - Formateo automático
 - **Conventional Commits** - Formato de commits estándar
 
 ### **Testing**
-   ```bash
+
+```bash
 # Ejecutar tests
 npm run test
 

@@ -1,6 +1,12 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { AlertTriangle } from "lucide-react";
 
 export default function AuthCodeErrorPage() {
@@ -26,12 +32,10 @@ export default function AuthCodeErrorPage() {
                 <li>Un problema temporal del servidor</li>
               </ul>
             </div>
-            
+
             <div className="flex flex-col gap-2">
               <Link href="/auth/signin">
-                <Button className="w-full">
-                  Intentar de nuevo
-                </Button>
+                <Button className="w-full">Intentar de nuevo</Button>
               </Link>
               <Link href="/auth/signup">
                 <Button variant="outline" className="w-full">

@@ -1,14 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Users, 
-  BarChart3, 
-  ArrowRight,
-  CheckCircle
-} from "lucide-react";
+import { Users, BarChart3, ArrowRight, CheckCircle } from "lucide-react";
 import Link from "next/link";
 
 const features = [
@@ -17,7 +18,7 @@ const features = [
   "Análisis de rendimiento por sesión",
   "Comparativas temporales y tendencias",
   "Exportación de datos en múltiples formatos",
-  "Sincronización en la nube con Supabase"
+  "Sincronización en la nube con Supabase",
 ];
 
 export default function AuthCTASection() {
@@ -25,18 +26,21 @@ export default function AuthCTASection() {
     <section className="w-full">
       <Card className="border-2 border-primary/20 bg-gradient-to-br from-background to-muted/50 max-w-5xl mx-auto">
         <CardHeader className="text-center pb-8">
-          <Badge variant="default" className="mb-6 w-fit mx-auto text-base px-4 py-2">
+          <Badge
+            variant="default"
+            className="mb-6 w-fit mx-auto text-base px-4 py-2"
+          >
             🚀 Comienza Ahora
           </Badge>
           <CardTitle className="text-4xl lg:text-5xl font-bold">
             Únete a Swim APP y transforma tu entrenamiento
           </CardTitle>
           <CardDescription className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Accede a herramientas profesionales de análisis deportivo 
-            diseñadas específicamente para nadadores competitivos.
+            Accede a herramientas profesionales de análisis deportivo diseñadas
+            específicamente para nadadores competitivos.
           </CardDescription>
         </CardHeader>
-        
+
         <CardContent className="space-y-8">
           {/* Features Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -52,11 +56,15 @@ export default function AuthCTASection() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-6 border-t border-border">
             <div className="text-center">
               <div className="text-2xl font-bold text-primary">500+</div>
-              <div className="text-sm text-muted-foreground">Nadadores activos</div>
+              <div className="text-sm text-muted-foreground">
+                Nadadores activos
+              </div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-primary">10K+</div>
-              <div className="text-sm text-muted-foreground">Sesiones registradas</div>
+              <div className="text-sm text-muted-foreground">
+                Sesiones registradas
+              </div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-primary">98%</div>
@@ -73,7 +81,12 @@ export default function AuthCTASection() {
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6">
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="text-lg px-8 py-6"
+            >
               <Link href="/sign-in">
                 <BarChart3 className="w-5 h-5 mr-2" />
                 Iniciar Sesión

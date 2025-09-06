@@ -4,19 +4,31 @@ import { useState } from "react";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { 
-  Users, 
-  Building2, 
-  UserPlus, 
-  Settings, 
+import {
+  Users,
+  Building2,
+  UserPlus,
+  Settings,
   Trophy,
   Calendar,
   Target,
@@ -30,7 +42,7 @@ import {
   Download,
   Mail,
   MapPin,
-  Clock
+  Clock,
 } from "lucide-react";
 
 // Datos de ejemplo para clubes y grupos
@@ -43,26 +55,26 @@ const sampleData = {
       members: 45,
       groups: 6,
       established: "2015",
-      logo: "/api/placeholder/40/40"
+      logo: "/api/placeholder/40/40",
     },
     {
-      id: "club-2", 
+      id: "club-2",
       name: "Aqua Barcelona",
       location: "Barcelona, España",
       members: 32,
       groups: 4,
       established: "2018",
-      logo: "/api/placeholder/40/40"
+      logo: "/api/placeholder/40/40",
     },
     {
       id: "club-3",
       name: "Swim Valencia",
-      location: "Valencia, España", 
+      location: "Valencia, España",
       members: 28,
       groups: 3,
       established: "2020",
-      logo: "/api/placeholder/40/40"
-    }
+      logo: "/api/placeholder/40/40",
+    },
   ],
   groups: {
     "club-1": [
@@ -74,28 +86,28 @@ const sampleData = {
         members: 12,
         coach: "María González",
         schedule: "Lun, Mié, Vie 18:00-20:00",
-        focus: "Competición"
+        focus: "Competición",
       },
       {
-        id: "group-1-2", 
+        id: "group-1-2",
         name: "Grupo Desarrollo",
         level: "Intermedio",
         ageRange: "14-18 años",
         members: 15,
         coach: "Carlos Ruiz",
         schedule: "Mar, Jue 17:00-19:00",
-        focus: "Técnica"
+        focus: "Técnica",
       },
       {
         id: "group-1-3",
         name: "Grupo Iniciación",
-        level: "Principiante", 
+        level: "Principiante",
         ageRange: "8-14 años",
         members: 18,
         coach: "Ana Martín",
         schedule: "Lun, Mié 16:00-17:30",
-        focus: "Aprendizaje"
-      }
+        focus: "Aprendizaje",
+      },
     ],
     "club-2": [
       {
@@ -106,18 +118,18 @@ const sampleData = {
         members: 8,
         coach: "David López",
         schedule: "Lun, Mié, Vie 19:00-21:00",
-        focus: "Fitness"
+        focus: "Fitness",
       },
       {
         id: "group-2-2",
         name: "Grupo Juvenil",
         level: "Intermedio",
-        ageRange: "12-16 años", 
+        ageRange: "12-16 años",
         members: 12,
         coach: "Laura Sánchez",
         schedule: "Mar, Jue 16:30-18:30",
-        focus: "Competición"
-      }
+        focus: "Competición",
+      },
     ],
     "club-3": [
       {
@@ -128,9 +140,9 @@ const sampleData = {
         members: 20,
         coach: "Roberto García",
         schedule: "Lun, Mié, Vie 18:30-20:00",
-        focus: "Recreativo"
-      }
-    ]
+        focus: "Recreativo",
+      },
+    ],
   },
   teamMembers: {
     "group-1-1": [
@@ -141,16 +153,16 @@ const sampleData = {
         level: "Elite",
         joinDate: "2023-01-15",
         achievements: 8,
-        avatar: "/api/placeholder/32/32"
+        avatar: "/api/placeholder/32/32",
       },
       {
         id: "member-2",
         name: "Sofia Rodríguez",
         role: "Miembro",
-        level: "Elite", 
+        level: "Elite",
         joinDate: "2023-03-20",
         achievements: 5,
-        avatar: "/api/placeholder/32/32"
+        avatar: "/api/placeholder/32/32",
       },
       {
         id: "member-3",
@@ -159,9 +171,9 @@ const sampleData = {
         level: "Elite",
         joinDate: "2023-02-10",
         achievements: 3,
-        avatar: "/api/placeholder/32/32"
-      }
-    ]
+        avatar: "/api/placeholder/32/32",
+      },
+    ],
   },
   teamStats: {
     "group-1-1": {
@@ -171,9 +183,9 @@ const sampleData = {
       totalSessions: 156,
       avgRPE: 7.2,
       achievements: 24,
-      upcomingEvents: 3
-    }
-  }
+      upcomingEvents: 3,
+    },
+  },
 };
 
 function TeamContent() {
@@ -182,10 +194,15 @@ function TeamContent() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const currentClub = sampleData.clubs.find(club => club.id === selectedClub);
-  const currentGroups = sampleData.groups[selectedClub as keyof typeof sampleData.groups] || [];
+  const currentGroups =
+    sampleData.groups[selectedClub as keyof typeof sampleData.groups] || [];
   const currentGroup = currentGroups.find(group => group.id === selectedGroup);
-  const currentMembers = sampleData.teamMembers[selectedGroup as keyof typeof sampleData.teamMembers] || [];
-  const currentStats = sampleData.teamStats[selectedGroup as keyof typeof sampleData.teamStats];
+  const currentMembers =
+    sampleData.teamMembers[
+      selectedGroup as keyof typeof sampleData.teamMembers
+    ] || [];
+  const currentStats =
+    sampleData.teamStats[selectedGroup as keyof typeof sampleData.teamStats];
 
   const filteredMembers = currentMembers.filter(member =>
     member.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -193,20 +210,29 @@ function TeamContent() {
 
   const getLevelColor = (level: string) => {
     switch (level) {
-      case "Elite": return "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200";
-      case "Avanzado": return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
-      case "Intermedio": return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
-      case "Principiante": return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
-      default: return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
+      case "Elite":
+        return "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200";
+      case "Avanzado":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
+      case "Intermedio":
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
+      case "Principiante":
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
+      default:
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
     }
   };
 
   const getRoleIcon = (role: string) => {
     switch (role) {
-      case "Capitán": return <Crown className="h-4 w-4 text-yellow-600" />;
-      case "Vice-Capitán": return <Star className="h-4 w-4 text-blue-600" />;
-      case "Miembro": return <Shield className="h-4 w-4 text-gray-600" />;
-      default: return <Users className="h-4 w-4 text-gray-600" />;
+      case "Capitán":
+        return <Crown className="h-4 w-4 text-yellow-600" />;
+      case "Vice-Capitán":
+        return <Star className="h-4 w-4 text-blue-600" />;
+      case "Miembro":
+        return <Shield className="h-4 w-4 text-gray-600" />;
+      default:
+        return <Users className="h-4 w-4 text-gray-600" />;
     }
   };
 
@@ -223,24 +249,28 @@ function TeamContent() {
         <p className="text-muted-foreground">
           Gestiona tu club, grupos y miembros del equipo
         </p>
-        
+
         {/* Selectores de Club y Grupo */}
         <div className="flex gap-4 mt-6">
           <div className="flex items-center gap-2">
             <Building2 className="h-4 w-4" />
-            <Select value={selectedClub} onValueChange={(value) => {
-              setSelectedClub(value);
-              // Reset group selection when club changes
-              const newGroups = sampleData.groups[value as keyof typeof sampleData.groups];
-              if (newGroups && newGroups.length > 0) {
-                setSelectedGroup(newGroups[0].id);
-              }
-            }}>
+            <Select
+              value={selectedClub}
+              onValueChange={value => {
+                setSelectedClub(value);
+                // Reset group selection when club changes
+                const newGroups =
+                  sampleData.groups[value as keyof typeof sampleData.groups];
+                if (newGroups && newGroups.length > 0) {
+                  setSelectedGroup(newGroups[0].id);
+                }
+              }}
+            >
               <SelectTrigger className="w-64">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {sampleData.clubs.map((club) => (
+                {sampleData.clubs.map(club => (
                   <SelectItem key={club.id} value={club.id}>
                     <div className="flex items-center gap-2">
                       <Avatar className="h-6 w-6">
@@ -249,7 +279,9 @@ function TeamContent() {
                       </Avatar>
                       <div>
                         <div className="font-medium">{club.name}</div>
-                        <div className="text-xs text-muted-foreground">{club.location}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {club.location}
+                        </div>
                       </div>
                     </div>
                   </SelectItem>
@@ -257,7 +289,7 @@ function TeamContent() {
               </SelectContent>
             </Select>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <Users className="h-4 w-4" />
             <Select value={selectedGroup} onValueChange={setSelectedGroup}>
@@ -265,7 +297,7 @@ function TeamContent() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {currentGroups.map((group) => (
+                {currentGroups.map(group => (
                   <SelectItem key={group.id} value={group.id}>
                     <div className="flex items-center gap-2">
                       <div>
@@ -362,15 +394,21 @@ function TeamContent() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between text-sm">
                     <span>Miembros Activos:</span>
-                    <span className="font-bold">{currentStats.activeMembers}/{currentStats.totalMembers}</span>
+                    <span className="font-bold">
+                      {currentStats.activeMembers}/{currentStats.totalMembers}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span>Distancia Total:</span>
-                    <span className="font-bold">{currentStats.totalDistance.toLocaleString()}m</span>
+                    <span className="font-bold">
+                      {currentStats.totalDistance.toLocaleString()}m
+                    </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span>Sesiones:</span>
-                    <span className="font-bold">{currentStats.totalSessions}</span>
+                    <span className="font-bold">
+                      {currentStats.totalSessions}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span>RPE Promedio:</span>
@@ -400,7 +438,7 @@ function TeamContent() {
               <Input
                 placeholder="Buscar miembros..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -415,15 +453,20 @@ function TeamContent() {
           </div>
 
           <div className="grid gap-4">
-            {filteredMembers.map((member) => (
+            {filteredMembers.map(member => (
               <Card key={member.id} className="bg-muted/50">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-4">
                     <Avatar className="h-12 w-12">
                       <AvatarImage src={member.avatar} />
-                      <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                      <AvatarFallback>
+                        {member.name
+                          .split(" ")
+                          .map(n => n[0])
+                          .join("")}
+                      </AvatarFallback>
                     </Avatar>
-                    
+
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <h4 className="font-semibold">{member.name}</h4>
@@ -433,7 +476,12 @@ function TeamContent() {
                         </Badge>
                       </div>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span>Miembro desde: {new Date(member.joinDate).toLocaleDateString('es-ES')}</span>
+                        <span>
+                          Miembro desde:{" "}
+                          {new Date(member.joinDate).toLocaleDateString(
+                            "es-ES"
+                          )}
+                        </span>
                         <span>•</span>
                         <span>{member.achievements} logros</span>
                       </div>
@@ -462,7 +510,9 @@ function TeamContent() {
                 <Calendar className="h-5 w-5" />
                 Horarios del Grupo
               </CardTitle>
-              <CardDescription>Planificación semanal de entrenamientos</CardDescription>
+              <CardDescription>
+                Planificación semanal de entrenamientos
+              </CardDescription>
             </CardHeader>
             <CardContent>
               {currentGroup && (
@@ -501,7 +551,9 @@ function TeamContent() {
                 <Trophy className="h-5 w-5" />
                 Próximos Eventos
               </CardTitle>
-              <CardDescription>Competiciones y actividades del grupo</CardDescription>
+              <CardDescription>
+                Competiciones y actividades del grupo
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -546,7 +598,9 @@ function TeamContent() {
                   <Settings className="h-5 w-5" />
                   Configuración del Grupo
                 </CardTitle>
-                <CardDescription>Gestiona la configuración del grupo seleccionado</CardDescription>
+                <CardDescription>
+                  Gestiona la configuración del grupo seleccionado
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -560,7 +614,10 @@ function TeamContent() {
                   </div>
                   <div>
                     <Label htmlFor="schedule">Horario</Label>
-                    <Input id="schedule" defaultValue={currentGroup?.schedule} />
+                    <Input
+                      id="schedule"
+                      defaultValue={currentGroup?.schedule}
+                    />
                   </div>
                   <Button className="w-full">
                     <Settings className="h-4 w-4 mr-2" />
@@ -576,7 +633,9 @@ function TeamContent() {
                   <UserPlus className="h-5 w-5" />
                   Gestión de Miembros
                 </CardTitle>
-                <CardDescription>Invitar y gestionar miembros del grupo</CardDescription>
+                <CardDescription>
+                  Invitar y gestionar miembros del grupo
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">

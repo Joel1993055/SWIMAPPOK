@@ -29,8 +29,11 @@ export interface TrainingPhase extends TrainingPhaseData {
 // =====================================================
 export async function createTrainingPhase(formData: FormData) {
   const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Usuario no autenticado");
   }
@@ -43,10 +46,10 @@ export async function createTrainingPhase(formData: FormData) {
     focus: (formData.get("focus") as string).split(",").map(f => f.trim()),
     intensity: parseInt(formData.get("intensity") as string),
     volume: parseInt(formData.get("volume") as string),
-    color: formData.get("color") as string || "bg-blue-500",
-    start_date: formData.get("start_date") as string || undefined,
-    end_date: formData.get("end_date") as string || undefined,
-    phase_order: parseInt(formData.get("phase_order") as string)
+    color: (formData.get("color") as string) || "bg-blue-500",
+    start_date: (formData.get("start_date") as string) || undefined,
+    end_date: (formData.get("end_date") as string) || undefined,
+    phase_order: parseInt(formData.get("phase_order") as string),
   };
 
   // Validaciones básicas
@@ -59,7 +62,7 @@ export async function createTrainingPhase(formData: FormData) {
     .from("training_phases")
     .insert({
       user_id: user.id,
-      ...phaseData
+      ...phaseData,
     })
     .select()
     .single();
@@ -72,7 +75,7 @@ export async function createTrainingPhase(formData: FormData) {
   // Revalidar páginas
   revalidatePath("/planificacion");
   revalidatePath("/dashboard");
-  
+
   return data;
 }
 
@@ -81,8 +84,11 @@ export async function createTrainingPhase(formData: FormData) {
 // =====================================================
 export async function getTrainingPhases() {
   const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Usuario no autenticado");
   }
@@ -106,8 +112,11 @@ export async function getTrainingPhases() {
 // =====================================================
 export async function getTrainingPhaseById(id: string) {
   const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Usuario no autenticado");
   }
@@ -132,8 +141,11 @@ export async function getTrainingPhaseById(id: string) {
 // =====================================================
 export async function updateTrainingPhase(id: string, formData: FormData) {
   const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Usuario no autenticado");
   }
@@ -146,10 +158,10 @@ export async function updateTrainingPhase(id: string, formData: FormData) {
     focus: (formData.get("focus") as string).split(",").map(f => f.trim()),
     intensity: parseInt(formData.get("intensity") as string),
     volume: parseInt(formData.get("volume") as string),
-    color: formData.get("color") as string || "bg-blue-500",
-    start_date: formData.get("start_date") as string || undefined,
-    end_date: formData.get("end_date") as string || undefined,
-    phase_order: parseInt(formData.get("phase_order") as string)
+    color: (formData.get("color") as string) || "bg-blue-500",
+    start_date: (formData.get("start_date") as string) || undefined,
+    end_date: (formData.get("end_date") as string) || undefined,
+    phase_order: parseInt(formData.get("phase_order") as string),
   };
 
   // Validaciones básicas
@@ -174,7 +186,7 @@ export async function updateTrainingPhase(id: string, formData: FormData) {
   // Revalidar páginas
   revalidatePath("/planificacion");
   revalidatePath("/dashboard");
-  
+
   return data;
 }
 
@@ -183,8 +195,11 @@ export async function updateTrainingPhase(id: string, formData: FormData) {
 // =====================================================
 export async function deleteTrainingPhase(id: string) {
   const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Usuario no autenticado");
   }
@@ -210,13 +225,16 @@ export async function deleteTrainingPhase(id: string) {
 // =====================================================
 export async function getCurrentPhase() {
   const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Usuario no autenticado");
   }
 
-  const now = new Date().toISOString().split('T')[0];
+  const now = new Date().toISOString().split("T")[0];
 
   const { data, error } = await supabase
     .from("training_phases")
@@ -228,7 +246,8 @@ export async function getCurrentPhase() {
     .limit(1)
     .single();
 
-  if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+  if (error && error.code !== "PGRST116") {
+    // PGRST116 = no rows returned
     console.error("Error obteniendo fase actual:", error);
     throw new Error("Error al obtener la fase actual");
   }
@@ -241,8 +260,11 @@ export async function getCurrentPhase() {
 // =====================================================
 export async function getCycleProgress() {
   const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Usuario no autenticado");
   }
@@ -274,8 +296,12 @@ export async function getCycleProgress() {
   const cycleEnd = new Date(lastPhase.end_date);
   const now = new Date();
 
-  const totalCycleDays = Math.ceil((cycleEnd.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24));
-  const daysPassed = Math.ceil((now.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24));
+  const totalCycleDays = Math.ceil(
+    (cycleEnd.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)
+  );
+  const daysPassed = Math.ceil(
+    (now.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)
+  );
 
   return Math.min(Math.max((daysPassed / totalCycleDays) * 100, 0), 100);
 }

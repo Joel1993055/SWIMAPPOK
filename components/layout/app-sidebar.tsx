@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   ArrowUpCircleIcon,
   BarChartIcon,
@@ -14,13 +14,13 @@ import {
   Users,
   Plus,
   Wrench,
-} from "lucide-react"
+} from "lucide-react";
 
-import { NavDocuments } from "@/components/nav-documents"
-import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
-import { NavTeamSelectors } from "@/components/nav-team-selectors"
+import { NavDocuments } from "@/components/nav-documents";
+import { NavMain } from "@/components/nav-main";
+import { NavSecondary } from "@/components/nav-secondary";
+import { NavUser } from "@/components/nav-user";
+import { NavTeamSelectors } from "@/components/nav-team-selectors";
 import {
   Sidebar,
   SidebarContent,
@@ -29,7 +29,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 const data = {
   user: {
@@ -98,11 +98,11 @@ const data = {
       icon: HelpCircleIcon,
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const [selectedClub, setSelectedClub] = React.useState("club-1")
-  const [selectedGroup, setSelectedGroup] = React.useState("group-1-1")
+  const [selectedClub, setSelectedClub] = React.useState("club-1");
+  const [selectedGroup, setSelectedGroup] = React.useState("group-1-1");
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -123,24 +123,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        
+
         {/* Selectores de Club y Grupo */}
         <div className="mt-6">
-          <NavTeamSelectors 
+          <NavTeamSelectors
             selectedClub={selectedClub}
             selectedGroup={selectedGroup}
             onClubChange={setSelectedClub}
             onGroupChange={setSelectedGroup}
           />
         </div>
-        
+
         <NavDocuments items={data.navTools} />
-        
+
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

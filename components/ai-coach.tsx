@@ -1,23 +1,29 @@
 "use client";
 
 import { useAICoach } from "@/lib/contexts/ai-coach-context";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { 
-  Bot, 
-  Brain, 
-  TrendingUp, 
-  Target, 
-  Heart, 
+import {
+  Bot,
+  Brain,
+  TrendingUp,
+  Target,
+  Heart,
   Lightbulb,
   CheckCircle,
   AlertTriangle,
   Sparkles,
   Settings,
-  X
+  X,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -26,54 +32,74 @@ interface AICoachProps {
 }
 
 export function AICoach({ className }: AICoachProps) {
-  const { 
-    isEnabled, 
-    currentAnalysis, 
-    toggleAICoach, 
+  const {
+    isEnabled,
+    currentAnalysis,
+    toggleAICoach,
     markAdviceAsRead,
-    getPersonalizedAdvice 
+    getPersonalizedAdvice,
   } = useAICoach();
-  
+
   const [isExpanded, setIsExpanded] = useState(false);
   const [contextInput, setContextInput] = useState("");
 
   const getAdviceIcon = (type: string) => {
     switch (type) {
-      case 'performance': return <TrendingUp className="h-4 w-4" />;
-      case 'technique': return <Target className="h-4 w-4" />;
-      case 'recovery': return <Heart className="h-4 w-4" />;
-      case 'nutrition': return <Brain className="h-4 w-4" />;
-      case 'motivation': return <Sparkles className="h-4 w-4" />;
-      default: return <Lightbulb className="h-4 w-4" />;
+      case "performance":
+        return <TrendingUp className="h-4 w-4" />;
+      case "technique":
+        return <Target className="h-4 w-4" />;
+      case "recovery":
+        return <Heart className="h-4 w-4" />;
+      case "nutrition":
+        return <Brain className="h-4 w-4" />;
+      case "motivation":
+        return <Sparkles className="h-4 w-4" />;
+      default:
+        return <Lightbulb className="h-4 w-4" />;
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300';
-      case 'low': return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300';
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300';
+      case "high":
+        return "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300";
+      case "low":
+        return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300";
+      default:
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300";
     }
   };
 
   const getRecoveryStatusColor = (status: string) => {
     switch (status) {
-      case 'excellent': return 'text-green-600';
-      case 'good': return 'text-blue-600';
-      case 'needs_attention': return 'text-yellow-600';
-      case 'overreaching': return 'text-red-600';
-      default: return 'text-gray-600';
+      case "excellent":
+        return "text-green-600";
+      case "good":
+        return "text-blue-600";
+      case "needs_attention":
+        return "text-yellow-600";
+      case "overreaching":
+        return "text-red-600";
+      default:
+        return "text-gray-600";
     }
   };
 
   const getRecoveryStatusText = (status: string) => {
     switch (status) {
-      case 'excellent': return 'Excelente';
-      case 'good': return 'Bueno';
-      case 'needs_attention': return 'Necesita atención';
-      case 'overreaching': return 'Sobreentrenamiento';
-      default: return 'Desconocido';
+      case "excellent":
+        return "Excelente";
+      case "good":
+        return "Bueno";
+      case "needs_attention":
+        return "Necesita atención";
+      case "overreaching":
+        return "Sobreentrenamiento";
+      default:
+        return "Desconocido";
     }
   };
 
@@ -153,7 +179,9 @@ export function AICoach({ className }: AICoachProps) {
               <div className="text-3xl font-bold text-primary mb-2">
                 {currentAnalysis.overallScore}/100
               </div>
-              <div className="text-sm text-muted-foreground mb-3">Puntuación General</div>
+              <div className="text-sm text-muted-foreground mb-3">
+                Puntuación General
+              </div>
               <Progress value={currentAnalysis.overallScore} className="h-2" />
             </div>
 
@@ -163,7 +191,11 @@ export function AICoach({ className }: AICoachProps) {
                 <Heart className="h-4 w-4" />
                 <span className="font-medium">Estado de Recuperación</span>
               </div>
-              <Badge className={getRecoveryStatusColor(currentAnalysis.recoveryStatus)}>
+              <Badge
+                className={getRecoveryStatusColor(
+                  currentAnalysis.recoveryStatus
+                )}
+              >
                 {getRecoveryStatusText(currentAnalysis.recoveryStatus)}
               </Badge>
             </div>
@@ -237,7 +269,7 @@ export function AICoach({ className }: AICoachProps) {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {currentAnalysis.recommendations.map((advice) => (
+            {currentAnalysis.recommendations.map(advice => (
               <Alert key={advice.id}>
                 <div className="flex items-start gap-2">
                   {getAdviceIcon(advice.type)}
@@ -245,8 +277,11 @@ export function AICoach({ className }: AICoachProps) {
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-medium">{advice.title}</span>
                       <Badge className={getPriorityColor(advice.priority)}>
-                        {advice.priority === 'high' ? 'Alta' : 
-                         advice.priority === 'medium' ? 'Media' : 'Baja'}
+                        {advice.priority === "high"
+                          ? "Alta"
+                          : advice.priority === "medium"
+                            ? "Media"
+                            : "Baja"}
                       </Badge>
                     </div>
                     <AlertDescription className="mb-2">
@@ -287,7 +322,7 @@ export function AICoach({ className }: AICoachProps) {
           <CardContent className="space-y-3">
             <textarea
               value={contextInput}
-              onChange={(e) => setContextInput(e.target.value)}
+              onChange={e => setContextInput(e.target.value)}
               placeholder="Ej: Me siento fatigado después del entrenamiento de ayer..."
               className="w-full p-3 border rounded-lg resize-none h-20 text-sm"
             />
@@ -295,7 +330,7 @@ export function AICoach({ className }: AICoachProps) {
               onClick={() => {
                 const advice = getPersonalizedAdvice(contextInput);
                 // Aquí se mostrarían los consejos generados
-                console.log('Consejos generados:', advice);
+                console.log("Consejos generados:", advice);
                 setContextInput("");
               }}
               className="w-full gap-2"

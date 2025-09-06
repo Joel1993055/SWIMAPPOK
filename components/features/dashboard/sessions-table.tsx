@@ -5,23 +5,44 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { getSessions, updateSession, deleteSession, type Session as SupabaseSession } from "@/lib/actions/sessions";
-import { 
-  Search, 
-  Edit, 
-  Trash2, 
-  Calendar as CalendarIcon, 
-  Activity, 
-  Filter, 
-  Download, 
-  X
+import {
+  getSessions,
+  updateSession,
+  deleteSession,
+  type Session as SupabaseSession,
+} from "@/lib/actions/sessions";
+import {
+  Search,
+  Edit,
+  Trash2,
+  Calendar as CalendarIcon,
+  Activity,
+  Filter,
+  Download,
+  X,
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -35,7 +56,7 @@ const STROKE_OPTIONS = [
   { value: "Espalda", label: "Espalda" },
   { value: "Pecho", label: "Pecho" },
   { value: "Mariposa", label: "Mariposa" },
-  { value: "Mixto", label: "Mixto" }
+  { value: "Mixto", label: "Mixto" },
 ];
 
 const SESSION_TYPE_OPTIONS = [
@@ -43,7 +64,7 @@ const SESSION_TYPE_OPTIONS = [
   { value: "Umbral", label: "Umbral" },
   { value: "Velocidad", label: "Velocidad" },
   { value: "Técnica", label: "Técnica" },
-  { value: "Recuperación", label: "Recuperación" }
+  { value: "Recuperación", label: "Recuperación" },
 ];
 
 const RPE_OPTIONS = Array.from({ length: 10 }, (_, i) => i + 1);
@@ -56,14 +77,17 @@ const SORT_OPTIONS = [
   { value: "duration-desc", label: "Duración (mayor)" },
   { value: "duration-asc", label: "Duración (menor)" },
   { value: "rpe-desc", label: "RPE (mayor)" },
-  { value: "rpe-asc", label: "RPE (menor)" }
+  { value: "rpe-asc", label: "RPE (menor)" },
 ];
 
 // Función para formatear fechas
-function formatDate(dateString: string, formatStr: string = 'dd/MM/yyyy'): string {
+function formatDate(
+  dateString: string,
+  formatStr: string = "dd/MM/yyyy"
+): string {
   const date = new Date(dateString);
-  if (formatStr === 'dd/MM/yyyy') {
-    return date.toLocaleDateString('es-ES');
+  if (formatStr === "dd/MM/yyyy") {
+    return date.toLocaleDateString("es-ES");
   }
   return format(date, formatStr, { locale: es });
 }
@@ -95,14 +119,19 @@ export function SessionsTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortBy, setSortBy] = useState("date-desc");
-  
+
   // Estados para filtros
   const [selectedStrokes, setSelectedStrokes] = useState<string[]>([]);
-  const [selectedSessionTypes, setSelectedSessionTypes] = useState<string[]>([]);
+  const [selectedSessionTypes, setSelectedSessionTypes] = useState<string[]>(
+    []
+  );
   const [selectedRPEs, setSelectedRPEs] = useState<number[]>([]);
   const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>({});
-  const [distanceRange, setDistanceRange] = useState<{ min?: number; max?: number }>({});
-  
+  const [distanceRange, setDistanceRange] = useState<{
+    min?: number;
+    max?: number;
+  }>({});
+
   // Estados para diálogos
   const [editingSession, setEditingSession] = useState<Session | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -114,86 +143,112 @@ export function SessionsTable() {
   const filteredAndSortedSessions = useMemo(() => {
     const filtered = sessions.filter(session => {
       // Búsqueda por texto
-      const matchesSearch = !searchTerm || 
+      const matchesSearch =
+        !searchTerm ||
         session.coach?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         session.stroke?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         session.type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         session.content?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (session.title && session.title.toLowerCase().includes(searchTerm.toLowerCase()));
+        (session.title &&
+          session.title.toLowerCase().includes(searchTerm.toLowerCase()));
 
       // Filtros por estilo
-      const matchesStroke = selectedStrokes.length === 0 || selectedStrokes.includes(session.stroke || "");
+      const matchesStroke =
+        selectedStrokes.length === 0 ||
+        selectedStrokes.includes(session.stroke || "");
 
       // Filtros por tipo de sesión
-      const matchesSessionType = selectedSessionTypes.length === 0 || selectedSessionTypes.includes(session.type || "");
+      const matchesSessionType =
+        selectedSessionTypes.length === 0 ||
+        selectedSessionTypes.includes(session.type || "");
 
       // Filtros por RPE
-      const matchesRPE = selectedRPEs.length === 0 || selectedRPEs.includes(session.rpe || 0);
+      const matchesRPE =
+        selectedRPEs.length === 0 || selectedRPEs.includes(session.rpe || 0);
 
       // Filtros por fecha
       const sessionDate = new Date(session.date);
-      const matchesDate = (!dateRange.from || sessionDate >= dateRange.from) && 
-                         (!dateRange.to || sessionDate <= dateRange.to);
+      const matchesDate =
+        (!dateRange.from || sessionDate >= dateRange.from) &&
+        (!dateRange.to || sessionDate <= dateRange.to);
 
       // Filtros por distancia
-      const matchesDistance = (!distanceRange.min || session.distance >= distanceRange.min) &&
-                             (!distanceRange.max || session.distance <= distanceRange.max);
+      const matchesDistance =
+        (!distanceRange.min || session.distance >= distanceRange.min) &&
+        (!distanceRange.max || session.distance <= distanceRange.max);
 
-      return matchesSearch && matchesStroke && matchesSessionType && matchesRPE && matchesDate && matchesDistance;
+      return (
+        matchesSearch &&
+        matchesStroke &&
+        matchesSessionType &&
+        matchesRPE &&
+        matchesDate &&
+        matchesDistance
+      );
     });
 
     // Ordenamiento
     filtered.sort((a, b) => {
-      const [field, direction] = sortBy.split('-');
-      const isAsc = direction === 'asc';
-      
+      const [field, direction] = sortBy.split("-");
+      const isAsc = direction === "asc";
+
       switch (field) {
-        case 'date':
-          return isAsc ? 
-            new Date(a.date).getTime() - new Date(b.date).getTime() :
-            new Date(b.date).getTime() - new Date(a.date).getTime();
-        case 'distance':
+        case "date":
+          return isAsc
+            ? new Date(a.date).getTime() - new Date(b.date).getTime()
+            : new Date(b.date).getTime() - new Date(a.date).getTime();
+        case "distance":
           return isAsc ? a.distance - b.distance : b.distance - a.distance;
-        case 'duration':
-          return isAsc ? (a.duration || 0) - (b.duration || 0) : (b.duration || 0) - (a.duration || 0);
-        case 'rpe':
-          return isAsc ? (a.rpe || 0) - (b.rpe || 0) : (b.rpe || 0) - (a.rpe || 0);
+        case "duration":
+          return isAsc
+            ? (a.duration || 0) - (b.duration || 0)
+            : (b.duration || 0) - (a.duration || 0);
+        case "rpe":
+          return isAsc
+            ? (a.rpe || 0) - (b.rpe || 0)
+            : (b.rpe || 0) - (a.rpe || 0);
         default:
           return 0;
       }
     });
 
     return filtered;
-  }, [sessions, searchTerm, selectedStrokes, selectedSessionTypes, selectedRPEs, dateRange, distanceRange, sortBy]);
+  }, [
+    sessions,
+    searchTerm,
+    selectedStrokes,
+    selectedSessionTypes,
+    selectedRPEs,
+    dateRange,
+    distanceRange,
+    sortBy,
+  ]);
 
   const totalPages = Math.ceil(filteredAndSortedSessions.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedSessions = filteredAndSortedSessions.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedSessions = filteredAndSortedSessions.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
   // Funciones para manejar filtros
   const toggleStrokeFilter = (stroke: string) => {
-    setSelectedStrokes(prev => 
-      prev.includes(stroke) 
-        ? prev.filter(s => s !== stroke)
-        : [...prev, stroke]
+    setSelectedStrokes(prev =>
+      prev.includes(stroke) ? prev.filter(s => s !== stroke) : [...prev, stroke]
     );
     setCurrentPage(1);
   };
 
   const toggleSessionTypeFilter = (type: string) => {
-    setSelectedSessionTypes(prev => 
-      prev.includes(type) 
-        ? prev.filter(t => t !== type)
-        : [...prev, type]
+    setSelectedSessionTypes(prev =>
+      prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
     );
     setCurrentPage(1);
   };
 
   const toggleRPEFilter = (rpe: number) => {
-    setSelectedRPEs(prev => 
-      prev.includes(rpe) 
-        ? prev.filter(r => r !== rpe)
-        : [...prev, rpe]
+    setSelectedRPEs(prev =>
+      prev.includes(rpe) ? prev.filter(r => r !== rpe) : [...prev, rpe]
     );
     setCurrentPage(1);
   };
@@ -208,13 +263,14 @@ export function SessionsTable() {
     setCurrentPage(1);
   };
 
-  const hasActiveFilters = selectedStrokes.length > 0 || 
-                          selectedSessionTypes.length > 0 || 
-                          selectedRPEs.length > 0 || 
-                          dateRange.from || 
-                          dateRange.to || 
-                          distanceRange.min || 
-                          distanceRange.max;
+  const hasActiveFilters =
+    selectedStrokes.length > 0 ||
+    selectedSessionTypes.length > 0 ||
+    selectedRPEs.length > 0 ||
+    dateRange.from ||
+    dateRange.to ||
+    distanceRange.min ||
+    distanceRange.max;
 
   // Funciones para manejar sesiones
   const handleEdit = (session: Session) => {
@@ -230,7 +286,7 @@ export function SessionsTable() {
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingSession) return;
-    
+
     try {
       // Convertir objeto a FormData
       const formData = new FormData();
@@ -247,14 +303,19 @@ export function SessionsTable() {
       formData.append("group_name", editingSession.group_name || "");
       formData.append("objective", editingSession.objective || "otro");
       formData.append("content", editingSession.content || "");
-      formData.append("zone_volumes", JSON.stringify(editingSession.zone_volumes || { z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 }));
-      
+      formData.append(
+        "zone_volumes",
+        JSON.stringify(
+          editingSession.zone_volumes || { z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 }
+        )
+      );
+
       await updateSession(editingSession.id, formData);
-      
+
       // Recargar sesiones
       const data = await getSessions();
       setSessions(data);
-      
+
       setIsEditDialogOpen(false);
       setEditingSession(null);
     } catch (error) {
@@ -264,17 +325,17 @@ export function SessionsTable() {
 
   const handleDeleteConfirm = async () => {
     if (!sessionToDelete) return;
-    
+
     try {
       await deleteSession(sessionToDelete.id);
-      
+
       // Recargar sesiones
       const data = await getSessions();
       setSessions(data);
-      
+
       setIsDeleteDialogOpen(false);
       setSessionToDelete(null);
-      
+
       if (paginatedSessions.length === 1 && currentPage > 1) {
         setCurrentPage(currentPage - 1);
       }
@@ -284,29 +345,49 @@ export function SessionsTable() {
   };
 
   const exportToCSV = () => {
-    const headers = ['Fecha', 'Título', 'Distancia (m)', 'Duración (min)', 'Estilo', 'Tipo', 'RPE', 'Entrenador', 'Objetivo', 'Contenido'];
+    const headers = [
+      "Fecha",
+      "Título",
+      "Distancia (m)",
+      "Duración (min)",
+      "Estilo",
+      "Tipo",
+      "RPE",
+      "Entrenador",
+      "Objetivo",
+      "Contenido",
+    ];
     const csvContent = [
-      headers.join(','),
-      ...filteredAndSortedSessions.map(session => [
-        formatDate(session.date),
-        `"${session.title || ''}"`,
-        session.distance,
-        session.duration || 0,
-        STROKE_OPTIONS.find(s => s.value === session.stroke)?.label || session.stroke || "",
-        SESSION_TYPE_OPTIONS.find(s => s.value === session.type)?.label || session.type || "",
-        session.rpe || 0,
-        `"${session.coach || ''}"`,
-        session.objective || "otro",
-        `"${session.content || ''}"`
-      ].join(','))
-    ].join('\n');
+      headers.join(","),
+      ...filteredAndSortedSessions.map(session =>
+        [
+          formatDate(session.date),
+          `"${session.title || ""}"`,
+          session.distance,
+          session.duration || 0,
+          STROKE_OPTIONS.find(s => s.value === session.stroke)?.label ||
+            session.stroke ||
+            "",
+          SESSION_TYPE_OPTIONS.find(s => s.value === session.type)?.label ||
+            session.type ||
+            "",
+          session.rpe || 0,
+          `"${session.coach || ""}"`,
+          session.objective || "otro",
+          `"${session.content || ""}"`,
+        ].join(",")
+      ),
+    ].join("\n");
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `sesiones_${format(new Date(), 'yyyy-MM-dd')}.csv`);
-    link.style.visibility = 'hidden';
+    link.setAttribute("href", url);
+    link.setAttribute(
+      "download",
+      `sesiones_${format(new Date(), "yyyy-MM-dd")}.csv`
+    );
+    link.style.visibility = "hidden";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -323,7 +404,7 @@ export function SessionsTable() {
             {hasActiveFilters && " (filtradas)"}
           </p>
         </div>
-        
+
         <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
           {/* Búsqueda */}
           <div className="relative">
@@ -331,7 +412,7 @@ export function SessionsTable() {
             <Input
               placeholder="Buscar sesiones..."
               value={searchTerm}
-              onChange={(e) => {
+              onChange={e => {
                 setSearchTerm(e.target.value);
                 setCurrentPage(1);
               }}
@@ -345,19 +426,25 @@ export function SessionsTable() {
               variant="outline"
               size="sm"
               onClick={() => setShowFilters(!showFilters)}
-              className={showFilters ? "bg-primary text-primary-foreground" : ""}
+              className={
+                showFilters ? "bg-primary text-primary-foreground" : ""
+              }
             >
               <Filter className="w-4 h-4 mr-2" />
               Filtros
               {hasActiveFilters && (
                 <Badge variant="secondary" className="ml-2 h-5 w-5 p-0 text-xs">
-                  {selectedStrokes.length + selectedSessionTypes.length + selectedRPEs.length + 
-                   (dateRange.from ? 1 : 0) + (dateRange.to ? 1 : 0) + 
-                   (distanceRange.min ? 1 : 0) + (distanceRange.max ? 1 : 0)}
+                  {selectedStrokes.length +
+                    selectedSessionTypes.length +
+                    selectedRPEs.length +
+                    (dateRange.from ? 1 : 0) +
+                    (dateRange.to ? 1 : 0) +
+                    (distanceRange.min ? 1 : 0) +
+                    (distanceRange.max ? 1 : 0)}
                 </Badge>
               )}
             </Button>
-            
+
             <Button variant="outline" size="sm" onClick={exportToCSV}>
               <Download className="w-4 h-4 mr-2" />
               Exportar
@@ -384,14 +471,20 @@ export function SessionsTable() {
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Estilo</Label>
                 <div className="space-y-1">
-                  {STROKE_OPTIONS.map((option) => (
-                    <div key={option.value} className="flex items-center space-x-2">
+                  {STROKE_OPTIONS.map(option => (
+                    <div
+                      key={option.value}
+                      className="flex items-center space-x-2"
+                    >
                       <Checkbox
                         id={`stroke-${option.value}`}
                         checked={selectedStrokes.includes(option.value)}
                         onCheckedChange={() => toggleStrokeFilter(option.value)}
                       />
-                      <Label htmlFor={`stroke-${option.value}`} className="text-sm">
+                      <Label
+                        htmlFor={`stroke-${option.value}`}
+                        className="text-sm"
+                      >
                         {option.label}
                       </Label>
                     </div>
@@ -403,14 +496,22 @@ export function SessionsTable() {
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Tipo de Sesión</Label>
                 <div className="space-y-1">
-                  {SESSION_TYPE_OPTIONS.map((option) => (
-                    <div key={option.value} className="flex items-center space-x-2">
+                  {SESSION_TYPE_OPTIONS.map(option => (
+                    <div
+                      key={option.value}
+                      className="flex items-center space-x-2"
+                    >
                       <Checkbox
                         id={`type-${option.value}`}
                         checked={selectedSessionTypes.includes(option.value)}
-                        onCheckedChange={() => toggleSessionTypeFilter(option.value)}
+                        onCheckedChange={() =>
+                          toggleSessionTypeFilter(option.value)
+                        }
                       />
-                      <Label htmlFor={`type-${option.value}`} className="text-sm">
+                      <Label
+                        htmlFor={`type-${option.value}`}
+                        className="text-sm"
+                      >
                         {option.label}
                       </Label>
                     </div>
@@ -422,7 +523,7 @@ export function SessionsTable() {
               <div className="space-y-2">
                 <Label className="text-sm font-medium">RPE</Label>
                 <div className="grid grid-cols-2 gap-1">
-                  {RPE_OPTIONS.map((rpe) => (
+                  {RPE_OPTIONS.map(rpe => (
                     <div key={rpe} className="flex items-center space-x-2">
                       <Checkbox
                         id={`rpe-${rpe}`}
@@ -445,19 +546,27 @@ export function SessionsTable() {
                     type="number"
                     placeholder="Mínimo"
                     value={distanceRange.min || ""}
-                    onChange={(e) => setDistanceRange(prev => ({ 
-                      ...prev, 
-                      min: e.target.value ? parseInt(e.target.value) : undefined 
-                    }))}
+                    onChange={e =>
+                      setDistanceRange(prev => ({
+                        ...prev,
+                        min: e.target.value
+                          ? parseInt(e.target.value)
+                          : undefined,
+                      }))
+                    }
                   />
                   <Input
                     type="number"
                     placeholder="Máximo"
                     value={distanceRange.max || ""}
-                    onChange={(e) => setDistanceRange(prev => ({ 
-                      ...prev, 
-                      max: e.target.value ? parseInt(e.target.value) : undefined 
-                    }))}
+                    onChange={e =>
+                      setDistanceRange(prev => ({
+                        ...prev,
+                        max: e.target.value
+                          ? parseInt(e.target.value)
+                          : undefined,
+                      }))
+                    }
                   />
                 </div>
               </div>
@@ -469,33 +578,47 @@ export function SessionsTable() {
               <div className="flex gap-2">
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button variant="outline" className="justify-start text-left font-normal">
+                    <Button
+                      variant="outline"
+                      className="justify-start text-left font-normal"
+                    >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {dateRange.from ? format(dateRange.from, "dd/MM/yyyy") : "Desde"}
+                      {dateRange.from
+                        ? format(dateRange.from, "dd/MM/yyyy")
+                        : "Desde"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
                     <Calendar
                       mode="single"
                       selected={dateRange.from}
-                      onSelect={(date) => setDateRange(prev => ({ ...prev, from: date }))}
+                      onSelect={date =>
+                        setDateRange(prev => ({ ...prev, from: date }))
+                      }
                       initialFocus
                     />
                   </PopoverContent>
                 </Popover>
-                
+
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button variant="outline" className="justify-start text-left font-normal">
+                    <Button
+                      variant="outline"
+                      className="justify-start text-left font-normal"
+                    >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {dateRange.to ? format(dateRange.to, "dd/MM/yyyy") : "Hasta"}
+                      {dateRange.to
+                        ? format(dateRange.to, "dd/MM/yyyy")
+                        : "Hasta"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
                     <Calendar
                       mode="single"
                       selected={dateRange.to}
-                      onSelect={(date) => setDateRange(prev => ({ ...prev, to: date }))}
+                      onSelect={date =>
+                        setDateRange(prev => ({ ...prev, to: date }))
+                      }
                       initialFocus
                     />
                   </PopoverContent>
@@ -515,7 +638,7 @@ export function SessionsTable() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {SORT_OPTIONS.map((option) => (
+              {SORT_OPTIONS.map(option => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}
                 </SelectItem>
@@ -526,7 +649,10 @@ export function SessionsTable() {
 
         <div className="flex items-center gap-2">
           <Label className="text-sm">Mostrar:</Label>
-          <Select value={itemsPerPage.toString()} onValueChange={(value) => setItemsPerPage(parseInt(value))}>
+          <Select
+            value={itemsPerPage.toString()}
+            onValueChange={value => setItemsPerPage(parseInt(value))}
+          >
             <SelectTrigger className="w-20">
               <SelectValue />
             </SelectTrigger>
@@ -563,7 +689,9 @@ export function SessionsTable() {
                   <td colSpan={9} className="text-center py-8">
                     <div className="flex flex-col items-center gap-2">
                       <Activity className="w-8 h-8 text-muted-foreground animate-pulse" />
-                      <p className="text-muted-foreground">Cargando sesiones...</p>
+                      <p className="text-muted-foreground">
+                        Cargando sesiones...
+                      </p>
                     </div>
                   </td>
                 </tr>
@@ -573,10 +701,16 @@ export function SessionsTable() {
                     <div className="flex flex-col items-center gap-2">
                       <Activity className="w-8 h-8 text-muted-foreground" />
                       <p className="text-muted-foreground">
-                        {searchTerm || hasActiveFilters ? "No se encontraron sesiones con esos criterios" : "No hay sesiones registradas"}
+                        {searchTerm || hasActiveFilters
+                          ? "No se encontraron sesiones con esos criterios"
+                          : "No hay sesiones registradas"}
                       </p>
                       {(searchTerm || hasActiveFilters) && (
-                        <Button variant="outline" size="sm" onClick={clearAllFilters}>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={clearAllFilters}
+                        >
                           Limpiar filtros
                         </Button>
                       )}
@@ -584,32 +718,48 @@ export function SessionsTable() {
                   </td>
                 </tr>
               ) : (
-                paginatedSessions.map((session) => (
-                  <tr key={session.id} className="border-t hover:bg-muted/50 transition-colors">
+                paginatedSessions.map(session => (
+                  <tr
+                    key={session.id}
+                    className="border-t hover:bg-muted/50 transition-colors"
+                  >
                     <td className="p-3">
                       <div className="flex items-center gap-2">
                         <CalendarIcon className="w-4 h-4 text-muted-foreground" />
-                        {formatDate(session.date, 'dd/MM/yyyy')}
+                        {formatDate(session.date, "dd/MM/yyyy")}
                       </div>
                     </td>
-                    <td className="p-3 font-medium">{session.title || "Sin título"}</td>
+                    <td className="p-3 font-medium">
+                      {session.title || "Sin título"}
+                    </td>
                     <td className="p-3">
                       <Badge variant="outline">{session.distance}m</Badge>
                     </td>
                     <td className="p-3">
-                      {session.duration && session.duration > 0 ? `${session.duration}min` : '-'}
+                      {session.duration && session.duration > 0
+                        ? `${session.duration}min`
+                        : "-"}
                     </td>
                     <td className="p-3">
                       <Badge variant="outline" className="capitalize">
-                        {STROKE_OPTIONS.find(s => s.value === session.stroke)?.label || session.stroke || "N/A"}
+                        {STROKE_OPTIONS.find(s => s.value === session.stroke)
+                          ?.label ||
+                          session.stroke ||
+                          "N/A"}
                       </Badge>
                     </td>
                     <td className="p-3">
-                      <Badge 
-                        variant={session.type === 'Técnica' ? 'default' : 'secondary'}
+                      <Badge
+                        variant={
+                          session.type === "Técnica" ? "default" : "secondary"
+                        }
                         className="capitalize"
                       >
-                        {SESSION_TYPE_OPTIONS.find(s => s.value === session.type)?.label || session.type || "N/A"}
+                        {SESSION_TYPE_OPTIONS.find(
+                          s => s.value === session.type
+                        )?.label ||
+                          session.type ||
+                          "N/A"}
                       </Badge>
                     </td>
                     <td className="p-3">
@@ -651,9 +801,14 @@ export function SessionsTable() {
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            Mostrando {startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredAndSortedSessions.length)} de {filteredAndSortedSessions.length} sesiones
+            Mostrando {startIndex + 1}-
+            {Math.min(
+              startIndex + itemsPerPage,
+              filteredAndSortedSessions.length
+            )}{" "}
+            de {filteredAndSortedSessions.length} sesiones
           </p>
-          
+
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
@@ -663,7 +818,7 @@ export function SessionsTable() {
             >
               Anterior
             </Button>
-            
+
             <div className="flex items-center gap-1">
               {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                 const page = i + 1;
@@ -680,8 +835,12 @@ export function SessionsTable() {
                     </Button>
                   );
                 }
-                
-                if (page === 1 || page === totalPages || (page >= currentPage - 1 && page <= currentPage + 1)) {
+
+                if (
+                  page === 1 ||
+                  page === totalPages ||
+                  (page >= currentPage - 1 && page <= currentPage + 1)
+                ) {
                   return (
                     <Button
                       key={page}
@@ -694,19 +853,25 @@ export function SessionsTable() {
                     </Button>
                   );
                 }
-                
+
                 if (page === currentPage - 2 || page === currentPage + 2) {
-                  return <span key={page} className="px-2">...</span>;
+                  return (
+                    <span key={page} className="px-2">
+                      ...
+                    </span>
+                  );
                 }
-                
+
                 return null;
               })}
             </div>
-            
+
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              onClick={() =>
+                setCurrentPage(prev => Math.min(prev + 1, totalPages))
+              }
               disabled={currentPage === totalPages}
             >
               Siguiente
@@ -724,7 +889,7 @@ export function SessionsTable() {
               Modifica los detalles de la sesión de entrenamiento
             </DialogDescription>
           </DialogHeader>
-          
+
           {editingSession && (
             <form onSubmit={handleEditSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -734,23 +899,33 @@ export function SessionsTable() {
                     id="edit-date"
                     type="date"
                     value={editingSession.date}
-                    onChange={(e) => setEditingSession({ ...editingSession, date: e.target.value })}
+                    onChange={e =>
+                      setEditingSession({
+                        ...editingSession,
+                        date: e.target.value,
+                      })
+                    }
                     required
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="edit-title">Título</Label>
                   <Input
                     id="edit-title"
                     type="text"
                     value={editingSession.title || ""}
-                    onChange={(e) => setEditingSession({ ...editingSession, title: e.target.value })}
+                    onChange={e =>
+                      setEditingSession({
+                        ...editingSession,
+                        title: e.target.value,
+                      })
+                    }
                     placeholder="Título del entrenamiento"
                   />
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="edit-distance">Distancia (m)</Label>
@@ -758,24 +933,34 @@ export function SessionsTable() {
                     id="edit-distance"
                     type="number"
                     value={editingSession.distance}
-                    onChange={(e) => setEditingSession({ ...editingSession, distance: parseInt(e.target.value) })}
+                    onChange={e =>
+                      setEditingSession({
+                        ...editingSession,
+                        distance: parseInt(e.target.value),
+                      })
+                    }
                     required
                     min="1"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="edit-coach">Entrenador</Label>
                   <Input
                     id="edit-coach"
                     type="text"
                     value={editingSession.coach || ""}
-                    onChange={(e) => setEditingSession({ ...editingSession, coach: e.target.value })}
+                    onChange={e =>
+                      setEditingSession({
+                        ...editingSession,
+                        coach: e.target.value,
+                      })
+                    }
                     placeholder="Nombre del entrenador"
                   />
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="edit-duration">Duración (min)</Label>
@@ -783,22 +968,32 @@ export function SessionsTable() {
                     id="edit-duration"
                     type="number"
                     value={editingSession.duration || 0}
-                    onChange={(e) => setEditingSession({ ...editingSession, duration: parseInt(e.target.value) })}
+                    onChange={e =>
+                      setEditingSession({
+                        ...editingSession,
+                        duration: parseInt(e.target.value),
+                      })
+                    }
                     min="1"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="edit-rpe">RPE (1-10)</Label>
-                  <Select 
-                    value={(editingSession.rpe || 5).toString()} 
-                    onValueChange={(value) => setEditingSession({ ...editingSession, rpe: parseInt(value) })}
+                  <Select
+                    value={(editingSession.rpe || 5).toString()}
+                    onValueChange={value =>
+                      setEditingSession({
+                        ...editingSession,
+                        rpe: parseInt(value),
+                      })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {RPE_OPTIONS.map((rpe) => (
+                      {RPE_OPTIONS.map(rpe => (
                         <SelectItem key={rpe} value={rpe.toString()}>
                           {rpe}/10
                         </SelectItem>
@@ -807,19 +1002,21 @@ export function SessionsTable() {
                   </Select>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="edit-stroke">Estilo</Label>
-                  <Select 
-                    value={editingSession.stroke || "Libre"} 
-                    onValueChange={(value) => setEditingSession({ ...editingSession, stroke: value })}
+                  <Select
+                    value={editingSession.stroke || "Libre"}
+                    onValueChange={value =>
+                      setEditingSession({ ...editingSession, stroke: value })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {STROKE_OPTIONS.map((option) => (
+                      {STROKE_OPTIONS.map(option => (
                         <SelectItem key={option.value} value={option.value}>
                           {option.label}
                         </SelectItem>
@@ -827,18 +1024,20 @@ export function SessionsTable() {
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="edit-sessionType">Tipo</Label>
-                  <Select 
-                    value={editingSession.type || "Aeróbico"} 
-                    onValueChange={(value) => setEditingSession({ ...editingSession, type: value })}
+                  <Select
+                    value={editingSession.type || "Aeróbico"}
+                    onValueChange={value =>
+                      setEditingSession({ ...editingSession, type: value })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {SESSION_TYPE_OPTIONS.map((option) => (
+                      {SESSION_TYPE_OPTIONS.map(option => (
                         <SelectItem key={option.value} value={option.value}>
                           {option.label}
                         </SelectItem>
@@ -847,20 +1046,31 @@ export function SessionsTable() {
                   </Select>
                 </div>
               </div>
-              
+
               <div className="space-y-2">
-                <Label htmlFor="edit-content">Contenido del Entrenamiento</Label>
+                <Label htmlFor="edit-content">
+                  Contenido del Entrenamiento
+                </Label>
                 <Textarea
                   id="edit-content"
                   value={editingSession.content || ""}
-                  onChange={(e) => setEditingSession({ ...editingSession, content: e.target.value })}
+                  onChange={e =>
+                    setEditingSession({
+                      ...editingSession,
+                      content: e.target.value,
+                    })
+                  }
                   placeholder="Descripción detallada del entrenamiento..."
                   rows={3}
                 />
               </div>
-              
+
               <div className="flex justify-end gap-2">
-                <Button type="button" variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsEditDialogOpen(false)}
+                >
                   Cancelar
                 </Button>
                 <Button type="submit">
@@ -879,28 +1089,42 @@ export function SessionsTable() {
           <DialogHeader>
             <DialogTitle>Confirmar Eliminación</DialogTitle>
             <DialogDescription>
-              ¿Estás seguro de que quieres eliminar esta sesión? Esta acción no se puede deshacer.
+              ¿Estás seguro de que quieres eliminar esta sesión? Esta acción no
+              se puede deshacer.
             </DialogDescription>
           </DialogHeader>
-          
+
           {sessionToDelete && (
             <div className="space-y-4">
               <Card>
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium">{sessionToDelete.distance}m {STROKE_OPTIONS.find(s => s.value === sessionToDelete.stroke)?.label || sessionToDelete.stroke || "N/A"}</p>
+                      <p className="font-medium">
+                        {sessionToDelete.distance}m{" "}
+                        {STROKE_OPTIONS.find(
+                          s => s.value === sessionToDelete.stroke
+                        )?.label ||
+                          sessionToDelete.stroke ||
+                          "N/A"}
+                      </p>
                       <p className="text-sm text-muted-foreground">
-                        {formatDate(sessionToDelete.date, 'dd/MM/yyyy')} - {sessionToDelete.title || "Sin título"}
+                        {formatDate(sessionToDelete.date, "dd/MM/yyyy")} -{" "}
+                        {sessionToDelete.title || "Sin título"}
                       </p>
                     </div>
-                    <Badge variant="outline">RPE {sessionToDelete.rpe || 0}/10</Badge>
+                    <Badge variant="outline">
+                      RPE {sessionToDelete.rpe || 0}/10
+                    </Badge>
                   </div>
                 </CardContent>
               </Card>
-              
+
               <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsDeleteDialogOpen(false)}
+                >
                   Cancelar
                 </Button>
                 <Button variant="destructive" onClick={handleDeleteConfirm}>

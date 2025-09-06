@@ -3,30 +3,51 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Legend } from "recharts";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { getSessions } from "@/lib/actions/sessions";
 import type { Session } from "@/lib/actions/sessions";
-import { calculateZoneVolumes, metersToKm, zoneLabels, zoneColors } from "@/lib/utils/zone-detection";
+import {
+  calculateZoneVolumes,
+  metersToKm,
+  zoneLabels,
+  zoneColors,
+} from "@/lib/utils/zone-detection";
 
 // Función para generar datos reales basados en las sesiones usando sistema unificado de zonas
 const generateVolumeData = (sessions: Session[], period: string) => {
   const now = new Date();
-  
-  if (period === 'month') {
+
+  if (period === "month") {
     // Últimos 30 días
     const days = [];
     for (let i = 29; i >= 0; i--) {
       const date = new Date(now);
       date.setDate(now.getDate() - i);
-      const dateString = date.toISOString().split('T')[0];
-      
+      const dateString = date.toISOString().split("T")[0];
+
       const daySessions = sessions.filter(s => s.date === dateString);
       const zoneVolumes = calculateZoneVolumes(daySessions);
-      const totalDistance = zoneVolumes.Z1 + zoneVolumes.Z2 + zoneVolumes.Z3 + zoneVolumes.Z4 + zoneVolumes.Z5;
-      
+      const totalDistance =
+        zoneVolumes.Z1 +
+        zoneVolumes.Z2 +
+        zoneVolumes.Z3 +
+        zoneVolumes.Z4 +
+        zoneVolumes.Z5;
+
       days.push({
         day: date.getDate().toString(),
         Z1: metersToKm(zoneVolumes.Z1),
@@ -34,61 +55,71 @@ const generateVolumeData = (sessions: Session[], period: string) => {
         Z3: metersToKm(zoneVolumes.Z3),
         Z4: metersToKm(zoneVolumes.Z4),
         Z5: metersToKm(zoneVolumes.Z5),
-        total: metersToKm(totalDistance)
+        total: metersToKm(totalDistance),
       });
     }
     return days;
-  } else if (period === '6months') {
+  } else if (period === "6months") {
     // Últimos 6 meses - por meses
     const months = [];
     for (let i = 5; i >= 0; i--) {
       const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
       const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-      
+
       const monthSessions = sessions.filter(s => {
         const sessionDate = new Date(s.date);
         return sessionDate >= monthStart && sessionDate <= monthEnd;
       });
-      
+
       const zoneVolumes = calculateZoneVolumes(monthSessions);
-      const totalDistance = zoneVolumes.Z1 + zoneVolumes.Z2 + zoneVolumes.Z3 + zoneVolumes.Z4 + zoneVolumes.Z5;
-      
+      const totalDistance =
+        zoneVolumes.Z1 +
+        zoneVolumes.Z2 +
+        zoneVolumes.Z3 +
+        zoneVolumes.Z4 +
+        zoneVolumes.Z5;
+
       months.push({
-        month: date.toLocaleDateString('es-ES', { month: 'short' }),
+        month: date.toLocaleDateString("es-ES", { month: "short" }),
         Z1: metersToKm(zoneVolumes.Z1),
         Z2: metersToKm(zoneVolumes.Z2),
         Z3: metersToKm(zoneVolumes.Z3),
         Z4: metersToKm(zoneVolumes.Z4),
         Z5: metersToKm(zoneVolumes.Z5),
-        total: metersToKm(totalDistance)
+        total: metersToKm(totalDistance),
       });
     }
     return months;
-  } else if (period === '3months') {
+  } else if (period === "3months") {
     // Últimos 3 meses - por meses
     const months = [];
     for (let i = 2; i >= 0; i--) {
       const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
       const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-      
+
       const monthSessions = sessions.filter(s => {
         const sessionDate = new Date(s.date);
         return sessionDate >= monthStart && sessionDate <= monthEnd;
       });
-      
+
       const zoneVolumes = calculateZoneVolumes(monthSessions);
-      const totalDistance = zoneVolumes.Z1 + zoneVolumes.Z2 + zoneVolumes.Z3 + zoneVolumes.Z4 + zoneVolumes.Z5;
-      
+      const totalDistance =
+        zoneVolumes.Z1 +
+        zoneVolumes.Z2 +
+        zoneVolumes.Z3 +
+        zoneVolumes.Z4 +
+        zoneVolumes.Z5;
+
       months.push({
-        month: date.toLocaleDateString('es-ES', { month: 'short' }),
+        month: date.toLocaleDateString("es-ES", { month: "short" }),
         Z1: metersToKm(zoneVolumes.Z1),
         Z2: metersToKm(zoneVolumes.Z2),
         Z3: metersToKm(zoneVolumes.Z3),
         Z4: metersToKm(zoneVolumes.Z4),
         Z5: metersToKm(zoneVolumes.Z5),
-        total: metersToKm(totalDistance)
+        total: metersToKm(totalDistance),
       });
     }
     return months;
@@ -99,23 +130,28 @@ const generateVolumeData = (sessions: Session[], period: string) => {
       const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
       const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-      
+
       const monthSessions = sessions.filter(s => {
         const sessionDate = new Date(s.date);
         return sessionDate >= monthStart && sessionDate <= monthEnd;
       });
-      
+
       const zoneVolumes = calculateZoneVolumes(monthSessions);
-      const totalDistance = zoneVolumes.Z1 + zoneVolumes.Z2 + zoneVolumes.Z3 + zoneVolumes.Z4 + zoneVolumes.Z5;
-      
+      const totalDistance =
+        zoneVolumes.Z1 +
+        zoneVolumes.Z2 +
+        zoneVolumes.Z3 +
+        zoneVolumes.Z4 +
+        zoneVolumes.Z5;
+
       months.push({
-        month: date.toLocaleDateString('es-ES', { month: 'short' }),
+        month: date.toLocaleDateString("es-ES", { month: "short" }),
         Z1: metersToKm(zoneVolumes.Z1),
         Z2: metersToKm(zoneVolumes.Z2),
         Z3: metersToKm(zoneVolumes.Z3),
         Z4: metersToKm(zoneVolumes.Z4),
         Z5: metersToKm(zoneVolumes.Z5),
-        total: metersToKm(totalDistance)
+        total: metersToKm(totalDistance),
       });
     }
     return months;
@@ -210,7 +246,7 @@ export default function VolumeBarchart() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedPeriod, setSelectedPeriod] = useState<string>("year");
-  
+
   // Estado para la vista seleccionada
   const [selectedView, setSelectedView] = React.useState<string>("all");
 
@@ -236,44 +272,50 @@ export default function VolumeBarchart() {
   const chartData = realData.length > 0 ? realData : fallbackData;
 
   // Configuración de vistas
-  const views = React.useMemo(() => ({
-    Z1: {
-      label: "Z1",
-      zones: ['Z1'],
-      description: "Zona 1 - Recuperación"
-    },
-    Z2: {
-      label: "Z2",
-      zones: ['Z2'],
-      description: "Zona 2 - Aeróbico"
-    },
-    Z3: {
-      label: "Z3",
-      zones: ['Z3'],
-      description: "Zona 3 - Tempo"
-    },
-    Z4: {
-      label: "Z4",
-      zones: ['Z4'],
-      description: "Zona 4 - Velocidad"
-    },
-    Z5: {
-      label: "Z5",
-      zones: ['Z5'],
-      description: "Zona 5 - VO2 Max"
-    },
-    all: {
-      label: "Todas",
-      zones: ['Z1', 'Z2', 'Z3', 'Z4', 'Z5'],
-      description: "Todas las zonas de entrenamiento"
-    }
-  }), []);
+  const views = React.useMemo(
+    () => ({
+      Z1: {
+        label: "Z1",
+        zones: ["Z1"],
+        description: "Zona 1 - Recuperación",
+      },
+      Z2: {
+        label: "Z2",
+        zones: ["Z2"],
+        description: "Zona 2 - Aeróbico",
+      },
+      Z3: {
+        label: "Z3",
+        zones: ["Z3"],
+        description: "Zona 3 - Tempo",
+      },
+      Z4: {
+        label: "Z4",
+        zones: ["Z4"],
+        description: "Zona 4 - Velocidad",
+      },
+      Z5: {
+        label: "Z5",
+        zones: ["Z5"],
+        description: "Zona 5 - VO2 Max",
+      },
+      all: {
+        label: "Todas",
+        zones: ["Z1", "Z2", "Z3", "Z4", "Z5"],
+        description: "Todas las zonas de entrenamiento",
+      },
+    }),
+    []
+  );
 
   // Calcular totales
   const totals = React.useMemo(() => {
     const result: Record<string, number> = {};
     Object.keys(chartConfig).forEach(zone => {
-      result[zone] = chartData.reduce((acc, curr) => acc + (curr[zone as keyof typeof curr] as number || 0), 0);
+      result[zone] = chartData.reduce(
+        (acc, curr) => acc + ((curr[zone as keyof typeof curr] as number) || 0),
+        0
+      );
     });
     return result;
   }, []);
@@ -283,9 +325,11 @@ export default function VolumeBarchart() {
     const selectedZones = views[selectedView as keyof typeof views].zones;
     return chartData.map(dataPoint => {
       // Determinar la clave del eje X basada en el período
-      const xAxisKey = selectedPeriod === 'month' ? 'day' : 'month';
-      const filtered: Record<string, string | number> = { [xAxisKey]: dataPoint[xAxisKey as keyof typeof dataPoint] };
-      
+      const xAxisKey = selectedPeriod === "month" ? "day" : "month";
+      const filtered: Record<string, string | number> = {
+        [xAxisKey]: dataPoint[xAxisKey as keyof typeof dataPoint],
+      };
+
       selectedZones.forEach(zone => {
         if (dataPoint[zone as keyof typeof dataPoint] !== undefined) {
           filtered[zone] = dataPoint[zone as keyof typeof dataPoint];
@@ -309,7 +353,9 @@ export default function VolumeBarchart() {
         </CardHeader>
         <CardContent>
           <div className="h-[400px] flex items-center justify-center">
-            <div className="animate-pulse text-muted-foreground">Cargando datos...</div>
+            <div className="animate-pulse text-muted-foreground">
+              Cargando datos...
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -323,33 +369,65 @@ export default function VolumeBarchart() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>
-                {selectedPeriod === 'month' ? 'Volumen 30 Días' : 
-                 selectedPeriod === '3months' ? 'Volumen 3 Meses' :
-                 selectedPeriod === '6months' ? 'Volumen 6 Meses' :
-                 'Volumen Anual'} - KM
+                {selectedPeriod === "month"
+                  ? "Volumen 30 Días"
+                  : selectedPeriod === "3months"
+                    ? "Volumen 3 Meses"
+                    : selectedPeriod === "6months"
+                      ? "Volumen 6 Meses"
+                      : "Volumen Anual"}{" "}
+                - KM
               </CardTitle>
               <CardDescription>{currentView.description}</CardDescription>
             </div>
-            
+
             {/* Tabs de período y vista */}
             <div className="flex gap-2">
-              <Tabs value={selectedPeriod} onValueChange={setSelectedPeriod} className="w-auto">
+              <Tabs
+                value={selectedPeriod}
+                onValueChange={setSelectedPeriod}
+                className="w-auto"
+              >
                 <TabsList className="grid w-full grid-cols-4 bg-muted">
-                  <TabsTrigger value="year" className="text-xs">Año</TabsTrigger>
-                  <TabsTrigger value="6months" className="text-xs">6 meses</TabsTrigger>
-                  <TabsTrigger value="3months" className="text-xs">3 meses</TabsTrigger>
-                  <TabsTrigger value="month" className="text-xs">30 días</TabsTrigger>
+                  <TabsTrigger value="year" className="text-xs">
+                    Año
+                  </TabsTrigger>
+                  <TabsTrigger value="6months" className="text-xs">
+                    6 meses
+                  </TabsTrigger>
+                  <TabsTrigger value="3months" className="text-xs">
+                    3 meses
+                  </TabsTrigger>
+                  <TabsTrigger value="month" className="text-xs">
+                    30 días
+                  </TabsTrigger>
                 </TabsList>
               </Tabs>
-              
-              <Tabs value={selectedView} onValueChange={setSelectedView} className="w-auto">
+
+              <Tabs
+                value={selectedView}
+                onValueChange={setSelectedView}
+                className="w-auto"
+              >
                 <TabsList className="grid w-full grid-cols-6 bg-muted">
-                  <TabsTrigger value="Z1" className="text-xs">Z1</TabsTrigger>
-                  <TabsTrigger value="Z2" className="text-xs">Z2</TabsTrigger>
-                  <TabsTrigger value="Z3" className="text-xs">Z3</TabsTrigger>
-                  <TabsTrigger value="Z4" className="text-xs">Z4</TabsTrigger>
-                  <TabsTrigger value="Z5" className="text-xs">Z5</TabsTrigger>
-                  <TabsTrigger value="all" className="text-xs">Todas</TabsTrigger>
+                  <TabsTrigger value="Z1" className="text-xs">
+                    Z1
+                  </TabsTrigger>
+                  <TabsTrigger value="Z2" className="text-xs">
+                    Z2
+                  </TabsTrigger>
+                  <TabsTrigger value="Z3" className="text-xs">
+                    Z3
+                  </TabsTrigger>
+                  <TabsTrigger value="Z4" className="text-xs">
+                    Z4
+                  </TabsTrigger>
+                  <TabsTrigger value="Z5" className="text-xs">
+                    Z5
+                  </TabsTrigger>
+                  <TabsTrigger value="all" className="text-xs">
+                    Todas
+                  </TabsTrigger>
                 </TabsList>
               </Tabs>
             </div>
@@ -357,17 +435,19 @@ export default function VolumeBarchart() {
         </div>
 
         <Separator />
-        
+
         {/* Resumen de totales */}
         <div className="flex flex-wrap">
-          {currentView.zones.map((zone) => {
+          {currentView.zones.map(zone => {
             const config = chartConfig[zone as keyof typeof chartConfig];
             return (
               <div
                 key={zone}
                 className="flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
               >
-                <span className="text-xs text-muted-foreground">{config.label}</span>
+                <span className="text-xs text-muted-foreground">
+                  {config.label}
+                </span>
                 <span className="text-lg font-bold leading-none sm:text-3xl">
                   {totals[zone]?.toLocaleString()} KM
                 </span>
@@ -376,9 +456,12 @@ export default function VolumeBarchart() {
           })}
         </div>
       </CardHeader>
-      
+
       <CardContent className="px-2 sm:p-6">
-        <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
+        <ChartContainer
+          config={chartConfig}
+          className="aspect-auto h-[250px] w-full"
+        >
           <BarChart
             data={filteredData}
             margin={{
@@ -390,7 +473,7 @@ export default function VolumeBarchart() {
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey={selectedPeriod === 'month' ? 'day' : 'month'}
+              dataKey={selectedPeriod === "month" ? "day" : "month"}
               tickLine={false}
               axisLine={false}
               tickMargin={8}
@@ -399,27 +482,23 @@ export default function VolumeBarchart() {
               textAnchor="end"
               height={80}
             />
-            <YAxis 
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-            />
+            <YAxis tickLine={false} axisLine={false} tickMargin={8} />
             <ChartTooltip
               content={
                 <ChartTooltipContent
                   className="w-[200px]"
                   nameKey="volume"
-                  labelFormatter={(value) => value}
+                  labelFormatter={value => value}
                 />
               }
             />
             <Legend />
-            
+
             {/* Renderizar barras para cada zona de la vista seleccionada */}
-            {currentView.zones.map((zone) => (
-              <Bar 
+            {currentView.zones.map(zone => (
+              <Bar
                 key={zone}
-                dataKey={zone} 
+                dataKey={zone}
                 fill={chartConfig[zone as keyof typeof chartConfig]?.color}
                 stackId="a"
                 name={chartConfig[zone as keyof typeof chartConfig]?.label}

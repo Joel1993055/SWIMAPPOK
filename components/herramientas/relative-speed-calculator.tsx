@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -40,16 +46,17 @@ export function RelativeSpeedCalculator() {
 
     const distanceNum = parseFloat(distance);
     const timeParts = time.split(":");
-    const timeInSeconds = parseInt(timeParts[0]) * 60 + parseFloat(timeParts[1]);
+    const timeInSeconds =
+      parseInt(timeParts[0]) * 60 + parseFloat(timeParts[1]);
 
     // Calcular velocidad en m/s (no usado actualmente)
     // const speedMs = distanceNum / timeInSeconds;
-    
+
     // Calcular ritmo por 100m
     const pacePer100m = (timeInSeconds / distanceNum) * 100;
     const minutes = Math.floor(pacePer100m / 60);
     const seconds = Math.round(pacePer100m % 60);
-    const pace = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    const pace = `${minutes}:${seconds.toString().padStart(2, "0")}`;
 
     // Determinar nivel basado en la distancia cubierta en 20 minutos
     let category = "";
@@ -99,7 +106,7 @@ export function RelativeSpeedCalculator() {
       category,
       color,
       pace,
-      improvement
+      improvement,
     });
   };
 
@@ -130,7 +137,7 @@ export function RelativeSpeedCalculator() {
               type="number"
               placeholder="Ej: 1500"
               value={distance}
-              onChange={(e) => setDistance(e.target.value)}
+              onChange={e => setDistance(e.target.value)}
             />
             <p className="text-xs text-muted-foreground">
               Distancia total nadada en 20 minutos
@@ -144,7 +151,7 @@ export function RelativeSpeedCalculator() {
               type="text"
               placeholder="20:00"
               value={time}
-              onChange={(e) => setTime(e.target.value)}
+              onChange={e => setTime(e.target.value)}
             />
             <p className="text-xs text-muted-foreground">
               Tiempo del test (normalmente 20:00)
@@ -181,7 +188,9 @@ export function RelativeSpeedCalculator() {
                 <div className="text-4xl font-bold text-primary mb-2">
                   {result.relativeSpeed}%
                 </div>
-                <p className="text-sm text-muted-foreground">Velocidad Relativa</p>
+                <p className="text-sm text-muted-foreground">
+                  Velocidad Relativa
+                </p>
               </div>
 
               <div className="space-y-3">
@@ -193,20 +202,24 @@ export function RelativeSpeedCalculator() {
                     {result.improvement}
                   </p>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center p-3 bg-background/50 rounded-lg">
                     <div className="text-lg font-bold text-blue-600">
                       {result.pace}
                     </div>
-                    <p className="text-xs text-muted-foreground">Ritmo por 100m</p>
+                    <p className="text-xs text-muted-foreground">
+                      Ritmo por 100m
+                    </p>
                   </div>
-                  
+
                   <div className="text-center p-3 bg-background/50 rounded-lg">
                     <div className="text-lg font-bold text-green-600">
                       {distance}m
                     </div>
-                    <p className="text-xs text-muted-foreground">Distancia total</p>
+                    <p className="text-xs text-muted-foreground">
+                      Distancia total
+                    </p>
                   </div>
                 </div>
               </div>
@@ -244,29 +257,29 @@ export function RelativeSpeedCalculator() {
                 Preparación
               </h4>
               <p className="text-sm text-muted-foreground">
-                Calienta 10-15 minutos antes del test. Nada a máxima velocidad 
+                Calienta 10-15 minutos antes del test. Nada a máxima velocidad
                 sostenible durante exactamente 20 minutos.
               </p>
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="font-semibold flex items-center gap-2">
                 <Target className="h-4 w-4" />
                 Durante el Test
               </h4>
               <p className="text-sm text-muted-foreground">
-                Mantén un ritmo constante y sostenible. No empieces demasiado rápido. 
-                Cuenta las vueltas o usa un dispositivo de seguimiento.
+                Mantén un ritmo constante y sostenible. No empieces demasiado
+                rápido. Cuenta las vueltas o usa un dispositivo de seguimiento.
               </p>
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="font-semibold flex items-center gap-2">
                 <TrendingUp className="h-4 w-4" />
                 Interpretación
               </h4>
               <p className="text-sm text-muted-foreground">
-                La distancia cubierta indica tu nivel aeróbico. Repite el test 
+                La distancia cubierta indica tu nivel aeróbico. Repite el test
                 cada 4-6 semanas para ver tu progreso.
               </p>
             </div>
@@ -275,8 +288,9 @@ export function RelativeSpeedCalculator() {
           <Alert className="mt-4">
             <Info className="h-4 w-4" />
             <AlertDescription>
-              <strong>Referencias de nivel:</strong> 1000m = Principiante, 1200m = Intermedio, 
-              1400m = Avanzado, 1600m = Élite, 1800m = Profesional, 2000m+ = Nivel Mundial.
+              <strong>Referencias de nivel:</strong> 1000m = Principiante, 1200m
+              = Intermedio, 1400m = Avanzado, 1600m = Élite, 1800m =
+              Profesional, 2000m+ = Nivel Mundial.
             </AlertDescription>
           </Alert>
         </CardContent>

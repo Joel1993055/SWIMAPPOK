@@ -40,7 +40,10 @@ export async function signUpAction(formData: FormData) {
 
   if (data.user) {
     revalidatePath("/");
-    return { success: "Usuario registrado correctamente. Revisa tu email para confirmar la cuenta." };
+    return {
+      success:
+        "Usuario registrado correctamente. Revisa tu email para confirmar la cuenta.",
+    };
   }
 
   return { error: "Error desconocido al registrar usuario" };
@@ -102,7 +105,10 @@ export async function signOutAction() {
 export async function getCurrentUser() {
   const supabase = await createClient();
 
-  const { data: { user }, error } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
   if (error) {
     console.error("Error obteniendo usuario:", error);

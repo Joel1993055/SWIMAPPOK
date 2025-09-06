@@ -5,23 +5,30 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AICoach } from "@/components/ai-coach";
 import { useAICoach } from "@/lib/contexts/ai-coach-context";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Bot, 
-  TrendingUp, 
-  Target, 
-  Heart, 
+import {
+  Bot,
+  TrendingUp,
+  Target,
+  Heart,
   Lightbulb,
   Sparkles,
   Settings,
   BarChart3,
-  Activity
+  Activity,
 } from "lucide-react";
 
 function AICoachContent() {
-  const { isEnabled, currentAnalysis, adviceHistory, toggleAICoach } = useAICoach();
+  const { isEnabled, currentAnalysis, adviceHistory, toggleAICoach } =
+    useAICoach();
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
@@ -38,7 +45,8 @@ function AICoachContent() {
           </Badge>
         </div>
         <p className="text-muted-foreground">
-          Tu entrenador personal inteligente para optimizar tu rendimiento en natación
+          Tu entrenador personal inteligente para optimizar tu rendimiento en
+          natación
         </p>
       </div>
 
@@ -58,9 +66,7 @@ function AICoachContent() {
                 <BarChart3 className="h-5 w-5" />
                 Estadísticas
               </CardTitle>
-              <CardDescription>
-                Tu progreso con el AI Coach
-              </CardDescription>
+              <CardDescription>Tu progreso con el AI Coach</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -68,21 +74,27 @@ function AICoachContent() {
                   <div className="text-2xl font-bold text-primary">
                     {currentAnalysis ? currentAnalysis.overallScore : 0}
                   </div>
-                  <div className="text-xs text-muted-foreground">Puntuación Promedio</div>
+                  <div className="text-xs text-muted-foreground">
+                    Puntuación Promedio
+                  </div>
                 </div>
                 <div className="text-center p-3 border rounded-lg bg-background/50">
                   <div className="text-2xl font-bold text-primary">
                     {adviceHistory.length}
                   </div>
-                  <div className="text-xs text-muted-foreground">Consejos Seguidos</div>
+                  <div className="text-xs text-muted-foreground">
+                    Consejos Seguidos
+                  </div>
                 </div>
               </div>
-              
+
               <div className="text-center p-3 border rounded-lg bg-background/50">
                 <div className="text-2xl font-bold text-primary">
                   {currentAnalysis ? currentAnalysis.recommendations.length : 0}
                 </div>
-                <div className="text-xs text-muted-foreground">Recomendaciones Activas</div>
+                <div className="text-xs text-muted-foreground">
+                  Recomendaciones Activas
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -102,14 +114,14 @@ function AICoachContent() {
                   {isEnabled ? "Activo" : "Inactivo"}
                 </Badge>
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Análisis Automático</span>
                 <Badge variant={isEnabled ? "default" : "secondary"}>
                   {isEnabled ? "Habilitado" : "Deshabilitado"}
                 </Badge>
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Recomendaciones</span>
                 <Badge variant={isEnabled ? "default" : "secondary"}>
@@ -117,8 +129,8 @@ function AICoachContent() {
                 </Badge>
               </div>
 
-              <Button 
-                onClick={toggleAICoach} 
+              <Button
+                onClick={toggleAICoach}
                 variant={isEnabled ? "outline" : "default"}
                 className="w-full gap-2"
               >
@@ -143,10 +155,11 @@ function AICoachContent() {
                   <span className="text-sm font-medium">Entrenamiento</span>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Incluye siempre calentamiento, trabajo principal y vuelta a la calma
+                  Incluye siempre calentamiento, trabajo principal y vuelta a la
+                  calma
                 </p>
               </div>
-              
+
               <div className="p-3 border rounded-lg bg-background/50">
                 <div className="flex items-center gap-2 mb-1">
                   <Heart className="h-4 w-4 text-red-500" />
@@ -156,7 +169,7 @@ function AICoachContent() {
                   Descansa adecuadamente entre entrenamientos intensos
                 </p>
               </div>
-              
+
               <div className="p-3 border rounded-lg bg-background/50">
                 <div className="flex items-center gap-2 mb-1">
                   <TrendingUp className="h-4 w-4 text-green-500" />

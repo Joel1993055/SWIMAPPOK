@@ -11,7 +11,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "10x200m @2:30",
-    RPE: 7
+    RPE: 7,
   },
   {
     id: "2",
@@ -22,7 +22,7 @@ export const sessions: Session[] = [
     stroke: "butterfly",
     sessionType: "technique",
     mainSet: "8x100m fly @1:45",
-    RPE: 8
+    RPE: 8,
   },
   {
     id: "3",
@@ -33,7 +33,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "3x1000m @15:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "4",
@@ -44,7 +44,7 @@ export const sessions: Session[] = [
     stroke: "backstroke",
     sessionType: "technique",
     mainSet: "6x200m back @4:00",
-    RPE: 7
+    RPE: 7,
   },
   {
     id: "5",
@@ -55,7 +55,7 @@ export const sessions: Session[] = [
     stroke: "breaststroke",
     sessionType: "aerobic",
     mainSet: "5x500m breast @8:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "6",
@@ -66,7 +66,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "technique",
     mainSet: "9x200m free @2:15",
-    RPE: 8
+    RPE: 8,
   },
   {
     id: "7",
@@ -77,7 +77,7 @@ export const sessions: Session[] = [
     stroke: "butterfly",
     sessionType: "aerobic",
     mainSet: "11x200m fly @2:00",
-    RPE: 7
+    RPE: 7,
   },
   {
     id: "8",
@@ -88,7 +88,7 @@ export const sessions: Session[] = [
     stroke: "backstroke",
     sessionType: "technique",
     mainSet: "8x200m back @3:45",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "9",
@@ -99,7 +99,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "4x700m free @12:00",
-    RPE: 5
+    RPE: 5,
   },
   {
     id: "10",
@@ -110,7 +110,7 @@ export const sessions: Session[] = [
     stroke: "mixed",
     sessionType: "threshold",
     mainSet: "IM 400m x4 @6:00",
-    RPE: 8
+    RPE: 8,
   },
   {
     id: "11",
@@ -121,7 +121,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "2x1600m @25:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "12",
@@ -132,9 +132,9 @@ export const sessions: Session[] = [
     stroke: "breaststroke",
     sessionType: "technique",
     mainSet: "7x200m breast @4:30",
-    RPE: 7
+    RPE: 7,
   },
-  
+
   // Febrero 2025
   {
     id: "13",
@@ -145,7 +145,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "6x400m @6:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "14",
@@ -156,7 +156,7 @@ export const sessions: Session[] = [
     stroke: "backstroke",
     sessionType: "technique",
     mainSet: "8x200m back @4:00",
-    RPE: 7
+    RPE: 7,
   },
   {
     id: "15",
@@ -167,7 +167,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "threshold",
     mainSet: "5x500m @8:30",
-    RPE: 8
+    RPE: 8,
   },
   {
     id: "16",
@@ -178,7 +178,7 @@ export const sessions: Session[] = [
     stroke: "butterfly",
     sessionType: "speed",
     mainSet: "13x100m fly @1:30",
-    RPE: 9
+    RPE: 9,
   },
   {
     id: "17",
@@ -189,7 +189,7 @@ export const sessions: Session[] = [
     stroke: "mixed",
     sessionType: "aerobic",
     mainSet: "IM 300m x7 @5:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "18",
@@ -200,7 +200,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "recovery",
     mainSet: "9x200m @3:00",
-    RPE: 4
+    RPE: 4,
   },
   {
     id: "19",
@@ -211,7 +211,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "3x900m @14:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "20",
@@ -222,9 +222,9 @@ export const sessions: Session[] = [
     stroke: "breaststroke",
     sessionType: "technique",
     mainSet: "10x150m @2:30",
-    RPE: 7
+    RPE: 7,
   },
-  
+
   // Marzo 2025
   {
     id: "21",
@@ -235,7 +235,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "threshold",
     mainSet: "4x550m @9:00",
-    RPE: 8
+    RPE: 8,
   },
   {
     id: "22",
@@ -246,7 +246,7 @@ export const sessions: Session[] = [
     stroke: "backstroke",
     sessionType: "technique",
     mainSet: "8x200m back @4:00",
-    RPE: 7
+    RPE: 7,
   },
   {
     id: "23",
@@ -257,7 +257,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "3x900m @15:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "24",
@@ -268,7 +268,7 @@ export const sessions: Session[] = [
     stroke: "butterfly",
     sessionType: "speed",
     mainSet: "14x100m fly @1:20",
-    RPE: 9
+    RPE: 9,
   },
   {
     id: "25",
@@ -279,7 +279,7 @@ export const sessions: Session[] = [
     stroke: "mixed",
     sessionType: "aerobic",
     mainSet: "IM 400m x5 @6:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "26",
@@ -290,7 +290,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "recovery",
     mainSet: "19x100m @2:00",
-    RPE: 4
+    RPE: 4,
   },
   {
     id: "27",
@@ -301,7 +301,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "2x1500m @25:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "28",
@@ -312,9 +312,9 @@ export const sessions: Session[] = [
     stroke: "breaststroke",
     sessionType: "technique",
     mainSet: "8x200m breast @4:30",
-    RPE: 7
+    RPE: 7,
   },
-  
+
   // Abril 2025
   {
     id: "29",
@@ -325,7 +325,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "threshold",
     mainSet: "4x500m @8:00",
-    RPE: 8
+    RPE: 8,
   },
   {
     id: "30",
@@ -336,7 +336,7 @@ export const sessions: Session[] = [
     stroke: "backstroke",
     sessionType: "technique",
     mainSet: "10x150m @3:00",
-    RPE: 7
+    RPE: 7,
   },
   {
     id: "31",
@@ -347,7 +347,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "4x700m @12:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "32",
@@ -358,7 +358,7 @@ export const sessions: Session[] = [
     stroke: "butterfly",
     sessionType: "speed",
     mainSet: "13x100m fly @1:30",
-    RPE: 9
+    RPE: 9,
   },
   {
     id: "33",
@@ -369,7 +369,7 @@ export const sessions: Session[] = [
     stroke: "mixed",
     sessionType: "aerobic",
     mainSet: "IM 300m x7 @5:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "34",
@@ -380,7 +380,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "recovery",
     mainSet: "9x200m @3:00",
-    RPE: 4
+    RPE: 4,
   },
   {
     id: "35",
@@ -391,7 +391,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "3x1000m @15:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "36",
@@ -402,9 +402,9 @@ export const sessions: Session[] = [
     stroke: "breaststroke",
     sessionType: "technique",
     mainSet: "8x200m breast @4:00",
-    RPE: 7
+    RPE: 7,
   },
-  
+
   // Mayo 2025
   {
     id: "37",
@@ -415,7 +415,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "threshold",
     mainSet: "6x400m @6:00",
-    RPE: 8
+    RPE: 8,
   },
   {
     id: "38",
@@ -426,7 +426,7 @@ export const sessions: Session[] = [
     stroke: "backstroke",
     sessionType: "technique",
     mainSet: "8x200m back @4:00",
-    RPE: 7
+    RPE: 7,
   },
   {
     id: "39",
@@ -437,7 +437,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "4x600m @11:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "40",
@@ -448,7 +448,7 @@ export const sessions: Session[] = [
     stroke: "butterfly",
     sessionType: "speed",
     mainSet: "14x100m fly @1:20",
-    RPE: 9
+    RPE: 9,
   },
   {
     id: "41",
@@ -459,7 +459,7 @@ export const sessions: Session[] = [
     stroke: "mixed",
     sessionType: "aerobic",
     mainSet: "IM 400m x5 @6:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "42",
@@ -470,7 +470,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "recovery",
     mainSet: "19x100m @2:00",
-    RPE: 4
+    RPE: 4,
   },
   {
     id: "43",
@@ -481,7 +481,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "2x1500m @25:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "44",
@@ -492,9 +492,9 @@ export const sessions: Session[] = [
     stroke: "breaststroke",
     sessionType: "technique",
     mainSet: "8x200m breast @4:30",
-    RPE: 7
+    RPE: 7,
   },
-  
+
   // Junio 2025
   {
     id: "45",
@@ -505,7 +505,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "threshold",
     mainSet: "4x500m @8:00",
-    RPE: 8
+    RPE: 8,
   },
   {
     id: "46",
@@ -516,7 +516,7 @@ export const sessions: Session[] = [
     stroke: "backstroke",
     sessionType: "technique",
     mainSet: "10x150m @3:00",
-    RPE: 7
+    RPE: 7,
   },
   {
     id: "47",
@@ -527,7 +527,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "4x700m @12:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "48",
@@ -538,7 +538,7 @@ export const sessions: Session[] = [
     stroke: "butterfly",
     sessionType: "speed",
     mainSet: "13x100m fly @1:30",
-    RPE: 9
+    RPE: 9,
   },
   {
     id: "49",
@@ -549,7 +549,7 @@ export const sessions: Session[] = [
     stroke: "mixed",
     sessionType: "aerobic",
     mainSet: "IM 300m x7 @5:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "50",
@@ -560,7 +560,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "recovery",
     mainSet: "9x200m @3:00",
-    RPE: 4
+    RPE: 4,
   },
   {
     id: "51",
@@ -571,7 +571,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "3x1000m @15:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "52",
@@ -582,9 +582,9 @@ export const sessions: Session[] = [
     stroke: "breaststroke",
     sessionType: "technique",
     mainSet: "8x200m breast @4:00",
-    RPE: 7
+    RPE: 7,
   },
-  
+
   // Julio 2025
   {
     id: "53",
@@ -595,7 +595,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "threshold",
     mainSet: "6x400m @6:00",
-    RPE: 8
+    RPE: 8,
   },
   {
     id: "54",
@@ -606,7 +606,7 @@ export const sessions: Session[] = [
     stroke: "backstroke",
     sessionType: "technique",
     mainSet: "8x200m back @4:00",
-    RPE: 7
+    RPE: 7,
   },
   {
     id: "55",
@@ -617,7 +617,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "4x600m @11:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "56",
@@ -628,7 +628,7 @@ export const sessions: Session[] = [
     stroke: "butterfly",
     sessionType: "speed",
     mainSet: "14x100m fly @1:20",
-    RPE: 9
+    RPE: 9,
   },
   {
     id: "57",
@@ -639,7 +639,7 @@ export const sessions: Session[] = [
     stroke: "mixed",
     sessionType: "aerobic",
     mainSet: "IM 400m x5 @6:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "58",
@@ -650,7 +650,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "recovery",
     mainSet: "19x100m @2:00",
-    RPE: 4
+    RPE: 4,
   },
   {
     id: "59",
@@ -661,7 +661,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "2x1500m @25:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "60",
@@ -672,9 +672,9 @@ export const sessions: Session[] = [
     stroke: "breaststroke",
     sessionType: "technique",
     mainSet: "8x200m breast @4:30",
-    RPE: 7
+    RPE: 7,
   },
-  
+
   // Agosto 2025
   {
     id: "61",
@@ -685,7 +685,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "threshold",
     mainSet: "4x500m @8:00",
-    RPE: 8
+    RPE: 8,
   },
   {
     id: "62",
@@ -696,7 +696,7 @@ export const sessions: Session[] = [
     stroke: "backstroke",
     sessionType: "technique",
     mainSet: "10x150m @3:00",
-    RPE: 7
+    RPE: 7,
   },
   {
     id: "63",
@@ -707,7 +707,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "4x700m @12:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "64",
@@ -718,7 +718,7 @@ export const sessions: Session[] = [
     stroke: "butterfly",
     sessionType: "speed",
     mainSet: "13x100m fly @1:30",
-    RPE: 9
+    RPE: 9,
   },
   {
     id: "65",
@@ -729,7 +729,7 @@ export const sessions: Session[] = [
     stroke: "mixed",
     sessionType: "aerobic",
     mainSet: "IM 300m x7 @5:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "66",
@@ -740,7 +740,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "recovery",
     mainSet: "9x200m @3:00",
-    RPE: 4
+    RPE: 4,
   },
   {
     id: "67",
@@ -751,7 +751,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "3x1000m @15:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "68",
@@ -762,9 +762,9 @@ export const sessions: Session[] = [
     stroke: "breaststroke",
     sessionType: "technique",
     mainSet: "8x200m breast @4:00",
-    RPE: 7
+    RPE: 7,
   },
-  
+
   // Septiembre 2025
   {
     id: "69",
@@ -775,7 +775,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "threshold",
     mainSet: "6x400m @6:00",
-    RPE: 8
+    RPE: 8,
   },
   {
     id: "70",
@@ -786,7 +786,7 @@ export const sessions: Session[] = [
     stroke: "backstroke",
     sessionType: "technique",
     mainSet: "8x200m back @4:00",
-    RPE: 7
+    RPE: 7,
   },
   {
     id: "71",
@@ -797,7 +797,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "4x600m @11:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "72",
@@ -808,7 +808,7 @@ export const sessions: Session[] = [
     stroke: "butterfly",
     sessionType: "speed",
     mainSet: "14x100m fly @1:20",
-    RPE: 9
+    RPE: 9,
   },
   {
     id: "73",
@@ -819,7 +819,7 @@ export const sessions: Session[] = [
     stroke: "mixed",
     sessionType: "aerobic",
     mainSet: "IM 400m x5 @6:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "74",
@@ -830,7 +830,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "recovery",
     mainSet: "19x100m @2:00",
-    RPE: 4
+    RPE: 4,
   },
   {
     id: "75",
@@ -841,7 +841,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "2x1500m @25:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "76",
@@ -852,9 +852,9 @@ export const sessions: Session[] = [
     stroke: "breaststroke",
     sessionType: "technique",
     mainSet: "8x200m breast @4:30",
-    RPE: 7
+    RPE: 7,
   },
-  
+
   // Octubre 2025
   {
     id: "77",
@@ -865,7 +865,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "threshold",
     mainSet: "4x500m @8:00",
-    RPE: 8
+    RPE: 8,
   },
   {
     id: "78",
@@ -876,7 +876,7 @@ export const sessions: Session[] = [
     stroke: "backstroke",
     sessionType: "technique",
     mainSet: "10x150m @3:00",
-    RPE: 7
+    RPE: 7,
   },
   {
     id: "79",
@@ -887,7 +887,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "4x700m @12:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "80",
@@ -898,7 +898,7 @@ export const sessions: Session[] = [
     stroke: "butterfly",
     sessionType: "speed",
     mainSet: "13x100m fly @1:30",
-    RPE: 9
+    RPE: 9,
   },
   {
     id: "81",
@@ -909,7 +909,7 @@ export const sessions: Session[] = [
     stroke: "mixed",
     sessionType: "aerobic",
     mainSet: "IM 300m x7 @5:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "82",
@@ -920,7 +920,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "recovery",
     mainSet: "9x200m @3:00",
-    RPE: 4
+    RPE: 4,
   },
   {
     id: "83",
@@ -931,7 +931,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "3x1000m @15:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "84",
@@ -942,9 +942,9 @@ export const sessions: Session[] = [
     stroke: "breaststroke",
     sessionType: "technique",
     mainSet: "8x200m breast @4:00",
-    RPE: 7
+    RPE: 7,
   },
-  
+
   // Noviembre 2025
   {
     id: "85",
@@ -955,7 +955,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "threshold",
     mainSet: "6x400m @6:00",
-    RPE: 8
+    RPE: 8,
   },
   {
     id: "86",
@@ -966,7 +966,7 @@ export const sessions: Session[] = [
     stroke: "backstroke",
     sessionType: "technique",
     mainSet: "8x200m back @4:00",
-    RPE: 7
+    RPE: 7,
   },
   {
     id: "87",
@@ -977,7 +977,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "4x600m @11:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "88",
@@ -988,7 +988,7 @@ export const sessions: Session[] = [
     stroke: "butterfly",
     sessionType: "speed",
     mainSet: "14x100m fly @1:20",
-    RPE: 9
+    RPE: 9,
   },
   {
     id: "89",
@@ -999,7 +999,7 @@ export const sessions: Session[] = [
     stroke: "mixed",
     sessionType: "aerobic",
     mainSet: "IM 400m x5 @6:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "90",
@@ -1010,7 +1010,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "recovery",
     mainSet: "19x100m @2:00",
-    RPE: 4
+    RPE: 4,
   },
   {
     id: "91",
@@ -1021,7 +1021,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "2x1500m @25:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "92",
@@ -1032,9 +1032,9 @@ export const sessions: Session[] = [
     stroke: "breaststroke",
     sessionType: "technique",
     mainSet: "8x200m breast @4:30",
-    RPE: 7
+    RPE: 7,
   },
-  
+
   // Diciembre 2025
   {
     id: "93",
@@ -1045,7 +1045,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "threshold",
     mainSet: "4x500m @8:00",
-    RPE: 8
+    RPE: 8,
   },
   {
     id: "94",
@@ -1056,7 +1056,7 @@ export const sessions: Session[] = [
     stroke: "backstroke",
     sessionType: "technique",
     mainSet: "10x150m @3:00",
-    RPE: 7
+    RPE: 7,
   },
   {
     id: "95",
@@ -1067,7 +1067,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "4x700m @12:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "96",
@@ -1078,7 +1078,7 @@ export const sessions: Session[] = [
     stroke: "butterfly",
     sessionType: "speed",
     mainSet: "13x100m fly @1:30",
-    RPE: 9
+    RPE: 9,
   },
   {
     id: "97",
@@ -1089,7 +1089,7 @@ export const sessions: Session[] = [
     stroke: "mixed",
     sessionType: "aerobic",
     mainSet: "IM 300m x7 @5:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "98",
@@ -1100,7 +1100,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "recovery",
     mainSet: "9x200m @3:00",
-    RPE: 4
+    RPE: 4,
   },
   {
     id: "99",
@@ -1111,7 +1111,7 @@ export const sessions: Session[] = [
     stroke: "freestyle",
     sessionType: "aerobic",
     mainSet: "3x1000m @15:00",
-    RPE: 6
+    RPE: 6,
   },
   {
     id: "100",
@@ -1122,8 +1122,8 @@ export const sessions: Session[] = [
     stroke: "breaststroke",
     sessionType: "technique",
     mainSet: "8x200m breast @4:00",
-    RPE: 7
-  }
+    RPE: 7,
+  },
 ];
 
 export function getSeedData(): Session[] {
@@ -1142,49 +1142,64 @@ export interface Aggregations {
 }
 
 export function getAggregations(sessions: Session[]): Aggregations {
-  const totalDistance = sessions.reduce((sum, session) => sum + session.distance, 0);
+  const totalDistance = sessions.reduce(
+    (sum, session) => sum + session.distance,
+    0
+  );
   const avgDistance = Math.round(totalDistance / sessions.length) || 0;
   const totalSessions = sessions.length;
-  
-  const techniqueSessions = sessions.filter(s => s.sessionType === 'technique').length;
-  const techniquePercentage = Math.round((techniqueSessions / totalSessions) * 100) || 0;
-  
-  const sessionsPerStroke = sessions.reduce((acc, session) => {
-    acc[session.stroke] = (acc[session.stroke] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-  
-  const minutesPerType = sessions.reduce((acc, session) => {
-    acc[session.sessionType] = (acc[session.sessionType] || 0) + session.durationMin;
-    return acc;
-  }, {} as Record<string, number>);
-  
+
+  const techniqueSessions = sessions.filter(
+    s => s.sessionType === "technique"
+  ).length;
+  const techniquePercentage =
+    Math.round((techniqueSessions / totalSessions) * 100) || 0;
+
+  const sessionsPerStroke = sessions.reduce(
+    (acc, session) => {
+      acc[session.stroke] = (acc[session.stroke] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
+
+  const minutesPerType = sessions.reduce(
+    (acc, session) => {
+      acc[session.sessionType] =
+        (acc[session.sessionType] || 0) + session.durationMin;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
+
   // Datos semanales para el gráfico existente
   const distanceByWeek = [
     { week: "Semana 1", distance: 3500 },
     { week: "Semana 2", distance: 4200 },
     { week: "Semana 3", distance: 3800 },
-    { week: "Semana 4", distance: 4500 }
+    { week: "Semana 4", distance: 4500 },
   ];
 
   // Datos mensuales para el calendario
   const currentYear = new Date().getFullYear();
 
-  
   const months = [];
   for (let i = 0; i < 12; i++) {
     const month = new Date(currentYear, i, 1);
     const monthStr = month.toISOString().slice(0, 7);
     const monthSessions = sessions.filter(s => s.date.startsWith(monthStr));
     const monthDistance = monthSessions.reduce((sum, s) => sum + s.distance, 0);
-    
+
     months.push({
-      month: month.toLocaleDateString('es-ES', { month: 'short', year: 'numeric' }),
+      month: month.toLocaleDateString("es-ES", {
+        month: "short",
+        year: "numeric",
+      }),
       distance: monthDistance,
-      sessions: monthSessions.length
+      sessions: monthSessions.length,
     });
   }
-  
+
   return {
     totalDistance,
     avgDistance,
@@ -1193,6 +1208,6 @@ export function getAggregations(sessions: Session[]): Aggregations {
     sessionsPerStroke,
     minutesPerType,
     distanceByWeek,
-    distanceByMonth: months
+    distanceByMonth: months,
   };
 }

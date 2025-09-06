@@ -1,19 +1,31 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Plus, 
-  Save, 
-  Eye, 
-  Trash2, 
+import {
+  Plus,
+  Save,
+  Eye,
+  Trash2,
   Copy,
   Layout,
   BarChart3,
@@ -21,12 +33,12 @@ import {
   Target,
   FileText,
   Image,
-  Table
+  Table,
 } from "lucide-react";
 
 interface TemplateElement {
   id: string;
-  type: 'header' | 'chart' | 'table' | 'text' | 'image' | 'kpi' | 'calendar';
+  type: "header" | "chart" | "table" | "text" | "image" | "kpi" | "calendar";
   title: string;
   content: string;
   position: { x: number; y: number };
@@ -38,9 +50,9 @@ interface ReportTemplate {
   id: string;
   name: string;
   description: string;
-  category: 'performance' | 'planning' | 'training' | 'team' | 'custom';
-  userType: 'coach' | 'swimmer' | 'admin' | 'all';
-  season: 'preparation' | 'competition' | 'recovery' | 'all';
+  category: "performance" | "planning" | "training" | "team" | "custom";
+  userType: "coach" | "swimmer" | "admin" | "all";
+  season: "preparation" | "competition" | "recovery" | "all";
   elements: TemplateElement[];
   isDefault: boolean;
   createdAt: string;
@@ -48,21 +60,25 @@ interface ReportTemplate {
 }
 
 export function TemplateEditor() {
-  const [selectedTemplate, setSelectedTemplate] = useState<ReportTemplate | null>(null);
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<ReportTemplate | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [templateName, setTemplateName] = useState("");
   const [templateDescription, setTemplateDescription] = useState("");
   const [templateCategory, setTemplateCategory] = useState<string>("");
   const [templateUserType, setTemplateUserType] = useState<string>("");
   const [templateSeason, setTemplateSeason] = useState<string>("");
-  const [templateElements, setTemplateElements] = useState<TemplateElement[]>([]);
+  const [templateElements, setTemplateElements] = useState<TemplateElement[]>(
+    []
+  );
 
   // Plantillas predefinidas
   const defaultTemplates: ReportTemplate[] = [
     {
       id: "perf-coach-prep",
       name: "Reporte de Rendimiento - Entrenador",
-      description: "Análisis completo de rendimiento para entrenadores en fase de preparación",
+      description:
+        "Análisis completo de rendimiento para entrenadores en fase de preparación",
       category: "performance",
       userType: "coach",
       season: "preparation",
@@ -77,7 +93,7 @@ export function TemplateEditor() {
           content: "Análisis de rendimiento del equipo",
           position: { x: 0, y: 0 },
           size: { width: 12, height: 2 },
-          config: { fontSize: 24, alignment: "center", color: "#1f2937" }
+          config: { fontSize: 24, alignment: "center", color: "#1f2937" },
         },
         {
           id: "kpi-1",
@@ -86,7 +102,9 @@ export function TemplateEditor() {
           content: "Métricas clave del rendimiento",
           position: { x: 0, y: 2 },
           size: { width: 6, height: 4 },
-          config: { metrics: ["distancia", "tiempo", "intensidad", "frecuencia"] }
+          config: {
+            metrics: ["distancia", "tiempo", "intensidad", "frecuencia"],
+          },
         },
         {
           id: "chart-1",
@@ -95,7 +113,7 @@ export function TemplateEditor() {
           content: "Gráfico de progreso temporal",
           position: { x: 6, y: 2 },
           size: { width: 6, height: 4 },
-          config: { chartType: "line", dataSource: "performance" }
+          config: { chartType: "line", dataSource: "performance" },
         },
         {
           id: "table-1",
@@ -104,9 +122,9 @@ export function TemplateEditor() {
           content: "Tabla comparativa de resultados",
           position: { x: 0, y: 6 },
           size: { width: 12, height: 4 },
-          config: { columns: ["nombre", "tiempo", "mejora", "categoria"] }
-        }
-      ]
+          config: { columns: ["nombre", "tiempo", "mejora", "categoria"] },
+        },
+      ],
     },
     {
       id: "plan-team-comp",
@@ -126,7 +144,7 @@ export function TemplateEditor() {
           content: "Estrategia y preparación para competición",
           position: { x: 0, y: 0 },
           size: { width: 12, height: 2 },
-          config: { fontSize: 24, alignment: "center", color: "#dc2626" }
+          config: { fontSize: 24, alignment: "center", color: "#dc2626" },
         },
         {
           id: "calendar-1",
@@ -135,7 +153,7 @@ export function TemplateEditor() {
           content: "Calendario de preparación",
           position: { x: 0, y: 2 },
           size: { width: 8, height: 6 },
-          config: { view: "month", showTraining: true }
+          config: { view: "month", showTraining: true },
         },
         {
           id: "kpi-2",
@@ -144,9 +162,9 @@ export function TemplateEditor() {
           content: "Metas y objetivos específicos",
           position: { x: 8, y: 2 },
           size: { width: 4, height: 6 },
-          config: { metrics: ["objetivo", "progreso", "dias_restantes"] }
-        }
-      ]
+          config: { metrics: ["objetivo", "progreso", "dias_restantes"] },
+        },
+      ],
     },
     {
       id: "train-swimmer",
@@ -166,7 +184,7 @@ export function TemplateEditor() {
           content: "Resumen personal de entrenamientos",
           position: { x: 0, y: 0 },
           size: { width: 12, height: 2 },
-          config: { fontSize: 24, alignment: "center", color: "#059669" }
+          config: { fontSize: 24, alignment: "center", color: "#059669" },
         },
         {
           id: "chart-2",
@@ -175,7 +193,7 @@ export function TemplateEditor() {
           content: "Evolución de mi rendimiento",
           position: { x: 0, y: 2 },
           size: { width: 8, height: 4 },
-          config: { chartType: "area", dataSource: "personal" }
+          config: { chartType: "area", dataSource: "personal" },
         },
         {
           id: "kpi-3",
@@ -184,7 +202,7 @@ export function TemplateEditor() {
           content: "Métricas personales",
           position: { x: 8, y: 2 },
           size: { width: 4, height: 4 },
-          config: { metrics: ["total_metros", "sesiones", "mejor_tiempo"] }
+          config: { metrics: ["total_metros", "sesiones", "mejor_tiempo"] },
         },
         {
           id: "table-2",
@@ -193,22 +211,60 @@ export function TemplateEditor() {
           content: "Historial reciente",
           position: { x: 0, y: 6 },
           size: { width: 12, height: 4 },
-          config: { columns: ["fecha", "tipo", "distancia", "tiempo", "notas"] }
-        }
-      ]
-    }
+          config: {
+            columns: ["fecha", "tipo", "distancia", "tiempo", "notas"],
+          },
+        },
+      ],
+    },
   ];
 
-  const [templates, setTemplates] = useState<ReportTemplate[]>(defaultTemplates);
+  const [templates, setTemplates] =
+    useState<ReportTemplate[]>(defaultTemplates);
 
   const elementTypes = [
-    { type: 'header', label: 'Encabezado', icon: FileText, description: 'Título o encabezado del reporte' },
-    { type: 'chart', label: 'Gráfico', icon: BarChart3, description: 'Gráficos de datos y estadísticas' },
-    { type: 'table', label: 'Tabla', icon: Table, description: 'Tablas de datos estructurados' },
-    { type: 'kpi', label: 'KPI', icon: Target, description: 'Métricas clave y indicadores' },
-    { type: 'calendar', label: 'Calendario', icon: Calendar, description: 'Vista de calendario y eventos' },
-    { type: 'text', label: 'Texto', icon: FileText, description: 'Bloques de texto libre' },
-    { type: 'image', label: 'Imagen', icon: Image, description: 'Imágenes y logos' }
+    {
+      type: "header",
+      label: "Encabezado",
+      icon: FileText,
+      description: "Título o encabezado del reporte",
+    },
+    {
+      type: "chart",
+      label: "Gráfico",
+      icon: BarChart3,
+      description: "Gráficos de datos y estadísticas",
+    },
+    {
+      type: "table",
+      label: "Tabla",
+      icon: Table,
+      description: "Tablas de datos estructurados",
+    },
+    {
+      type: "kpi",
+      label: "KPI",
+      icon: Target,
+      description: "Métricas clave y indicadores",
+    },
+    {
+      type: "calendar",
+      label: "Calendario",
+      icon: Calendar,
+      description: "Vista de calendario y eventos",
+    },
+    {
+      type: "text",
+      label: "Texto",
+      icon: FileText,
+      description: "Bloques de texto libre",
+    },
+    {
+      type: "image",
+      label: "Imagen",
+      icon: Image,
+      description: "Imágenes y logos",
+    },
   ];
 
   const handleCreateTemplate = () => {
@@ -238,17 +294,28 @@ export function TemplateEditor() {
       id: selectedTemplate?.id || `template-${Date.now()}`,
       name: templateName,
       description: templateDescription,
-      category: templateCategory as 'performance' | 'planning' | 'training' | 'team' | 'custom',
-      userType: templateUserType as 'coach' | 'swimmer' | 'admin' | 'all',
-      season: templateSeason as 'preparation' | 'competition' | 'recovery' | 'all',
+      category: templateCategory as
+        | "performance"
+        | "planning"
+        | "training"
+        | "team"
+        | "custom",
+      userType: templateUserType as "coach" | "swimmer" | "admin" | "all",
+      season: templateSeason as
+        | "preparation"
+        | "competition"
+        | "recovery"
+        | "all",
       elements: templateElements,
       isDefault: false,
       createdAt: selectedTemplate?.createdAt || new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
     if (selectedTemplate) {
-      setTemplates(prev => prev.map(t => t.id === selectedTemplate.id ? newTemplate : t));
+      setTemplates(prev =>
+        prev.map(t => (t.id === selectedTemplate.id ? newTemplate : t))
+      );
     } else {
       setTemplates(prev => [...prev, newTemplate]);
     }
@@ -260,12 +327,19 @@ export function TemplateEditor() {
   const handleAddElement = (elementType: string) => {
     const newElement: TemplateElement = {
       id: `element-${Date.now()}`,
-      type: elementType as 'header' | 'chart' | 'table' | 'text' | 'image' | 'kpi' | 'calendar',
+      type: elementType as
+        | "header"
+        | "chart"
+        | "table"
+        | "text"
+        | "image"
+        | "kpi"
+        | "calendar",
       title: `Nuevo ${elementType}`,
       content: `Contenido del ${elementType}`,
       position: { x: 0, y: templateElements.length * 2 },
       size: { width: 6, height: 3 },
-      config: {}
+      config: {},
     };
 
     setTemplateElements(prev => [...prev, newElement]);
@@ -282,7 +356,7 @@ export function TemplateEditor() {
       name: `${template.name} (Copia)`,
       isDefault: false,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
     setTemplates(prev => [...prev, duplicatedTemplate]);
@@ -295,7 +369,8 @@ export function TemplateEditor() {
         <div>
           <h2 className="text-2xl font-bold">Editor de Plantillas</h2>
           <p className="text-muted-foreground">
-            Crea y personaliza plantillas de reportes para diferentes usuarios y temporadas
+            Crea y personaliza plantillas de reportes para diferentes usuarios y
+            temporadas
           </p>
         </div>
         <Button onClick={handleCreateTemplate} className="gap-2">
@@ -307,14 +382,18 @@ export function TemplateEditor() {
       <Tabs defaultValue="templates" className="space-y-4">
         <TabsList>
           <TabsTrigger value="templates">Plantillas</TabsTrigger>
-          <TabsTrigger value="editor" disabled={!isEditing}>Editor</TabsTrigger>
-          <TabsTrigger value="preview" disabled={!isEditing}>Vista Previa</TabsTrigger>
+          <TabsTrigger value="editor" disabled={!isEditing}>
+            Editor
+          </TabsTrigger>
+          <TabsTrigger value="preview" disabled={!isEditing}>
+            Vista Previa
+          </TabsTrigger>
         </TabsList>
 
         {/* Lista de plantillas */}
         <TabsContent value="templates" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {templates.map((template) => (
+            {templates.map(template => (
               <Card key={template.id} className="bg-muted/50 border-muted">
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
@@ -335,34 +414,38 @@ export function TemplateEditor() {
                     <Badge variant="outline">{template.userType}</Badge>
                     <Badge variant="outline">{template.season}</Badge>
                   </div>
-                  
+
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Layout className="h-4 w-4" />
                     {template.elements.length} elementos
                   </div>
 
                   <div className="flex gap-2">
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
+                    <Button
+                      size="sm"
+                      variant="outline"
                       onClick={() => handleEditTemplate(template)}
                       className="flex-1"
                     >
                       <Eye className="h-3 w-3 mr-1" />
                       Editar
                     </Button>
-                    <Button 
-                      size="sm" 
+                    <Button
+                      size="sm"
                       variant="outline"
                       onClick={() => handleDuplicateTemplate(template)}
                     >
                       <Copy className="h-3 w-3" />
                     </Button>
                     {!template.isDefault && (
-                      <Button 
-                        size="sm" 
+                      <Button
+                        size="sm"
                         variant="outline"
-                        onClick={() => setTemplates(prev => prev.filter(t => t.id !== template.id))}
+                        onClick={() =>
+                          setTemplates(prev =>
+                            prev.filter(t => t.id !== template.id)
+                          )
+                        }
                       >
                         <Trash2 className="h-3 w-3" />
                       </Button>
@@ -385,11 +468,13 @@ export function TemplateEditor() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="template-name">Nombre de la plantilla</Label>
+                    <Label htmlFor="template-name">
+                      Nombre de la plantilla
+                    </Label>
                     <Input
                       id="template-name"
                       value={templateName}
-                      onChange={(e) => setTemplateName(e.target.value)}
+                      onChange={e => setTemplateName(e.target.value)}
                       placeholder="Mi plantilla personalizada"
                     />
                   </div>
@@ -399,7 +484,7 @@ export function TemplateEditor() {
                     <Textarea
                       id="template-description"
                       value={templateDescription}
-                      onChange={(e) => setTemplateDescription(e.target.value)}
+                      onChange={e => setTemplateDescription(e.target.value)}
                       placeholder="Describe el propósito de esta plantilla"
                       rows={3}
                     />
@@ -408,14 +493,23 @@ export function TemplateEditor() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="template-category">Categoría</Label>
-                      <Select value={templateCategory} onValueChange={setTemplateCategory}>
+                      <Select
+                        value={templateCategory}
+                        onValueChange={setTemplateCategory}
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Seleccionar" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="performance">Rendimiento</SelectItem>
-                          <SelectItem value="planning">Planificación</SelectItem>
-                          <SelectItem value="training">Entrenamiento</SelectItem>
+                          <SelectItem value="performance">
+                            Rendimiento
+                          </SelectItem>
+                          <SelectItem value="planning">
+                            Planificación
+                          </SelectItem>
+                          <SelectItem value="training">
+                            Entrenamiento
+                          </SelectItem>
                           <SelectItem value="team">Equipo</SelectItem>
                           <SelectItem value="custom">Personalizada</SelectItem>
                         </SelectContent>
@@ -424,7 +518,10 @@ export function TemplateEditor() {
 
                     <div className="space-y-2">
                       <Label htmlFor="template-user">Tipo de usuario</Label>
-                      <Select value={templateUserType} onValueChange={setTemplateUserType}>
+                      <Select
+                        value={templateUserType}
+                        onValueChange={setTemplateUserType}
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Seleccionar" />
                         </SelectTrigger>
@@ -440,7 +537,10 @@ export function TemplateEditor() {
 
                   <div className="space-y-2">
                     <Label htmlFor="template-season">Temporada</Label>
-                    <Select value={templateSeason} onValueChange={setTemplateSeason}>
+                    <Select
+                      value={templateSeason}
+                      onValueChange={setTemplateSeason}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Seleccionar" />
                       </SelectTrigger>
@@ -458,7 +558,10 @@ export function TemplateEditor() {
                       <Save className="h-4 w-4 mr-2" />
                       Guardar
                     </Button>
-                    <Button variant="outline" onClick={() => setIsEditing(false)}>
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsEditing(false)}
+                    >
                       Cancelar
                     </Button>
                   </div>
@@ -474,7 +577,7 @@ export function TemplateEditor() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  {elementTypes.map((element) => {
+                  {elementTypes.map(element => {
                     const Icon = element.icon;
                     return (
                       <Button
@@ -517,8 +620,10 @@ export function TemplateEditor() {
                       </div>
                     ) : (
                       <div className="grid grid-cols-12 gap-4">
-                        {templateElements.map((element) => {
-                          const Icon = elementTypes.find(et => et.type === element.type)?.icon || FileText;
+                        {templateElements.map(element => {
+                          const Icon =
+                            elementTypes.find(et => et.type === element.type)
+                              ?.icon || FileText;
                           return (
                             <div
                               key={element.id}
@@ -527,13 +632,17 @@ export function TemplateEditor() {
                               <div className="flex items-center justify-between mb-2">
                                 <div className="flex items-center gap-2">
                                   <Icon className="h-4 w-4" />
-                                  <span className="font-medium text-sm">{element.title}</span>
+                                  <span className="font-medium text-sm">
+                                    {element.title}
+                                  </span>
                                 </div>
                                 <Button
                                   size="sm"
                                   variant="ghost"
                                   className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100"
-                                  onClick={() => handleDeleteElement(element.id)}
+                                  onClick={() =>
+                                    handleDeleteElement(element.id)
+                                  }
                                 >
                                   <Trash2 className="h-3 w-3" />
                                 </Button>
@@ -573,8 +682,10 @@ export function TemplateEditor() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {templateElements.map((element) => {
-                      const Icon = elementTypes.find(et => et.type === element.type)?.icon || FileText;
+                    {templateElements.map(element => {
+                      const Icon =
+                        elementTypes.find(et => et.type === element.type)
+                          ?.icon || FileText;
                       return (
                         <div
                           key={element.id}

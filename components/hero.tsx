@@ -28,14 +28,12 @@ export default function Header() {
         >
           SwimAPP:PRO
         </a>{" "}
-        {" "}
         <a
           href="https://nextjs.org/"
           target="_blank"
           className="font-bold hover:underline"
           rel="noreferrer"
-        >
-                 </a>
+        ></a>
       </p>
       <div className="w-full p-[1px] bg-gradient-to-r from-transparent via-foreground/10 to-transparent my-8" />
     </div>

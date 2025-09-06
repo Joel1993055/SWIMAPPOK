@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +17,10 @@ import { LogIn, ArrowLeft } from "lucide-react";
 
 export default function SignInPage() {
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   const handleSubmit = async (formData: FormData) => {
     setIsLoading(true);
@@ -19,13 +28,16 @@ export default function SignInPage() {
 
     try {
       const result = await signInAction(formData);
-      
+
       if (result.error) {
         setMessage({ type: "error", text: result.error });
       }
       // Si no hay error, la función redirect() se encarga de redirigir
     } catch (error) {
-      setMessage({ type: "error", text: "Error inesperado. Inténtalo de nuevo." });
+      setMessage({
+        type: "error",
+        text: "Error inesperado. Inténtalo de nuevo.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -36,7 +48,10 @@ export default function SignInPage() {
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4"
+          >
             <ArrowLeft className="h-4 w-4" />
             Volver al inicio
           </Link>
@@ -83,11 +98,13 @@ export default function SignInPage() {
 
               {/* Mensajes */}
               {message && (
-                <div className={`p-3 rounded-md text-sm ${
-                  message.type === "success" 
-                    ? "bg-green-50 text-green-700 border border-green-200" 
-                    : "bg-red-50 text-red-700 border border-red-200"
-                }`}>
+                <div
+                  className={`p-3 rounded-md text-sm ${
+                    message.type === "success"
+                      ? "bg-green-50 text-green-700 border border-green-200"
+                      : "bg-red-50 text-red-700 border border-red-200"
+                  }`}
+                >
                   {message.text}
                 </div>
               )}
@@ -100,14 +117,20 @@ export default function SignInPage() {
             <div className="mt-6 text-center">
               <p className="text-sm text-muted-foreground">
                 ¿No tienes cuenta?{" "}
-                <Link href="/auth/signup" className="text-primary hover:underline">
+                <Link
+                  href="/auth/signup"
+                  className="text-primary hover:underline"
+                >
                   Crear cuenta
                 </Link>
               </p>
             </div>
 
             <div className="mt-4 text-center">
-              <Link href="/auth/forgot-password" className="text-sm text-primary hover:underline">
+              <Link
+                href="/auth/forgot-password"
+                className="text-sm text-primary hover:underline"
+              >
                 ¿Olvidaste tu contraseña?
               </Link>
             </div>

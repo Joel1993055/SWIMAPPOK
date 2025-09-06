@@ -23,7 +23,7 @@ export async function middleware(request: NextRequest) {
           });
         },
       },
-    },
+    }
   );
 
   const {
@@ -45,11 +45,11 @@ export async function middleware(request: NextRequest) {
   // Rutas de autenticación (solo accesibles si NO estás autenticado)
   const authRoutes = ["/auth/signin", "/auth/signup"];
 
-  const isProtectedRoute = protectedRoutes.some(route => 
+  const isProtectedRoute = protectedRoutes.some(route =>
     request.nextUrl.pathname.startsWith(route)
   );
-  
-  const isAuthRoute = authRoutes.some(route => 
+
+  const isAuthRoute = authRoutes.some(route =>
     request.nextUrl.pathname.startsWith(route)
   );
 

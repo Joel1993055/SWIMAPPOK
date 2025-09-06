@@ -13,7 +13,8 @@ const defaultUrl = process.env.VERCEL_URL
 export const metadata = {
   metadataBase: new URL(defaultUrl),
   title: "Swim APP PRO - Plataforma de Análisis de Natación",
-  description: "La plataforma de análisis de natación más avanzada para nadadores de todos los niveles",
+  description:
+    "La plataforma de análisis de natación más avanzada para nadadores de todos los niveles",
 };
 
 const geistSans = Geist({
@@ -35,17 +36,15 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-                          <TrainingZonesProvider>
-                  <AICoachProvider>
-                    <ReportsProvider>
-                      <TrainingPhasesProvider>
-                        <main className="min-h-screen">
-                          {children}
-                        </main>
-                      </TrainingPhasesProvider>
-                    </ReportsProvider>
-                  </AICoachProvider>
-                </TrainingZonesProvider>
+          <TrainingZonesProvider>
+            <AICoachProvider>
+              <ReportsProvider>
+                <TrainingPhasesProvider>
+                  <main className="min-h-screen">{children}</main>
+                </TrainingPhasesProvider>
+              </ReportsProvider>
+            </AICoachProvider>
+          </TrainingZonesProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -2,23 +2,35 @@
 
 import { useState, useEffect } from "react";
 import { AppSidebar } from "@/components/layout/app-sidebar";
-import { SiteHeader } from "@/components/site-header";
+import { SiteHeader } from "@/components/layout/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  ClipboardListIcon, 
-  Download, 
+import {
+  ClipboardListIcon,
+  Download,
   Printer,
-  Calendar, 
-  Clock, 
-  Target, 
-  Activity, 
+  Calendar,
+  Clock,
+  Target,
+  Activity,
   BarChart3,
   FileText,
   X,
@@ -26,7 +38,7 @@ import {
   Settings,
   Layout,
   FileImage,
-  Eye
+  Eye,
 } from "lucide-react";
 import { format, subDays, subMonths, subWeeks } from "date-fns";
 import { es } from "date-fns/locale";
@@ -36,10 +48,17 @@ import type { Session } from "@/lib/actions/sessions";
 // Tipos de datos
 interface ChartData {
   id: string;
-  type: 'volume' | 'sessions' | 'progress' | 'zones' | 'performance' | 'intensity' | 'weekly';
+  type:
+    | "volume"
+    | "sessions"
+    | "progress"
+    | "zones"
+    | "performance"
+    | "intensity"
+    | "weekly";
   title: string;
   description: string;
-  category: 'overview' | 'performance' | 'analysis' | 'trends';
+  category: "overview" | "performance" | "analysis" | "trends";
   selected: boolean;
 }
 
@@ -60,7 +79,7 @@ interface ReportTemplate {
   id: string;
   name: string;
   description: string;
-  category: 'weekly' | 'monthly' | 'performance' | 'custom';
+  category: "weekly" | "monthly" | "performance" | "custom";
   charts: string[];
   includeTrainings: boolean;
   dateRange: {
@@ -77,10 +96,14 @@ function ReportsContent() {
   const [selectedType, setSelectedType] = useState<string>("all");
   const [selectedPeriod, setSelectedPeriod] = useState<string>("last-30-days");
   const [selectedCharts, setSelectedCharts] = useState<ChartData[]>([]);
-  const [selectedTrainings, setSelectedTrainings] = useState<TrainingReport[]>([]);
+  const [selectedTrainings, setSelectedTrainings] = useState<TrainingReport[]>(
+    []
+  );
   const [selectedTemplate, setSelectedTemplate] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [reportType, setReportType] = useState<'custom' | 'weekly-previous' | 'weekly-next'>('custom');
+  const [reportType, setReportType] = useState<
+    "custom" | "weekly-previous" | "weekly-next"
+  >("custom");
 
   // Cargar sesiones reales
   useEffect(() => {
@@ -102,109 +125,121 @@ function ReportsContent() {
   // Gráficos disponibles basados en datos reales
   const availableCharts: ChartData[] = [
     {
-      id: 'volume-chart',
-      type: 'volume',
-      title: 'Gráfico Volumen Total',
-      description: 'Evolución del volumen de entrenamiento por período',
-      category: 'overview',
-      selected: false
+      id: "volume-chart",
+      type: "volume",
+      title: "Gráfico Volumen Total",
+      description: "Evolución del volumen de entrenamiento por período",
+      category: "overview",
+      selected: false,
     },
     {
-      id: 'sessions-chart',
-      type: 'sessions',
-      title: 'Sesiones de Entrenamiento',
-      description: 'Distribución de sesiones por tipo y duración',
-      category: 'overview',
-      selected: false
+      id: "sessions-chart",
+      type: "sessions",
+      title: "Sesiones de Entrenamiento",
+      description: "Distribución de sesiones por tipo y duración",
+      category: "overview",
+      selected: false,
     },
     {
-      id: 'progress-chart',
-      type: 'progress',
-      title: 'Progreso Semanal',
-      description: 'Evolución semanal de distancia y RPE',
-      category: 'trends',
-      selected: false
+      id: "progress-chart",
+      type: "progress",
+      title: "Progreso Semanal",
+      description: "Evolución semanal de distancia y RPE",
+      category: "trends",
+      selected: false,
     },
     {
-      id: 'zones-chart',
-      type: 'zones',
-      title: 'Distribución de Zonas',
-      description: 'Tiempo invertido en cada zona de intensidad',
-      category: 'analysis',
-      selected: false
+      id: "zones-chart",
+      type: "zones",
+      title: "Distribución de Zonas",
+      description: "Tiempo invertido en cada zona de intensidad",
+      category: "analysis",
+      selected: false,
     },
     {
-      id: 'intensity-chart',
-      type: 'intensity',
-      title: 'Análisis de Intensidad',
-      description: 'Distribución de intensidad por períodos',
-      category: 'analysis',
-      selected: false
+      id: "intensity-chart",
+      type: "intensity",
+      title: "Análisis de Intensidad",
+      description: "Distribución de intensidad por períodos",
+      category: "analysis",
+      selected: false,
     },
     {
-      id: 'weekly-chart',
-      type: 'weekly',
-      title: 'Plan Semanal',
-      description: 'Horario semanal de entrenamientos',
-      category: 'overview',
-      selected: false
-    }
+      id: "weekly-chart",
+      type: "weekly",
+      title: "Plan Semanal",
+      description: "Horario semanal de entrenamientos",
+      category: "overview",
+      selected: false,
+    },
   ];
 
   // Plantillas de reportes
   const reportTemplates: ReportTemplate[] = [
     {
-      id: 'weekly-report',
-      name: 'Reporte Semanal',
-      description: 'Resumen semanal de entrenamientos y progreso',
-      category: 'weekly',
-      charts: ['volume-chart', 'sessions-chart', 'weekly-chart'],
+      id: "weekly-report",
+      name: "Reporte Semanal",
+      description: "Resumen semanal de entrenamientos y progreso",
+      category: "weekly",
+      charts: ["volume-chart", "sessions-chart", "weekly-chart"],
       includeTrainings: true,
       dateRange: {
         start: subWeeks(new Date(), 1),
-        end: new Date()
+        end: new Date(),
       },
-      isCustom: false
+      isCustom: false,
     },
     {
-      id: 'monthly-report',
-      name: 'Reporte Mensual',
-      description: 'Análisis mensual completo de rendimiento',
-      category: 'monthly',
-      charts: ['volume-chart', 'sessions-chart', 'progress-chart', 'zones-chart'],
+      id: "monthly-report",
+      name: "Reporte Mensual",
+      description: "Análisis mensual completo de rendimiento",
+      category: "monthly",
+      charts: [
+        "volume-chart",
+        "sessions-chart",
+        "progress-chart",
+        "zones-chart",
+      ],
       includeTrainings: true,
       dateRange: {
         start: subMonths(new Date(), 1),
-        end: new Date()
+        end: new Date(),
       },
-      isCustom: false
+      isCustom: false,
     },
     {
-      id: 'performance-report',
-      name: 'Reporte de Rendimiento',
-      description: 'Análisis detallado de rendimiento y métricas',
-      category: 'performance',
-      charts: ['progress-chart', 'intensity-chart', 'zones-chart'],
+      id: "performance-report",
+      name: "Reporte de Rendimiento",
+      description: "Análisis detallado de rendimiento y métricas",
+      category: "performance",
+      charts: ["progress-chart", "intensity-chart", "zones-chart"],
       includeTrainings: false,
       dateRange: {
         start: subMonths(new Date(), 3),
-        end: new Date()
+        end: new Date(),
       },
-      isCustom: false
+      isCustom: false,
     },
     {
-      id: 'analysis-report',
-      name: 'Análisis Avanzado',
-      description: 'Análisis completo con todos los gráficos',
-      category: 'custom',
-      charts: ['volume-chart', 'sessions-chart', 'progress-chart', 'zones-chart', 'intensity-chart', 'weekly-chart'],
+      id: "analysis-report",
+      name: "Análisis Avanzado",
+      description: "Análisis completo con todos los gráficos",
+      category: "custom",
+      charts: [
+        "volume-chart",
+        "sessions-chart",
+        "progress-chart",
+        "zones-chart",
+        "intensity-chart",
+        "weekly-chart",
+      ],
       includeTrainings: true,
       dateRange: {
         start: subMonths(new Date(), 6),
-        end: new Date()
+        end: new Date(),
       },
-      isCustom: false
-    }
+      isCustom: false,
+    },
   ];
 
   // Filtrar sesiones por período
@@ -243,30 +278,33 @@ function ReportsContent() {
   // Convertir sesiones a formato de reporte
   const trainingReports: TrainingReport[] = filteredSessions.map(session => ({
     id: session.id,
-    title: `Entrenamiento ${session.stroke || 'Libre'}`,
+    title: `Entrenamiento ${session.stroke || "Libre"}`,
     date: session.date,
-    objective: session.objective || 'General',
+    objective: session.objective || "General",
     distance: session.distance || 0,
     duration: session.duration || 0,
     rpe: session.rpe || 0,
-    stroke: session.stroke || 'Libre',
-    content: session.content || '',
-    selected: false
+    stroke: session.stroke || "Libre",
+    content: session.content || "",
+    selected: false,
   }));
 
   // Filtrar gráficos
   const filteredCharts = availableCharts.filter(chart => {
-    const matchesSearch = chart.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         chart.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = selectedType === "all" || chart.category === selectedType;
+    const matchesSearch =
+      chart.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      chart.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType =
+      selectedType === "all" || chart.category === selectedType;
     return matchesSearch && matchesType;
   });
 
   // Filtrar entrenamientos
   const filteredTrainings = trainingReports.filter(training => {
-    const matchesSearch = training.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         training.objective.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         training.stroke.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      training.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      training.objective.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      training.stroke.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesSearch;
   });
 
@@ -284,13 +322,20 @@ function ReportsContent() {
   };
 
   const handleTrainingToggle = (trainingId: string) => {
-    const isSelected = selectedTrainings.some(training => training.id === trainingId);
+    const isSelected = selectedTrainings.some(
+      training => training.id === trainingId
+    );
     if (isSelected) {
-      setSelectedTrainings(prev => prev.filter(training => training.id !== trainingId));
+      setSelectedTrainings(prev =>
+        prev.filter(training => training.id !== trainingId)
+      );
     } else {
       const training = trainingReports.find(t => t.id === trainingId);
       if (training) {
-        setSelectedTrainings(prev => [...prev, { ...training, selected: true }]);
+        setSelectedTrainings(prev => [
+          ...prev,
+          { ...training, selected: true },
+        ]);
       }
     }
   };
@@ -299,13 +344,17 @@ function ReportsContent() {
     const template = reportTemplates.find(t => t.id === templateId);
     if (template) {
       setSelectedTemplate(templateId);
-      const templateCharts = availableCharts.filter(chart => 
+      const templateCharts = availableCharts.filter(chart =>
         template.charts.includes(chart.id)
       );
-      setSelectedCharts(templateCharts.map(chart => ({ ...chart, selected: true })));
-      
+      setSelectedCharts(
+        templateCharts.map(chart => ({ ...chart, selected: true }))
+      );
+
       if (template.includeTrainings) {
-        setSelectedTrainings(trainingReports.map(training => ({ ...training, selected: true })));
+        setSelectedTrainings(
+          trainingReports.map(training => ({ ...training, selected: true }))
+        );
       } else {
         setSelectedTrainings([]);
       }
@@ -323,38 +372,38 @@ function ReportsContent() {
     try {
       // Simular generación de reporte
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       // Aquí iría la lógica real de generación de reporte
-      console.log('Generando reporte:', {
+      console.log("Generando reporte:", {
         template: selectedTemplate,
         charts: selectedCharts,
         trainings: selectedTrainings,
-        period: selectedPeriod
+        period: selectedPeriod,
       });
-      
-      alert('Reporte generado exitosamente');
+
+      alert("Reporte generado exitosamente");
     } catch (error) {
-      console.error('Error generando reporte:', error);
-      alert('Error al generar el reporte');
+      console.error("Error generando reporte:", error);
+      alert("Error al generar el reporte");
     } finally {
       setIsGenerating(false);
     }
   };
 
   const exportToPDF = () => {
-    console.log('Exportando a PDF:', {
+    console.log("Exportando a PDF:", {
       template: selectedTemplate,
       charts: selectedCharts,
-      trainings: selectedTrainings
+      trainings: selectedTrainings,
     });
-    alert('Funcionalidad de exportación a PDF en desarrollo');
+    alert("Funcionalidad de exportación a PDF en desarrollo");
   };
 
   const printReport = () => {
-    console.log('Imprimiendo reporte:', {
+    console.log("Imprimiendo reporte:", {
       template: selectedTemplate,
       charts: selectedCharts,
-      trainings: selectedTrainings
+      trainings: selectedTrainings,
     });
     window.print();
   };
@@ -430,7 +479,7 @@ function ReportsContent() {
             <SelectValue placeholder="Seleccionar plantilla" />
           </SelectTrigger>
           <SelectContent>
-            {reportTemplates.map((template) => (
+            {reportTemplates.map(template => (
               <SelectItem key={template.id} value={template.id}>
                 {template.name}
               </SelectItem>
@@ -452,13 +501,15 @@ function ReportsContent() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-2">
-            {selectedCharts.map((chart) => (
+            {selectedCharts.map(chart => (
               <Card key={chart.id} className="bg-background/50">
                 <CardContent className="p-3">
                   <div className="flex items-center justify-between">
                     <div>
                       <h4 className="font-medium">{chart.title}</h4>
-                      <p className="text-sm text-muted-foreground">{chart.description}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {chart.description}
+                      </p>
                     </div>
                     <Button
                       size="sm"
@@ -471,14 +522,17 @@ function ReportsContent() {
                 </CardContent>
               </Card>
             ))}
-            {selectedTrainings.map((training) => (
+            {selectedTrainings.map(training => (
               <Card key={training.id} className="bg-background/50">
                 <CardContent className="p-3">
                   <div className="flex items-center justify-between">
                     <div>
                       <h4 className="font-medium">{training.title}</h4>
                       <p className="text-sm text-muted-foreground">
-                        {format(new Date(training.date), "dd MMM yyyy", { locale: es })} - {training.distance}m
+                        {format(new Date(training.date), "dd MMM yyyy", {
+                          locale: es,
+                        })}{" "}
+                        - {training.distance}m
                       </p>
                     </div>
                     <Button
@@ -539,15 +593,20 @@ function ReportsContent() {
                       <Input
                         placeholder="Buscar gráficos..."
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={e => setSearchTerm(e.target.value)}
                       />
                     </div>
-                    <Select value={selectedType} onValueChange={setSelectedType}>
+                    <Select
+                      value={selectedType}
+                      onValueChange={setSelectedType}
+                    >
                       <SelectTrigger className="w-48">
                         <SelectValue placeholder="Categoría" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">Todas las categorías</SelectItem>
+                        <SelectItem value="all">
+                          Todas las categorías
+                        </SelectItem>
                         <SelectItem value="overview">Resumen</SelectItem>
                         <SelectItem value="performance">Rendimiento</SelectItem>
                         <SelectItem value="analysis">Análisis</SelectItem>
@@ -558,13 +617,17 @@ function ReportsContent() {
 
                   {/* Lista de gráficos */}
                   <div className="space-y-3">
-                    {filteredCharts.map((chart) => {
-                      const isSelected = selectedCharts.some(selected => selected.id === chart.id);
+                    {filteredCharts.map(chart => {
+                      const isSelected = selectedCharts.some(
+                        selected => selected.id === chart.id
+                      );
                       return (
                         <div
                           key={chart.id}
                           className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                            isSelected ? 'border-primary bg-primary/5' : 'border-muted hover:border-muted-foreground/50'
+                            isSelected
+                              ? "border-primary bg-primary/5"
+                              : "border-muted hover:border-muted-foreground/50"
                           }`}
                           onClick={() => handleChartToggle(chart.id)}
                         >
@@ -576,12 +639,16 @@ function ReportsContent() {
                               />
                               <div>
                                 <h4 className="font-medium">{chart.title}</h4>
-                                <p className="text-sm text-muted-foreground">{chart.description}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {chart.description}
+                                </p>
                               </div>
                             </div>
                             <div className="flex items-center gap-2">
                               <Badge variant="outline">{chart.category}</Badge>
-                              {isSelected && <Check className="h-4 w-4 text-primary" />}
+                              {isSelected && (
+                                <Check className="h-4 w-4 text-primary" />
+                              )}
                             </div>
                           </div>
                         </div>
@@ -603,10 +670,13 @@ function ReportsContent() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button 
-                    onClick={generateReport} 
+                  <Button
+                    onClick={generateReport}
                     className="w-full gap-2"
-                    disabled={selectedCharts.length === 0 && selectedTrainings.length === 0}
+                    disabled={
+                      selectedCharts.length === 0 &&
+                      selectedTrainings.length === 0
+                    }
                   >
                     {isGenerating ? (
                       <>
@@ -620,32 +690,41 @@ function ReportsContent() {
                       </>
                     )}
                   </Button>
-                  
-                  <Button 
-                    onClick={exportToPDF} 
-                    variant="outline" 
+
+                  <Button
+                    onClick={exportToPDF}
+                    variant="outline"
                     className="w-full gap-2"
-                    disabled={selectedCharts.length === 0 && selectedTrainings.length === 0}
+                    disabled={
+                      selectedCharts.length === 0 &&
+                      selectedTrainings.length === 0
+                    }
                   >
                     <Download className="h-4 w-4" />
                     Exportar a PDF
                   </Button>
-                  
-                  <Button 
-                    onClick={printReport} 
-                    variant="outline" 
+
+                  <Button
+                    onClick={printReport}
+                    variant="outline"
                     className="w-full gap-2"
-                    disabled={selectedCharts.length === 0 && selectedTrainings.length === 0}
+                    disabled={
+                      selectedCharts.length === 0 &&
+                      selectedTrainings.length === 0
+                    }
                   >
                     <Printer className="h-4 w-4" />
                     Imprimir Reporte
                   </Button>
-                  
-                  <Button 
-                    onClick={clearSelection} 
-                    variant="outline" 
+
+                  <Button
+                    onClick={clearSelection}
+                    variant="outline"
                     className="w-full gap-2"
-                    disabled={selectedCharts.length === 0 && selectedTrainings.length === 0}
+                    disabled={
+                      selectedCharts.length === 0 &&
+                      selectedTrainings.length === 0
+                    }
                   >
                     <X className="h-4 w-4" />
                     Limpiar Selección
@@ -695,20 +774,24 @@ function ReportsContent() {
                       <Input
                         placeholder="Buscar entrenamientos..."
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={e => setSearchTerm(e.target.value)}
                       />
                     </div>
                   </div>
 
                   {/* Lista de entrenamientos */}
                   <div className="space-y-3">
-                    {filteredTrainings.map((training) => {
-                      const isSelected = selectedTrainings.some(selected => selected.id === training.id);
+                    {filteredTrainings.map(training => {
+                      const isSelected = selectedTrainings.some(
+                        selected => selected.id === training.id
+                      );
                       return (
                         <div
                           key={training.id}
                           className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                            isSelected ? 'border-primary bg-primary/5' : 'border-muted hover:border-muted-foreground/50'
+                            isSelected
+                              ? "border-primary bg-primary/5"
+                              : "border-muted hover:border-muted-foreground/50"
                           }`}
                           onClick={() => handleTrainingToggle(training.id)}
                         >
@@ -716,14 +799,22 @@ function ReportsContent() {
                             <div className="flex items-center gap-3">
                               <Checkbox
                                 checked={isSelected}
-                                onChange={() => handleTrainingToggle(training.id)}
+                                onChange={() =>
+                                  handleTrainingToggle(training.id)
+                                }
                               />
                               <div>
-                                <h4 className="font-medium">{training.title}</h4>
+                                <h4 className="font-medium">
+                                  {training.title}
+                                </h4>
                                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                                   <div className="flex items-center gap-1">
                                     <Calendar className="h-3 w-3" />
-                                    {format(new Date(training.date), "dd MMM yyyy", { locale: es })}
+                                    {format(
+                                      new Date(training.date),
+                                      "dd MMM yyyy",
+                                      { locale: es }
+                                    )}
                                   </div>
                                   <div className="flex items-center gap-1">
                                     <Clock className="h-3 w-3" />
@@ -737,8 +828,12 @@ function ReportsContent() {
                               </div>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Badge variant="outline">{training.objective}</Badge>
-                              {isSelected && <Check className="h-4 w-4 text-primary" />}
+                              <Badge variant="outline">
+                                {training.objective}
+                              </Badge>
+                              {isSelected && (
+                                <Check className="h-4 w-4 text-primary" />
+                              )}
                             </div>
                           </div>
                         </div>
@@ -760,10 +855,13 @@ function ReportsContent() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button 
-                    onClick={generateReport} 
+                  <Button
+                    onClick={generateReport}
                     className="w-full gap-2"
-                    disabled={selectedCharts.length === 0 && selectedTrainings.length === 0}
+                    disabled={
+                      selectedCharts.length === 0 &&
+                      selectedTrainings.length === 0
+                    }
                   >
                     {isGenerating ? (
                       <>
@@ -777,32 +875,41 @@ function ReportsContent() {
                       </>
                     )}
                   </Button>
-                  
-                  <Button 
-                    onClick={exportToPDF} 
-                    variant="outline" 
+
+                  <Button
+                    onClick={exportToPDF}
+                    variant="outline"
                     className="w-full gap-2"
-                    disabled={selectedCharts.length === 0 && selectedTrainings.length === 0}
+                    disabled={
+                      selectedCharts.length === 0 &&
+                      selectedTrainings.length === 0
+                    }
                   >
                     <Download className="h-4 w-4" />
                     Exportar a PDF
                   </Button>
-                  
-                  <Button 
-                    onClick={printReport} 
-                    variant="outline" 
+
+                  <Button
+                    onClick={printReport}
+                    variant="outline"
                     className="w-full gap-2"
-                    disabled={selectedCharts.length === 0 && selectedTrainings.length === 0}
+                    disabled={
+                      selectedCharts.length === 0 &&
+                      selectedTrainings.length === 0
+                    }
                   >
                     <Printer className="h-4 w-4" />
                     Imprimir Reporte
                   </Button>
-                  
-                  <Button 
-                    onClick={clearSelection} 
-                    variant="outline" 
+
+                  <Button
+                    onClick={clearSelection}
+                    variant="outline"
                     className="w-full gap-2"
-                    disabled={selectedCharts.length === 0 && selectedTrainings.length === 0}
+                    disabled={
+                      selectedCharts.length === 0 &&
+                      selectedTrainings.length === 0
+                    }
                   >
                     <X className="h-4 w-4" />
                     Limpiar Selección
@@ -820,7 +927,9 @@ function ReportsContent() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="text-sm text-muted-foreground">
-                    <p>• Incluye entrenamientos del período que quieres analizar</p>
+                    <p>
+                      • Incluye entrenamientos del período que quieres analizar
+                    </p>
                     <p>• Usa plantillas predefinidas para reportes estándar</p>
                     <p>• Personaliza tu reporte según tus necesidades</p>
                   </div>
@@ -833,7 +942,7 @@ function ReportsContent() {
         {/* Tab: Plantillas */}
         <TabsContent value="templates" className="space-y-4">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {reportTemplates.map((template) => (
+            {reportTemplates.map(template => (
               <Card key={template.id} className="bg-muted/50">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -844,32 +953,46 @@ function ReportsContent() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <div className="text-sm font-medium">Gráficos incluidos:</div>
+                    <div className="text-sm font-medium">
+                      Gráficos incluidos:
+                    </div>
                     <div className="flex flex-wrap gap-1">
                       {template.charts.map(chartId => {
-                        const chart = availableCharts.find(c => c.id === chartId);
+                        const chart = availableCharts.find(
+                          c => c.id === chartId
+                        );
                         return (
-                          <Badge key={chartId} variant="outline" className="text-xs">
+                          <Badge
+                            key={chartId}
+                            variant="outline"
+                            className="text-xs"
+                          >
                             {chart?.title}
                           </Badge>
                         );
                       })}
                     </div>
                   </div>
-                  
+
                   <div className="text-sm text-muted-foreground">
                     <div className="flex items-center gap-2">
                       <FileText className="h-4 w-4" />
-                      {template.includeTrainings ? 'Incluye entrenamientos' : 'Solo gráficos'}
+                      {template.includeTrainings
+                        ? "Incluye entrenamientos"
+                        : "Solo gráficos"}
                     </div>
                   </div>
-                  
-                  <Button 
+
+                  <Button
                     onClick={() => handleTemplateSelect(template.id)}
                     className="w-full"
-                    variant={selectedTemplate === template.id ? "default" : "outline"}
+                    variant={
+                      selectedTemplate === template.id ? "default" : "outline"
+                    }
                   >
-                    {selectedTemplate === template.id ? 'Seleccionado' : 'Seleccionar'}
+                    {selectedTemplate === template.id
+                      ? "Seleccionado"
+                      : "Seleccionar"}
                   </Button>
                 </CardContent>
               </Card>
@@ -893,7 +1016,10 @@ function ReportsContent() {
               {selectedCharts.length === 0 && selectedTrainings.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
                   <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>Selecciona gráficos y entrenamientos para ver la vista previa</p>
+                  <p>
+                    Selecciona gráficos y entrenamientos para ver la vista
+                    previa
+                  </p>
                 </div>
               ) : (
                 <div className="space-y-6">
@@ -905,20 +1031,24 @@ function ReportsContent() {
                           <BarChart3 className="h-5 w-5 text-primary" />
                           <span className="font-medium">Gráficos</span>
                         </div>
-                        <div className="text-2xl font-bold mt-2">{selectedCharts.length}</div>
+                        <div className="text-2xl font-bold mt-2">
+                          {selectedCharts.length}
+                        </div>
                       </CardContent>
                     </Card>
-                    
+
                     <Card className="bg-background/50">
                       <CardContent className="p-4">
                         <div className="flex items-center gap-2">
                           <FileText className="h-5 w-5 text-primary" />
                           <span className="font-medium">Entrenamientos</span>
                         </div>
-                        <div className="text-2xl font-bold mt-2">{selectedTrainings.length}</div>
+                        <div className="text-2xl font-bold mt-2">
+                          {selectedTrainings.length}
+                        </div>
                       </CardContent>
                     </Card>
-                    
+
                     <Card className="bg-background/50">
                       <CardContent className="p-4">
                         <div className="flex items-center gap-2">
@@ -926,7 +1056,9 @@ function ReportsContent() {
                           <span className="font-medium">Período</span>
                         </div>
                         <div className="text-sm mt-2">
-                          {selectedPeriod.replace('last-', 'Últimos ').replace('-', ' ')}
+                          {selectedPeriod
+                            .replace("last-", "Últimos ")
+                            .replace("-", " ")}
                         </div>
                       </CardContent>
                     </Card>
@@ -934,14 +1066,19 @@ function ReportsContent() {
 
                   {/* Lista de elementos seleccionados */}
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Elementos incluidos:</h3>
-                    
+                    <h3 className="text-lg font-semibold">
+                      Elementos incluidos:
+                    </h3>
+
                     {selectedCharts.length > 0 && (
                       <div>
                         <h4 className="font-medium mb-2">Gráficos:</h4>
                         <div className="space-y-2">
                           {selectedCharts.map(chart => (
-                            <div key={chart.id} className="flex items-center gap-2 p-2 bg-muted/30 rounded">
+                            <div
+                              key={chart.id}
+                              className="flex items-center gap-2 p-2 bg-muted/30 rounded"
+                            >
                               <BarChart3 className="h-4 w-4" />
                               <span className="text-sm">{chart.title}</span>
                             </div>
@@ -949,17 +1086,22 @@ function ReportsContent() {
                         </div>
                       </div>
                     )}
-                    
+
                     {selectedTrainings.length > 0 && (
                       <div>
                         <h4 className="font-medium mb-2">Entrenamientos:</h4>
                         <div className="space-y-2">
                           {selectedTrainings.map(training => (
-                            <div key={training.id} className="flex items-center gap-2 p-2 bg-muted/30 rounded">
+                            <div
+                              key={training.id}
+                              className="flex items-center gap-2 p-2 bg-muted/30 rounded"
+                            >
                               <FileText className="h-4 w-4" />
                               <span className="text-sm">{training.title}</span>
                               <span className="text-xs text-muted-foreground">
-                                {format(new Date(training.date), "dd MMM", { locale: es })}
+                                {format(new Date(training.date), "dd MMM", {
+                                  locale: es,
+                                })}
                               </span>
                             </div>
                           ))}

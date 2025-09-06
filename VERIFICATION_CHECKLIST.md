@@ -3,18 +3,21 @@
 ## 🚀 ANTES DE HACER CAMBIOS:
 
 ### **1. Verificación Inicial:**
+
 - [ ] `npm run type-check` - Sin errores de TypeScript
 - [ ] `npm run lint` - Sin errores de linting
 - [ ] `npm run build` - Build exitoso
 - [ ] Servidor local funcionando (`npm run dev`)
 
 ### **2. Rutas Críticas a Verificar:**
+
 - [ ] `/` - Landing page carga correctamente
 - [ ] `/preview-dashboard` - Dashboard público funciona
 - [ ] `/dashboard-demo` - Dashboard personalizado funciona
 - [ ] `/dashboard` - Dashboard oficial funciona
 
 ### **3. Componentes Esenciales:**
+
 - [ ] Sidebar personalizado renderiza
 - [ ] Navbar personalizado renderiza
 - [ ] Tabla de sesiones con datos
@@ -24,18 +27,21 @@
 ## 🔧 DESPUÉS DE HACER CAMBIOS:
 
 ### **1. Verificación Post-Cambio:**
+
 - [ ] `npm run type-check` - Sin errores nuevos
 - [ ] `npm run lint` - Sin errores nuevos
 - [ ] `npm run build` - Build exitoso
 - [ ] Servidor local funciona
 
 ### **2. Pruebas Manuales:**
+
 - [ ] Landing page carga sin pantalla en blanco
 - [ ] Navegación entre páginas funciona
 - [ ] Componentes se renderizan correctamente
 - [ ] No hay errores en consola del navegador
 
 ### **3. Verificación de Funcionalidades:**
+
 - [ ] Búsqueda en tabla funciona
 - [ ] Paginación funciona
 - [ ] KPIs muestran datos correctos
@@ -44,12 +50,14 @@
 ## 🚨 SI ALGO SE ROMPE:
 
 ### **1. Diagnóstico:**
+
 - [ ] Revisar consola del navegador
 - [ ] Revisar terminal del servidor
 - [ ] Verificar imports y dependencias
 - [ ] Comprobar tipos de datos
 
 ### **2. Rollback:**
+
 - [ ] Revertir cambios problemáticos
 - [ ] Restaurar versión funcional
 - [ ] Verificar que todo funcione

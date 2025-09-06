@@ -2,7 +2,7 @@
 
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { SiteHeader } from "@/components/site-header";
+import { SiteHeader } from "@/components/layout/site-header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FinaPointsCalculator } from "@/components/herramientas/fina-points-calculator";
 import { RelativeSpeedCalculator } from "@/components/herramientas/relative-speed-calculator";
@@ -18,7 +18,9 @@ export default function HerramientasPage() {
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">Herramientas</h1>
+              <h1 className="text-3xl font-bold tracking-tight">
+                Herramientas
+              </h1>
               <p className="text-muted-foreground">
                 Calculadoras y herramientas para análisis de rendimiento
               </p>
@@ -29,11 +31,17 @@ export default function HerramientasPage() {
           {/* Tabs de herramientas */}
           <Tabs defaultValue="fina-points" className="space-y-4">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="fina-points" className="flex items-center gap-2">
+              <TabsTrigger
+                value="fina-points"
+                className="flex items-center gap-2"
+              >
                 <Calculator className="h-4 w-4" />
                 Puntos FINA
               </TabsTrigger>
-              <TabsTrigger value="relative-speed" className="flex items-center gap-2">
+              <TabsTrigger
+                value="relative-speed"
+                className="flex items-center gap-2"
+              >
                 <Timer className="h-4 w-4" />
                 Velocidad Relativa
               </TabsTrigger>

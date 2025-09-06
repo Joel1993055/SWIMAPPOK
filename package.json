@@ -6,8 +6,11 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "format:staged": "prettier --write --list-different",
     "build-check": "npm run type-check && npm run build",
-    "pre-commit": "npm run lint && npm run type-check",
+    "pre-commit": "npm run format:staged && npm run lint && npm run type-check",
     "test-build": "npm run build && echo '✅ Build successful'"
   },
   "dependencies": {

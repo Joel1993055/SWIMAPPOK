@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 // Tipos de datos
 export interface TrainingPhase {
@@ -27,7 +27,9 @@ interface TrainingPhasesContextType {
   getPhaseProgress: () => number;
 }
 
-const TrainingPhasesContext = createContext<TrainingPhasesContextType | undefined>(undefined);
+const TrainingPhasesContext = createContext<
+  TrainingPhasesContextType | undefined
+>(undefined);
 
 // Datos de ejemplo
 const defaultPhases: TrainingPhase[] = [
@@ -41,7 +43,7 @@ const defaultPhases: TrainingPhase[] = [
     volume: 25000,
     color: "bg-blue-500",
     startDate: "2025-01-06", // Lunes de la primera semana
-    order: 1
+    order: 1,
   },
   {
     id: "construccion",
@@ -52,7 +54,7 @@ const defaultPhases: TrainingPhase[] = [
     intensity: 6,
     volume: 30000,
     color: "bg-green-500",
-    order: 2
+    order: 2,
   },
   {
     id: "especifico",
@@ -63,7 +65,7 @@ const defaultPhases: TrainingPhase[] = [
     intensity: 8,
     volume: 28000,
     color: "bg-orange-500",
-    order: 3
+    order: 3,
   },
   {
     id: "pico",
@@ -74,14 +76,18 @@ const defaultPhases: TrainingPhase[] = [
     intensity: 9,
     volume: 20000,
     color: "bg-red-500",
-    order: 4
-  }
+    order: 4,
+  },
 ];
 
-export function TrainingPhasesProvider({ children }: { children: React.ReactNode }) {
+export function TrainingPhasesProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [phases, setPhasesState] = useState<TrainingPhase[]>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('training-phases');
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("training-phases");
       return saved ? JSON.parse(saved) : defaultPhases;
     }
     return defaultPhases;
@@ -94,14 +100,14 @@ export function TrainingPhasesProvider({ children }: { children: React.ReactNode
 
     for (let i = 0; i < sortedPhases.length; i++) {
       const phase = { ...sortedPhases[i] };
-      
+
       if (i === 0) {
         // La primera fase mantiene su fecha de inicio
         if (phase.startDate) {
           const startDate = new Date(phase.startDate);
           const endDate = new Date(startDate);
-          endDate.setDate(endDate.getDate() + (phase.duration * 7) - 1); // -1 porque el último día es el domingo
-          phase.endDate = endDate.toISOString().split('T')[0];
+          endDate.setDate(endDate.getDate() + phase.duration * 7 - 1); // -1 porque el último día es el domingo
+          phase.endDate = endDate.toISOString().split("T")[0];
         }
       } else {
         // Las fases posteriores empiezan donde terminó la anterior
@@ -109,17 +115,17 @@ export function TrainingPhasesProvider({ children }: { children: React.ReactNode
         if (previousPhase.endDate) {
           const startDate = new Date(previousPhase.endDate);
           startDate.setDate(startDate.getDate() + 1); // Empieza el lunes siguiente
-          phase.startDate = startDate.toISOString().split('T')[0];
-          
+          phase.startDate = startDate.toISOString().split("T")[0];
+
           const endDate = new Date(startDate);
-          endDate.setDate(endDate.getDate() + (phase.duration * 7) - 1);
-          phase.endDate = endDate.toISOString().split('T')[0];
+          endDate.setDate(endDate.getDate() + phase.duration * 7 - 1);
+          phase.endDate = endDate.toISOString().split("T")[0];
         }
       }
-      
+
       calculatedPhases.push(phase);
     }
-    
+
     return calculatedPhases;
   };
 
@@ -128,8 +134,8 @@ export function TrainingPhasesProvider({ children }: { children: React.ReactNode
 
   // Guardar en localStorage cuando cambien las fases
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('training-phases', JSON.stringify(phases));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("training-phases", JSON.stringify(phases));
     }
   }, [phases]);
 
@@ -142,9 +148,11 @@ export function TrainingPhasesProvider({ children }: { children: React.ReactNode
   };
 
   const updatePhase = (id: string, updatedPhase: Partial<TrainingPhase>) => {
-    setPhasesState(prev => prev.map(phase => 
-      phase.id === id ? { ...phase, ...updatedPhase } : phase
-    ));
+    setPhasesState(prev =>
+      prev.map(phase =>
+        phase.id === id ? { ...phase, ...updatedPhase } : phase
+      )
+    );
   };
 
   const deletePhase = (id: string) => {
@@ -167,19 +175,23 @@ export function TrainingPhasesProvider({ children }: { children: React.ReactNode
   const getPhaseProgress = () => {
     const now = new Date();
     const sortedPhases = phasesWithDates.sort((a, b) => a.order - b.order);
-    
+
     if (sortedPhases.length === 0) return 0;
-    
+
     const firstPhase = sortedPhases[0];
     const lastPhase = sortedPhases[sortedPhases.length - 1];
-    
+
     if (!firstPhase.startDate || !lastPhase.endDate) return 0;
-    
+
     const cycleStart = new Date(firstPhase.startDate);
     const cycleEnd = new Date(lastPhase.endDate);
-    const totalCycleDays = Math.ceil((cycleEnd.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24));
-    const daysPassed = Math.ceil((now.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24));
-    
+    const totalCycleDays = Math.ceil(
+      (cycleEnd.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)
+    );
+    const daysPassed = Math.ceil(
+      (now.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
     return Math.min(Math.max((daysPassed / totalCycleDays) * 100, 0), 100);
   };
 
@@ -190,7 +202,7 @@ export function TrainingPhasesProvider({ children }: { children: React.ReactNode
     updatePhase,
     deletePhase,
     getCurrentPhase,
-    getPhaseProgress
+    getPhaseProgress,
   };
 
   return (
@@ -203,7 +215,9 @@ export function TrainingPhasesProvider({ children }: { children: React.ReactNode
 export function useTrainingPhases() {
   const context = useContext(TrainingPhasesContext);
   if (context === undefined) {
-    throw new Error('useTrainingPhases must be used within a TrainingPhasesProvider');
+    throw new Error(
+      "useTrainingPhases must be used within a TrainingPhasesProvider"
+    );
   }
   return context;
 }

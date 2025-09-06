@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,9 +20,16 @@ interface SignInDialogProps {
   onSwitchToSignUp: () => void;
 }
 
-export function SignInDialog({ open, onOpenChange, onSwitchToSignUp }: SignInDialogProps) {
+export function SignInDialog({
+  open,
+  onOpenChange,
+  onSwitchToSignUp,
+}: SignInDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   const handleSubmit = async (formData: FormData) => {
     setIsLoading(true);
@@ -24,13 +37,16 @@ export function SignInDialog({ open, onOpenChange, onSwitchToSignUp }: SignInDia
 
     try {
       const result = await signInAction(formData);
-      
+
       if (result.error) {
         setMessage({ type: "error", text: result.error });
       }
       // Si no hay error, la función redirect() se encarga de redirigir
     } catch (error) {
-      setMessage({ type: "error", text: "Error inesperado. Inténtalo de nuevo." });
+      setMessage({
+        type: "error",
+        text: "Error inesperado. Inténtalo de nuevo.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -74,11 +90,13 @@ export function SignInDialog({ open, onOpenChange, onSwitchToSignUp }: SignInDia
 
           {/* Mensajes */}
           {message && (
-            <div className={`p-3 rounded-md text-sm ${
-              message.type === "success" 
-                ? "bg-green-50 text-green-700 border border-green-200" 
-                : "bg-red-50 text-red-700 border border-red-200"
-            }`}>
+            <div
+              className={`p-3 rounded-md text-sm ${
+                message.type === "success"
+                  ? "bg-green-50 text-green-700 border border-green-200"
+                  : "bg-red-50 text-red-700 border border-red-200"
+              }`}
+            >
               {message.text}
             </div>
           )}
@@ -91,7 +109,7 @@ export function SignInDialog({ open, onOpenChange, onSwitchToSignUp }: SignInDia
         <div className="text-center">
           <p className="text-sm text-muted-foreground">
             ¿No tienes cuenta?{" "}
-            <button 
+            <button
               onClick={onSwitchToSignUp}
               className="text-primary hover:underline"
             >

@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { signInAction, signUpAction } from "@/app/actions"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { useState } from "react";
+import { signInAction, signUpAction } from "@/app/actions";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -11,84 +11,89 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { SubmitButton } from "@/components/forms/submit-button"
-import { FormMessage, Message } from "@/components/forms/form-message"
-import Link from "next/link"
+} from "@/components/ui/dialog";
+import { SubmitButton } from "@/components/forms/submit-button";
+import { FormMessage, Message } from "@/components/forms/form-message";
+import Link from "next/link";
 
 interface AuthDialogProps {
-  trigger: React.ReactNode
-  mode: "signin" | "signup"
+  trigger: React.ReactNode;
+  mode: "signin" | "signup";
 }
 
 export function AuthDialog({ trigger, mode }: AuthDialogProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [authMode, setAuthMode] = useState<"signin" | "signup">(mode)
-  const [message, setMessage] = useState<Message | null>(null)
+  const [isOpen, setIsOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<"signin" | "signup">(mode);
+  const [message, setMessage] = useState<Message | null>(null);
 
   const handleSignIn = async (formData: FormData) => {
     try {
-      const result = await signInAction(formData)
-      if (result && typeof result === 'object' && ('error' in result || 'message' in result)) {
-        setMessage(result as Message)
+      const result = await signInAction(formData);
+      if (
+        result &&
+        typeof result === "object" &&
+        ("error" in result || "message" in result)
+      ) {
+        setMessage(result as Message);
       } else {
         // Successful sign in - redirect will happen automatically
-        setIsOpen(false)
-        setMessage(null)
+        setIsOpen(false);
+        setMessage(null);
       }
     } catch {
-      setMessage({ error: "An unexpected error occurred. Please try again." })
+      setMessage({ error: "An unexpected error occurred. Please try again." });
     }
-  }
+  };
 
   const handleSignUp = async (formData: FormData) => {
     try {
-      const result = await signUpAction(formData)
-      if (result && typeof result === 'object' && ('error' in result || 'success' in result || 'message' in result)) {
-        setMessage(result as Message)
+      const result = await signUpAction(formData);
+      if (
+        result &&
+        typeof result === "object" &&
+        ("error" in result || "success" in result || "message" in result)
+      ) {
+        setMessage(result as Message);
       } else {
-        setIsOpen(false)
-        setMessage(null)
+        setIsOpen(false);
+        setMessage(null);
       }
     } catch {
-      setMessage({ error: "An unexpected error occurred. Please try again." })
+      setMessage({ error: "An unexpected error occurred. Please try again." });
     }
-  }
+  };
 
   const toggleMode = () => {
-    setAuthMode(authMode === "signin" ? "signup" : "signin")
-    setMessage(null)
-  }
+    setAuthMode(authMode === "signin" ? "signup" : "signin");
+    setMessage(null);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        {trigger}
-      </DialogTrigger>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
             {authMode === "signin" ? "Sign In" : "Sign Up"}
           </DialogTitle>
           <DialogDescription>
-            {authMode === "signin" 
+            {authMode === "signin"
               ? "Enter your credentials to access your account."
-              : "Create a new account to get started."
-            }
+              : "Create a new account to get started."}
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="space-y-4">
           {authMode === "signin" ? (
             <form action={handleSignIn} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input 
-                  id="email" 
-                  name="email" 
-                  type="email" 
-                  placeholder="you@example.com" 
-                  required 
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  required
                 />
               </div>
               <div className="space-y-2">
@@ -102,18 +107,15 @@ export function AuthDialog({ trigger, mode }: AuthDialogProps) {
                     Forgot Password?
                   </Link>
                 </div>
-                <Input 
-                  id="password" 
-                  name="password" 
-                  type="password" 
-                  placeholder="Your password" 
-                  required 
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Your password"
+                  required
                 />
               </div>
-              <SubmitButton 
-                pendingText="Signing In..." 
-                className="w-full"
-              >
+              <SubmitButton pendingText="Signing In..." className="w-full">
                 Sign In
               </SubmitButton>
             </form>
@@ -121,36 +123,33 @@ export function AuthDialog({ trigger, mode }: AuthDialogProps) {
             <form action={handleSignUp} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input 
-                  id="email" 
-                  name="email" 
-                  type="email" 
-                  placeholder="you@example.com" 
-                  required 
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  required
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
-                <Input 
-                  id="password" 
-                  name="password" 
-                  type="password" 
-                  placeholder="Your password" 
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Your password"
                   minLength={6}
-                  required 
+                  required
                 />
               </div>
-              <SubmitButton 
-                pendingText="Signing Up..." 
-                className="w-full"
-              >
+              <SubmitButton pendingText="Signing Up..." className="w-full">
                 Sign Up
               </SubmitButton>
             </form>
           )}
-          
+
           {message && <FormMessage message={message} />}
-          
+
           <div className="text-center text-sm">
             {authMode === "signin" ? (
               <>
@@ -179,5 +178,5 @@ export function AuthDialog({ trigger, mode }: AuthDialogProps) {
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

@@ -29,8 +29,11 @@ export interface UserSettings extends UserSettingsData {
 // =====================================================
 export async function getUserSettings() {
   const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Usuario no autenticado");
   }
@@ -41,7 +44,8 @@ export async function getUserSettings() {
     .eq("user_id", user.id)
     .single();
 
-  if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+  if (error && error.code !== "PGRST116") {
+    // PGRST116 = no rows returned
     console.error("Error obteniendo configuraciones:", error);
     throw new Error("Error al obtener las configuraciones");
   }
@@ -59,8 +63,11 @@ export async function getUserSettings() {
 // =====================================================
 export async function createDefaultUserSettings() {
   const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Usuario no autenticado");
   }
@@ -71,16 +78,16 @@ export async function createDefaultUserSettings() {
       z2: { name: "Aeróbico Base", min: 65, max: 75 },
       z3: { name: "Aeróbico Umbral", min: 75, max: 85 },
       z4: { name: "Anaeróbico Láctico", min: 85, max: 95 },
-      z5: { name: "Anaeróbico Aláctico", min: 95, max: 100 }
+      z5: { name: "Anaeróbico Aláctico", min: 95, max: 100 },
     },
-    selected_methodology: "standard"
+    selected_methodology: "standard",
   };
 
   const { data, error } = await supabase
     .from("user_settings")
     .insert({
       user_id: user.id,
-      ...defaultSettings
+      ...defaultSettings,
     })
     .select()
     .single();
@@ -98,8 +105,11 @@ export async function createDefaultUserSettings() {
 // =====================================================
 export async function updateUserSettings(formData: FormData) {
   const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Usuario no autenticado");
   }
@@ -140,7 +150,7 @@ export async function updateUserSettings(formData: FormData) {
   // Revalidar páginas
   revalidatePath("/settings");
   revalidatePath("/entrenamientos");
-  
+
   return data;
 }
 
@@ -149,8 +159,11 @@ export async function updateUserSettings(formData: FormData) {
 // =====================================================
 export async function updateTrainingZones(zones: TrainingZones) {
   const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Usuario no autenticado");
   }
@@ -170,7 +183,7 @@ export async function updateTrainingZones(zones: TrainingZones) {
   // Revalidar páginas
   revalidatePath("/settings");
   revalidatePath("/entrenamientos");
-  
+
   return data;
 }
 
@@ -179,8 +192,11 @@ export async function updateTrainingZones(zones: TrainingZones) {
 // =====================================================
 export async function updateSelectedMethodology(methodology: string) {
   const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Usuario no autenticado");
   }
@@ -199,7 +215,7 @@ export async function updateSelectedMethodology(methodology: string) {
 
   // Revalidar páginas
   revalidatePath("/settings");
-  
+
   return data;
 }
 
@@ -224,8 +240,11 @@ export async function getSelectedMethodology() {
 // =====================================================
 export async function applyPredefinedMethodology(methodology: string) {
   const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Usuario no autenticado");
   }
@@ -237,48 +256,49 @@ export async function applyPredefinedMethodology(methodology: string) {
       z2: { name: "Aeróbico Base", min: 65, max: 75 },
       z3: { name: "Aeróbico Umbral", min: 75, max: 85 },
       z4: { name: "Anaeróbico Láctico", min: 85, max: 95 },
-      z5: { name: "Anaeróbico Aláctico", min: 95, max: 100 }
+      z5: { name: "Anaeróbico Aláctico", min: 95, max: 100 },
     },
     british_swimming: {
       z1: { name: "Recuperación", min: 0, max: 70 },
       z2: { name: "Aeróbico Base", min: 70, max: 80 },
       z3: { name: "Aeróbico Umbral", min: 80, max: 90 },
       z4: { name: "Anaeróbico Láctico", min: 90, max: 95 },
-      z5: { name: "Anaeróbico Aláctico", min: 95, max: 100 }
+      z5: { name: "Anaeróbico Aláctico", min: 95, max: 100 },
     },
     urbanchek: {
       z1: { name: "Recuperación", min: 0, max: 60 },
       z2: { name: "Aeróbico Base", min: 60, max: 75 },
       z3: { name: "Aeróbico Umbral", min: 75, max: 85 },
       z4: { name: "Anaeróbico Láctico", min: 85, max: 95 },
-      z5: { name: "Anaeróbico Aláctico", min: 95, max: 100 }
+      z5: { name: "Anaeróbico Aláctico", min: 95, max: 100 },
     },
     olbrecht: {
       z1: { name: "Recuperación", min: 0, max: 65 },
       z2: { name: "Aeróbico Base", min: 65, max: 75 },
       z3: { name: "Aeróbico Umbral", min: 75, max: 85 },
       z4: { name: "Anaeróbico Láctico", min: 85, max: 95 },
-      z5: { name: "Anaeróbico Aláctico", min: 95, max: 100 }
+      z5: { name: "Anaeróbico Aláctico", min: 95, max: 100 },
     },
     research_based: {
       z1: { name: "Recuperación", min: 0, max: 70 },
       z2: { name: "Aeróbico Base", min: 70, max: 80 },
       z3: { name: "Aeróbico Umbral", min: 80, max: 90 },
       z4: { name: "Anaeróbico Láctico", min: 90, max: 95 },
-      z5: { name: "Anaeróbico Aláctico", min: 95, max: 100 }
-    }
+      z5: { name: "Anaeróbico Aláctico", min: 95, max: 100 },
+    },
   };
 
-  const selectedMethodology = methodologies[methodology as keyof typeof methodologies];
+  const selectedMethodology =
+    methodologies[methodology as keyof typeof methodologies];
   if (!selectedMethodology) {
     throw new Error("Metodología no válida");
   }
 
   const { data, error } = await supabase
     .from("user_settings")
-    .update({ 
+    .update({
       training_zones: selectedMethodology,
-      selected_methodology: methodology
+      selected_methodology: methodology,
     })
     .eq("user_id", user.id)
     .select()
@@ -291,6 +311,6 @@ export async function applyPredefinedMethodology(methodology: string) {
 
   // Revalidar páginas
   revalidatePath("/settings");
-  
+
   return data;
 }

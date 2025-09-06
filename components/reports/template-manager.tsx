@@ -1,22 +1,34 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { 
-  Search, 
-  Filter, 
-  Download, 
-  Eye, 
-  Star, 
-  Users, 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Search,
+  Filter,
+  Download,
+  Eye,
+  Star,
+  Users,
   Calendar,
   BarChart3,
   Target,
   FileText,
-  Settings
+  Settings,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,9 +37,9 @@ interface ReportTemplate {
   id: string;
   name: string;
   description: string;
-  category: 'performance' | 'planning' | 'training' | 'team' | 'custom';
-  userType: 'coach' | 'swimmer' | 'admin' | 'all';
-  season: 'preparation' | 'competition' | 'recovery' | 'all';
+  category: "performance" | "planning" | "training" | "team" | "custom";
+  userType: "coach" | "swimmer" | "admin" | "all";
+  season: "preparation" | "competition" | "recovery" | "all";
   isDefault: boolean;
   isFavorite: boolean;
   usageCount: number;
@@ -48,7 +60,8 @@ export function TemplateManager() {
     {
       id: "perf-coach-prep",
       name: "Reporte de Rendimiento - Entrenador",
-      description: "Análisis completo de rendimiento para entrenadores en fase de preparación",
+      description:
+        "Análisis completo de rendimiento para entrenadores en fase de preparación",
       category: "performance",
       userType: "coach",
       season: "preparation",
@@ -57,7 +70,7 @@ export function TemplateManager() {
       usageCount: 45,
       lastUsed: "2024-01-15",
       createdAt: "2024-01-01",
-      updatedAt: "2024-01-15"
+      updatedAt: "2024-01-15",
     },
     {
       id: "plan-team-comp",
@@ -71,7 +84,7 @@ export function TemplateManager() {
       usageCount: 32,
       lastUsed: "2024-01-14",
       createdAt: "2024-01-01",
-      updatedAt: "2024-01-14"
+      updatedAt: "2024-01-14",
     },
     {
       id: "train-swimmer",
@@ -85,7 +98,7 @@ export function TemplateManager() {
       usageCount: 78,
       lastUsed: "2024-01-16",
       createdAt: "2024-01-01",
-      updatedAt: "2024-01-16"
+      updatedAt: "2024-01-16",
     },
     {
       id: "team-analysis",
@@ -99,7 +112,7 @@ export function TemplateManager() {
       usageCount: 12,
       lastUsed: "2024-01-10",
       createdAt: "2024-01-05",
-      updatedAt: "2024-01-10"
+      updatedAt: "2024-01-10",
     },
     {
       id: "recovery-report",
@@ -113,83 +126,115 @@ export function TemplateManager() {
       usageCount: 23,
       lastUsed: "2024-01-12",
       createdAt: "2024-01-08",
-      updatedAt: "2024-01-12"
-    }
+      updatedAt: "2024-01-12",
+    },
   ];
 
   const [templateList, setTemplateList] = useState<ReportTemplate[]>(templates);
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case 'performance': return BarChart3;
-      case 'planning': return Calendar;
-      case 'training': return Target;
-      case 'team': return Users;
-      default: return FileText;
+      case "performance":
+        return BarChart3;
+      case "planning":
+        return Calendar;
+      case "training":
+        return Target;
+      case "team":
+        return Users;
+      default:
+        return FileText;
     }
   };
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'performance': return 'bg-blue-500';
-      case 'planning': return 'bg-green-500';
-      case 'training': return 'bg-orange-500';
-      case 'team': return 'bg-purple-500';
-      default: return 'bg-gray-500';
+      case "performance":
+        return "bg-blue-500";
+      case "planning":
+        return "bg-green-500";
+      case "training":
+        return "bg-orange-500";
+      case "team":
+        return "bg-purple-500";
+      default:
+        return "bg-gray-500";
     }
   };
 
   const getCategoryLabel = (category: string) => {
     switch (category) {
-      case 'performance': return 'Rendimiento';
-      case 'planning': return 'Planificación';
-      case 'training': return 'Entrenamiento';
-      case 'team': return 'Equipo';
-      case 'custom': return 'Personalizada';
-      default: return category;
+      case "performance":
+        return "Rendimiento";
+      case "planning":
+        return "Planificación";
+      case "training":
+        return "Entrenamiento";
+      case "team":
+        return "Equipo";
+      case "custom":
+        return "Personalizada";
+      default:
+        return category;
     }
   };
 
   const getUserTypeLabel = (userType: string) => {
     switch (userType) {
-      case 'coach': return 'Entrenador';
-      case 'swimmer': return 'Nadador';
-      case 'admin': return 'Administrador';
-      case 'all': return 'Todos';
-      default: return userType;
+      case "coach":
+        return "Entrenador";
+      case "swimmer":
+        return "Nadador";
+      case "admin":
+        return "Administrador";
+      case "all":
+        return "Todos";
+      default:
+        return userType;
     }
   };
 
   const getSeasonLabel = (season: string) => {
     switch (season) {
-      case 'preparation': return 'Preparación';
-      case 'competition': return 'Competición';
-      case 'recovery': return 'Recuperación';
-      case 'all': return 'Todas';
-      default: return season;
+      case "preparation":
+        return "Preparación";
+      case "competition":
+        return "Competición";
+      case "recovery":
+        return "Recuperación";
+      case "all":
+        return "Todas";
+      default:
+        return season;
     }
   };
 
   const filteredTemplates = templateList.filter(template => {
-    const matchesSearch = template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         template.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || template.category === selectedCategory;
-    const matchesUserType = selectedUserType === "all" || template.userType === selectedUserType;
-    const matchesSeason = selectedSeason === "all" || template.season === selectedSeason;
+    const matchesSearch =
+      template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      template.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "all" || template.category === selectedCategory;
+    const matchesUserType =
+      selectedUserType === "all" || template.userType === selectedUserType;
+    const matchesSeason =
+      selectedSeason === "all" || template.season === selectedSeason;
 
     return matchesSearch && matchesCategory && matchesUserType && matchesSeason;
   });
 
   const sortedTemplates = [...filteredTemplates].sort((a, b) => {
     switch (sortBy) {
-      case 'name':
+      case "name":
         return a.name.localeCompare(b.name);
-      case 'usage':
+      case "usage":
         return b.usageCount - a.usageCount;
-      case 'lastUsed':
+      case "lastUsed":
         return new Date(b.lastUsed).getTime() - new Date(a.lastUsed).getTime();
-      case 'created':
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      case "created":
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
       default:
         return 0;
     }
@@ -197,27 +242,35 @@ export function TemplateManager() {
 
   const handleUseTemplate = (template: ReportTemplate) => {
     // Aquí se aplicaría la plantilla al reporte actual
-    console.log('Usando plantilla:', template.name);
+    console.log("Usando plantilla:", template.name);
     // Actualizar contador de uso
-    setTemplateList(prev => prev.map(t => 
-      t.id === template.id 
-        ? { ...t, usageCount: t.usageCount + 1, lastUsed: new Date().toISOString().split('T')[0] }
-        : t
-    ));
+    setTemplateList(prev =>
+      prev.map(t =>
+        t.id === template.id
+          ? {
+              ...t,
+              usageCount: t.usageCount + 1,
+              lastUsed: new Date().toISOString().split("T")[0],
+            }
+          : t
+      )
+    );
   };
 
   const handleToggleFavorite = (templateId: string) => {
-    setTemplateList(prev => prev.map(t => 
-      t.id === templateId ? { ...t, isFavorite: !t.isFavorite } : t
-    ));
+    setTemplateList(prev =>
+      prev.map(t =>
+        t.id === templateId ? { ...t, isFavorite: !t.isFavorite } : t
+      )
+    );
   };
 
   const handlePreviewTemplate = (template: ReportTemplate) => {
-    console.log('Vista previa de plantilla:', template.name);
+    console.log("Vista previa de plantilla:", template.name);
   };
 
   const handleDownloadTemplate = (template: ReportTemplate) => {
-    console.log('Descargando plantilla:', template.name);
+    console.log("Descargando plantilla:", template.name);
   };
 
   return (
@@ -253,7 +306,7 @@ export function TemplateManager() {
                   id="search"
                   placeholder="Buscar por nombre o descripción..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
                   className="pl-10"
                 />
               </div>
@@ -261,7 +314,10 @@ export function TemplateManager() {
 
             <div>
               <Label htmlFor="category">Categoría</Label>
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <Select
+                value={selectedCategory}
+                onValueChange={setSelectedCategory}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Todas" />
                 </SelectTrigger>
@@ -278,7 +334,10 @@ export function TemplateManager() {
 
             <div>
               <Label htmlFor="userType">Tipo de usuario</Label>
-              <Select value={selectedUserType} onValueChange={setSelectedUserType}>
+              <Select
+                value={selectedUserType}
+                onValueChange={setSelectedUserType}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Todos" />
                 </SelectTrigger>
@@ -326,12 +385,15 @@ export function TemplateManager() {
 
       {/* Lista de plantillas */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {sortedTemplates.map((template) => {
+        {sortedTemplates.map(template => {
           const CategoryIcon = getCategoryIcon(template.category);
           const categoryColor = getCategoryColor(template.category);
 
           return (
-            <Card key={template.id} className="bg-muted/50 border-muted hover:shadow-md transition-shadow">
+            <Card
+              key={template.id}
+              className="bg-muted/50 border-muted hover:shadow-md transition-shadow"
+            >
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
@@ -347,7 +409,9 @@ export function TemplateManager() {
                   </div>
                   <div className="flex items-center gap-1">
                     {template.isDefault && (
-                      <Badge variant="secondary" className="text-xs">Predefinida</Badge>
+                      <Badge variant="secondary" className="text-xs">
+                        Predefinida
+                      </Badge>
                     )}
                     <Button
                       size="sm"
@@ -355,7 +419,9 @@ export function TemplateManager() {
                       className="h-6 w-6 p-0"
                       onClick={() => handleToggleFavorite(template.id)}
                     >
-                      <Star className={`h-3 w-3 ${template.isFavorite ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'}`} />
+                      <Star
+                        className={`h-3 w-3 ${template.isFavorite ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`}
+                      />
                     </Button>
                   </div>
                 </div>
@@ -375,30 +441,32 @@ export function TemplateManager() {
 
                 <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground">
                   <div>
-                    <span className="font-medium">Usos:</span> {template.usageCount}
+                    <span className="font-medium">Usos:</span>{" "}
+                    {template.usageCount}
                   </div>
                   <div>
-                    <span className="font-medium">Último uso:</span> {new Date(template.lastUsed).toLocaleDateString('es-ES')}
+                    <span className="font-medium">Último uso:</span>{" "}
+                    {new Date(template.lastUsed).toLocaleDateString("es-ES")}
                   </div>
                 </div>
 
                 <div className="flex gap-2">
-                  <Button 
-                    size="sm" 
+                  <Button
+                    size="sm"
                     onClick={() => handleUseTemplate(template)}
                     className="flex-1"
                   >
                     Usar Plantilla
                   </Button>
-                  <Button 
-                    size="sm" 
+                  <Button
+                    size="sm"
                     variant="outline"
                     onClick={() => handlePreviewTemplate(template)}
                   >
                     <Eye className="h-3 w-3" />
                   </Button>
-                  <Button 
-                    size="sm" 
+                  <Button
+                    size="sm"
                     variant="outline"
                     onClick={() => handleDownloadTemplate(template)}
                   >
@@ -416,7 +484,9 @@ export function TemplateManager() {
           <CardContent className="flex items-center justify-center py-12">
             <div className="text-center">
               <Filter className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-              <h3 className="text-lg font-semibold mb-2">No se encontraron plantillas</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                No se encontraron plantillas
+              </h3>
               <p className="text-muted-foreground">
                 Intenta ajustar los filtros o crear una nueva plantilla
               </p>

@@ -1,26 +1,26 @@
-"use client"
+"use client";
 
-import { MailIcon, type LucideIcon } from "lucide-react"
-import Link from "next/link"
+import { MailIcon, type LucideIcon } from "lucide-react";
+import Link from "next/link";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { QuickCreate } from "@/components/forms/quick-create"
+} from "@/components/ui/sidebar";
+import { QuickCreate } from "@/components/forms/quick-create";
 
 export function NavMain({
   items,
 }: {
   items: {
-    title: string
-    url: string
-    icon?: LucideIcon
-  }[]
+    title: string;
+    url: string;
+    icon?: LucideIcon;
+  }[];
 }) {
   return (
     <SidebarGroup>
@@ -39,7 +39,7 @@ export function NavMain({
           </SidebarMenuItem>
         </SidebarMenu>
         <SidebarMenu>
-          {items.map((item) => (
+          {items.map(item => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton tooltip={item.title} asChild>
                 <Link href={item.url}>
@@ -52,5 +52,5 @@ export function NavMain({
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
-  )
+  );
 }

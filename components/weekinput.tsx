@@ -4,7 +4,13 @@ import * as React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function WeekInput() {
   const [week, setWeek] = React.useState("1");
@@ -58,7 +64,7 @@ export default function WeekInput() {
             min="0"
             placeholder="Introduce los kilómetros"
             value={kilometers}
-            onChange={(e) => setKilometers(e.target.value)}
+            onChange={e => setKilometers(e.target.value)}
           />
         </div>
       </CardContent>

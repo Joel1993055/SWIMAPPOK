@@ -24,8 +24,11 @@ export interface Competition extends CompetitionData {
 // =====================================================
 export async function createCompetition(formData: FormData) {
   const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Usuario no autenticado");
   }
@@ -35,8 +38,8 @@ export async function createCompetition(formData: FormData) {
     name: formData.get("name") as string,
     date: formData.get("date") as string,
     priority: formData.get("priority") as "low" | "medium" | "high",
-    location: formData.get("location") as string || undefined,
-    description: formData.get("description") as string || undefined,
+    location: (formData.get("location") as string) || undefined,
+    description: (formData.get("description") as string) || undefined,
   };
 
   // Validaciones básicas
@@ -49,7 +52,7 @@ export async function createCompetition(formData: FormData) {
     .from("competitions")
     .insert({
       user_id: user.id,
-      ...competitionData
+      ...competitionData,
     })
     .select()
     .single();
@@ -62,7 +65,7 @@ export async function createCompetition(formData: FormData) {
   // Revalidar páginas
   revalidatePath("/planificacion");
   revalidatePath("/dashboard");
-  
+
   return data;
 }
 
@@ -71,8 +74,11 @@ export async function createCompetition(formData: FormData) {
 // =====================================================
 export async function getCompetitions() {
   const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Usuario no autenticado");
   }
@@ -96,8 +102,11 @@ export async function getCompetitions() {
 // =====================================================
 export async function getCompetitionById(id: string) {
   const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Usuario no autenticado");
   }
@@ -122,8 +131,11 @@ export async function getCompetitionById(id: string) {
 // =====================================================
 export async function updateCompetition(id: string, formData: FormData) {
   const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Usuario no autenticado");
   }
@@ -133,8 +145,8 @@ export async function updateCompetition(id: string, formData: FormData) {
     name: formData.get("name") as string,
     date: formData.get("date") as string,
     priority: formData.get("priority") as "low" | "medium" | "high",
-    location: formData.get("location") as string || undefined,
-    description: formData.get("description") as string || undefined,
+    location: (formData.get("location") as string) || undefined,
+    description: (formData.get("description") as string) || undefined,
   };
 
   // Validaciones básicas
@@ -159,7 +171,7 @@ export async function updateCompetition(id: string, formData: FormData) {
   // Revalidar páginas
   revalidatePath("/planificacion");
   revalidatePath("/dashboard");
-  
+
   return data;
 }
 
@@ -168,8 +180,11 @@ export async function updateCompetition(id: string, formData: FormData) {
 // =====================================================
 export async function deleteCompetition(id: string) {
   const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Usuario no autenticado");
   }
@@ -195,8 +210,11 @@ export async function deleteCompetition(id: string) {
 // =====================================================
 export async function getMainCompetition() {
   const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Usuario no autenticado");
   }
@@ -206,12 +224,13 @@ export async function getMainCompetition() {
     .select("*")
     .eq("user_id", user.id)
     .eq("priority", "high")
-    .gte("date", new Date().toISOString().split('T')[0]) // Solo futuras
+    .gte("date", new Date().toISOString().split("T")[0]) // Solo futuras
     .order("date", { ascending: true })
     .limit(1)
     .single();
 
-  if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+  if (error && error.code !== "PGRST116") {
+    // PGRST116 = no rows returned
     console.error("Error obteniendo competición principal:", error);
     throw new Error("Error al obtener la competición principal");
   }
@@ -224,28 +243,35 @@ export async function getMainCompetition() {
 // =====================================================
 export async function getDaysToCompetition() {
   const mainCompetition = await getMainCompetition();
-  
+
   if (!mainCompetition) {
     return null;
   }
 
   const now = new Date();
   const competitionDate = new Date(mainCompetition.date);
-  const daysUntil = Math.ceil((competitionDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  const daysUntil = Math.ceil(
+    (competitionDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+  );
 
   return {
     competition: mainCompetition,
-    daysUntil: Math.max(0, daysUntil)
+    daysUntil: Math.max(0, daysUntil),
   };
 }
 
 // =====================================================
 // OBTENER COMPETICIONES POR PRIORIDAD
 // =====================================================
-export async function getCompetitionsByPriority(priority: "low" | "medium" | "high") {
+export async function getCompetitionsByPriority(
+  priority: "low" | "medium" | "high"
+) {
   const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Usuario no autenticado");
   }
@@ -270,8 +296,11 @@ export async function getCompetitionsByPriority(priority: "low" | "medium" | "hi
 // =====================================================
 export async function getUpcomingCompetitions(limit: number = 5) {
   const supabase = await createClient();
-  
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Usuario no autenticado");
   }
@@ -280,7 +309,7 @@ export async function getUpcomingCompetitions(limit: number = 5) {
     .from("competitions")
     .select("*")
     .eq("user_id", user.id)
-    .gte("date", new Date().toISOString().split('T')[0]) // Solo futuras
+    .gte("date", new Date().toISOString().split("T")[0]) // Solo futuras
     .order("date", { ascending: true })
     .limit(limit);
 

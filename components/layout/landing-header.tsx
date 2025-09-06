@@ -1,32 +1,32 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { BarChart3 } from "lucide-react"
-import { SignInDialog } from "@/components/features/auth/signin-dialog"
-import { SignUpDialog } from "@/components/features/auth/signup-dialog"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { BarChart3 } from "lucide-react";
+import { SignInDialog } from "@/components/features/auth/signin-dialog";
+import { SignUpDialog } from "@/components/features/auth/signup-dialog";
 
 export function LandingHeader() {
-  const [signInOpen, setSignInOpen] = useState(false)
-  const [signUpOpen, setSignUpOpen] = useState(false)
+  const [signInOpen, setSignInOpen] = useState(false);
+  const [signUpOpen, setSignUpOpen] = useState(false);
 
   const handleSignInClick = () => {
-    setSignInOpen(true)
-  }
+    setSignInOpen(true);
+  };
 
   const handleSignUpClick = () => {
-    setSignUpOpen(true)
-  }
+    setSignUpOpen(true);
+  };
 
   const handleSwitchToSignUp = () => {
-    setSignInOpen(false)
-    setSignUpOpen(true)
-  }
+    setSignInOpen(false);
+    setSignUpOpen(true);
+  };
 
   const handleSwitchToSignIn = () => {
-    setSignUpOpen(false)
-    setSignInOpen(true)
-  }
+    setSignUpOpen(false);
+    setSignInOpen(true);
+  };
 
   return (
     <>
@@ -38,19 +38,19 @@ export function LandingHeader() {
               <BarChart3 className="w-8 h-8 text-white" />
               <span className="text-xl font-bold text-white">Swim:APP</span>
             </div>
-            
+
             {/* Auth Buttons */}
             <div className="flex gap-3">
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 className="border-white text-white hover:bg-white hover:text-black"
                 onClick={handleSignInClick}
               >
                 Sign In
               </Button>
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 className="bg-white text-black hover:bg-gray-200"
                 onClick={handleSignUpClick}
               >
@@ -62,16 +62,16 @@ export function LandingHeader() {
       </header>
 
       {/* Auth Dialogs */}
-      <SignInDialog 
-        open={signInOpen} 
+      <SignInDialog
+        open={signInOpen}
         onOpenChange={setSignInOpen}
         onSwitchToSignUp={handleSwitchToSignUp}
       />
-      <SignUpDialog 
-        open={signUpOpen} 
+      <SignUpDialog
+        open={signUpOpen}
         onOpenChange={setSignUpOpen}
         onSwitchToSignIn={handleSwitchToSignIn}
       />
     </>
-  )
+  );
 }

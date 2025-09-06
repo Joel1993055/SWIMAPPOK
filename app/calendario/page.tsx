@@ -1,20 +1,40 @@
 "use client";
 
-import { AppSidebar } from "@/components/layout/app-sidebar"
-import { SiteHeader } from "@/components/site-header"
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, Target, Activity } from "lucide-react"
-import { useState } from "react"
+import { AppSidebar } from "@/components/layout/app-sidebar";
+import { SiteHeader } from "@/components/layout/site-header";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Calendar as CalendarIcon,
+  Clock,
+  Target,
+  Activity,
+} from "lucide-react";
+import { useState } from "react";
 
 export default function CalendarioPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<{ day: number; month: string; year: number } | null>(null);
+  const [selectedDate, setSelectedDate] = useState<{
+    day: number;
+    month: string;
+    year: number;
+  } | null>(null);
 
   // Datos de ejemplo para los entrenamientos
-  const trainingData: Record<number, Record<string, { distance: number; sessions: number }>> = {
+  const trainingData: Record<
+    number,
+    Record<string, { distance: number; sessions: number }>
+  > = {
     2025: {
       enero: { distance: 25100, sessions: 31 },
       febrero: { distance: 16300, sessions: 28 },
@@ -27,29 +47,64 @@ export default function CalendarioPage() {
       septiembre: { distance: 0, sessions: 0 },
       octubre: { distance: 0, sessions: 0 },
       noviembre: { distance: 0, sessions: 0 },
-      diciembre: { distance: 0, sessions: 0 }
-    }
+      diciembre: { distance: 0, sessions: 0 },
+    },
   };
 
   // Datos de ejemplo para entrenamientos específicos por día
   const dailyTrainingData = {
     "2025-01-15": {
       sessions: [
-        { time: "07:00", type: "Aeróbico", distance: 2000, duration: 45, stroke: "Libre", rpe: 6 },
-        { time: "19:30", type: "Técnica", distance: 1500, duration: 30, stroke: "Espalda", rpe: 4 }
-      ]
+        {
+          time: "07:00",
+          type: "Aeróbico",
+          distance: 2000,
+          duration: 45,
+          stroke: "Libre",
+          rpe: 6,
+        },
+        {
+          time: "19:30",
+          type: "Técnica",
+          distance: 1500,
+          duration: 30,
+          stroke: "Espalda",
+          rpe: 4,
+        },
+      ],
     },
     "2025-02-20": {
       sessions: [
-        { time: "08:00", type: "Umbral", distance: 3000, duration: 60, stroke: "Libre", rpe: 8 }
-      ]
+        {
+          time: "08:00",
+          type: "Umbral",
+          distance: 3000,
+          duration: 60,
+          stroke: "Libre",
+          rpe: 8,
+        },
+      ],
     },
     "2025-03-10": {
       sessions: [
-        { time: "07:30", type: "Velocidad", distance: 1200, duration: 25, stroke: "Mariposa", rpe: 9 },
-        { time: "18:00", type: "Recuperación", distance: 800, duration: 20, stroke: "Pecho", rpe: 3 }
-      ]
-    }
+        {
+          time: "07:30",
+          type: "Velocidad",
+          distance: 1200,
+          duration: 25,
+          stroke: "Mariposa",
+          rpe: 9,
+        },
+        {
+          time: "18:00",
+          type: "Recuperación",
+          distance: 800,
+          duration: 20,
+          stroke: "Pecho",
+          rpe: 3,
+        },
+      ],
+    },
   };
 
   const months = [
@@ -64,7 +119,7 @@ export default function CalendarioPage() {
     { name: "septiembre", short: "sep", days: 30 },
     { name: "octubre", short: "oct", days: 31 },
     { name: "noviembre", short: "nov", days: 30 },
-    { name: "diciembre", short: "dic", days: 31 }
+    { name: "diciembre", short: "dic", days: 31 },
   ];
 
   const weekDays = ["L", "M", "X", "J", "V", "S", "D"];
@@ -73,36 +128,34 @@ export default function CalendarioPage() {
   const currentMonth = currentDate.getMonth();
   const currentMonthName = months[currentMonth].name;
 
-
-
   const generateCalendarDays = () => {
     const month = months[currentMonth];
     const days = [];
-    
+
     // Obtener el primer día del mes y qué día de la semana es
     const firstDay = new Date(currentYear, currentMonth, 1);
     const startDay = firstDay.getDay(); // 0 = domingo, 1 = lunes, etc.
-    
+
     // Ajustar para que lunes sea 0
     const adjustedStartDay = startDay === 0 ? 6 : startDay - 1;
-    
+
     // Agregar días vacíos al inicio
     for (let i = 0; i < adjustedStartDay; i++) {
       days.push(null);
     }
-    
+
     // Generar días del mes
     for (let day = 1; day <= month.days; day++) {
       days.push(day);
     }
-    
+
     return days;
   };
 
-  const navigateMonth = (direction: 'prev' | 'next') => {
+  const navigateMonth = (direction: "prev" | "next") => {
     setCurrentDate(prev => {
       const newDate = new Date(prev);
-      if (direction === 'prev') {
+      if (direction === "prev") {
         newDate.setMonth(prev.getMonth() - 1);
       } else {
         newDate.setMonth(prev.getMonth() + 1);
@@ -111,10 +164,10 @@ export default function CalendarioPage() {
     });
   };
 
-  const navigateYear = (direction: 'prev' | 'next') => {
+  const navigateYear = (direction: "prev" | "next") => {
     setCurrentDate(prev => {
       const newDate = new Date(prev);
-      if (direction === 'prev') {
+      if (direction === "prev") {
         newDate.setFullYear(prev.getFullYear() - 1);
       } else {
         newDate.setFullYear(prev.getFullYear() + 1);
@@ -129,8 +182,8 @@ export default function CalendarioPage() {
 
   const getSelectedDayData = () => {
     if (!selectedDate) return null;
-    
-    const dateKey = `${selectedDate.year}-${String(months.findIndex(m => m.name === selectedDate.month) + 1).padStart(2, '0')}-${String(selectedDate.day).padStart(2, '0')}`;
+
+    const dateKey = `${selectedDate.year}-${String(months.findIndex(m => m.name === selectedDate.month) + 1).padStart(2, "0")}-${String(selectedDate.day).padStart(2, "0")}`;
     return dailyTrainingData[dateKey as keyof typeof dailyTrainingData] || null;
   };
 
@@ -148,7 +201,9 @@ export default function CalendarioPage() {
               <CalendarIcon className="h-8 w-8 text-primary" />
               <div>
                 <h1 className="text-2xl font-bold">Calendario</h1>
-                <p className="text-sm text-muted-foreground">Vista mensual de tus entrenamientos</p>
+                <p className="text-sm text-muted-foreground">
+                  Vista mensual de tus entrenamientos
+                </p>
               </div>
             </div>
           </div>
@@ -164,25 +219,27 @@ export default function CalendarioPage() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => navigateMonth('prev')}
+                      onClick={() => navigateMonth("prev")}
                       className="h-9 w-9 p-0 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
                     >
                       <ChevronLeft className="h-4 w-4" />
                     </Button>
-                    
+
                     <div className="text-center">
                       <h2 className="text-xl font-semibold capitalize text-gray-900 dark:text-white">
                         {currentMonthName} {currentYear}
                       </h2>
                       <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {trainingData[currentYear]?.[currentMonthName]?.sessions || 0} entrenamientos
+                        {trainingData[currentYear]?.[currentMonthName]
+                          ?.sessions || 0}{" "}
+                        entrenamientos
                       </p>
                     </div>
-                    
+
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => navigateMonth('next')}
+                      onClick={() => navigateMonth("next")}
                       className="h-9 w-9 p-0 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
                     >
                       <ChevronRight className="h-4 w-4" />
@@ -194,48 +251,58 @@ export default function CalendarioPage() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => navigateYear('prev')}
+                      onClick={() => navigateYear("prev")}
                       className="h-6 px-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                     >
                       {currentYear - 1}
                     </Button>
-                    
+
                     <div className="w-8 h-px bg-gray-200 dark:bg-gray-700"></div>
-                    
+
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => navigateYear('next')}
+                      onClick={() => navigateYear("next")}
                       className="h-6 px-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                     >
                       {currentYear + 1}
                     </Button>
                   </div>
                 </CardHeader>
-                
+
                 <CardContent className="pt-0 pb-6">
                   {/* Días de la semana - alineados con los números */}
                   <div className="grid grid-cols-7 gap-1 mb-3">
-                    {weekDays.map((day) => (
-                      <div key={day} className="h-10 flex items-center justify-center text-sm font-medium text-muted-foreground">
+                    {weekDays.map(day => (
+                      <div
+                        key={day}
+                        className="h-10 flex items-center justify-center text-sm font-medium text-muted-foreground"
+                      >
                         {day}
                       </div>
                     ))}
                   </div>
-                  
+
                   {/* Días del mes - mejor diseño */}
                   <div className="grid grid-cols-7 gap-1">
                     {generateCalendarDays().map((day, index) => {
-                      const hasTraining = day !== null && (currentMonthName === "enero" || currentMonthName === "febrero" || currentMonthName === "marzo");
-                      const isToday = day === new Date().getDate() && currentMonth === new Date().getMonth() && currentYear === new Date().getFullYear();
-                      
+                      const hasTraining =
+                        day !== null &&
+                        (currentMonthName === "enero" ||
+                          currentMonthName === "febrero" ||
+                          currentMonthName === "marzo");
+                      const isToday =
+                        day === new Date().getDate() &&
+                        currentMonth === new Date().getMonth() &&
+                        currentYear === new Date().getFullYear();
+
                       return (
                         <div
                           key={index}
                           onClick={() => day && handleDayClick(day)}
                           className={`h-10 w-10 flex items-center justify-center text-sm font-medium rounded-lg transition-all duration-200 ${
-                            day === null 
-                              ? "invisible" 
+                            day === null
+                              ? "invisible"
                               : hasTraining
                                 ? "bg-blue-500 text-white hover:bg-blue-600 cursor-pointer shadow-sm"
                                 : isToday
@@ -260,10 +327,9 @@ export default function CalendarioPage() {
                     Detalles del Día
                   </CardTitle>
                   <CardDescription className="text-gray-600 dark:text-gray-400">
-                    {selectedDate 
+                    {selectedDate
                       ? `${selectedDate.day} de ${selectedDate.month} de ${selectedDate.year}`
-                      : "Selecciona un día para ver los detalles"
-                    }
+                      : "Selecciona un día para ver los detalles"}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col">
@@ -275,38 +341,55 @@ export default function CalendarioPage() {
                         </div>
                         <div>
                           <p className="font-semibold text-gray-900 dark:text-white">
-                            {selectedDayData.sessions.length} sesión{selectedDayData.sessions.length !== 1 ? 'es' : ''}
+                            {selectedDayData.sessions.length} sesión
+                            {selectedDayData.sessions.length !== 1 ? "es" : ""}
                           </p>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Entrenamientos programados</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            Entrenamientos programados
+                          </p>
                         </div>
                       </div>
-                      
+
                       <div className="space-y-3">
                         {selectedDayData.sessions.map((session, index) => (
-                          <div key={index} className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 space-y-3 bg-gray-50 dark:bg-gray-800/50">
+                          <div
+                            key={index}
+                            className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 space-y-3 bg-gray-50 dark:bg-gray-800/50"
+                          >
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
                                 <Clock className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                                <span className="font-semibold text-gray-900 dark:text-white">{session.time}</span>
+                                <span className="font-semibold text-gray-900 dark:text-white">
+                                  {session.time}
+                                </span>
                               </div>
-                              <Badge variant="secondary" className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+                              <Badge
+                                variant="secondary"
+                                className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                              >
                                 {session.type}
                               </Badge>
                             </div>
-                            
+
                             <div className="grid grid-cols-2 gap-3">
                               <div className="flex items-center gap-2 text-sm">
                                 <Target className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                                <span className="text-gray-700 dark:text-gray-300">{session.distance}m</span>
+                                <span className="text-gray-700 dark:text-gray-300">
+                                  {session.distance}m
+                                </span>
                               </div>
                               <div className="flex items-center gap-2 text-sm">
                                 <Clock className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                                <span className="text-gray-700 dark:text-gray-300">{session.duration}min</span>
+                                <span className="text-gray-700 dark:text-gray-300">
+                                  {session.duration}min
+                                </span>
                               </div>
                             </div>
-                            
+
                             <div className="flex items-center justify-between text-sm">
-                              <span className="text-gray-600 dark:text-gray-400 font-medium">{session.stroke}</span>
+                              <span className="text-gray-600 dark:text-gray-400 font-medium">
+                                {session.stroke}
+                              </span>
                               <Badge variant="outline" className="text-xs">
                                 RPE {session.rpe}/10
                               </Badge>
@@ -349,19 +432,25 @@ export default function CalendarioPage() {
           <div className="flex items-center justify-center gap-8 text-sm">
             <div className="flex items-center gap-3">
               <div className="w-4 h-4 bg-blue-500 rounded-lg shadow-sm"></div>
-              <span className="text-gray-600 dark:text-gray-400 font-medium">Con entrenamiento</span>
+              <span className="text-gray-600 dark:text-gray-400 font-medium">
+                Con entrenamiento
+              </span>
             </div>
             <div className="flex items-center gap-3">
               <div className="w-4 h-4 bg-gray-100 dark:bg-gray-800 border-2 border-blue-500 rounded-lg"></div>
-              <span className="text-gray-600 dark:text-gray-400 font-medium">Hoy</span>
+              <span className="text-gray-600 dark:text-gray-400 font-medium">
+                Hoy
+              </span>
             </div>
             <div className="flex items-center gap-3">
               <div className="w-4 h-4 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"></div>
-              <span className="text-gray-600 dark:text-gray-400 font-medium">Día normal</span>
+              <span className="text-gray-600 dark:text-gray-400 font-medium">
+                Día normal
+              </span>
             </div>
           </div>
         </div>
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }

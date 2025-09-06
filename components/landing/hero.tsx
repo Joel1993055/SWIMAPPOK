@@ -31,7 +31,7 @@ export default function LandingHero() {
           de natación
         </h1>
         <p className="text-2xl lg:text-3xl text-muted-foreground leading-relaxed">
-          Analiza tu rendimiento, optimiza tu técnica y alcanza tus objetivos 
+          Analiza tu rendimiento, optimiza tu técnica y alcanza tus objetivos
           con datos precisos y visualizaciones profesionales.
         </p>
       </div>
@@ -44,7 +44,12 @@ export default function LandingHero() {
             Ver Dashboard
           </Link>
         </Button>
-        <Button asChild variant="outline" size="lg" className="text-xl px-10 py-7">
+        <Button
+          asChild
+          variant="outline"
+          size="lg"
+          className="text-xl px-10 py-7"
+        >
           <Link href="/dashboard-demo">
             <Target className="w-6 h-6 mr-3" />
             Dashboard Demo

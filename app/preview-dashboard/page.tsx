@@ -1,7 +1,20 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, BarChart3, TrendingUp, Users, Target, Activity } from "lucide-react";
+import {
+  ArrowLeft,
+  BarChart3,
+  TrendingUp,
+  Users,
+  Target,
+  Activity,
+} from "lucide-react";
 import Link from "next/link";
 import { getSeedData, getAggregations } from "@/lib/seed";
 import VolumeBarchart from "@/components/charts/barchart";
@@ -20,7 +33,9 @@ export default async function PreviewDashboardPage() {
             <BarChart3 className="w-8 h-8 text-primary" />
             <div>
               <h1 className="text-2xl font-bold">Dashboard (Preview)</h1>
-              <p className="text-sm text-muted-foreground">Datos de ejemplo para demostración</p>
+              <p className="text-sm text-muted-foreground">
+                Datos de ejemplo para demostración
+              </p>
             </div>
           </div>
           <Button asChild variant="outline">
@@ -39,18 +54,24 @@ export default async function PreviewDashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Distancia Total</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Distancia Total
+                </CardTitle>
                 <Target className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{stats.totalDistance}m</div>
-                <p className="text-xs text-muted-foreground">+20.1% vs mes anterior</p>
+                <p className="text-xs text-muted-foreground">
+                  +20.1% vs mes anterior
+                </p>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Distancia Promedio</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Distancia Promedio
+                </CardTitle>
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -58,10 +79,12 @@ export default async function PreviewDashboardPage() {
                 <p className="text-xs text-muted-foreground">Por sesión</p>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Sesiones</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  Total Sesiones
+                </CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -69,14 +92,16 @@ export default async function PreviewDashboardPage() {
                 <p className="text-xs text-muted-foreground">Este mes</p>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">% Técnica</CardTitle>
                 <Activity className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stats.techniquePercentage}%</div>
+                <div className="text-2xl font-bold">
+                  {stats.techniquePercentage}%
+                </div>
                 <p className="text-xs text-muted-foreground">vs Aeróbico</p>
               </CardContent>
             </Card>
@@ -117,8 +142,11 @@ export default async function PreviewDashboardPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {sessions.map((session) => (
-                      <tr key={session.id} className="border-b hover:bg-muted/50">
+                    {sessions.map(session => (
+                      <tr
+                        key={session.id}
+                        className="border-b hover:bg-muted/50"
+                      >
                         <td className="p-2">{session.date}</td>
                         <td className="p-2">{session.swimmer}</td>
                         <td className="p-2">{session.distance}m</td>
@@ -129,8 +157,12 @@ export default async function PreviewDashboardPage() {
                           </Badge>
                         </td>
                         <td className="p-2">
-                          <Badge 
-                            variant={session.sessionType === 'technique' ? 'default' : 'secondary'}
+                          <Badge
+                            variant={
+                              session.sessionType === "technique"
+                                ? "default"
+                                : "secondary"
+                            }
                             className="capitalize"
                           >
                             {session.sessionType}
@@ -161,17 +193,23 @@ export default async function PreviewDashboardPage() {
                 <div className="p-4 border rounded-lg text-center">
                   <BarChart3 className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
                   <h4 className="font-medium">Análisis por Estilo</h4>
-                  <p className="text-sm text-muted-foreground">Comparativa entre estilos</p>
+                  <p className="text-sm text-muted-foreground">
+                    Comparativa entre estilos
+                  </p>
                 </div>
                 <div className="p-4 border rounded-lg text-center">
                   <TrendingUp className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
                   <h4 className="font-medium">Progreso Temporal</h4>
-                  <p className="text-sm text-muted-foreground">Evolución del rendimiento</p>
+                  <p className="text-sm text-muted-foreground">
+                    Evolución del rendimiento
+                  </p>
                 </div>
                 <div className="p-4 border rounded-lg text-center">
                   <Users className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
                   <h4 className="font-medium">Comparativa de Nadadores</h4>
-                  <p className="text-sm text-muted-foreground">Análisis grupal</p>
+                  <p className="text-sm text-muted-foreground">
+                    Análisis grupal
+                  </p>
                 </div>
               </div>
             </CardContent>

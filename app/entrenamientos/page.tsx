@@ -2,14 +2,26 @@
 
 import { useState, useEffect } from "react";
 import { AppSidebar } from "@/components/layout/app-sidebar";
-import { SiteHeader } from "@/components/site-header";
+import { SiteHeader } from "@/components/layout/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -31,7 +43,13 @@ import { es } from "date-fns/locale";
 import { AdvancedZoneDetector } from "@/components/advanced-zone-detector";
 import { AICoach } from "@/components/ai-coach";
 import { useAICoach } from "@/lib/contexts/ai-coach-context";
-import { createSession, getSessions, updateSession, deleteSession, type Session } from "@/lib/actions/sessions";
+import {
+  createSession,
+  getSessions,
+  updateSession,
+  deleteSession,
+  type Session,
+} from "@/lib/actions/sessions";
 
 // Datos de ejemplo de entrenamientos guardados (comentado para evitar warning)
 /*
@@ -92,7 +110,7 @@ function TrainingContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  
+
   // Estados para volúmenes por zona - 10 filas
   const [zoneVolumes, setZoneVolumes] = useState(
     Array.from({ length: 10 }, () => ({
@@ -100,16 +118,16 @@ function TrainingContent() {
       z2: 0,
       z3: 0,
       z4: 0,
-      z5: 0
+      z5: 0,
     }))
   );
-  
+
   const { analyzeTraining } = useAICoach();
 
   // Debug: Monitorear cambios en trainingDate
   useEffect(() => {
     console.log("trainingDate cambió a:", trainingDate);
-    console.log("Fecha formateada:", trainingDate.toISOString().split('T')[0]);
+    console.log("Fecha formateada:", trainingDate.toISOString().split("T")[0]);
   }, [trainingDate]);
 
   // Cargar entrenamientos al montar el componente
@@ -136,13 +154,17 @@ function TrainingContent() {
   }, 0);
 
   // Función para actualizar volúmenes por zona en una fila específica
-  const handleZoneVolumeChange = (rowIndex: number, zone: 'z1' | 'z2' | 'z3' | 'z4' | 'z5', value: string) => {
+  const handleZoneVolumeChange = (
+    rowIndex: number,
+    zone: "z1" | "z2" | "z3" | "z4" | "z5",
+    value: string
+  ) => {
     const numericValue = parseInt(value) || 0;
-    setZoneVolumes(prev => prev.map((row, index) => 
-      index === rowIndex 
-        ? { ...row, [zone]: numericValue }
-        : row
-    ));
+    setZoneVolumes(prev =>
+      prev.map((row, index) =>
+        index === rowIndex ? { ...row, [zone]: numericValue } : row
+      )
+    );
   };
 
   const handleClubChange = (value: string) => {
@@ -153,7 +175,6 @@ function TrainingContent() {
     }
   };
 
-
   // Datos de ejemplo para clubs y grupos
   const clubsData = {
     "club-1": {
@@ -161,30 +182,32 @@ function TrainingContent() {
       groups: [
         { id: "group-1-1", name: "Grupo A - Competición" },
         { id: "group-1-2", name: "Grupo B - Desarrollo" },
-        { id: "group-1-3", name: "Grupo C - Iniciación" }
-      ]
+        { id: "group-1-3", name: "Grupo C - Iniciación" },
+      ],
     },
     "club-2": {
       name: "Club Acuático Barcelona",
       groups: [
         { id: "group-2-1", name: "Elite" },
         { id: "group-2-2", name: "Promesas" },
-        { id: "group-2-3", name: "Base" }
-      ]
+        { id: "group-2-3", name: "Base" },
+      ],
     },
     "club-3": {
       name: "Centro Deportivo Valencia",
       groups: [
         { id: "group-3-1", name: "Senior" },
         { id: "group-3-2", name: "Junior" },
-        { id: "group-3-3", name: "Infantil" }
-      ]
-    }
+        { id: "group-3-3", name: "Infantil" },
+      ],
+    },
   };
 
   const handleSaveTraining = async () => {
     if (!trainingTitle || !trainingContent) {
-      setError("Por favor, completa el título y el contenido del entrenamiento");
+      setError(
+        "Por favor, completa el título y el contenido del entrenamiento"
+      );
       return;
     }
 
@@ -193,22 +216,30 @@ function TrainingContent() {
       setError(null);
       setSuccess(null);
 
-      const selectedClubData = clubsData[selectedClub as keyof typeof clubsData];
-      const selectedGroupData = selectedClubData?.groups.find(g => g.id === selectedGroup);
-
+      const selectedClubData =
+        clubsData[selectedClub as keyof typeof clubsData];
+      const selectedGroupData = selectedClubData?.groups.find(
+        g => g.id === selectedGroup
+      );
 
       // Debug detallado de la fecha
       console.log("=== DEBUG FECHA ===");
       console.log("trainingDate objeto:", trainingDate);
       console.log("trainingDate tipo:", typeof trainingDate);
-      console.log("trainingDate instanceof Date:", trainingDate instanceof Date);
+      console.log(
+        "trainingDate instanceof Date:",
+        trainingDate instanceof Date
+      );
       console.log("trainingDate.toISOString():", trainingDate.toISOString());
-      console.log("Fecha formateada para guardar:", trainingDate.toISOString().split('T')[0]);
+      console.log(
+        "Fecha formateada para guardar:",
+        trainingDate.toISOString().split("T")[0]
+      );
       console.log("==================");
 
       const formData = new FormData();
       formData.append("title", trainingTitle);
-      formData.append("date", trainingDate.toISOString().split('T')[0]);
+      formData.append("date", trainingDate.toISOString().split("T")[0]);
       formData.append("type", "Personalizado");
       formData.append("duration", "90"); // Valor por defecto
       formData.append("distance", totalMeters.toString());
@@ -217,7 +248,10 @@ function TrainingContent() {
       formData.append("location", trainingLocation || "No especificado");
       formData.append("coach", trainingCoach || "No especificado");
       formData.append("club", selectedClubData?.name || "No especificado");
-      formData.append("group_name", selectedGroupData?.name || "No especificado");
+      formData.append(
+        "group_name",
+        selectedGroupData?.name || "No especificado"
+      );
       formData.append("objective", trainingObjective || "otro");
       formData.append("time_slot", trainingTimeSlot);
       formData.append("content", trainingContent);
@@ -227,7 +261,7 @@ function TrainingContent() {
       const totalZ3 = zoneVolumes.reduce((sum, row) => sum + row.z3, 0);
       const totalZ4 = zoneVolumes.reduce((sum, row) => sum + row.z4, 0);
       const totalZ5 = zoneVolumes.reduce((sum, row) => sum + row.z5, 0);
-      
+
       formData.append("z1", totalZ1.toString());
       formData.append("z2", totalZ2.toString());
       formData.append("z3", totalZ3.toString());
@@ -263,12 +297,19 @@ function TrainingContent() {
       // setTrainingDate(new Date());
       setSelectedClub("club-1");
       setSelectedGroup("group-1-1");
-      setZoneVolumes(Array.from({ length: 10 }, () => ({ z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 })));
+      setZoneVolumes(
+        Array.from({ length: 10 }, () => ({
+          z1: 0,
+          z2: 0,
+          z3: 0,
+          z4: 0,
+          z5: 0,
+        }))
+      );
       setEditingTraining(null);
-      
+
       // Recargar entrenamientos
       await loadTrainings();
-      
     } catch (error) {
       console.error("Error guardando entrenamiento:", error);
       setError("Error al guardar el entrenamiento");
@@ -283,31 +324,51 @@ function TrainingContent() {
     setTrainingLocation(training.location);
     setTrainingCoach(training.coach);
     setTrainingObjective(training.objective || "otro");
-    setTrainingTimeSlot((training as { time_slot?: 'AM' | 'PM' }).time_slot || "AM");
+    setTrainingTimeSlot(
+      (training as { time_slot?: "AM" | "PM" }).time_slot || "AM"
+    );
     setTrainingContent(training.content);
-    
+
     // Cargar volúmenes por zona si existen (en la primera fila)
     if (training.zone_volumes) {
-      const newZoneVolumes = Array.from({ length: 10 }, (_, index) => 
-        index === 0 ? training.zone_volumes as { z1: number; z2: number; z3: number; z4: number; z5: number } : { z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 }
+      const newZoneVolumes = Array.from({ length: 10 }, (_, index) =>
+        index === 0
+          ? (training.zone_volumes as {
+              z1: number;
+              z2: number;
+              z3: number;
+              z4: number;
+              z5: number;
+            })
+          : { z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 }
       );
       setZoneVolumes(newZoneVolumes);
     } else {
-      setZoneVolumes(Array.from({ length: 10 }, () => ({ z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 })));
+      setZoneVolumes(
+        Array.from({ length: 10 }, () => ({
+          z1: 0,
+          z2: 0,
+          z3: 0,
+          z4: 0,
+          z5: 0,
+        }))
+      );
     }
-    
+
     // Buscar el club y grupo correspondientes
-    const clubEntry = Object.entries(clubsData).find(([, clubData]) => 
-      clubData.name === training.club
+    const clubEntry = Object.entries(clubsData).find(
+      ([, clubData]) => clubData.name === training.club
     );
     if (clubEntry) {
       setSelectedClub(clubEntry[0]);
-      const group = clubEntry[1].groups.find(g => g.name === training.group_name);
+      const group = clubEntry[1].groups.find(
+        g => g.name === training.group_name
+      );
       if (group) {
         setSelectedGroup(group.id);
       }
     }
-    
+
     setEditingTraining(training);
     setActiveTab("create");
   };
@@ -340,7 +401,9 @@ function TrainingContent() {
     setTrainingDate(new Date());
     setSelectedClub("club-1");
     setSelectedGroup("group-1-1");
-    setZoneVolumes(Array.from({ length: 10 }, () => ({ z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 })));
+    setZoneVolumes(
+      Array.from({ length: 10 }, () => ({ z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 }))
+    );
     setEditingTraining(null);
     setError(null);
     setSuccess(null);
@@ -372,7 +435,7 @@ function TrainingContent() {
             {success}
           </div>
         )}
-        
+
         {/* Tabs Navigation */}
         <div className="flex gap-2 mt-6">
           <Button
@@ -403,25 +466,28 @@ function TrainingContent() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Plus className="h-5 w-5" />
-                  {editingTraining ? "Editar Entrenamiento" : "Crear Nuevo Entrenamiento"}
+                  {editingTraining
+                    ? "Editar Entrenamiento"
+                    : "Crear Nuevo Entrenamiento"}
                 </CardTitle>
                 <CardDescription>
-                  {editingTraining 
+                  {editingTraining
                     ? "Modifica los detalles de tu entrenamiento"
-                    : "Escribe tu entrenamiento con todos los detalles"
-                  }
+                    : "Escribe tu entrenamiento con todos los detalles"}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Información básica */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="training-title">Título del entrenamiento</Label>
+                    <Label htmlFor="training-title">
+                      Título del entrenamiento
+                    </Label>
                     <Input
                       id="training-title"
                       placeholder="Ej: Entrenamiento de resistencia"
                       value={trainingTitle}
-                      onChange={(e) => setTrainingTitle(e.target.value)}
+                      onChange={e => setTrainingTitle(e.target.value)}
                     />
                   </div>
                   <div className="space-y-2">
@@ -429,8 +495,12 @@ function TrainingContent() {
                     <div className="flex gap-2">
                       <Input
                         type="date"
-                        value={trainingDate ? trainingDate.toISOString().split('T')[0] : ''}
-                        onChange={(e) => {
+                        value={
+                          trainingDate
+                            ? trainingDate.toISOString().split("T")[0]
+                            : ""
+                        }
+                        onChange={e => {
                           const dateValue = e.target.value;
                           console.log("Input date value:", dateValue);
                           if (dateValue) {
@@ -454,7 +524,10 @@ function TrainingContent() {
                       </Button>
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      Fecha seleccionada: {trainingDate ? format(trainingDate, "dd/MM/yyyy", { locale: es }) : "Ninguna"}
+                      Fecha seleccionada:{" "}
+                      {trainingDate
+                        ? format(trainingDate, "dd/MM/yyyy", { locale: es })
+                        : "Ninguna"}
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -463,7 +536,7 @@ function TrainingContent() {
                       id="training-location"
                       placeholder="Ej: Piscina Municipal"
                       value={trainingLocation}
-                      onChange={(e) => setTrainingLocation(e.target.value)}
+                      onChange={e => setTrainingLocation(e.target.value)}
                     />
                   </div>
                   <div className="space-y-2">
@@ -472,12 +545,15 @@ function TrainingContent() {
                       id="training-coach"
                       placeholder="Ej: María García"
                       value={trainingCoach}
-                      onChange={(e) => setTrainingCoach(e.target.value)}
+                      onChange={e => setTrainingCoach(e.target.value)}
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="training-club">Club</Label>
-                    <Select value={selectedClub} onValueChange={handleClubChange}>
+                    <Select
+                      value={selectedClub}
+                      onValueChange={handleClubChange}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Selecciona el club" />
                       </SelectTrigger>
@@ -492,12 +568,17 @@ function TrainingContent() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="training-group">Grupo</Label>
-                    <Select value={selectedGroup} onValueChange={setSelectedGroup}>
+                    <Select
+                      value={selectedGroup}
+                      onValueChange={setSelectedGroup}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Selecciona el grupo" />
                       </SelectTrigger>
                       <SelectContent>
-                        {clubsData[selectedClub as keyof typeof clubsData]?.groups.map((group) => (
+                        {clubsData[
+                          selectedClub as keyof typeof clubsData
+                        ]?.groups.map(group => (
                           <SelectItem key={group.id} value={group.id}>
                             {group.name}
                           </SelectItem>
@@ -506,8 +587,13 @@ function TrainingContent() {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="training-objective">Objetivo del Entrenamiento</Label>
-                    <Select value={trainingObjective} onValueChange={setTrainingObjective}>
+                    <Label htmlFor="training-objective">
+                      Objetivo del Entrenamiento
+                    </Label>
+                    <Select
+                      value={trainingObjective}
+                      onValueChange={setTrainingObjective}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Selecciona el objetivo" />
                       </SelectTrigger>
@@ -516,7 +602,9 @@ function TrainingContent() {
                         <SelectItem value="velocidad">Velocidad</SelectItem>
                         <SelectItem value="tecnica">Técnica</SelectItem>
                         <SelectItem value="fuerza">Fuerza</SelectItem>
-                        <SelectItem value="recuperacion">Recuperación</SelectItem>
+                        <SelectItem value="recuperacion">
+                          Recuperación
+                        </SelectItem>
                         <SelectItem value="competicion">Competición</SelectItem>
                         <SelectItem value="test">Test</SelectItem>
                         <SelectItem value="otro">Otro</SelectItem>
@@ -525,7 +613,12 @@ function TrainingContent() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="training-time-slot">Horario</Label>
-                    <Select value={trainingTimeSlot} onValueChange={(value) => setTrainingTimeSlot(value as "AM" | "PM")}>
+                    <Select
+                      value={trainingTimeSlot}
+                      onValueChange={value =>
+                        setTrainingTimeSlot(value as "AM" | "PM")
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Selecciona el horario" />
                       </SelectTrigger>
@@ -543,12 +636,14 @@ function TrainingContent() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* Editor de contenido - Ocupa 2 columnas */}
                   <div className="lg:col-span-2 space-y-2">
-                    <Label htmlFor="training-content">Contenido del entrenamiento</Label>
+                    <Label htmlFor="training-content">
+                      Contenido del entrenamiento
+                    </Label>
                     <Textarea
                       id="training-content"
                       placeholder="Escribe tu entrenamiento aquí... Ejemplo:&#10;&#10;Calentamiento: 200m libre Z1&#10;Serie principal: 8x100m libre Z3 con 20s descanso&#10;Vuelta a la calma: 200m espalda Z1&#10;&#10;Puedes incluir:&#10;- Distancias (200m, 1.5km)&#10;- Tiempos (45min, 1h 30min)&#10;- Zonas (Z1, Z2, Z3, Z4, Z5)&#10;- Estilos (libre, espalda, pecho, mariposa)"
                       value={trainingContent}
-                      onChange={(e) => setTrainingContent(e.target.value)}
+                      onChange={e => setTrainingContent(e.target.value)}
                       className="min-h-[400px] resize-none"
                     />
                   </div>
@@ -556,12 +651,17 @@ function TrainingContent() {
                   {/* Volúmenes por zona - Estilo Google Sheets */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <Label className="text-base font-medium">Volúmenes por Zona</Label>
+                      <Label className="text-base font-medium">
+                        Volúmenes por Zona
+                      </Label>
                       <div className="text-sm text-muted-foreground">
-                        Total: <span className="font-semibold text-foreground">{totalMeters.toLocaleString()}m</span>
+                        Total:{" "}
+                        <span className="font-semibold text-foreground">
+                          {totalMeters.toLocaleString()}m
+                        </span>
                       </div>
                     </div>
-                    
+
                     {/* Tabla estilo Google Sheets */}
                     <div className="border border-muted rounded-lg overflow-hidden">
                       {/* Header */}
@@ -582,12 +682,18 @@ function TrainingContent() {
                           Z5
                         </div>
                       </div>
-                      
+
                       {/* 10 filas de datos */}
                       {zoneVolumes.map((row, rowIndex) => (
-                        <div key={rowIndex} className="grid grid-cols-5 bg-background border-t border-muted">
+                        <div
+                          key={rowIndex}
+                          className="grid grid-cols-5 bg-background border-t border-muted"
+                        >
                           {Object.entries(row).map(([zone, volume]) => (
-                            <div key={`${rowIndex}-${zone}`} className="p-0.5 border-r border-muted last:border-r-0">
+                            <div
+                              key={`${rowIndex}-${zone}`}
+                              className="p-0.5 border-r border-muted last:border-r-0"
+                            >
                               <Input
                                 id={`zone-${rowIndex}-${zone}`}
                                 type="number"
@@ -595,29 +701,42 @@ function TrainingContent() {
                                 step="50"
                                 placeholder="0"
                                 value={volume || ""}
-                                onChange={(e) => handleZoneVolumeChange(rowIndex, zone as 'z1' | 'z2' | 'z3' | 'z4' | 'z5', e.target.value)}
+                                onChange={e =>
+                                  handleZoneVolumeChange(
+                                    rowIndex,
+                                    zone as "z1" | "z2" | "z3" | "z4" | "z5",
+                                    e.target.value
+                                  )
+                                }
                                 className="text-center border-0 focus:ring-1 focus:ring-primary h-8 text-[8px] font-mono [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield] bg-transparent hover:bg-muted/50 focus:bg-background transition-colors px-1"
                               />
                             </div>
                           ))}
                         </div>
                       ))}
-                      
+
                       {/* Fila de totales */}
                       <div className="grid grid-cols-5 bg-muted/30 dark:bg-muted/20 border-t border-muted">
-                        {['z1', 'z2', 'z3', 'z4', 'z5'].map((zone) => {
-                          const total = zoneVolumes.reduce((sum, row) => sum + row[zone as keyof typeof row], 0);
+                        {["z1", "z2", "z3", "z4", "z5"].map(zone => {
+                          const total = zoneVolumes.reduce(
+                            (sum, row) => sum + row[zone as keyof typeof row],
+                            0
+                          );
                           return (
-                            <div key={`total-${zone}`} className="p-1 text-[12px] font-semibold text-foreground border-r border-muted last:border-r-0 text-center font-mono">
-                              {total > 0 ? `${total.toLocaleString()}` : '0'}
+                            <div
+                              key={`total-${zone}`}
+                              className="p-1 text-[12px] font-semibold text-foreground border-r border-muted last:border-r-0 text-center font-mono"
+                            >
+                              {total > 0 ? `${total.toLocaleString()}` : "0"}
                             </div>
                           );
                         })}
                       </div>
                     </div>
-                    
+
                     <div className="text-xs text-muted-foreground">
-                      💡 <strong>Consejo:</strong> Introduce los metros que nadaste en cada zona de intensidad.
+                      💡 <strong>Consejo:</strong> Introduce los metros que
+                      nadaste en cada zona de intensidad.
                     </div>
                   </div>
                 </div>
@@ -626,17 +745,28 @@ function TrainingContent() {
                 <div className="flex justify-between">
                   <div>
                     {editingTraining && (
-                      <Button variant="outline" onClick={handleCancelEdit} className="gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={handleCancelEdit}
+                        className="gap-2"
+                      >
                         <Trash2 className="h-4 w-4" />
                         Cancelar Edición
                       </Button>
                     )}
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" onClick={() => setTrainingContent("")}>
+                    <Button
+                      variant="outline"
+                      onClick={() => setTrainingContent("")}
+                    >
                       Limpiar
                     </Button>
-                    <Button onClick={handleSaveTraining} disabled={isLoading} className="gap-2">
+                    <Button
+                      onClick={handleSaveTraining}
+                      disabled={isLoading}
+                      className="gap-2"
+                    >
                       {isLoading ? (
                         <>
                           <Clock className="h-4 w-4 animate-spin" />
@@ -645,7 +775,8 @@ function TrainingContent() {
                       ) : (
                         <>
                           <Save className="h-4 w-4" />
-                          {editingTraining ? "Actualizar" : "Guardar"} Entrenamiento
+                          {editingTraining ? "Actualizar" : "Guardar"}{" "}
+                          Entrenamiento
                         </>
                       )}
                     </Button>
@@ -661,7 +792,7 @@ function TrainingContent() {
             <AICoach />
 
             {/* Detector de Zonas Avanzado */}
-            <AdvancedZoneDetector 
+            <AdvancedZoneDetector
               content={trainingContent}
               trainingType="Personalizado"
               phase="base" // Esto se podría obtener del contexto de planificación
@@ -682,11 +813,20 @@ function TrainingContent() {
               <CardContent className="space-y-6">
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-medium mb-2">Estructura recomendada:</h4>
+                    <h4 className="font-medium mb-2">
+                      Estructura recomendada:
+                    </h4>
                     <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• <strong>Calentamiento:</strong> 200-400m Z1</li>
-                      <li>• <strong>Serie principal:</strong> Ejercicios específicos</li>
-                      <li>• <strong>Vuelta a la calma:</strong> 200-300m Z1</li>
+                      <li>
+                        • <strong>Calentamiento:</strong> 200-400m Z1
+                      </li>
+                      <li>
+                        • <strong>Serie principal:</strong> Ejercicios
+                        específicos
+                      </li>
+                      <li>
+                        • <strong>Vuelta a la calma:</strong> 200-300m Z1
+                      </li>
                     </ul>
                   </div>
 
@@ -712,11 +852,21 @@ function TrainingContent() {
                         <Badge variant="outline">Z5</Badge>
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        <div>• <strong>Z1:</strong> Recuperación activa</div>
-                        <div>• <strong>Z2:</strong> Aeróbico base</div>
-                        <div>• <strong>Z3:</strong> Aeróbico umbral</div>
-                        <div>• <strong>Z4:</strong> Anaeróbico láctico</div>
-                        <div>• <strong>Z5:</strong> Anaeróbico aláctico</div>
+                        <div>
+                          • <strong>Z1:</strong> Recuperación activa
+                        </div>
+                        <div>
+                          • <strong>Z2:</strong> Aeróbico base
+                        </div>
+                        <div>
+                          • <strong>Z3:</strong> Aeróbico umbral
+                        </div>
+                        <div>
+                          • <strong>Z4:</strong> Anaeróbico láctico
+                        </div>
+                        <div>
+                          • <strong>Z5:</strong> Anaeróbico aláctico
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -757,24 +907,38 @@ function TrainingContent() {
                 ) : savedTrainings.length === 0 ? (
                   <div className="text-center py-8">
                     <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground">No tienes entrenamientos guardados</p>
-                    <p className="text-sm text-muted-foreground">Crea tu primer entrenamiento en la pestaña &quot;Crear Entrenamiento&quot;</p>
+                    <p className="text-muted-foreground">
+                      No tienes entrenamientos guardados
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Crea tu primer entrenamiento en la pestaña &quot;Crear
+                      Entrenamiento&quot;
+                    </p>
                   </div>
                 ) : (
-                  savedTrainings.map((training) => (
-                    <div key={training.id} className="border rounded-lg p-4 bg-background/50">
+                  savedTrainings.map(training => (
+                    <div
+                      key={training.id}
+                      className="border rounded-lg p-4 bg-background/50"
+                    >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
-                            <h3 className="font-semibold text-lg">{training.title}</h3>
+                            <h3 className="font-semibold text-lg">
+                              {training.title}
+                            </h3>
                             <Badge variant="outline">{training.type}</Badge>
                             <Badge variant="secondary">{training.stroke}</Badge>
                           </div>
-                          
+
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
                             <div className="flex items-center gap-2 text-sm">
                               <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-                              <span>{format(new Date(training.date), "dd/MM/yyyy", { locale: es })}</span>
+                              <span>
+                                {format(new Date(training.date), "dd/MM/yyyy", {
+                                  locale: es,
+                                })}
+                              </span>
                             </div>
                             <div className="flex items-center gap-2 text-sm">
                               <Clock className="h-4 w-4 text-muted-foreground" />
@@ -793,15 +957,23 @@ function TrainingContent() {
                           {/* Mostrar volúmenes por zona si existen */}
                           {training.zone_volumes && (
                             <div className="mb-3">
-                              <div className="text-sm font-medium mb-2">Distribución por Zonas:</div>
+                              <div className="text-sm font-medium mb-2">
+                                Distribución por Zonas:
+                              </div>
                               <div className="flex flex-wrap gap-2">
-                                {Object.entries(training.zone_volumes).map(([zone, volume]) => (
-                                  volume > 0 && (
-                                    <Badge key={zone} variant="outline" className="text-xs">
-                                      {zone.toUpperCase()}: {volume.toLocaleString()}m
-                                    </Badge>
-                                  )
-                                ))}
+                                {Object.entries(training.zone_volumes).map(
+                                  ([zone, volume]) =>
+                                    volume > 0 && (
+                                      <Badge
+                                        key={zone}
+                                        variant="outline"
+                                        className="text-xs"
+                                      >
+                                        {zone.toUpperCase()}:{" "}
+                                        {volume.toLocaleString()}m
+                                      </Badge>
+                                    )
+                                )}
                               </div>
                             </div>
                           )}
@@ -831,7 +1003,7 @@ function TrainingContent() {
                             </pre>
                           </div>
                         </div>
-                        
+
                         <div className="ml-4 flex gap-2">
                           <Button
                             variant="outline"

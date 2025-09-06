@@ -1,5 +1,12 @@
-import { Session } from './types/session';
-import { startOfYear, endOfYear, eachMonthOfInterval, eachWeekOfInterval, format, isWithinInterval } from 'date-fns';
+import { Session } from "./types/session";
+import {
+  startOfYear,
+  endOfYear,
+  eachMonthOfInterval,
+  eachWeekOfInterval,
+  format,
+  isWithinInterval,
+} from "date-fns";
 
 export interface Aggregations {
   totalDistance: number;
@@ -92,76 +99,95 @@ const realisticMonthlyData = [
 export function getAggregations(sessions: Session[]): Aggregations {
   // Si no hay sesiones reales, usar datos realistas
   if (sessions.length === 0) {
-    const totalDistance = realisticWeeklyData.reduce((sum, week) => sum + week.distance, 0);
-    const totalSessions = realisticWeeklyData.reduce((sum, week) => sum + week.sessions, 0);
+    const totalDistance = realisticWeeklyData.reduce(
+      (sum, week) => sum + week.distance,
+      0
+    );
+    const totalSessions = realisticWeeklyData.reduce(
+      (sum, week) => sum + week.sessions,
+      0
+    );
     const avgDistance = Math.round(totalDistance / totalSessions);
-    
+
     return {
       totalDistance: Math.round(totalDistance / 1000), // Convertir a KM
       avgDistance: Math.round(avgDistance / 1000), // Convertir a KM
       totalSessions,
       techniquePercentage: 20, // 20% técnica vs 80% aeróbico (más realista)
       sessionsPerStroke: {
-        'freestyle': 45,
-        'backstroke': 20,
-        'breaststroke': 20,
-        'butterfly': 15
+        freestyle: 45,
+        backstroke: 20,
+        breaststroke: 20,
+        butterfly: 15,
       },
       minutesPerType: {
-        'technique': 1200,
-        'aerobic': 3600,
-        'threshold': 800,
-        'vo2max': 400
+        technique: 1200,
+        aerobic: 3600,
+        threshold: 800,
+        vo2max: 400,
       },
       distanceByWeek: realisticWeeklyData,
-      distanceByMonth: realisticMonthlyData
+      distanceByMonth: realisticMonthlyData,
     };
   }
 
   // Si hay sesiones reales, calcular normalmente
-  const totalDistance = sessions.reduce((sum, session) => sum + session.distance, 0);
+  const totalDistance = sessions.reduce(
+    (sum, session) => sum + session.distance,
+    0
+  );
   const avgDistance = Math.round(totalDistance / sessions.length) || 0;
   const totalSessions = sessions.length;
-  
-  const techniqueSessions = sessions.filter(s => s.sessionType === 'technique').length;
-  const techniquePercentage = Math.round((techniqueSessions / totalSessions) * 100) || 0;
-  
-  const sessionsPerStroke = sessions.reduce((acc, session) => {
-    acc[session.stroke] = (acc[session.stroke] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-  
-  const minutesPerType = sessions.reduce((acc, session) => {
-    acc[session.sessionType] = (acc[session.sessionType] || 0) + session.durationMin;
-    return acc;
-  }, {} as Record<string, number>);
-  
+
+  const techniqueSessions = sessions.filter(
+    s => s.sessionType === "technique"
+  ).length;
+  const techniquePercentage =
+    Math.round((techniqueSessions / totalSessions) * 100) || 0;
+
+  const sessionsPerStroke = sessions.reduce(
+    (acc, session) => {
+      acc[session.stroke] = (acc[session.stroke] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
+
+  const minutesPerType = sessions.reduce(
+    (acc, session) => {
+      acc[session.sessionType] =
+        (acc[session.sessionType] || 0) + session.durationMin;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
+
   // Datos semanales para el gráfico existente
   const distanceByWeek = [
     { week: "Semana 1", distance: 3500 },
     { week: "Semana 2", distance: 4200 },
     { week: "Semana 3", distance: 3800 },
-    { week: "Semana 4", distance: 4500 }
+    { week: "Semana 4", distance: 4500 },
   ];
 
   // Datos mensuales para el calendario
   const currentYear = new Date().getFullYear();
   const yearStart = startOfYear(new Date(currentYear, 0, 1));
   const yearEnd = endOfYear(new Date(currentYear, 11, 31));
-  
+
   const months = eachMonthOfInterval({ start: yearStart, end: yearEnd });
   const distanceByMonth = months.map(month => {
-    const monthStr = format(month, 'yyyy-MM');
+    const monthStr = format(month, "yyyy-MM");
     const monthSessions = sessions.filter(s => s.date.startsWith(monthStr));
     const monthDistance = monthSessions.reduce((sum, s) => sum + s.distance, 0);
-    
+
     return {
-      month: format(month, 'MMM yyyy'),
+      month: format(month, "MMM yyyy"),
       distance: monthDistance,
-      sessions: monthSessions.length
+      sessions: monthSessions.length,
     };
   });
-  
+
   return {
     totalDistance: Math.round(totalDistance / 1000), // Convertir a KM
     avgDistance: Math.round(avgDistance / 1000), // Convertir a KM
@@ -170,91 +196,104 @@ export function getAggregations(sessions: Session[]): Aggregations {
     sessionsPerStroke,
     minutesPerType,
     distanceByWeek,
-    distanceByMonth
+    distanceByMonth,
   };
 }
 
 export function getFilteredAggregations(
-  sessions: Session[], 
-  startDate: string, 
+  sessions: Session[],
+  startDate: string,
   endDate: string
 ): FilteredAggregations {
-  const filteredSessions = sessions.filter(session => 
-    session.date >= startDate && session.date <= endDate
+  const filteredSessions = sessions.filter(
+    session => session.date >= startDate && session.date <= endDate
   );
-  
+
   const baseAggregations = getAggregations(filteredSessions);
-  
+
   return {
     ...baseAggregations,
     filteredSessions,
-    dateRange: { start: startDate, end: endDate }
+    dateRange: { start: startDate, end: endDate },
   };
 }
 
-export function getDistanceHeatmapByDay(sessions: Session[], year: number): Record<string, number> {
+export function getDistanceHeatmapByDay(
+  sessions: Session[],
+  year: number
+): Record<string, number> {
   // Si no hay sesiones reales, generar datos realistas para el calendario
   if (sessions.length === 0) {
     const heatmap: Record<string, number> = {};
     const yearStart = new Date(year, 0, 1);
     const yearEnd = new Date(year, 11, 31);
-    
+
     // Generar datos realistas para cada día del año
-    for (let d = new Date(yearStart); d <= yearEnd; d.setDate(d.getDate() + 1)) {
-      const dateStr = d.toISOString().split('T')[0];
+    for (
+      let d = new Date(yearStart);
+      d <= yearEnd;
+      d.setDate(d.getDate() + 1)
+    ) {
+      const dateStr = d.toISOString().split("T")[0];
       const dayOfWeek = d.getDay();
-      
+
       // Simular entrenamiento 5-6 días por semana (lunes a sábado)
       if (dayOfWeek >= 1 && dayOfWeek <= 6) {
         // Distribuir las sesiones semanales de manera realista
-        const weekNumber = Math.floor((d.getTime() - yearStart.getTime()) / (7 * 24 * 60 * 60 * 1000));
-        const weekData = realisticWeeklyData[weekNumber % realisticWeeklyData.length];
-        
-        if (weekData && Math.random() > 0.2) { // 80% probabilidad de entrenar
+        const weekNumber = Math.floor(
+          (d.getTime() - yearStart.getTime()) / (7 * 24 * 60 * 60 * 1000)
+        );
+        const weekData =
+          realisticWeeklyData[weekNumber % realisticWeeklyData.length];
+
+        if (weekData && Math.random() > 0.2) {
+          // 80% probabilidad de entrenar
           // Distribuir la distancia semanal entre los días de entrenamiento
-          const dailyDistance = Math.round(weekData.distance / 6) + Math.floor(Math.random() * 2000);
+          const dailyDistance =
+            Math.round(weekData.distance / 6) +
+            Math.floor(Math.random() * 2000);
           heatmap[dateStr] = dailyDistance;
         }
       }
     }
-    
+
     return heatmap;
   }
 
   // Si hay sesiones reales, usar normalmente
   const heatmap: Record<string, number> = {};
-  
+
   sessions.forEach(session => {
     if (session.date.startsWith(year.toString())) {
       heatmap[session.date] = (heatmap[session.date] || 0) + session.distance;
     }
   });
-  
+
   return heatmap;
 }
 
 export function getSessionsPerWeek(sessions: Session[], year: number) {
   const yearStart = startOfYear(new Date(year, 0, 1));
   const yearEnd = endOfYear(new Date(year, 11, 31));
-  
+
   const weeks = eachWeekOfInterval({ start: yearStart, end: yearEnd });
-  
+
   return weeks.map(weekStart => {
     const weekEnd = new Date(weekStart);
     weekEnd.setDate(weekEnd.getDate() + 6);
-    
+
     const weekSessions = sessions.filter(session => {
       const sessionDate = new Date(session.date);
       return isWithinInterval(sessionDate, { start: weekStart, end: weekEnd });
     });
-    
+
     const weekDistance = weekSessions.reduce((sum, s) => sum + s.distance, 0);
-    
+
     return {
-      week: format(weekStart, 'yyyy-MM-dd'),
-      label: `Semana ${format(weekStart, 'w')}`,
+      week: format(weekStart, "yyyy-MM-dd"),
+      label: `Semana ${format(weekStart, "w")}`,
       distance: weekDistance,
-      sessions: weekSessions.length
+      sessions: weekSessions.length,
     };
   });
 }
@@ -262,19 +301,19 @@ export function getSessionsPerWeek(sessions: Session[], year: number) {
 export function getSessionsPerMonth(sessions: Session[], year: number) {
   const yearStart = startOfYear(new Date(year, 0, 1));
   const yearEnd = endOfYear(new Date(year, 11, 31));
-  
+
   const months = eachMonthOfInterval({ start: yearStart, end: yearEnd });
-  
+
   return months.map(month => {
-    const monthStr = format(month, 'yyyy-MM');
+    const monthStr = format(month, "yyyy-MM");
     const monthSessions = sessions.filter(s => s.date.startsWith(monthStr));
     const monthDistance = monthSessions.reduce((sum, s) => sum + s.distance, 0);
-    
+
     return {
-      month: format(month, 'yyyy-MM'),
-      label: format(month, 'MMM yyyy'),
+      month: format(month, "yyyy-MM"),
+      label: format(month, "MMM yyyy"),
       distance: monthDistance,
-      sessions: monthSessions.length
+      sessions: monthSessions.length,
     };
   });
 }
