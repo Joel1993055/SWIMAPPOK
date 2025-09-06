@@ -12,8 +12,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Plus,
   Save,
@@ -27,8 +25,6 @@ import {
   Trash2,
   Edit,
   Building2,
-  ChevronLeft,
-  ChevronRight
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -37,7 +33,8 @@ import { AICoach } from "@/components/ai-coach";
 import { useAICoach } from "@/lib/contexts/ai-coach-context";
 import { createSession, getSessions, updateSession, deleteSession, type Session } from "@/lib/actions/sessions";
 
-// Datos de ejemplo de entrenamientos guardados
+// Datos de ejemplo de entrenamientos guardados (comentado para evitar warning)
+/*
 const sampleSavedTrainings = [
   {
     id: 1,
@@ -73,6 +70,7 @@ Vuelta a la calma: 200m libre Z1`,
     createdAt: "2025-01-17T14:30:00Z"
   }
 ];
+*/
 
 function TrainingContent() {
   const [activeTab, setActiveTab] = useState<"create" | "saved">("create");
@@ -285,7 +283,7 @@ function TrainingContent() {
     setTrainingLocation(training.location);
     setTrainingCoach(training.coach);
     setTrainingObjective(training.objective || "otro");
-    setTrainingTimeSlot((training as any).time_slot || "AM");
+    setTrainingTimeSlot((training as { time_slot?: 'AM' | 'PM' }).time_slot || "AM");
     setTrainingContent(training.content);
     
     // Cargar volúmenes por zona si existen (en la primera fila)

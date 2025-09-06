@@ -11,32 +11,25 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, AreaChart, Area } from "recharts";
+import { XAxis, YAxis, CartesianGrid, LineChart, Line } from "recharts";
 import { 
   BarChart3, 
   TrendingUp, 
   Activity, 
   Target, 
   Calendar,
-  Clock,
   Zap,
-  Award,
   AlertTriangle,
   CheckCircle,
   ArrowUp,
   ArrowDown,
   Minus,
   Filter,
-  Download,
-  Brain,
-  Target as TargetIcon,
-  Timer,
-  MapPin,
-  Users
+  Download
 } from "lucide-react";
 import { getSessions } from "@/lib/actions/sessions";
 import type { Session } from "@/lib/actions/sessions";
-import { format, subDays, subMonths, subWeeks, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from "date-fns";
+import { format, subDays, subMonths, subWeeks, startOfWeek } from "date-fns";
 import { es } from "date-fns/locale";
 
 // Colores para las zonas de intensidad
@@ -76,7 +69,7 @@ function AnalysisContent() {
   const getFilteredSessions = (period: string) => {
     const now = new Date();
     let startDate: Date;
-    let endDate = now;
+    const endDate = now;
 
     switch (period) {
       case "last-7-days":

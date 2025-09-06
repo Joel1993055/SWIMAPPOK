@@ -11,9 +11,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { 
   ClipboardListIcon, 
   Download, 
@@ -28,16 +25,8 @@ import {
   Check,
   Settings,
   Layout,
-  Wrench,
-  Plus,
-  Eye,
-  Edit,
-  Trash2,
-  Save,
   FileImage,
-  TrendingUp,
-  Zap,
-  Award
+  Eye
 } from "lucide-react";
 import { format, subDays, subMonths, subWeeks } from "date-fns";
 import { es } from "date-fns/locale";

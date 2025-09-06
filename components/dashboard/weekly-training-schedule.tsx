@@ -77,7 +77,7 @@ export function WeeklyTrainingSchedule({ weekStart = new Date() }: WeeklyTrainin
     return {
       id: session.id,
       title: session.title,
-      time: (session as any).time_slot === 'AM' ? "09:00" : "18:00", // Usar time_slot para determinar hora
+      time: (session as { time_slot?: 'AM' | 'PM' }).time_slot === 'AM' ? "09:00" : "18:00", // Usar time_slot para determinar hora
       duration: session.duration || 60,
       type: session.type,
       location: session.location || "No especificado",
@@ -87,7 +87,7 @@ export function WeeklyTrainingSchedule({ weekStart = new Date() }: WeeklyTrainin
       intensity: getIntensityFromRPE(session.rpe || 5),
       distance: session.distance || 0,
       isCompleted: new Date(session.date) < new Date(),
-      timeSlot: (session as any).time_slot || 'AM' // Agregar timeSlot para filtrar
+      timeSlot: (session as { time_slot?: 'AM' | 'PM' }).time_slot || 'AM' // Agregar timeSlot para filtrar
     };
   });
 
