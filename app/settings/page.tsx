@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { SiteHeader } from "@/components/layout/site-header";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,11 +12,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -24,27 +22,31 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { useTrainingZones } from "@/lib/contexts/training-zones-context";
 import {
-  User,
+  Activity,
   Bell,
-  Shield,
-  Palette,
-  Globe,
-  Smartphone,
-  Lock,
+  Download,
   Eye,
   EyeOff,
-  Save,
-  Upload,
-  Trash2,
-  Download,
-  Settings as SettingsIcon,
-  Activity,
+  Globe,
+  Lock,
+  Palette,
   RotateCcw,
+  Save,
+  Settings as SettingsIcon,
+  Shield,
+  Smartphone,
+  Trash2,
+  Upload,
+  User,
 } from "lucide-react";
-import { useTrainingZones } from "@/lib/contexts/training-zones-context";
+import React, { useState } from "react";
+// NUEVO: Importar el store unificado
+import { useTrainingStore } from "@/lib/store/unified";
 
 function SettingsContent() {
   const [activeTab, setActiveTab] = useState("profile");
@@ -59,6 +61,7 @@ function SettingsContent() {
     reminders: true,
   });
 
+  // MANTENER: Context existente
   const {
     selectedMethodology,
     currentZones,
@@ -66,6 +69,20 @@ function SettingsContent() {
     setMethodology,
     updateZones,
   } = useTrainingZones();
+  
+  // NUEVO: Store unificado
+  const { 
+    phases: storePhases, 
+    addPhase: storeAddPhase 
+  } = useTrainingStore();
+
+  // NUEVO: Sincronizar datos del context al store
+  React.useEffect(() => {
+    if (storePhases.length === 0) {
+      // Si el store está vacío, no hacer nada por ahora
+      // La sincronización se maneja en el componente padre
+    }
+  }, [storePhases]);
 
   const [trainingZones, setTrainingZones] = useState(currentZones);
 

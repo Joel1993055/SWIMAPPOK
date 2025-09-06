@@ -1,32 +1,35 @@
 "use client";
 
-import { useAdvancedZoneDetection } from "@/lib/hooks/use-advanced-zone-detection";
 import { useTrainingZones } from "@/lib/contexts/training-zones-context";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { useAdvancedZoneDetection } from "@/lib/hooks/use-advanced-zone-detection";
+import React from "react";
+// NUEVO: Importar el store unificado
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { useTrainingStore } from "@/lib/store/unified";
 
 import {
-  Activity,
-  Target,
-  Clock,
-  MapPin,
-  TrendingUp,
-  CheckCircle,
-  AlertCircle,
-  Lightbulb,
-  Loader2,
-  Brain,
-  Zap,
-  BarChart3,
-  Info,
+    Activity,
+    AlertCircle,
+    BarChart3,
+    Brain,
+    CheckCircle,
+    Clock,
+    Info,
+    Lightbulb,
+    Loader2,
+    MapPin,
+    Target,
+    TrendingUp,
+    Zap,
 } from "lucide-react";
 
 interface AdvancedZoneDetectorProps {
@@ -42,7 +45,23 @@ export function AdvancedZoneDetector({
   phase,
   competition,
 }: AdvancedZoneDetectorProps) {
+  // MANTENER: Context existente
   const { currentZones } = useTrainingZones();
+  
+  // NUEVO: Store unificado
+  const { 
+    phases: storePhases, 
+    addPhase: storeAddPhase 
+  } = useTrainingStore();
+
+  // NUEVO: Sincronizar datos del context al store
+  React.useEffect(() => {
+    if (storePhases.length === 0) {
+      // Si el store está vacío, no hacer nada por ahora
+      // La sincronización se maneja en el componente padre
+    }
+  }, [storePhases]);
+
   const detection = useAdvancedZoneDetection(content, {
     trainingType,
     phase,

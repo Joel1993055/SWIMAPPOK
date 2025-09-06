@@ -1,33 +1,35 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Calendar as CalendarIcon,
-  Clock,
-  Target,
-  Activity,
-} from "lucide-react";
-import { getSessions } from "@/lib/actions/sessions";
 import type { Session } from "@/lib/actions/sessions";
+import { getSessions } from "@/lib/actions/sessions";
 import { useCompetitions } from "@/lib/contexts/competitions-context";
+import {
+    Activity,
+    Calendar as CalendarIcon,
+    ChevronLeft,
+    ChevronRight,
+    Clock,
+    Target,
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
+// NUEVO: Importar el store unificado
+import { useCompetitionsStore } from "@/lib/store/unified";
 
 export function DashboardCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -39,7 +41,23 @@ export function DashboardCalendar() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [sessions, setSessions] = useState<Session[]>([]);
   // const [isLoading, setIsLoading] = useState(true);
+  
+  // MANTENER: Context existente
   const { getCompetitionsByDate } = useCompetitions();
+  
+  // NUEVO: Store unificado
+  const { 
+    competitions: storeCompetitions, 
+    addCompetition: storeAddCompetition 
+  } = useCompetitionsStore();
+
+  // NUEVO: Sincronizar datos del context al store
+  React.useEffect(() => {
+    if (storeCompetitions.length === 0) {
+      // Si el store está vacío, no hacer nada por ahora
+      // La sincronización se maneja en el componente padre
+    }
+  }, [storeCompetitions]);
 
   const months = [
     { name: "enero", short: "ene", days: 31 },

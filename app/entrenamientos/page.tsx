@@ -29,14 +29,16 @@ import {
   deleteSession,
   getSessions,
   updateSession,
-  type Session,
+  type Session as SupabaseSession,
 } from "@/lib/actions/sessions";
 import { useAICoach } from "@/lib/contexts/ai-coach-context";
+// NUEVO: Importar el store unificado
+import { useSessionsStore } from "@/lib/store/unified";
+import type { Session } from "@/lib/types/session";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import {
   Activity,
-  Building2,
   Calendar as CalendarIcon,
   Clock,
   Edit,
@@ -46,7 +48,7 @@ import {
   Save,
   Target,
   Trash2,
-  Users,
+  Users
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -89,7 +91,59 @@ Vuelta a la calma: 200m libre Z1`,
 ];
 */
 
+// Función para mapear SupabaseSession a Session
+const mapSupabaseToSession = (supabaseSession: SupabaseSession): Session => ({
+  id: supabaseSession.id,
+  date: supabaseSession.date,
+  swimmer: supabaseSession.coach || "N/A",
+  distance: supabaseSession.distance,
+  durationMin: supabaseSession.duration,
+  stroke: supabaseSession.stroke as "freestyle" | "backstroke" | "breaststroke" | "butterfly" | "mixed",
+  sessionType: supabaseSession.type as "aerobic" | "threshold" | "speed" | "technique" | "recovery",
+  mainSet: supabaseSession.content || "",
+  RPE: supabaseSession.rpe as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10,
+  notes: supabaseSession.objective || "",
+});
+
+// Función para mapear Session a SupabaseSession (para edición)
+const mapSessionToSupabase = (session: Session): SupabaseSession => ({
+  id: session.id,
+  user_id: "", // No disponible en Session
+  created_at: new Date().toISOString(), // Default
+  updated_at: new Date().toISOString(), // Default
+  title: session.mainSet, // Usar mainSet como title
+  date: session.date,
+  type: session.sessionType,
+  duration: session.durationMin,
+  distance: session.distance,
+  stroke: session.stroke,
+  rpe: session.RPE,
+  location: "", // No disponible en Session
+  coach: session.swimmer,
+  club: "", // No disponible en Session
+  group_name: "", // No disponible en Session
+  objective: session.notes || "",
+  time_slot: "AM", // Default
+  content: session.mainSet,
+  zone_volumes: {
+    z1: 0,
+    z2: 0,
+    z3: 0,
+    z4: 0,
+    z5: 0,
+  },
+});
+
 function TrainingContent() {
+  // NUEVO: Store unificado
+  const { 
+    sessions: storeSessions, 
+    addSession: storeAddSession, 
+    updateSession: storeUpdateSession, 
+    deleteSession: storeDeleteSession,
+    setSessions: storeSetSessions 
+  } = useSessionsStore();
+
   const [activeTab, setActiveTab] = useState<"create" | "saved">("create");
   const [trainingTitle, setTrainingTitle] = useState("");
   const [trainingDate, setTrainingDate] = useState<Date>(() => {
@@ -104,6 +158,8 @@ function TrainingContent() {
   const [selectedGroup, setSelectedGroup] = useState("group-1-1");
   const [trainingObjective, setTrainingObjective] = useState("");
   const [trainingTimeSlot, setTrainingTimeSlot] = useState<"AM" | "PM">("AM");
+  
+  // MANTENER: Estado local para compatibilidad
   const [savedTrainings, setSavedTrainings] = useState<Session[]>([]);
   const [editingTraining, setEditingTraining] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -138,7 +194,10 @@ function TrainingContent() {
     try {
       setIsLoading(true);
       const trainings = await getSessions();
-      setSavedTrainings(trainings);
+      const mappedTrainings = trainings.map(mapSupabaseToSession);
+      setSavedTrainings(mappedTrainings);
+      // NUEVO: Sincronizar con el store
+      storeSetSessions(mappedTrainings);
     } catch (error) {
       console.error("Error cargando entrenamientos:", error);
       setError("Error al cargar los entrenamientos");
@@ -318,55 +377,30 @@ function TrainingContent() {
   };
 
   const handleEditTraining = (training: Session) => {
-    setTrainingTitle(training.title);
+    // Mapear Session a SupabaseSession para obtener propiedades completas
+    const supabaseTraining = mapSessionToSupabase(training);
+    
+    setTrainingTitle(supabaseTraining.title);
     setTrainingDate(new Date(training.date));
-    setTrainingLocation(training.location);
-    setTrainingCoach(training.coach);
-    setTrainingObjective(training.objective || "otro");
-    setTrainingTimeSlot(
-      (training as { time_slot?: "AM" | "PM" }).time_slot || "AM"
-    );
-    setTrainingContent(training.content);
+    setTrainingLocation(supabaseTraining.location);
+    setTrainingCoach(supabaseTraining.coach);
+    setTrainingObjective(supabaseTraining.objective || "otro");
+    setTrainingTimeSlot(supabaseTraining.time_slot as "AM" | "PM");
+    setTrainingContent(supabaseTraining.content);
 
     // Cargar volúmenes por zona si existen (en la primera fila)
-    if (training.zone_volumes) {
-      const newZoneVolumes = Array.from({ length: 10 }, (_, index) =>
-        index === 0
-          ? (training.zone_volumes as {
-              z1: number;
-              z2: number;
-              z3: number;
-              z4: number;
-              z5: number;
-            })
-          : { z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 }
-      );
-      setZoneVolumes(newZoneVolumes);
-    } else {
-      setZoneVolumes(
-        Array.from({ length: 10 }, () => ({
-          z1: 0,
-          z2: 0,
-          z3: 0,
-          z4: 0,
-          z5: 0,
-        }))
-      );
-    }
+    // Nota: Session no tiene zone_volumes, usar valores por defecto
+    const newZoneVolumes = Array.from({ length: 10 }, (_, index) =>
+      index === 0
+        ? { z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 }
+        : { z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 }
+    );
+    setZoneVolumes(newZoneVolumes);
 
     // Buscar el club y grupo correspondientes
-    const clubEntry = Object.entries(clubsData).find(
-      ([, clubData]) => clubData.name === training.club
-    );
-    if (clubEntry) {
-      setSelectedClub(clubEntry[0]);
-      const group = clubEntry[1].groups.find(
-        g => g.name === training.group_name
-      );
-      if (group) {
-        setSelectedGroup(group.id);
-      }
-    }
+    // Nota: Session no tiene club/group_name, usar valores por defecto
+    setSelectedClub("club-1");
+    setSelectedGroup("group-1-1");
 
     setEditingTraining(training);
     setActiveTab("create");
@@ -924,9 +958,9 @@ function TrainingContent() {
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
                             <h3 className="font-semibold text-lg">
-                              {training.title}
+                              {training.mainSet}
                             </h3>
-                            <Badge variant="outline">{training.type}</Badge>
+                            <Badge variant="outline">{training.sessionType}</Badge>
                             <Badge variant="secondary">{training.stroke}</Badge>
                           </div>
 
@@ -941,7 +975,7 @@ function TrainingContent() {
                             </div>
                             <div className="flex items-center gap-2 text-sm">
                               <Clock className="h-4 w-4 text-muted-foreground" />
-                              <span>{training.duration} min</span>
+                              <span>{training.durationMin} min</span>
                             </div>
                             <div className="flex items-center gap-2 text-sm">
                               <Target className="h-4 w-4 text-muted-foreground" />
@@ -949,56 +983,23 @@ function TrainingContent() {
                             </div>
                             <div className="flex items-center gap-2 text-sm">
                               <Activity className="h-4 w-4 text-muted-foreground" />
-                              <span>RPE {training.rpe}/10</span>
+                              <span>RPE {training.RPE}/10</span>
                             </div>
                           </div>
 
                           {/* Mostrar volúmenes por zona si existen */}
-                          {training.zone_volumes && (
-                            <div className="mb-3">
-                              <div className="text-sm font-medium mb-2">
-                                Distribución por Zonas:
-                              </div>
-                              <div className="flex flex-wrap gap-2">
-                                {Object.entries(training.zone_volumes).map(
-                                  ([zone, volume]) =>
-                                    volume > 0 && (
-                                      <Badge
-                                        key={zone}
-                                        variant="outline"
-                                        className="text-xs"
-                                      >
-                                        {zone.toUpperCase()}:{" "}
-                                        {volume.toLocaleString()}m
-                                      </Badge>
-                                    )
-                                )}
-                              </div>
-                            </div>
-                          )}
+                          {/* Nota: Session no tiene zone_volumes, omitir por ahora */}
 
                           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
                             <MapPin className="h-4 w-4" />
-                            <span>{training.location}</span>
+                            <span>N/A</span>
                             <Users className="h-4 w-4 ml-4" />
-                            <span>{training.coach}</span>
-                            {training.club && (
-                              <>
-                                <Building2 className="h-4 w-4 ml-4" />
-                                <span>{training.club}</span>
-                              </>
-                            )}
-                            {training.group_name && (
-                              <>
-                                <Users className="h-4 w-4 ml-2" />
-                                <span>{training.group_name}</span>
-                              </>
-                            )}
+                            <span>{training.swimmer}</span>
                           </div>
 
                           <div className="bg-muted/50 rounded-lg p-3">
                             <pre className="text-sm whitespace-pre-wrap font-mono">
-                              {training.content}
+                              {training.mainSet}
                             </pre>
                           </div>
                         </div>

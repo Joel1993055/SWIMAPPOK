@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/card";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useAICoach } from "@/lib/contexts/ai-coach-context";
+// NUEVO: Importar el store unificado
+import { useAICoachStore } from "@/lib/store/unified";
 import {
   Activity,
   BarChart3,
@@ -25,10 +27,42 @@ import {
   Target,
   TrendingUp,
 } from "lucide-react";
+import React from "react";
 
 function AICoachContent() {
+  // MANTENER: Context existente
   const { isEnabled, currentAnalysis, adviceHistory, toggleAICoach } =
     useAICoach();
+  
+  // NUEVO: Store unificado
+  const { 
+    advice: storeAdvice, 
+    analysis: storeAnalysis, 
+    addAdvice, 
+    setAnalysis 
+  } = useAICoachStore();
+
+  // NUEVO: Sincronizar datos del context al store
+  React.useEffect(() => {
+    if (currentAnalysis && !storeAnalysis) {
+      const mappedAnalysis = {
+        overallScore: currentAnalysis.overallScore,
+        strengths: currentAnalysis.strengths,
+        weaknesses: currentAnalysis.improvements || [],
+        recommendations: currentAnalysis.recommendations?.map((rec) =>
+          typeof rec === 'string' ? rec : rec.message || ''
+        ) || [],
+      };
+      setAnalysis(mappedAnalysis);
+    }
+  }, [currentAnalysis, storeAnalysis, setAnalysis]);
+
+  // NUEVO: Sincronizar advice history al store
+  React.useEffect(() => {
+    if (adviceHistory.length > 0 && storeAdvice.length === 0) {
+      adviceHistory.forEach(advice => addAdvice(advice));
+    }
+  }, [adviceHistory, storeAdvice, addAdvice]);
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">

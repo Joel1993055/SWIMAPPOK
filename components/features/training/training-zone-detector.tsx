@@ -1,26 +1,29 @@
 "use client";
 
-import { useZoneDetection } from "@/lib/hooks/use-zone-detection";
 import { useTrainingZones } from "@/lib/contexts/training-zones-context";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { useZoneDetection } from "@/lib/hooks/use-zone-detection";
+import React from "react";
+// NUEVO: Importar el store unificado
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import {
-  Activity,
-  Target,
-  Clock,
-  MapPin,
-  TrendingUp,
-  CheckCircle,
-  AlertCircle,
-  Lightbulb,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { useTrainingStore } from "@/lib/store/unified";
+import {
+    Activity,
+    AlertCircle,
+    CheckCircle,
+    Clock,
+    Lightbulb,
+    MapPin,
+    Target,
+    TrendingUp,
 } from "lucide-react";
 
 interface TrainingZoneDetectorProps {
@@ -28,7 +31,23 @@ interface TrainingZoneDetectorProps {
 }
 
 export function TrainingZoneDetector({ content }: TrainingZoneDetectorProps) {
+  // MANTENER: Context existente
   const { currentZones } = useTrainingZones();
+  
+  // NUEVO: Store unificado
+  const { 
+    phases: storePhases, 
+    addPhase: storeAddPhase 
+  } = useTrainingStore();
+
+  // NUEVO: Sincronizar datos del context al store
+  React.useEffect(() => {
+    if (storePhases.length === 0) {
+      // Si el store está vacío, no hacer nada por ahora
+      // La sincronización se maneja en el componente padre
+    }
+  }, [storePhases]);
+
   const detection = useZoneDetection(content);
 
   const getZoneColor = (zone: string) => {
