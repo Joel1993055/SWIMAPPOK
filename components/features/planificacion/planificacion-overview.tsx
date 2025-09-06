@@ -1,51 +1,53 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Target,
-  Calendar,
-  TrendingUp,
-  Activity,
-  Edit,
-  Plus,
-  Save,
-  X,
-  Trophy,
-  MapPin,
-  Clock,
-  Trash2,
-} from "lucide-react";
-import { useTrainingZones } from "@/lib/contexts/training-zones-context";
-import { useTrainingPhases } from "@/lib/contexts/training-phases-context";
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import { useCompetitions } from "@/lib/contexts/competitions-context";
+import { useTrainingPhases } from "@/lib/contexts/training-phases-context";
+import { useTrainingZones } from "@/lib/contexts/training-zones-context";
+import {
+    Activity,
+    Calendar,
+    Clock,
+    Edit,
+    MapPin,
+    Plus,
+    Save,
+    Target,
+    Trash2,
+    TrendingUp,
+    Trophy,
+    X,
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
+// NUEVO: Importar el store unificado
+import { useCompetitionsStore, useTrainingStore } from "@/lib/store/unified";
 
 // Tipos de datos
 interface TrainingPhase {
@@ -260,6 +262,8 @@ const competitions: Competition[] = [
 
 export function PlanificacionOverview() {
   const { currentZones } = useTrainingZones();
+  
+  // MANTENER: Context existente
   const { phases, addPhase, updatePhase, deletePhase } = useTrainingPhases();
   const {
     competitions,
@@ -268,6 +272,40 @@ export function PlanificacionOverview() {
     deleteCompetition,
     getMainCompetition,
   } = useCompetitions();
+
+  // NUEVO: Store unificado
+  const { 
+    phases: storePhases, 
+    addPhase: storeAddPhase, 
+    updatePhase: storeUpdatePhase, 
+    deletePhase: storeDeletePhase 
+  } = useTrainingStore();
+  
+  const { 
+    competitions: storeCompetitions, 
+    addCompetition: storeAddCompetition, 
+    updateCompetition: storeUpdateCompetition, 
+    deleteCompetition: storeDeleteCompetition 
+  } = useCompetitionsStore();
+  // NUEVO: Funciones de sincronización
+  const syncPhasesToStore = () => {
+    if (phases.length > 0 && storePhases.length === 0) {
+      phases.forEach(phase => storeAddPhase(phase));
+    }
+  };
+
+  const syncCompetitionsToStore = () => {
+    if (competitions.length > 0 && storeCompetitions.length === 0) {
+      competitions.forEach(competition => storeAddCompetition(competition));
+    }
+  };
+
+  // Ejecutar sincronización
+  React.useEffect(() => {
+    syncPhasesToStore();
+    syncCompetitionsToStore();
+  }, [phases, competitions, storePhases, storeCompetitions, storeAddPhase, storeAddCompetition]);
+
   const [selectedPhase, setSelectedPhase] = useState<string>("base");
   const [selectedCompetition, setSelectedCompetition] = useState<string>(
     competitions.length > 0 ? competitions[0].id : ""

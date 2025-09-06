@@ -2,15 +2,36 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Target, Users, Activity, Calendar, Trophy } from "lucide-react";
-import { useState, useEffect } from "react";
-import { useTrainingPhases } from "@/lib/contexts/training-phases-context";
-import { useCompetitions } from "@/lib/contexts/competitions-context";
+import type { Session as SupabaseSession } from "@/lib/actions/sessions";
 import { getSessions } from "@/lib/actions/sessions";
-import type { Session } from "@/lib/actions/sessions";
+import { useCompetitions } from "@/lib/contexts/competitions-context";
+import { useTrainingPhases } from "@/lib/contexts/training-phases-context";
+import { Activity, Calendar, Target, Trophy, Users } from "lucide-react";
+import { useEffect, useState } from "react";
+// NUEVO: Importar el store unificado
+import { useSessionsStore } from "@/lib/store/unified";
+import type { Session } from "@/lib/types/session";
+
+// Función para mapear SupabaseSession a Session
+const mapSupabaseToSession = (supabaseSession: SupabaseSession): Session => ({
+  id: supabaseSession.id,
+  date: supabaseSession.date,
+  swimmer: supabaseSession.coach || "N/A",
+  distance: supabaseSession.distance,
+  durationMin: supabaseSession.duration,
+  stroke: supabaseSession.stroke as "freestyle" | "backstroke" | "breaststroke" | "butterfly" | "mixed",
+  sessionType: supabaseSession.type as "aerobic" | "threshold" | "speed" | "technique" | "recovery",
+  mainSet: supabaseSession.content || "",
+  RPE: supabaseSession.rpe as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10,
+  notes: supabaseSession.objective || "",
+});
 
 export function KPICards() {
-  const [sessions, setSessions] = useState<Session[]>([]);
+  // NUEVO: Usar el store unificado
+  const { sessions: storeSessions, isLoading: storeLoading, setSessions } = useSessionsStore();
+  
+  // MANTENER: Estado local para compatibilidad
+  const [sessions, setSessionsLocal] = useState<Session[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Cargar sesiones reales desde Supabase
@@ -18,9 +39,13 @@ export function KPICards() {
     const loadSessions = async () => {
       try {
         const data = await getSessions();
-        setSessions(data);
+        const mappedSessions = data.map(mapSupabaseToSession);
+        setSessionsLocal(mappedSessions);
+        // NUEVO: Sincronizar con el store
+        setSessions(mappedSessions);
       } catch (error) {
         console.error("Error cargando sesiones:", error);
+        setSessionsLocal([]);
         setSessions([]);
       } finally {
         setIsLoading(false);
@@ -28,7 +53,7 @@ export function KPICards() {
     };
 
     loadSessions();
-  }, []);
+  }, [setSessions]);
 
   // Calcular estadísticas desde datos reales
   // const stats = {

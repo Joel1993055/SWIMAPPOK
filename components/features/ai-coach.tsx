@@ -1,37 +1,40 @@
 "use client";
 
 import { useAICoach } from "@/lib/contexts/ai-coach-context";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+// NUEVO: Importar el store unificado
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
-  Bot,
-  Brain,
-  TrendingUp,
-  Target,
-  Heart,
-  Lightbulb,
-  CheckCircle,
-  AlertTriangle,
-  Sparkles,
-  Settings,
-  X,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { useAICoachStore } from "@/lib/store/unified";
+import {
+    AlertTriangle,
+    Bot,
+    Brain,
+    CheckCircle,
+    Heart,
+    Lightbulb,
+    Settings,
+    Sparkles,
+    Target,
+    TrendingUp,
+    X,
 } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 
 interface AICoachProps {
   className?: string;
 }
 
 export function AICoach({ className }: AICoachProps) {
+  // MANTENER: Context existente
   const {
     isEnabled,
     currentAnalysis,
@@ -40,8 +43,39 @@ export function AICoach({ className }: AICoachProps) {
     getPersonalizedAdvice,
   } = useAICoach();
 
+  // NUEVO: Store unificado
+  const { 
+    advice: storeAdvice, 
+    analysis: storeAnalysis, 
+    addAdvice, 
+    setAnalysis 
+  } = useAICoachStore();
+
   const [isExpanded, setIsExpanded] = useState(false);
   const [contextInput, setContextInput] = useState("");
+
+  // NUEVO: Función para mapear AICoachAnalysis del context al store
+  const mapContextAnalysisToStore = (contextAnalysis: {
+    overallScore: number;
+    strengths: string[];
+    improvements?: string[];
+    recommendations?: Array<{ message?: string } | string>;
+  }) => ({
+    overallScore: contextAnalysis.overallScore,
+    strengths: contextAnalysis.strengths,
+    weaknesses: contextAnalysis.improvements || [], // Mapear improvements a weaknesses
+    recommendations: contextAnalysis.recommendations?.map((rec) => 
+      typeof rec === 'string' ? rec : rec.message || ''
+    ) || [],
+  });
+
+  // Ejecutar sincronización cuando cambie el análisis
+  React.useEffect(() => {
+    if (currentAnalysis && !storeAnalysis) {
+      const mappedAnalysis = mapContextAnalysisToStore(currentAnalysis);
+      setAnalysis(mappedAnalysis);
+    }
+  }, [currentAnalysis, storeAnalysis, setAnalysis]);
 
   const getAdviceIcon = (type: string) => {
     switch (type) {
