@@ -58,13 +58,3 @@
 @utility fade-right-lg {
   mask-image: linear-gradient(to left, transparent 15%, black 100%);
 }
-
-/* Container utilities */
-@utility max-w-container {
-  max-width: var(--spacing-container);
-}
-
-/* Radial gradients */
-@utility bg-radial {
-  background: radial-gradient(circle, var(--tw-gradient-stops));
-}
