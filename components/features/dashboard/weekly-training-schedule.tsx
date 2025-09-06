@@ -1,20 +1,20 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, MapPin, Plus, Activity } from "lucide-react";
-import { format, startOfWeek, addDays, isToday, isSameDay } from "date-fns";
-import { es } from "date-fns/locale";
-import { useState, useEffect } from "react";
-import { getSessions } from "@/lib/actions/sessions";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 import type { Session } from "@/lib/actions/sessions";
+import { getSessions } from "@/lib/actions/sessions";
+import { addDays, format, isSameDay, isToday, startOfWeek } from "date-fns";
+import { es } from "date-fns/locale";
+import { Activity, Calendar, Clock, MapPin, Plus } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface TrainingSession {
   id: string;
@@ -40,7 +40,6 @@ export function WeeklyTrainingSchedule({
   weekStart = new Date(),
 }: WeeklyTrainingScheduleProps) {
   const [sessions, setSessions] = useState<Session[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   const startWeek = startOfWeek(weekStart, { weekStartsOn: 1 }); // Lunes
   const days = Array.from({ length: 7 }, (_, i) => addDays(startWeek, i));
@@ -65,7 +64,7 @@ export function WeeklyTrainingSchedule({
         console.error("Error cargando sesiones:", error);
         setSessions([]);
       } finally {
-        setIsLoading(false);
+        // Loading completado
       }
     };
 

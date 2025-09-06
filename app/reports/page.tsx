@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { SiteHeader } from "@/components/layout/site-header";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -20,30 +20,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  ClipboardListIcon,
-  Download,
-  Printer,
-  Calendar,
-  Clock,
-  Target,
-  Activity,
-  BarChart3,
-  FileText,
-  X,
-  Check,
-  Settings,
-  Layout,
-  FileImage,
-  Eye,
-} from "lucide-react";
+import type { Session } from "@/lib/actions/sessions";
+import { getSessions } from "@/lib/actions/sessions";
 import { format, subDays, subMonths, subWeeks } from "date-fns";
 import { es } from "date-fns/locale";
-import { getSessions } from "@/lib/actions/sessions";
-import type { Session } from "@/lib/actions/sessions";
+import {
+  Activity,
+  BarChart3,
+  Calendar,
+  Check,
+  ClipboardListIcon,
+  Clock,
+  Download,
+  Eye,
+  FileImage,
+  FileText,
+  Layout,
+  Printer,
+  Settings,
+  Target,
+  X,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 
 // Tipos de datos
 interface ChartData {
@@ -101,9 +101,6 @@ function ReportsContent() {
   );
   const [selectedTemplate, setSelectedTemplate] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [reportType, setReportType] = useState<
-    "custom" | "weekly-previous" | "weekly-next"
-  >("custom");
 
   // Cargar sesiones reales
   useEffect(() => {

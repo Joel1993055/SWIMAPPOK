@@ -1,19 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Link from "next/link";
 import { signInAction } from "@/lib/actions/auth";
-import { LogIn, ArrowLeft } from "lucide-react";
+import { ArrowLeft, LogIn } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 
 export default function SignInPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +33,7 @@ export default function SignInPage() {
         setMessage({ type: "error", text: result.error });
       }
       // Si no hay error, la función redirect() se encarga de redirigir
-    } catch (error) {
+    } catch {
       setMessage({
         type: "error",
         text: "Error inesperado. Inténtalo de nuevo.",

@@ -1,18 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { signUpAction } from "@/lib/actions/auth";
 import { UserPlus } from "lucide-react";
+import { useState } from "react";
 
 interface SignUpDialogProps {
   open: boolean;
@@ -46,7 +46,7 @@ export function SignUpDialog({
           text: result.success || "Usuario registrado correctamente",
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
         type: "error",
         text: "Error inesperado. Inténtalo de nuevo.",

@@ -50,7 +50,7 @@ import {
   Trash2,
   Users
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 // Datos de ejemplo de entrenamientos guardados (comentado para evitar warning)
 /*
@@ -180,11 +180,7 @@ function TrainingContent() {
   }, [trainingDate]);
 
   // Cargar entrenamientos al montar el componente
-  useEffect(() => {
-    loadTrainings();
-  }, []);
-
-  const loadTrainings = async () => {
+  const loadTrainings = useCallback(async () => {
     try {
       setIsLoading(true);
       const trainings = await getSessions();
@@ -198,7 +194,11 @@ function TrainingContent() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [setSessions]);
+
+  useEffect(() => {
+    loadTrainings();
+  }, [loadTrainings]);
 
   // Calcular total de metros de todas las filas
   const totalMeters = zoneVolumes.reduce((total, row) => {

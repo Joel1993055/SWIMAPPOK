@@ -1,18 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { signInAction } from "@/lib/actions/auth";
 import { LogIn } from "lucide-react";
+import { useState } from "react";
 
 interface SignInDialogProps {
   open: boolean;
@@ -42,7 +42,7 @@ export function SignInDialog({
         setMessage({ type: "error", text: result.error });
       }
       // Si no hay error, la función redirect() se encarga de redirigir
-    } catch (error) {
+    } catch {
       setMessage({
         type: "error",
         text: "Error inesperado. Inténtalo de nuevo.",

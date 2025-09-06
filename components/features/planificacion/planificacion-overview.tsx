@@ -45,7 +45,7 @@ import {
     Trophy,
     X,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 // NUEVO: Importar el store unificado
 import { useCompetitionsStore, useTrainingStore } from "@/lib/store/unified";
 
@@ -266,7 +266,6 @@ export function PlanificacionOverview() {
   // MANTENER: Context existente
   const { phases, addPhase, updatePhase, deletePhase } = useTrainingPhases();
   const {
-    competitions,
     addCompetition,
     updateCompetition,
     deleteCompetition,
@@ -284,23 +283,23 @@ export function PlanificacionOverview() {
     addCompetition: storeAddCompetition 
   } = useCompetitionsStore();
   // NUEVO: Funciones de sincronización
-  const syncPhasesToStore = () => {
+  const syncPhasesToStore = useCallback(() => {
     if (phases.length > 0 && storePhases.length === 0) {
       phases.forEach(phase => storeAddPhase(phase));
     }
-  };
+  }, [phases, storePhases, storeAddPhase]);
 
-  const syncCompetitionsToStore = () => {
+  const syncCompetitionsToStore = useCallback(() => {
     if (competitions.length > 0 && storeCompetitions.length === 0) {
       competitions.forEach(competition => storeAddCompetition(competition));
     }
-  };
+  }, [storeCompetitions, storeAddCompetition]);
 
   // Ejecutar sincronización
   React.useEffect(() => {
     syncPhasesToStore();
     syncCompetitionsToStore();
-  }, [phases, competitions, storePhases, storeCompetitions, storeAddPhase, storeAddCompetition]);
+  }, [syncPhasesToStore, syncCompetitionsToStore]);
 
   const [selectedPhase, setSelectedPhase] = useState<string>("base");
   const [selectedCompetition, setSelectedCompetition] = useState<string>(
@@ -351,7 +350,7 @@ export function PlanificacionOverview() {
   // Sincronizar la competición principal cuando cambien las competiciones
   useEffect(() => {
     setMainCompetition(getMainCompetition());
-  }, [competitions, getMainCompetition]);
+  }, [getMainCompetition]);
 
   // Reiniciar formulario cuando se abra el modal de agregar fase
   useEffect(() => {

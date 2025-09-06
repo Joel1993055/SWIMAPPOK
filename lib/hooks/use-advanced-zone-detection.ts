@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 interface ZoneDetectionResult {
   zone: string;
@@ -348,7 +348,6 @@ class ZoneDetectionEngine {
     context: TrainingContext
   ): ZoneDetectionResult[] {
     const results: ZoneDetectionResult[] = [];
-    const text = content.toLowerCase();
 
     // Análisis por tipo de entrenamiento
     if (context.trainingType) {

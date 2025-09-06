@@ -60,7 +60,7 @@ export function KPICards() {
   const [selectedDistancePeriod, setSelectedDistancePeriod] = useState<
     "year" | "month" | "week"
   >("year");
-  const { getCurrentPhase, getPhaseProgress } = useTrainingPhases();
+  const { getCurrentPhase } = useTrainingPhases();
   const { competitions } = useCompetitions();
 
   // Calcular distancia por período usando datos reales
@@ -200,7 +200,6 @@ export function KPICards() {
   // Calcular estado del ciclo de entrenamiento usando las fases reales
   const getTrainingCycleStatus = () => {
     const currentPhase = getCurrentPhase();
-    const cycleProgress = getPhaseProgress();
 
     if (!currentPhase) {
       return {

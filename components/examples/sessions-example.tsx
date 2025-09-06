@@ -14,8 +14,6 @@ export function SessionsExample() {
     isLoading,
     error,
     addSession,
-    updateSession,
-    deleteSession,
     getTotalDistance,
     getTotalSessions,
   } = useSessionsStore();

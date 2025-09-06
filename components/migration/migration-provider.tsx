@@ -13,7 +13,6 @@ interface MigrationProviderProps {
 
 export function MigrationProvider({ children }: MigrationProviderProps) {
   const [isMigrating, setIsMigrating] = useState(true);
-  const [migrationComplete, setMigrationComplete] = useState(false);
 
   // Ejecutar migración
   useCompleteMigration();
@@ -22,7 +21,6 @@ export function MigrationProvider({ children }: MigrationProviderProps) {
     // Simular tiempo de migración
     const timer = setTimeout(() => {
       setIsMigrating(false);
-      setMigrationComplete(true);
       console.log('🎉 Migración completada exitosamente');
     }, 1000);
 

@@ -45,9 +45,7 @@ export function AICoach({ className }: AICoachProps) {
 
   // NUEVO: Store unificado
   const { 
-    advice: storeAdvice, 
     analysis: storeAnalysis, 
-    addAdvice, 
     setAnalysis 
   } = useAICoachStore();
 

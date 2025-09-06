@@ -1,38 +1,38 @@
 "use client";
 
-import * as React from "react";
-import { useState, useEffect } from "react";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from "@/components/ui/card";
 import {
-  ChartConfig,
-  ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
-  ChartTooltip,
-  ChartTooltipContent,
+    ChartConfig,
+    ChartContainer,
+    ChartLegend,
+    ChartLegendContent,
+    ChartTooltip,
+    ChartTooltipContent,
 } from "@/components/ui/chart";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
-import { getSessions } from "@/lib/actions/sessions";
 import type { Session } from "@/lib/actions/sessions";
+import { getSessions } from "@/lib/actions/sessions";
 import {
-  calculateZoneVolumes,
-  metersToKm,
-  zoneLabels,
-  zoneColors,
+    calculateZoneVolumes,
+    metersToKm,
+    zoneColors,
+    zoneLabels,
 } from "@/lib/utils/zone-detection";
+import * as React from "react";
+import { useEffect, useState } from "react";
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 
 // Función para generar datos reales basados en las sesiones usando sistema unificado de zonas
 const generateRealData = (sessions: Session[], period: string) => {
@@ -235,8 +235,7 @@ const generateDataUntilToday = () => {
   return data;
 };
 
-// Generar los datos completos
-const chartData = generateDataUntilToday();
+// Generar los datos completos (se hace dinámicamente en el componente)
 
 // Configuración del gráfico con las 5 zonas
 const chartConfig = {

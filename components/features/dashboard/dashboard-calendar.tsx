@@ -308,7 +308,7 @@ export function DashboardCalendar() {
                       {/* Puntos de competiciones */}
                       {competitionsOnDay.length > 0 && (
                         <>
-                          {competitionsOnDay.map((comp, i) => (
+                          {competitionsOnDay.map((comp) => (
                             <div
                               key={`comp-${comp.id}`}
                               className={`w-1.5 h-1.5 rounded-full ${
