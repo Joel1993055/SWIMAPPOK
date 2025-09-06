@@ -1,18 +1,63 @@
-import { Section } from "../../ui/section";
-import { Button } from "../../ui/button";
-import { siteConfig } from "@/config/site";
-import Glow from "../../ui/glow";
+import { ReactNode } from "react";
 
-export default function CTA() {
+import { siteConfig } from "@/config/site";
+import { cn } from "@/lib/utils";
+
+import { Button, type ButtonProps } from "../../ui/button";
+import Glow from "../../ui/glow";
+import { Section } from "../../ui/section";
+
+interface CTAButtonProps {
+  href: string;
+  text: string;
+  variant?: ButtonProps["variant"];
+  icon?: ReactNode;
+  iconRight?: ReactNode;
+}
+
+interface CTAProps {
+  title?: string;
+  buttons?: CTAButtonProps[] | false;
+  className?: string;
+}
+
+export default function CTA({
+  title = "Start building",
+  buttons = [
+    {
+      href: siteConfig.getStartedUrl,
+      text: "Get Started",
+      variant: "default",
+    },
+  ],
+  className,
+}: CTAProps) {
   return (
-    <Section className="group relative overflow-hidden">
-      <div className="relative z-10 mx-auto flex max-w-container flex-col items-center gap-6 text-center sm:gap-8">
-        <h2 className="text-3xl font-semibold sm:text-5xl">Start building</h2>
-        <Button variant="default" size="lg" asChild>
-          <a href={siteConfig.getStartedUrl}>Get Started</a>
-        </Button>
+    <Section className={cn("group relative overflow-hidden", className)}>
+      <div className="max-w-container relative z-10 mx-auto flex flex-col items-center gap-6 text-center sm:gap-8">
+        <h2 className="max-w-[640px] text-3xl leading-tight font-semibold sm:text-5xl sm:leading-tight">
+          {title}
+        </h2>
+        {buttons !== false && buttons.length > 0 && (
+          <div className="flex justify-center gap-4">
+            {buttons.map((button, index) => (
+              <Button
+                key={index}
+                variant={button.variant || "default"}
+                size="lg"
+                asChild
+              >
+                <a href={button.href}>
+                  {button.icon}
+                  {button.text}
+                  {button.iconRight}
+                </a>
+              </Button>
+            ))}
+          </div>
+        )}
       </div>
-      <div className="absolute left-0 top-0 h-full w-full translate-y-[1rem] opacity-80 transition-all duration-500 ease-in-out group-hover:translate-y-[-2rem] group-hover:opacity-100">
+      <div className="absolute top-0 left-0 h-full w-full translate-y-[1rem] opacity-80 transition-all duration-500 ease-in-out group-hover:translate-y-[-2rem] group-hover:opacity-100">
         <Glow variant="bottom" />
       </div>
     </Section>

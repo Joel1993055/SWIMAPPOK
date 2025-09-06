@@ -1,170 +1,114 @@
-import { cn } from "@/lib/utils";
-import { Section } from "../../ui/section";
-import { Button } from "../../ui/button";
-import { CircleCheckBig, User, Users } from "lucide-react";
-import Link from "next/link";
+import { User, Users } from "lucide-react";
+
 import { siteConfig } from "@/config/site";
+import { cn } from "@/lib/utils";
 
-type Plan = {
-  name: string;
-  icon?: React.ReactNode;
-  description: string;
-  price: number;
-  priceNote: string;
-  cta: {
-    variant: "glow" | "default";
-    label: string;
-    href: string;
-  };
-  features: string[];
-  featured: boolean;
-  classes?: string;
-};
+import { PricingColumn, PricingColumnProps } from "../../ui/pricing-column";
+import { Section } from "../../ui/section";
 
-const plans: Plan[] = [
-  {
-    name: "Free",
-    description: "For everyone starting out on a website for their big idea",
-    price: 0,
-    priceNote: "Free and open-source forever.",
-    cta: {
+interface PricingProps {
+  title?: string | false;
+  description?: string | false;
+  plans?: PricingColumnProps[] | false;
+  className?: string;
+}
+
+export default function Pricing({
+  title = "Build your dream landing page, today.",
+  description = "Get lifetime access to all the components. No recurring fees. Just simple, transparent pricing.",
+  plans = [
+    {
+      name: "Free",
+      description: "For everyone starting out on a website for their big idea",
+      price: 0,
+      priceNote: "Free and open-source forever.",
+      cta: {
+        variant: "glow",
+        label: "Get started for free",
+        href: "/docs/getting-started/introduction",
+      },
+      features: [
+        "1 website template",
+        "9 blocks and sections",
+        "4 custom animations",
+      ],
+      variant: "default",
+      className: "hidden lg:flex",
+    },
+    {
+      name: "Pro",
+      icon: <User className="size-4" />,
+      description: "For early-stage founders, solopreneurs and indie devs",
+      price: 99,
+      priceNote: "Lifetime access. Free updates. No recurring fees.",
+      cta: {
+        variant: "default",
+        label: "Get all-access",
+        href: siteConfig.pricing.pro,
+      },
+      features: [
+        `${siteConfig.stats.websiteTemplates} website templates`,
+        `${siteConfig.stats.appTemplates} app templates`,
+        `${siteConfig.stats.sections} blocks and sections`,
+        `${siteConfig.stats.illustrations} illustrations`,
+        `${siteConfig.stats.animations} custom animations`,
+      ],
+      variant: "glow-brand",
+    },
+    {
+      name: "Pro Team",
+      icon: <Users className="size-4" />,
+      description: "For teams and agencies working on cool products together",
+      price: 499,
+      priceNote: "Lifetime access. Free updates. No recurring fees.",
+      cta: {
+        variant: "default",
+        label: "Get all-access for your team",
+        href: siteConfig.pricing.team,
+      },
+      features: [
+        "All the templates, components and sections available for your entire team",
+      ],
       variant: "glow",
-      label: "Get started for free",
-      href: "/docs/getting-started/introduction",
     },
-    features: [
-      "9 landing page sections",
-      "36 components",
-      "5 custom animations",
-    ],
-    featured: false,
-    classes: "glass-1 to-transparent dark:glass-2 hidden lg:flex",
-  },
-  {
-    name: "Pro",
-    icon: <User className="h-4 w-4" />,
-    description: "For early-stage founders, solopreneurs and indie devs",
-    price: 99,
-    priceNote: "Lifetime access. Free updates. No recurring fees.",
-    cta: {
-      variant: "default",
-      label: "Get all-access",
-      href: siteConfig.pricing.pro,
-    },
-    features: [
-      `${siteConfig.stats.sections} landing page sections`,
-      `${siteConfig.stats.components} components`,
-      `${siteConfig.stats.illustrations} illustrations`,
-      `${siteConfig.stats.animations} custom animations`,
-    ],
-    featured: true,
-    classes:
-      "glass-3 from-card/100 to-card/100 dark:glass-4 after:content-[''] after:absolute after:-top-[128px] after:left-1/2 after:h-[128px] after:w-[100%] after:max-w-[960px] after:-translate-x-1/2 after:rounded-[50%] after:bg-brand-foreground/70 after:blur-[72px]",
-  },
-  {
-    name: "Pro Team",
-    icon: <Users className="h-4 w-4" />,
-    description: "For teams and agencies working on cool products together",
-    price: 499,
-    priceNote: "Lifetime access. Free updates. No recurring fees.",
-    cta: {
-      variant: "default",
-      label: "Get all-access for your team",
-      href: siteConfig.pricing.team,
-    },
-    features: [
-      "All the templates, components and sections available for your entire team",
-    ],
-    featured: false,
-    classes:
-      "glass-2 to-trasparent dark:glass-3 after:content-[''] after:absolute after:-top-[128px] after:left-1/2 after:h-[128px] after:w-[100%] after:max-w-[960px] after:-translate-x-1/2 after:rounded-[50%] dark:after:bg-foreground/30 after:blur-[72px]",
-  },
-];
-
-export default function Pricing() {
+  ],
+  className = "",
+}: PricingProps) {
   return (
-    <Section>
+    <Section className={cn(className)}>
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-12">
-        <div className="flex flex-col items-center gap-4 px-4 text-center sm:gap-8">
-          <h2 className="text-3xl font-semibold leading-tight sm:text-5xl sm:leading-tight">
-            Build your dream landing page, today.
-          </h2>
-          <p className="text-md max-w-[600px] font-medium text-muted-foreground sm:text-xl">
-            Get lifetime access to all the components. No recurring fees. Just
-            simple, transparent pricing.
-          </p>
-        </div>
-        <div className="mx-auto grid max-w-container grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {plans.map((plan) => (
-            <div
-              key={plan.name}
-              className={cn(
-                "relative flex max-w-container flex-col gap-6 overflow-hidden rounded-2xl p-8 shadow-xl",
-                plan.classes,
-              )}
-            >
-              <hr
-                className={cn(
-                  "absolute left-[10%] top-0 h-[1px] w-[80%] border-0 bg-gradient-to-r from-transparent via-foreground/60 to-transparent",
-                  plan.featured && "via-brand",
-                )}
+        {(title || description) && (
+          <div className="flex flex-col items-center gap-4 px-4 text-center sm:gap-8">
+            {title && (
+              <h2 className="text-3xl leading-tight font-semibold sm:text-5xl sm:leading-tight">
+                {title}
+              </h2>
+            )}
+            {description && (
+              <p className="text-md text-muted-foreground max-w-[600px] font-medium sm:text-xl">
+                {description}
+              </p>
+            )}
+          </div>
+        )}
+        {plans !== false && plans.length > 0 && (
+          <div className="max-w-container mx-auto grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {plans.map((plan) => (
+              <PricingColumn
+                key={plan.name}
+                name={plan.name}
+                icon={plan.icon}
+                description={plan.description}
+                price={plan.price}
+                priceNote={plan.priceNote}
+                cta={plan.cta}
+                features={plan.features}
+                variant={plan.variant}
+                className={plan.className}
               />
-              <div className="flex flex-col gap-7">
-                <div className="flex flex-col gap-2">
-                  <h2 className="flex items-center gap-2 font-bold">
-                    {plan.icon && (
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        {plan.icon}
-                      </div>
-                    )}
-                    {plan.name}
-                  </h2>
-                  <p className="max-w-[220px] text-sm text-muted-foreground">
-                    {plan.description}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3 lg:flex-col lg:items-start xl:flex-row xl:items-center">
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-bold text-muted-foreground">
-                      $
-                    </span>
-                    <span className="text-6xl font-bold">{plan.price}</span>
-                  </div>
-                  <div className="flex min-h-[40px] flex-col">
-                    {plan.price > 0 && (
-                      <>
-                        <span className="text-sm">one-time payment</span>
-                        <span className="text-sm text-muted-foreground">
-                          plus local taxes
-                        </span>
-                      </>
-                    )}
-                  </div>
-                </div>
-                <Button variant={plan.cta.variant} size="lg" asChild>
-                  <Link href={plan.cta.href}>{plan.cta.label}</Link>
-                </Button>
-                <p className="min-h-[40px] max-w-[220px] text-sm text-muted-foreground">
-                  {plan.priceNote}
-                </p>
-                <hr className="border-input" />
-              </div>
-              <div>
-                <ul className="flex flex-col gap-2">
-                  {plan.features.map((feature) => (
-                    <li
-                      key={feature}
-                      className="flex items-center gap-2 text-sm"
-                    >
-                      <CircleCheckBig className="h-4 w-4 shrink-0 text-muted-foreground" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </Section>
   );

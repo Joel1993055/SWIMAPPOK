@@ -1,51 +1,45 @@
 import * as React from "react";
+
 import { cn } from "@/lib/utils";
 
-const Navbar = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
-  ({ className, ...props }, ref) => (
+function Navbar({ className, ...props }: React.ComponentProps<"nav">) {
+  return (
     <nav
+      data-slot="navbar"
       className={cn("flex items-center justify-between py-4", className)}
       {...props}
-      ref={ref}
     />
-  )
-);
-Navbar.displayName = "Navbar";
+  );
+}
 
-const NavbarLeft = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <nav
-    className={cn("flex items-center gap-4 justify-start", className)}
-    {...props}
-    ref={ref}
-  />
-));
-NavbarLeft.displayName = "NavbarLeft";
+function NavbarLeft({ className, ...props }: React.ComponentProps<"nav">) {
+  return (
+    <nav
+      data-slot="navbar-left"
+      className={cn("flex items-center justify-start gap-4", className)}
+      {...props}
+    />
+  );
+}
 
-const NavbarRight = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <nav
-    className={cn("flex items-center gap-4 justify-end", className)}
-    {...props}
-    ref={ref}
-  />
-));
-NavbarRight.displayName = "NavbarRight";
+function NavbarRight({ className, ...props }: React.ComponentProps<"nav">) {
+  return (
+    <nav
+      data-slot="navbar-right"
+      className={cn("flex items-center justify-end gap-4", className)}
+      {...props}
+    />
+  );
+}
 
-const NavbarCenter = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <nav
-    className={cn("flex items-center gap-4 justify-center", className)}
-    {...props}
-    ref={ref}
-  />
-));
-NavbarCenter.displayName = "NavbarCenter";
+function NavbarCenter({ className, ...props }: React.ComponentProps<"nav">) {
+  return (
+    <nav
+      data-slot="navbar-center"
+      className={cn("flex items-center justify-center gap-4", className)}
+      {...props}
+    />
+  );
+}
 
-export { Navbar, NavbarLeft, NavbarRight, NavbarCenter };
+export { Navbar, NavbarCenter,NavbarLeft, NavbarRight };

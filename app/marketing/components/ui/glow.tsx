@@ -1,6 +1,7 @@
-import React from "react";
-import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
+import React from "react";
+
+import { cn } from "@/lib/utils";
 
 const glowVariants = cva("absolute w-full", {
   variants: {
@@ -17,29 +18,31 @@ const glowVariants = cva("absolute w-full", {
   },
 });
 
-const Glow = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof glowVariants>
->(({ className, variant, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(glowVariants({ variant }), className)}
-    {...props}
-  >
+function Glow({
+  className,
+  variant,
+  ...props
+}: React.ComponentProps<"div"> & VariantProps<typeof glowVariants>) {
+  return (
     <div
-      className={cn(
-        "absolute left-1/2 h-[256px] w-[60%] -translate-x-1/2 scale-[2.5] rounded-[50%] bg-[radial-gradient(ellipse_at_center,_hsla(var(--brand-foreground)/.5)_10%,_hsla(var(--brand-foreground)/0)_60%)] opacity-20 sm:h-[512px] dark:opacity-100",
-        variant === "center" && "-translate-y-1/2",
-      )}
-    />
-    <div
-      className={cn(
-        "absolute left-1/2 h-[128px] w-[40%] -translate-x-1/2 scale-[2] rounded-[50%] bg-[radial-gradient(ellipse_at_center,_hsla(var(--brand)/.3)_10%,_hsla(var(--brand-foreground)/0)_60%)] opacity-20 sm:h-[256px] dark:opacity-100",
-        variant === "center" && "-translate-y-1/2",
-      )}
-    />
-  </div>
-));
-Glow.displayName = "Glow";
+      data-slot="glow"
+      className={cn(glowVariants({ variant }), className)}
+      {...props}
+    >
+      <div
+        className={cn(
+          "from-brand-foreground/50 to-brand-foreground/0 absolute left-1/2 h-[256px] w-[60%] -translate-x-1/2 scale-[2.5] rounded-[50%] bg-radial from-10% to-60% opacity-20 sm:h-[512px] dark:opacity-100",
+          variant === "center" && "-translate-y-1/2",
+        )}
+      />
+      <div
+        className={cn(
+          "from-brand/30 to-brand-foreground/0 absolute left-1/2 h-[128px] w-[40%] -translate-x-1/2 scale-200 rounded-[50%] bg-radial from-10% to-60% opacity-20 sm:h-[256px] dark:opacity-100",
+          variant === "center" && "-translate-y-1/2",
+        )}
+      />
+    </div>
+  );
+}
 
 export default Glow;

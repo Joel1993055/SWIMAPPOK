@@ -2,58 +2,50 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-const Item = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("flex flex-col gap-4 p-4 text-foreground", className)}
-    {...props}
-  />
-));
-Item.displayName = "Item";
+function Item({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="item"
+      className={cn("text-foreground flex flex-col gap-4 p-4", className)}
+      {...props}
+    />
+  );
+}
 
-const ItemTitle = React.forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLHeadingElement>
->(({ className, ...props }, ref) => (
-  <h3
-    ref={ref}
-    className={cn(
-      "text-sm font-semibold leading-none tracking-tight sm:text-base",
-      className,
-    )}
-    {...props}
-  />
-));
-ItemTitle.displayName = "ItemTitle";
+function ItemTitle({ className, ...props }: React.ComponentProps<"h3">) {
+  return (
+    <h3
+      data-slot="item-title"
+      className={cn(
+        "text-sm leading-none font-semibold tracking-tight sm:text-base",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
-const ItemDescription = React.forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "flex max-w-[240px] flex-col gap-2 text-balance text-sm text-muted-foreground",
-      className,
-    )}
-    {...props}
-  />
-));
-ItemDescription.displayName = "ItemDescription";
+function ItemDescription({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="item-description"
+      className={cn(
+        "text-muted-foreground flex max-w-[240px] flex-col gap-2 text-sm text-balance",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
-const ItemIcon = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("flex items-center self-start", className)}
-    {...props}
-  />
-));
-ItemIcon.displayName = "ItemIcon";
+function ItemIcon({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="item-icon"
+      className={cn("flex items-center self-start", className)}
+      {...props}
+    />
+  );
+}
 
-export { Item, ItemIcon, ItemTitle, ItemDescription };
+export { Item, ItemDescription,ItemIcon, ItemTitle };

@@ -1,32 +1,68 @@
+import { ReactNode } from "react";
+
+import { siteConfig } from "@/config/site";
+
 import Figma from "../../logos/figma";
 import React from "../../logos/react";
 import ShadcnUi from "../../logos/shadcn-ui";
 import Tailwind from "../../logos/tailwind";
 import TypeScript from "../../logos/typescript";
+import { Badge } from "../../ui/badge";
 import Logo from "../../ui/logo";
 import { Section } from "../../ui/section";
-import { Badge } from "../../ui/badge";
-import { siteConfig } from "@/config/site";
 
-export default function Logos() {
+interface LogosProps {
+  title?: string;
+  badge?: ReactNode | false;
+  logos?: ReactNode[] | false;
+  className?: string;
+}
+
+export default function Logos({
+  title = "Built with industry-standard tools and best practices",
+  badge = (
+    <Badge variant="outline" className="border-brand/30 text-brand">
+      Last updated: {siteConfig.stats.updated}
+    </Badge>
+  ),
+  logos = [
+    <Logo key="figma" image={Figma} name="Figma" />,
+    <Logo key="react" image={React} name="React" version="19.1.1" />,
+    <Logo
+      key="typescript"
+      image={TypeScript}
+      name="TypeScript"
+      version="5.9.2"
+    />,
+    <Logo
+      key="shadcn"
+      image={ShadcnUi}
+      name="Shadcn/ui"
+      version="2.10.0"
+      badge="New"
+    />,
+    <Logo
+      key="tailwind"
+      image={Tailwind}
+      name="Tailwind"
+      version="4.1"
+      badge="New"
+    />,
+  ],
+  className,
+}: LogosProps) {
   return (
-    <Section>
-      <div className="mx-auto flex max-w-container flex-col items-center gap-8 text-center">
+    <Section className={className}>
+      <div className="max-w-container mx-auto flex flex-col items-center gap-8 text-center">
         <div className="flex flex-col items-center gap-6">
-          <Badge variant="outline" className="border-brand/30 text-brand">
-            Last updated: {siteConfig.stats.updated}
-          </Badge>
-          <h2 className="text-md font-semibold sm:text-2xl">
-            Built with industry-standard tools and best practices
-          </h2>
+          {badge !== false && badge}
+          <h2 className="text-md font-semibold sm:text-2xl">{title}</h2>
         </div>
-        <div className="flex flex-wrap items-center justify-center gap-8">
-          <Logo image={Figma} name="Figma" />
-          <Logo image={React} name="React" version="19.0.0" />
-          <Logo image={TypeScript} name="TypeScript" version="5.6.3" />
-          <Logo image={ShadcnUi} name="Shadcn/ui" version="2.1.8" />
-          <Logo image={Tailwind} name="Tailwind" version="3.4.14" />
-        </div>
+        {logos !== false && logos.length > 0 && (
+          <div className="flex flex-wrap items-center justify-center gap-8">
+            {logos}
+          </div>
+        )}
       </div>
     </Section>
   );
