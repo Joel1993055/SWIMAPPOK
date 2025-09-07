@@ -1,16 +1,16 @@
 import {
-  BlocksIcon,
-  EclipseIcon,
-  FastForwardIcon,
-  LanguagesIcon,
-  MonitorSmartphoneIcon,
-  RocketIcon,
-  ScanFaceIcon,
-  SquarePenIcon,
+    BlocksIcon,
+    EclipseIcon,
+    FastForwardIcon,
+    LanguagesIcon,
+    MonitorSmartphoneIcon,
+    RocketIcon,
+    ScanFaceIcon,
+    SquarePenIcon,
 } from "lucide-react";
 import { ReactNode } from "react";
 
-import { Item, ItemDescription,ItemIcon, ItemTitle } from "../../ui/item";
+import { Item, ItemDescription, ItemIcon, ItemTitle } from "../../ui/item";
 import { Section } from "../../ui/section";
 
 interface ItemProps {
@@ -26,49 +26,46 @@ interface ItemsProps {
 }
 
 export default function Items({
-  title = "Everything you need. Nothing you don't.",
+  title = "Everything coaches need for swimming analysis",
   items = [
     {
-      title: "Accessibility first",
-      description: "Fully WCAG 2.0 compliant, made with best a11y practices",
+      title: "Análisis de Tiempos Detallado",
+      description: "Tablas completas con splits, tiempos por segmento y comparativas históricas de rendimiento",
       icon: <ScanFaceIcon className="size-5 stroke-1" />,
     },
     {
-      title: "Responsive design",
-      description: "Looks and works great on any device and screen size",
+      title: "Planificación de Entrenamientos",
+      description: "Herramientas para crear planes de entrenamiento personalizados con métricas específicas",
       icon: <MonitorSmartphoneIcon className="size-5 stroke-1" />,
     },
     {
-      title: "Light and dark mode",
-      description:
-        "Seamless switching between color schemes, 6 themes included",
+      title: "Seguimiento de Progreso",
+      description: "Gráficos y estadísticas que muestran la evolución del rendimiento de cada nadador",
       icon: <EclipseIcon className="size-5 stroke-1" />,
     },
     {
-      title: "Easy to customize",
-      description: "Flexible options to match your product or brand",
+      title: "Gestión de Datos de Competición",
+      description: "Registro y análisis de resultados de competiciones con métricas detalladas",
       icon: <BlocksIcon className="size-5 stroke-1" />,
     },
     {
-      title: "Top-level performance",
-      description: "Made for lightning-fast load times and smooth interactions",
+      title: "Comparativas de Rendimiento",
+      description: "Tablas comparativas entre nadadores, estilos y distancias para identificar fortalezas",
       icon: <FastForwardIcon className="size-5 stroke-1" />,
     },
     {
-      title: "Production ready",
-      description: "Thoroughly tested and launch-prepared",
+      title: "Reportes Automáticos",
+      description: "Generación automática de informes detallados para cada sesión de entrenamiento",
       icon: <RocketIcon className="size-5 stroke-1" />,
     },
     {
-      title: "Made for localisation",
-      description:
-        "Easy to implement support for multiple languages and regions",
+      title: "Gestión de Equipos",
+      description: "Herramientas para gestionar múltiples nadadores y organizar datos por categorías",
       icon: <LanguagesIcon className="size-5 stroke-1" />,
     },
     {
-      title: "CMS friendly",
-      description:
-        "Built to work with your any headless content management system",
+      title: "Predicción de Rendimiento",
+      description: "Algoritmos que predicen tiempos y sugieren mejoras basadas en datos históricos",
       icon: <SquarePenIcon className="size-5 stroke-1" />,
     },
   ],

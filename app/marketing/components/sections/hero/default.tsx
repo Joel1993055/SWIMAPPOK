@@ -4,7 +4,6 @@ import { ReactNode } from "react";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
-import Github from "../../logos/github";
 import { Badge } from "../../ui/badge";
 import { Button, type ButtonProps } from "../../ui/button";
 import { Mockup, MockupFrame } from "../../ui/mockup";
@@ -29,13 +28,13 @@ interface HeroProps {
 }
 
 export default function Hero({
-  title = "Give your big idea the design it deserves",
-  description = "Professionally designed blocks and templates built with React, Shadcn/ui and Tailwind that will help your product stand out.",
+  title = "Advanced Swimming Analytics for Every Coach",
+  description = "The most advanced platform to analyze, plan and improve your swimming performance. Professional tools for swimmers of all levels.",
   mockup = (
     <Screenshot
       srcLight="/dashboard-light.png"
       srcDark="/dashboard-dark.png"
-      alt="Launch UI app screenshot"
+      alt="Swim APP PRO dashboard"
       width={1248}
       height={765}
       className="w-full"
@@ -44,7 +43,7 @@ export default function Hero({
   badge = (
     <Badge variant="outline" className="animate-appear">
       <span className="text-muted-foreground">
-        New version of Launch UI is out!
+        New version of Swim APP PRO available
       </span>
       <a href={siteConfig.getStartedUrl} className="flex items-center gap-1">
         Get started
@@ -54,15 +53,14 @@ export default function Hero({
   ),
   buttons = [
     {
-      href: siteConfig.getStartedUrl,
-      text: "Get Started",
-      variant: "default",
+      href: "/dashboard",
+      text: "Start Free Trial",
+      variant: "secondary",
     },
     {
-      href: siteConfig.links.github,
-      text: "Github",
-      variant: "glow",
-      icon: <Github className="mr-2 size-4" />,
+      href: "/preview-dashboard",
+      text: "View Demo",
+      variant: "outline",
     },
   ],
   className,
@@ -80,16 +78,17 @@ export default function Hero({
           <h1 className="animate-appear relative z-10 inline-block text-4xl leading-tight font-semibold text-balance text-foreground drop-shadow-2xl sm:text-6xl sm:leading-tight md:text-8xl md:leading-tight">
             {title}
           </h1>
-          <p className="text-md animate-appear text-muted-foreground relative z-10 max-w-[740px] font-medium text-balance opacity-0 delay-100 sm:text-xl">
+          <p className="text-md animate-appear text-muted-foreground relative z-10 max-w-[740px] font-medium text-balance sm:text-xl">
             {description}
           </p>
           {buttons !== false && buttons.length > 0 && (
-            <div className="animate-appear relative z-10 flex justify-center gap-4 opacity-0 delay-300">
+            <div className="animate-appear relative z-10 flex justify-center gap-4">
               {buttons.map((button, index) => (
                 <Button
                   key={index}
                   variant={button.variant || "default"}
                   size="lg"
+                  style={index === 0 ? { backgroundColor: 'white', color: 'black' } : {}}
                   asChild
                 >
                   <a href={button.href}>
@@ -102,7 +101,7 @@ export default function Hero({
             </div>
           )}
           {mockup !== false && (
-            <div className="relative w-full max-w-5xl mx-auto pt-12">
+            <div className="relative w-full max-w-6xl mx-auto pt-12">
               {/* Glow separado - AZUL */}
               <div 
                 className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1600px] h-[1200px] blur-3xl z-0"

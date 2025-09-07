@@ -1,10 +1,9 @@
-import { Menu } from "lucide-react";
+import { BarChart3, Menu } from "lucide-react";
 import { ReactNode } from "react";
 
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
-import LaunchUI from "../../logos/launch-ui";
 import { Button, type ButtonProps } from "../../ui/button";
 import {
   Navbar as NavbarComponent,
@@ -40,8 +39,10 @@ interface NavbarProps {
 }
 
 export default function Navbar({
-  logo = <LaunchUI />,
-  name = "Launch UI",
+  logo = (
+    <BarChart3 className="w-8 h-8 text-white" />
+  ),
+  name = "Swim:APP",
   homeUrl = siteConfig.url,
   mobileLinks = [
     { text: "Getting Started", href: siteConfig.url },
@@ -77,29 +78,31 @@ export default function Navbar({
             {showNavigation && (customNavigation || <Navigation />)}
           </NavbarLeft>
           <NavbarRight>
-            {actions.map((action, index) =>
-              action.isButton ? (
-                <Button
-                  key={index}
-                  variant={action.variant || "default"}
-                  asChild
-                >
-                  <a href={action.href}>
-                    {action.icon}
-                    {action.text}
-                    {action.iconRight}
-                  </a>
-                </Button>
-              ) : (
+            {/* Enlaces de navegación - Desktop */}
+            <nav className="flex items-center gap-8">
+              {mobileLinks.map((link, index) => (
                 <a
                   key={index}
-                  href={action.href}
-                  className="hidden text-sm md:block"
+                  href={link.href}
+                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  {action.text}
+                  {link.text}
                 </a>
-              ),
-            )}
+              ))}
+            </nav>
+
+            {/* Botones de acción - Desktop */}
+            <div className="flex items-center gap-4">
+              <a
+                href="/auth/signin"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Sign in
+              </a>
+              <Button asChild>
+                <a href="/auth/signup">Get Started</a>
+              </Button>
+            </div>
             <Sheet>
               <SheetTrigger asChild>
                 <Button

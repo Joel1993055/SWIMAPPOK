@@ -1,4 +1,3 @@
-import { siteConfig } from "@/config/site";
 
 import { Section } from "../../ui/section";
 
@@ -17,26 +16,26 @@ interface StatsProps {
 export default function Stats({
   items = [
     {
-      label: "used by",
-      value: Math.round(siteConfig.stats.figma / 100) / 10,
+      label: "trusted by",
+      value: 2.5,
       suffix: "k",
-      description: "designers on Figma Community",
+      description: "coaches worldwide",
     },
     {
       label: "over",
-      value: siteConfig.stats.github,
-      description: "clones and forks of the template on Github",
+      value: 150,
+      description: "swimming clubs using our platform",
     },
     {
-      label: "already",
-      value: Math.round(siteConfig.stats.cli / 100) / 10,
+      label: "analyzed",
+      value: 50,
       suffix: "k",
-      description: "installations with shadcn/ui CLI",
+      description: "training sessions and competitions",
     },
     {
       label: "includes",
-      value: siteConfig.stats.sections,
-      description: "blocks and sections",
+      value: 25,
+      description: "advanced analytics tools",
     },
   ],
   className,
@@ -57,7 +56,7 @@ export default function Stats({
                   </div>
                 )}
                 <div className="flex items-baseline gap-2">
-                  <div className="from-foreground to-foreground dark:to-brand bg-linear-to-r bg-clip-text text-4xl font-medium text-transparent drop-shadow-[2px_1px_24px_var(--brand-foreground)] transition-all duration-300 sm:text-5xl md:text-6xl">
+                  <div className="text-4xl font-medium text-foreground sm:text-5xl md:text-6xl">
                     {item.value}
                   </div>
                   {item.suffix && (
