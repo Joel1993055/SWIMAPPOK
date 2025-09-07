@@ -1,7 +1,36 @@
+import { checkRateLimit } from "@/lib/rate-limit";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
+  // Rate limiting check
+  try {
+    const rateLimitResult = await checkRateLimit(request);
+    
+    if (!rateLimitResult.success) {
+      return new NextResponse(
+        JSON.stringify({
+          error: 'Rate limit exceeded',
+          message: 'Too many requests. Please try again later.',
+          retryAfter: Math.round((rateLimitResult.reset - Date.now()) / 1000)
+        }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'Retry-After': Math.round((rateLimitResult.reset - Date.now()) / 1000).toString(),
+            'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+            'X-RateLimit-Reset': rateLimitResult.reset.toString(),
+          },
+        }
+      );
+    }
+  } catch (error) {
+    // If rate limiting fails, log error but don't block request
+    console.error('Rate limiting error:', error);
+  }
+
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -63,6 +92,16 @@ export async function middleware(request: NextRequest) {
   // Si es una ruta de auth y ya hay usuario, redirigir a dashboard
   if (isAuthRoute && user) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  // Add rate limit headers to response
+  try {
+    const rateLimitResult = await checkRateLimit(request);
+    response.headers.set('X-RateLimit-Limit', rateLimitResult.limit.toString());
+    response.headers.set('X-RateLimit-Remaining', rateLimitResult.remaining.toString());
+    response.headers.set('X-RateLimit-Reset', rateLimitResult.reset.toString());
+  } catch (error) {
+    // Ignore rate limit header errors
   }
 
   return response;
