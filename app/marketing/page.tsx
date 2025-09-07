@@ -1,5 +1,7 @@
 import CTA from "./components/sections/cta/default";
+import Demo from "./components/sections/demo/default";
 import FAQ from "./components/sections/faq/default";
+import Features from "./components/sections/features/default";
 import Footer from "./components/sections/footer/default";
 import Hero from "./components/sections/hero/default";
 import Items from "./components/sections/items/default";
@@ -16,6 +18,8 @@ export default function Home() {
       <Logos />
       <Items />
       <Stats />
+      <Demo />
+      <Features />
       <Pricing />
       <FAQ />
       <CTA />

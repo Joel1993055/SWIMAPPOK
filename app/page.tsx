@@ -7,7 +7,9 @@ import { useState } from "react";
 
 // Importar los componentes de marketing
 import CTA from "./marketing/components/sections/cta/default";
+import Demo from "./marketing/components/sections/demo/default";
 import FAQ from "./marketing/components/sections/faq/default";
+import Features from "./marketing/components/sections/features/default";
 import Footer from "./marketing/components/sections/footer/default";
 import Hero from "./marketing/components/sections/hero/default";
 import Items from "./marketing/components/sections/items/default";
@@ -31,6 +33,8 @@ export default function Home() {
         <Logos />
         <Items />
         <Stats />
+        <Demo />
+        <Features />
         <Pricing />
         <FAQ />
         <CTA />
