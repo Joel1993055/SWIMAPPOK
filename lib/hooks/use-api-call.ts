@@ -8,7 +8,7 @@ interface ApiCallOptions {
   retries?: number
   retryDelay?: number
   timeout?: number
-  onSuccess?: (data: any) => void
+  onSuccess?: (data: unknown) => void
   onError?: (error: Error) => void
 }
 
@@ -28,7 +28,7 @@ interface ApiCallReturn<T> extends ApiCallState<T> {
 // =====================================================
 // HOOK PRINCIPAL
 // =====================================================
-export function useApiCall<T = any>(): ApiCallReturn<T> {
+export function useApiCall<T = unknown>(): ApiCallReturn<T> {
   const [state, setState] = useState<ApiCallState<T>>({
     data: null,
     error: null,
@@ -195,7 +195,7 @@ export function useCrudApi<T extends { id: string }>(entityName: string) {
 export function useSearchApi<T>(entityName: string) {
   const { data, error, loading, execute } = useApiCall<T[]>()
 
-  const search = useCallback(async (query: string, filters?: Record<string, any>) => {
+  const search = useCallback(async (query: string, filters?: Record<string, unknown>) => {
     return execute(async () => {
       // Implementar lógica de búsqueda
       throw new Error('Not implemented')
@@ -206,7 +206,7 @@ export function useSearchApi<T>(entityName: string) {
     })
   }, [execute, entityName])
 
-  const filter = useCallback(async (filters: Record<string, any>) => {
+  const filter = useCallback(async (filters: Record<string, unknown>) => {
     return execute(async () => {
       // Implementar lógica de filtrado
       throw new Error('Not implemented')

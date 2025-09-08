@@ -1,6 +1,5 @@
-import { createClient } from '@/utils/supabase/client'
 import { Session } from '@/lib/types/entities'
-import { useErrorHandler } from '@/lib/hooks/use-error-handler'
+import { createClient } from '@/utils/supabase/client'
 
 // =====================================================
 // TIPOS PARA API RESPONSES
@@ -24,7 +23,11 @@ interface PaginatedResponse<T> {
 // =====================================================
 class SessionsApiService {
   private supabase = createClient()
-  private { captureError } = useErrorHandler()
+  
+  private captureError = (error: Error | string, context?: Record<string, unknown>) => {
+    console.error('API Error:', error, context)
+    // TODO: Implement proper error handling
+  }
 
   // =====================================================
   // OPERACIONES CRUD

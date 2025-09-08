@@ -14,7 +14,7 @@ interface ValidationState<T> {
 
 interface ValidationActions<T> {
   setData: (data: T) => void
-  setField: (field: keyof T, value: any) => void
+  setField: (field: keyof T, value: unknown) => void
   validate: () => boolean
   validateField: (field: keyof T) => boolean
   reset: () => void
@@ -25,7 +25,7 @@ interface ValidationActions<T> {
 // HOOK PRINCIPAL
 // =====================================================
 
-export function useValidation<T extends Record<string, any>>(
+export function useValidation<T extends Record<string, unknown>>(
   schema: z.ZodSchema<T>,
   initialData?: Partial<T>
 ): ValidationState<T> & ValidationActions<T> {
@@ -69,7 +69,7 @@ export function useValidation<T extends Record<string, any>>(
 
     try {
       // Crear un schema parcial para el campo específico
-      const fieldSchema = schema.pick({ [field]: true } as any)
+      const fieldSchema = schema.pick({ [field]: true } as Record<keyof T, true>)
       fieldSchema.parse({ [field]: data[field] })
       
       // Limpiar error del campo
@@ -121,7 +121,7 @@ export function useValidation<T extends Record<string, any>>(
   // =====================================================
   // ESTABLECER CAMPO ESPECÍFICO
   // =====================================================
-  const setField = useCallback((field: keyof T, value: any) => {
+  const setField = useCallback((field: keyof T, value: unknown) => {
     setDataState(prev => {
       if (!prev) return { [field]: value } as T
       return { ...prev, [field]: value }
@@ -171,7 +171,7 @@ export function useValidation<T extends Record<string, any>>(
 // HOOK PARA VALIDACIÓN DE FORMULARIOS
 // =====================================================
 
-export function useFormValidation<T extends Record<string, any>>(
+export function useFormValidation<T extends Record<string, unknown>>(
   schema: z.ZodSchema<T>,
   initialData?: Partial<T>
 ) {
@@ -188,7 +188,7 @@ export function useFormValidation<T extends Record<string, any>>(
   }, [validation])
 
   const handleFieldChange = useCallback((field: keyof T) => {
-    return (value: any) => {
+    return (value: unknown) => {
       validation.setField(field, value)
     }
   }, [validation])
@@ -214,7 +214,7 @@ export function useFormValidation<T extends Record<string, any>>(
 // HOOK PARA VALIDACIÓN EN TIEMPO REAL
 // =====================================================
 
-export function useRealtimeValidation<T extends Record<string, any>>(
+export function useRealtimeValidation<T extends Record<string, unknown>>(
   schema: z.ZodSchema<T>,
   initialData?: Partial<T>,
   debounceMs: number = 300
@@ -222,7 +222,7 @@ export function useRealtimeValidation<T extends Record<string, any>>(
   const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null)
   const validation = useValidation(schema, initialData)
 
-  const setFieldWithDebounce = useCallback((field: keyof T, value: any) => {
+  const setFieldWithDebounce = useCallback((field: keyof T, value: unknown) => {
     // Establecer el valor inmediatamente
     validation.setField(field, value)
     
@@ -256,10 +256,10 @@ export function useRealtimeValidation<T extends Record<string, any>>(
 // UTILIDADES DE VALIDACIÓN
 // =====================================================
 
-export function createValidationSchema<T extends Record<string, any>>(
-  fields: Record<keyof T, z.ZodSchema<any>>
+export function createValidationSchema<T extends Record<string, unknown>>(
+  fields: Record<keyof T, z.ZodSchema<unknown>>
 ): z.ZodSchema<T> {
-  return z.object(fields as any)
+  return z.object(fields as Record<keyof T, z.ZodSchema<unknown>>)
 }
 
 export function validateAsync<T>(

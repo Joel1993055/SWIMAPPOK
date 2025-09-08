@@ -6,7 +6,7 @@ interface ErrorContext {
   sessionId?: string
   component?: string
   action?: string
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 }
 
 export function useErrorHandler() {
