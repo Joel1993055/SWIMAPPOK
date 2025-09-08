@@ -47,8 +47,8 @@ export default function Pricing({
         href: siteConfig.pricing.pro,
       },
       features: [
-        `${siteConfig.stats.websiteTemplates} website templates`,
-        `${siteConfig.stats.appTemplates} app templates`,
+        `${siteConfig.stats.components} components`,
+        `${siteConfig.stats.sections} sections`,
         `${siteConfig.stats.sections} blocks and sections`,
         `${siteConfig.stats.illustrations} illustrations`,
         `${siteConfig.stats.animations} custom animations`,

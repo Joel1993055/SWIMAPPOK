@@ -97,7 +97,7 @@ const FormFallback = () => (
 // FUNCIÓN DE LAZY LOADING AVANZADA
 // =====================================================
 
-function createLazyComponent<T extends ComponentType<any>>(
+function createLazyComponent<T extends ComponentType<unknown>>(
   importFn: () => Promise<{ default: T }>,
   options: LazyComponentOptions = {}
 ): T {
@@ -412,7 +412,7 @@ export function LazyComponentWrapper({
 // HOOKS
 // =====================================================
 
-export function useLazyRoute<T extends ComponentType<any>>(
+export function useLazyRoute<T extends ComponentType<unknown>>(
   LazyComponent: T,
   fallback?: React.ComponentType
 ) {
@@ -422,7 +422,7 @@ export function useLazyRoute<T extends ComponentType<any>>(
   }
 }
 
-export function usePreloadRoute(importFn: () => Promise<any>) {
+export function usePreloadRoute(importFn: () => Promise<{ default: ComponentType<unknown> }>) {
   const preload = () => {
     importFn().catch(() => {
       // Silently fail preloading
@@ -436,7 +436,7 @@ export function usePreloadRoute(importFn: () => Promise<any>) {
 // UTILIDADES DE PRECARGA
 // =====================================================
 
-export const preloadRoute = (importFn: () => Promise<any>) => {
+export const preloadRoute = (importFn: () => Promise<{ default: ComponentType<unknown> }>) => {
   // Precargar el componente en el background
   importFn().catch(() => {
     // Ignorar errores de precarga

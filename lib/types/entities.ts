@@ -190,7 +190,7 @@ export interface ReportData {
 export interface ChartData {
   type: 'line' | 'bar' | 'pie' | 'area'
   title: string
-  data: any[]
+  data: Record<string, unknown>[]
   x_axis?: string
   y_axis?: string
 }

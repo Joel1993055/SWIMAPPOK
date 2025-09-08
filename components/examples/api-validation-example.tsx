@@ -32,12 +32,7 @@ export default function ApiValidationExample() {
     }
     
     // Simular respuesta exitosa
-    return {
-      ...data,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }
+    return data
   }
 
   // =====================================================
@@ -55,8 +50,8 @@ export default function ApiValidationExample() {
     sessionSchema,
     () => simulateApiCall(formData as SessionFormData),
     {
-      onSuccess: (session) => {
-        setSessions(prev => [session, ...prev])
+      onSuccess: () => {
+        setSessions(prev => [formData as SessionFormData, ...prev])
         setFormData({})
         reset()
       },
@@ -69,7 +64,7 @@ export default function ApiValidationExample() {
   // =====================================================
   // MANEJADORES
   // =====================================================
-  const handleFieldChange = (field: keyof SessionFormData, value: any) => {
+  const handleFieldChange = (field: keyof SessionFormData, value: unknown) => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
@@ -81,7 +76,8 @@ export default function ApiValidationExample() {
       return
     }
 
-    await handleSubmit(formData as SessionFormData)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await handleSubmit(formData as any)
   }
 
   const handleReset = () => {

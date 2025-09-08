@@ -16,7 +16,7 @@ export default function Demo() {
         <p className="text-gray-400 text-lg max-w-md mt-6">
           A comprehensive collection of components written in modern React, Typescript and Tailwind CSS.
           <br />
-          You'll find here everything you need to build your next landing page.
+          You&apos;ll find here everything you need to build your next landing page.
         </p>
       </div>
 

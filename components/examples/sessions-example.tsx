@@ -269,7 +269,7 @@ export function SessionsPaginationExample() {
 // =====================================================
 export function SessionsStatsExample() {
   const { loadStats, loading, error } = useSessionsStats()
-  const [stats, setStats] = useState<any>(null)
+  const [stats, setStats] = useState<Record<string, unknown> | null>(null)
 
   const handleLoadStats = async () => {
     const result = await loadStats({

@@ -182,8 +182,8 @@ export function useFormApiValidation<T>(
 // HOOK PARA VALIDACIÓN DE MÚLTIPLES SCHEMAS
 // =====================================================
 
-export function useMultiSchemaValidation<T extends Record<string, any>>(
-  schemas: Record<keyof T, z.ZodSchema<any>>,
+export function useMultiSchemaValidation<T extends Record<string, unknown>>(
+  schemas: Record<keyof T, z.ZodSchema<unknown>>,
   options?: {
     onSuccess?: (data: T) => void
     onError?: (error: Error) => void
@@ -192,7 +192,7 @@ export function useMultiSchemaValidation<T extends Record<string, any>>(
   const [errors, setErrors] = useState<Record<string, Record<string, string>>>({})
   const [isValid, setIsValid] = useState<Record<keyof T, boolean>>({} as Record<keyof T, boolean>)
 
-  const validateField = useCallback((field: keyof T, data: any) => {
+  const validateField = useCallback((field: keyof T, data: unknown) => {
     const schema = schemas[field]
     if (!schema) return { isValid: true, errors: {} }
 
@@ -225,7 +225,7 @@ export function useMultiSchemaValidation<T extends Record<string, any>>(
   }, [schemas])
 
   const validateAll = useCallback((data: T) => {
-    const results: Record<keyof T, { isValid: boolean; errors: Record<string, string> }> = {} as any
+    const results: Record<keyof T, { isValid: boolean; errors: Record<string, string> }> = {} as Record<keyof T, { isValid: boolean; errors: Record<string, string> }>
     let allValid = true
 
     Object.keys(schemas).forEach((field) => {

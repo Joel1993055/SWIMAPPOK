@@ -54,7 +54,7 @@ export function usePWA(): PWAState & PWAActions {
 
     const isSupported = 'serviceWorker' in navigator && 'PushManager' in window
     const isInstalled = window.matchMedia('(display-mode: standalone)').matches || 
-                       (window.navigator as any).standalone === true
+                       (window.navigator as { standalone?: boolean }).standalone === true
 
     setState(prev => ({
       ...prev,
@@ -427,7 +427,7 @@ export function isAppInstalled(): boolean {
   if (typeof window === 'undefined') return false
   
   return window.matchMedia('(display-mode: standalone)').matches ||
-         (window.navigator as any).standalone === true
+         (window.navigator as { standalone?: boolean }).standalone === true
 }
 
 // Utilidad para detectar si está offline

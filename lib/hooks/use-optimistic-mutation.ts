@@ -5,29 +5,29 @@ import { useCallback } from 'react'
 // TIPOS GENÉRICOS
 // =====================================================
 
-export interface OptimisticUpdateConfig<TData, TVariables, TContext = any> {
+export interface OptimisticUpdateConfig<TData, TVariables, TContext = unknown> {
   // Query keys a cancelar
   queryKeys: (string | number)[][]
   
   // Función para crear el snapshot del estado anterior
-  getPreviousData: (queryClient: any) => TContext
+  getPreviousData: (queryClient: unknown) => TContext
   
   // Función para aplicar la actualización optimista
   applyOptimisticUpdate: (
-    queryClient: any,
+    queryClient: unknown,
     variables: TVariables,
     context: TContext
   ) => void
   
   // Función para revertir en caso de error
   revertOnError?: (
-    queryClient: any,
+    queryClient: unknown,
     context: TContext
   ) => void
   
   // Función para actualizar con datos reales del servidor
   updateWithServerData?: (
-    queryClient: any,
+    queryClient: unknown,
     data: TData,
     variables: TVariables,
     context: TContext
@@ -38,7 +38,7 @@ export interface OptimisticUpdateConfig<TData, TVariables, TContext = any> {
 // HOOK GENÉRICO PARA OPTIMISTIC UPDATES
 // =====================================================
 
-export function useOptimisticMutation<TData, TVariables, TContext = any>(
+export function useOptimisticMutation<TData, TVariables, TContext = unknown>(
   mutationFn: (variables: TVariables) => Promise<TData>,
   config: OptimisticUpdateConfig<TData, TVariables, TContext>,
   options?: Omit<UseMutationOptions<TData, Error, TVariables, TContext>, 'mutationFn' | 'onMutate' | 'onError' | 'onSuccess' | 'onSettled'>
