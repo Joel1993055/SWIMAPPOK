@@ -3,15 +3,15 @@
 // =====================================================
 
 import type {
-  AICoachAdvice,
-  AICoachAnalysis,
-  AuthState,
-  Competition,
-  Session,
-  TrainingPhase,
-  TrainingReport,
-  TrainingZones,
-  User,
+    AICoachAdvice,
+    AICoachAnalysis,
+    AuthState,
+    Competition,
+    Session,
+    TrainingPhase,
+    TrainingReport,
+    TrainingZones,
+    User,
 } from '@/lib/types';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -336,10 +336,58 @@ const zoneMethodologies = {
   },
 };
 
+// Default phases data
+const defaultPhases: TrainingPhase[] = [
+  {
+    id: 'base',
+    name: 'Base',
+    duration: 4,
+    description: 'Fase de construcción de la base aeróbica y técnica',
+    focus: ['Aeróbico', 'Técnica'],
+    intensity: 4,
+    volume: 25000,
+    color: 'bg-blue-500',
+    order: 1,
+  },
+  {
+    id: 'construccion',
+    name: 'Construcción',
+    duration: 4,
+    description: 'Fase de desarrollo de la potencia aeróbica y umbral',
+    focus: ['Umbral', 'Aeróbico'],
+    intensity: 6,
+    volume: 30000,
+    color: 'bg-green-500',
+    order: 2,
+  },
+  {
+    id: 'especifico',
+    name: 'Específico',
+    duration: 4,
+    description: 'Fase de trabajo específico de velocidad y VO2 Max',
+    focus: ['VO2 Max', 'Velocidad'],
+    intensity: 8,
+    volume: 28000,
+    color: 'bg-orange-500',
+    order: 3,
+  },
+  {
+    id: 'pico',
+    name: 'Pico',
+    duration: 2,
+    description: 'Fase de puesta a punto y competición',
+    focus: ['Velocidad', 'Recuperación'],
+    intensity: 9,
+    volume: 20000,
+    color: 'bg-red-500',
+    order: 4,
+  },
+];
+
 export const useTrainingStore = create<TrainingStore>()(
   persist(
     (set, get) => ({
-      phases: [],
+      phases: defaultPhases,
       zones: {
         z1: { name: 'Recovery', min: 0, max: 60 },
         z2: { name: 'Aerobic Base', min: 60, max: 70 },

@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/nextjs';
 import { useCallback } from 'react';
 
 interface ErrorContext {
@@ -17,34 +16,9 @@ export function useErrorHandler() {
         console.error('Error captured:', error, context);
       }
 
-      // Send to Sentry
-      Sentry.withScope(scope => {
-        if (context?.userId) {
-          scope.setUser({ id: context.userId });
-        }
-
-        if (context?.sessionId) {
-          scope.setTag('sessionId', context.sessionId);
-        }
-
-        if (context?.component) {
-          scope.setTag('component', context.component);
-        }
-
-        if (context?.action) {
-          scope.setTag('action', context.action);
-        }
-
-        if (context?.metadata) {
-          scope.setContext('metadata', context.metadata);
-        }
-
-        if (typeof error === 'string') {
-          Sentry.captureMessage(error, 'error');
-        } else {
-          Sentry.captureException(error);
-        }
-      });
+      // In production, you might want to send errors to a logging service
+      // For now, we'll just log to console
+      console.error('Error:', error, 'Context:', context);
     },
     []
   );
@@ -59,28 +33,19 @@ export function useErrorHandler() {
         console.log(`[${level.toUpperCase()}] ${message}`, context);
       }
 
-      Sentry.withScope(scope => {
-        if (context?.userId) {
-          scope.setUser({ id: context.userId });
-        }
-
-        if (context?.component) {
-          scope.setTag('component', context.component);
-        }
-
-        Sentry.captureMessage(message, level);
-      });
+      // In production, you might want to send messages to a logging service
+      console.log(`[${level.toUpperCase()}] ${message}`, context);
     },
     []
   );
 
   const captureUserFeedback = useCallback(
     (feedback: { name: string; email: string; message: string }) => {
-      Sentry.captureUserFeedback({
-        name: feedback.name,
-        email: feedback.email,
-        comments: feedback.message,
-      });
+      // Log user feedback to console
+      console.log('User feedback:', feedback);
+      
+      // In production, you might want to send this to a feedback service
+      // or store it in your database
     },
     []
   );

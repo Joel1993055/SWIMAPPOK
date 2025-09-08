@@ -3,47 +3,47 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { useCompetitionsStore, useTrainingStore } from '@/lib/store/unified';
 import {
-  Activity,
-  Calendar,
-  Clock,
-  Edit,
-  MapPin,
-  Plus,
-  Save,
-  Target,
-  Trash2,
-  TrendingUp,
-  Trophy,
-  X,
+    Activity,
+    Calendar,
+    Clock,
+    Edit,
+    MapPin,
+    Plus,
+    Save,
+    Target,
+    Trash2,
+    TrendingUp,
+    Trophy,
+    X,
 } from 'lucide-react';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 // NUEVO: Importar el store unificado
 
 // Tipos de datos
@@ -279,26 +279,10 @@ export function PlanificacionOverview() {
     competitions: storeCompetitions,
     addCompetition: storeAddCompetition,
   } = useCompetitionsStore();
-  // NUEVO: Funciones de sincronización
-  const syncPhasesToStore = useCallback(() => {
-    if (phases.length > 0 && storePhases.length === 0) {
-      phases.forEach(phase => storeAddPhase(phase));
-    }
-  }, [phases, storePhases, storeAddPhase]);
 
-  const syncCompetitionsToStore = useCallback(() => {
-    if (competitions.length > 0 && storeCompetitions.length === 0) {
-      competitions.forEach(competition => storeAddCompetition(competition));
-    }
-  }, [storeCompetitions, storeAddCompetition]);
-
-  // Ejecutar sincronización
-  React.useEffect(() => {
-    syncPhasesToStore();
-    syncCompetitionsToStore();
-  }, [syncPhasesToStore, syncCompetitionsToStore]);
-
-  const [selectedPhase, setSelectedPhase] = useState<string>('base');
+  const [selectedPhase, setSelectedPhase] = useState<string>(
+    phases.length > 0 ? phases[0].id : ''
+  );
   const [selectedCompetition, setSelectedCompetition] = useState<string>(
     competitions.length > 0 ? competitions[0].id : ''
   );
@@ -1741,13 +1725,16 @@ export function PlanificacionOverview() {
             </CardHeader>
             <CardContent>
               <div className='grid grid-cols-2 md:grid-cols-5 gap-4'>
-                {Object.entries(currentZones).map(([zone, name]) => (
+                {Object.entries(currentZones).map(([zone, zoneData]) => (
                   <div
                     key={zone}
                     className='text-center p-3 border rounded-lg bg-background/50'
                   >
                     <div className='text-lg font-bold text-primary'>{zone}</div>
-                    <div className='text-sm text-muted-foreground'>{name}</div>
+                    <div className='text-sm text-muted-foreground'>{zoneData.name}</div>
+                    <div className='text-xs text-muted-foreground mt-1'>
+                      {zoneData.min}%-{zoneData.max}%
+                    </div>
                   </div>
                 ))}
               </div>

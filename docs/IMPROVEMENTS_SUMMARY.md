@@ -20,12 +20,11 @@
 - ✅ Ejecutado `npm audit fix` - 0 vulnerabilidades encontradas
 - ✅ Dependencias actualizadas a versiones más recientes
 
-### **4. Configuración Completa de Sentry**
+### **4. Configuración de Monitoreo y Logging**
 
-- ✅ Creado `docs/SENTRY_ENVIRONMENT_SETUP.md` con guía completa
-- ✅ Creado `scripts/validate-sentry.js` para validación
-- ✅ Agregados scripts `sentry:test` y `validate:sentry`
-- ✅ Documentación de variables de entorno requeridas
+- ✅ Implementado sistema de logging básico en desarrollo
+- ✅ Configurado manejo de errores globales
+- ✅ Preparado para integración futura de servicios de monitoreo
 
 ### **5. Configuración Avanzada de Prettier**
 
@@ -126,8 +125,7 @@ npm run test:all         # Todos los tests
 ```bash
 npm run analyze          # Análisis de bundle
 npm run analyze:size     # Análisis de tamaño
-npm run validate:sentry  # Validación de Sentry
-npm run sentry:test      # Test de Sentry
+npm run test:all         # Ejecutar todos los tests
 ```
 
 ### **Commits**
@@ -141,7 +139,7 @@ npm run commit           # Commit convencional
 ### **Inmediatos (Esta semana)**
 
 1. **Ejecutar tests y corregir fallos** - Algunos tests necesitan ajustes
-2. **Configurar variables de entorno** - Sentry y otras configuraciones
+2. **Configurar variables de entorno** - Otras configuraciones necesarias
 3. **Probar pre-commit hooks** - Verificar que funcionan correctamente
 
 ### **Corto plazo (Próximas 2 semanas)**
