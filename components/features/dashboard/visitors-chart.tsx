@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
 import {
   TrendingUp,
   BarChart3,
   AreaChart as AreaChartIcon,
-} from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis, Area, AreaChart } from "recharts";
-import { useState, useEffect } from "react";
+} from 'lucide-react';
+import { Bar, BarChart, CartesianGrid, XAxis, Area, AreaChart } from 'recharts';
+import { useState, useEffect } from 'react';
 
 import {
   Card,
@@ -15,14 +15,14 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   ChartConfig,
   ChartContainer,
@@ -30,10 +30,10 @@ import {
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
-import { getSessions } from "@/lib/actions/sessions";
-import type { Session } from "@/lib/actions/sessions";
-import { metersToKm, zoneLabels, zoneColors } from "@/lib/utils/zone-detection";
+} from '@/components/ui/chart';
+import { getSessions } from '@/lib/actions/sessions';
+import type { Session } from '@/lib/actions/sessions';
+import { metersToKm, zoneLabels, zoneColors } from '@/lib/utils/zone-detection';
 
 // Función para generar datos de la semana actual usando volúmenes manuales
 const generateWeeklyData = (sessions: Session[]) => {
@@ -42,19 +42,19 @@ const generateWeeklyData = (sessions: Session[]) => {
   startOfWeek.setDate(now.getDate() - now.getDay() + 1); // Lunes
 
   const days = [
-    "Lunes",
-    "Martes",
-    "Miércoles",
-    "Jueves",
-    "Viernes",
-    "Sábado",
-    "Domingo",
+    'Lunes',
+    'Martes',
+    'Miércoles',
+    'Jueves',
+    'Viernes',
+    'Sábado',
+    'Domingo',
   ];
 
   return days.map((dayName, index) => {
     const dayDate = new Date(startOfWeek);
     dayDate.setDate(startOfWeek.getDate() + index);
-    const dayString = dayDate.toISOString().split("T")[0];
+    const dayString = dayDate.toISOString().split('T')[0];
 
     // Filtrar sesiones de este día
     const daySessions = sessions.filter(session => session.date === dayString);
@@ -126,7 +126,7 @@ const areaChartConfig = chartConfig;
 export function VisitorsChart() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [chartType, setChartType] = useState<"bar" | "area">("bar");
+  const [chartType, setChartType] = useState<'bar' | 'area'>('bar');
 
   // Cargar sesiones reales desde Supabase
   useEffect(() => {
@@ -135,7 +135,7 @@ export function VisitorsChart() {
         const data = await getSessions();
         setSessions(data);
       } catch (error) {
-        console.error("Error cargando sesiones:", error);
+        console.error('Error cargando sesiones:', error);
         setSessions([]);
       } finally {
         setIsLoading(false);
@@ -175,7 +175,7 @@ export function VisitorsChart() {
   // Mostrar estado de carga
   if (isLoading) {
     return (
-      <Card className="col-span-4 bg-muted/50 border-muted">
+      <Card className='col-span-4 bg-muted/50 border-muted'>
         <CardHeader>
           <CardTitle>Progreso Semanal</CardTitle>
           <CardDescription>
@@ -183,8 +183,8 @@ export function VisitorsChart() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-[300px] flex items-center justify-center">
-            <div className="animate-pulse text-muted-foreground">
+          <div className='h-[300px] flex items-center justify-center'>
+            <div className='animate-pulse text-muted-foreground'>
               Cargando datos...
             </div>
           </div>
@@ -194,7 +194,7 @@ export function VisitorsChart() {
   }
 
   return (
-    <Card className="col-span-4 bg-muted/50 border-muted">
+    <Card className='col-span-4 bg-muted/50 border-muted'>
       <CardHeader>
         <CardTitle>Progreso Semanal</CardTitle>
         <CardDescription>
@@ -202,24 +202,24 @@ export function VisitorsChart() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className='space-y-4'>
           {/* Selector de tipo de gráfico */}
-          <div className="flex justify-end">
+          <div className='flex justify-end'>
             <Select
               value={chartType}
-              onValueChange={value => setChartType(value as "bar" | "area")}
+              onValueChange={value => setChartType(value as 'bar' | 'area')}
             >
-              <SelectTrigger className="w-48">
+              <SelectTrigger className='w-48'>
                 <SelectValue>
-                  <div className="flex items-center gap-2">
-                    {chartType === "bar" ? (
+                  <div className='flex items-center gap-2'>
+                    {chartType === 'bar' ? (
                       <>
-                        <BarChart3 className="h-4 w-4" />
+                        <BarChart3 className='h-4 w-4' />
                         Gráfico de Barras
                       </>
                     ) : (
                       <>
-                        <AreaChartIcon className="h-4 w-4" />
+                        <AreaChartIcon className='h-4 w-4' />
                         Gráfico de Área
                       </>
                     )}
@@ -227,15 +227,15 @@ export function VisitorsChart() {
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="bar">
-                  <div className="flex items-center gap-2">
-                    <BarChart3 className="h-4 w-4" />
+                <SelectItem value='bar'>
+                  <div className='flex items-center gap-2'>
+                    <BarChart3 className='h-4 w-4' />
                     Gráfico de Barras
                   </div>
                 </SelectItem>
-                <SelectItem value="area">
-                  <div className="flex items-center gap-2">
-                    <AreaChartIcon className="h-4 w-4" />
+                <SelectItem value='area'>
+                  <div className='flex items-center gap-2'>
+                    <AreaChartIcon className='h-4 w-4' />
                     Gráfico de Área
                   </div>
                 </SelectItem>
@@ -244,12 +244,12 @@ export function VisitorsChart() {
           </div>
 
           {/* Gráfico de Barras */}
-          {chartType === "bar" && (
+          {chartType === 'bar' && (
             <ChartContainer config={chartConfig}>
               <BarChart accessibilityLayer data={chartData}>
                 <CartesianGrid vertical={false} />
                 <XAxis
-                  dataKey="day"
+                  dataKey='day'
                   tickLine={false}
                   tickMargin={10}
                   axisLine={false}
@@ -257,7 +257,7 @@ export function VisitorsChart() {
                     const data = chartData[index];
                     const totalKm = data
                       ? (data.totalMeters / 1000).toFixed(1)
-                      : "0";
+                      : '0';
                     return `${value.slice(0, 3)}\n${totalKm}km`;
                   }}
                 />
@@ -275,33 +275,33 @@ export function VisitorsChart() {
                 />
                 <ChartLegend content={<ChartLegendContent />} />
                 <Bar
-                  dataKey="Z1"
-                  stackId="a"
-                  fill="var(--color-Z1)"
+                  dataKey='Z1'
+                  stackId='a'
+                  fill='var(--color-Z1)'
                   radius={[0, 0, 4, 4]}
                 />
                 <Bar
-                  dataKey="Z2"
-                  stackId="a"
-                  fill="var(--color-Z2)"
+                  dataKey='Z2'
+                  stackId='a'
+                  fill='var(--color-Z2)'
                   radius={[0, 0, 0, 0]}
                 />
                 <Bar
-                  dataKey="Z3"
-                  stackId="a"
-                  fill="var(--color-Z3)"
+                  dataKey='Z3'
+                  stackId='a'
+                  fill='var(--color-Z3)'
                   radius={[0, 0, 0, 0]}
                 />
                 <Bar
-                  dataKey="Z4"
-                  stackId="a"
-                  fill="var(--color-Z4)"
+                  dataKey='Z4'
+                  stackId='a'
+                  fill='var(--color-Z4)'
                   radius={[0, 0, 0, 0]}
                 />
                 <Bar
-                  dataKey="Z5"
-                  stackId="a"
-                  fill="var(--color-Z5)"
+                  dataKey='Z5'
+                  stackId='a'
+                  fill='var(--color-Z5)'
                   radius={[4, 4, 0, 0]}
                 />
               </BarChart>
@@ -309,7 +309,7 @@ export function VisitorsChart() {
           )}
 
           {/* Gráfico de Área */}
-          {chartType === "area" && (
+          {chartType === 'area' && (
             <ChartContainer config={areaChartConfig}>
               <AreaChart
                 data={areaChartData}
@@ -320,7 +320,7 @@ export function VisitorsChart() {
               >
                 <CartesianGrid vertical={false} />
                 <XAxis
-                  dataKey="day"
+                  dataKey='day'
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
@@ -328,7 +328,7 @@ export function VisitorsChart() {
                     const data = areaChartData[index];
                     const totalKm = data
                       ? (data.totalMeters / 1000).toFixed(1)
-                      : "0";
+                      : '0';
                     return `${value.slice(0, 3)}\n${totalKm}km`;
                   }}
                 />
@@ -347,48 +347,48 @@ export function VisitorsChart() {
                 />
                 <ChartLegend content={<ChartLegendContent />} />
                 <Area
-                  dataKey="Z1"
-                  stackId="a"
-                  type="monotone"
-                  fill="var(--color-Z1)"
+                  dataKey='Z1'
+                  stackId='a'
+                  type='monotone'
+                  fill='var(--color-Z1)'
                   fillOpacity={0.8}
-                  stroke="var(--color-Z1)"
+                  stroke='var(--color-Z1)'
                   strokeWidth={1}
                 />
                 <Area
-                  dataKey="Z2"
-                  stackId="a"
-                  type="monotone"
-                  fill="var(--color-Z2)"
+                  dataKey='Z2'
+                  stackId='a'
+                  type='monotone'
+                  fill='var(--color-Z2)'
                   fillOpacity={0.8}
-                  stroke="var(--color-Z2)"
+                  stroke='var(--color-Z2)'
                   strokeWidth={1}
                 />
                 <Area
-                  dataKey="Z3"
-                  stackId="a"
-                  type="monotone"
-                  fill="var(--color-Z3)"
+                  dataKey='Z3'
+                  stackId='a'
+                  type='monotone'
+                  fill='var(--color-Z3)'
                   fillOpacity={0.8}
-                  stroke="var(--color-Z3)"
+                  stroke='var(--color-Z3)'
                   strokeWidth={1}
                 />
                 <Area
-                  dataKey="Z4"
-                  stackId="a"
-                  type="monotone"
-                  fill="var(--color-Z4)"
+                  dataKey='Z4'
+                  stackId='a'
+                  type='monotone'
+                  fill='var(--color-Z4)'
                   fillOpacity={0.8}
-                  stroke="var(--color-Z4)"
+                  stroke='var(--color-Z4)'
                   strokeWidth={1}
                 />
                 <Area
-                  dataKey="Z5"
-                  stackId="a"
-                  type="monotone"
-                  fill="var(--color-Z5)"
+                  dataKey='Z5'
+                  stackId='a'
+                  type='monotone'
+                  fill='var(--color-Z5)'
                   fillOpacity={0.8}
-                  stroke="var(--color-Z5)"
+                  stroke='var(--color-Z5)'
                   strokeWidth={1}
                 />
               </AreaChart>
@@ -396,12 +396,12 @@ export function VisitorsChart() {
           )}
         </div>
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 leading-none font-medium">
-          Total semanal: {totalSemanal.toLocaleString()} km{" "}
-          <TrendingUp className="h-4 w-4" />
+      <CardFooter className='flex-col items-start gap-2 text-sm'>
+        <div className='flex gap-2 leading-none font-medium'>
+          Total semanal: {totalSemanal.toLocaleString()} km{' '}
+          <TrendingUp className='h-4 w-4' />
         </div>
-        <div className="text-muted-foreground leading-none">
+        <div className='text-muted-foreground leading-none'>
           Promedio diario: {promedioDiario.toLocaleString()} km
         </div>
       </CardFooter>

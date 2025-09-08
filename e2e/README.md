@@ -1,6 +1,7 @@
 # E2E Tests with Playwright
 
-Este directorio contiene los tests end-to-end (E2E) para la aplicación, utilizando Playwright como framework de testing.
+Este directorio contiene los tests end-to-end (E2E) para la aplicación, utilizando Playwright como
+framework de testing.
 
 ## Estructura
 
@@ -38,6 +39,7 @@ npm run test:e2e:report
 ## Configuración
 
 Los tests están configurados para ejecutarse en diferentes navegadores:
+
 - Chromium
 - Firefox
 - WebKit (Safari)
@@ -47,6 +49,7 @@ Los tests están configurados para ejecutarse en diferentes navegadores:
 ## Variables de entorno
 
 Los tests utilizan las siguientes variables de entorno:
+
 - `PLAYWRIGHT_BASE_URL`: URL base para los tests (por defecto: http://localhost:3000)
 
 ## Escribiendo tests
@@ -73,7 +76,7 @@ test('should fill form', async ({ page }) => {
   await page.goto('/');
   await fillForm(page, {
     email: 'test@example.com',
-    password: 'password123'
+    password: 'password123',
   });
 });
 ```
@@ -92,15 +95,19 @@ test('should handle API response', async ({ page }) => {
 
 ## Mejores prácticas
 
-1. **Usa data-testid**: Agrega atributos `data-testid` a elementos importantes para facilitar la selección en tests.
+1. **Usa data-testid**: Agrega atributos `data-testid` a elementos importantes para facilitar la
+   selección en tests.
 
-2. **Espera a que la página cargue**: Usa `waitForPageLoad()` para asegurar que la página esté completamente cargada.
+2. **Espera a que la página cargue**: Usa `waitForPageLoad()` para asegurar que la página esté
+   completamente cargada.
 
-3. **Mockea APIs**: Usa `mockApiResponse()` para simular respuestas de API y hacer tests más rápidos y confiables.
+3. **Mockea APIs**: Usa `mockApiResponse()` para simular respuestas de API y hacer tests más rápidos
+   y confiables.
 
 4. **Tests independientes**: Cada test debe ser independiente y no depender de otros tests.
 
-5. **Limpia el estado**: Usa `clearAuthentication()` si es necesario para limpiar el estado entre tests.
+5. **Limpia el estado**: Usa `clearAuthentication()` si es necesario para limpiar el estado entre
+   tests.
 
 ## Debugging
 

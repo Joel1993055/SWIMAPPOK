@@ -1,13 +1,13 @@
-"use server";
+'use server';
 
-import { createClient } from "@/utils/supabase/server";
-import { revalidatePath } from "next/cache";
+import { createClient } from '@/utils/supabase/server';
+import { revalidatePath } from 'next/cache';
 
 // Tipos de datos
 export interface CompetitionData {
   name: string;
   date: string;
-  priority: "low" | "medium" | "high";
+  priority: 'low' | 'medium' | 'high';
   location?: string;
   description?: string;
 }
@@ -30,26 +30,26 @@ export async function createCompetition(formData: FormData) {
     error: authError,
   } = await supabase.auth.getUser();
   if (authError || !user) {
-    throw new Error("Usuario no autenticado");
+    throw new Error('Usuario no autenticado');
   }
 
   // Extraer datos del formulario
   const competitionData: CompetitionData = {
-    name: formData.get("name") as string,
-    date: formData.get("date") as string,
-    priority: formData.get("priority") as "low" | "medium" | "high",
-    location: (formData.get("location") as string) || undefined,
-    description: (formData.get("description") as string) || undefined,
+    name: formData.get('name') as string,
+    date: formData.get('date') as string,
+    priority: formData.get('priority') as 'low' | 'medium' | 'high',
+    location: (formData.get('location') as string) || undefined,
+    description: (formData.get('description') as string) || undefined,
   };
 
   // Validaciones básicas
   if (!competitionData.name || !competitionData.date) {
-    throw new Error("Nombre y fecha son obligatorios");
+    throw new Error('Nombre y fecha son obligatorios');
   }
 
   // Insertar en la base de datos
   const { data, error } = await supabase
-    .from("competitions")
+    .from('competitions')
     .insert({
       user_id: user.id,
       ...competitionData,
@@ -58,13 +58,13 @@ export async function createCompetition(formData: FormData) {
     .single();
 
   if (error) {
-    console.error("Error creando competición:", error);
-    throw new Error("Error al crear la competición");
+    console.error('Error creando competición:', error);
+    throw new Error('Error al crear la competición');
   }
 
   // Revalidar páginas
-  revalidatePath("/planificacion");
-  revalidatePath("/dashboard");
+  revalidatePath('/planificacion');
+  revalidatePath('/dashboard');
 
   return data;
 }
@@ -80,18 +80,18 @@ export async function getCompetitions() {
     error: authError,
   } = await supabase.auth.getUser();
   if (authError || !user) {
-    throw new Error("Usuario no autenticado");
+    throw new Error('Usuario no autenticado');
   }
 
   const { data, error } = await supabase
-    .from("competitions")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("date", { ascending: true });
+    .from('competitions')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('date', { ascending: true });
 
   if (error) {
-    console.error("Error obteniendo competiciones:", error);
-    throw new Error("Error al obtener las competiciones");
+    console.error('Error obteniendo competiciones:', error);
+    throw new Error('Error al obtener las competiciones');
   }
 
   return data as Competition[];
@@ -108,19 +108,19 @@ export async function getCompetitionById(id: string) {
     error: authError,
   } = await supabase.auth.getUser();
   if (authError || !user) {
-    throw new Error("Usuario no autenticado");
+    throw new Error('Usuario no autenticado');
   }
 
   const { data, error } = await supabase
-    .from("competitions")
-    .select("*")
-    .eq("id", id)
-    .eq("user_id", user.id)
+    .from('competitions')
+    .select('*')
+    .eq('id', id)
+    .eq('user_id', user.id)
     .single();
 
   if (error) {
-    console.error("Error obteniendo competición:", error);
-    throw new Error("Error al obtener la competición");
+    console.error('Error obteniendo competición:', error);
+    throw new Error('Error al obtener la competición');
   }
 
   return data as Competition;
@@ -137,40 +137,40 @@ export async function updateCompetition(id: string, formData: FormData) {
     error: authError,
   } = await supabase.auth.getUser();
   if (authError || !user) {
-    throw new Error("Usuario no autenticado");
+    throw new Error('Usuario no autenticado');
   }
 
   // Extraer datos del formulario
   const competitionData: Partial<CompetitionData> = {
-    name: formData.get("name") as string,
-    date: formData.get("date") as string,
-    priority: formData.get("priority") as "low" | "medium" | "high",
-    location: (formData.get("location") as string) || undefined,
-    description: (formData.get("description") as string) || undefined,
+    name: formData.get('name') as string,
+    date: formData.get('date') as string,
+    priority: formData.get('priority') as 'low' | 'medium' | 'high',
+    location: (formData.get('location') as string) || undefined,
+    description: (formData.get('description') as string) || undefined,
   };
 
   // Validaciones básicas
   if (!competitionData.name || !competitionData.date) {
-    throw new Error("Nombre y fecha son obligatorios");
+    throw new Error('Nombre y fecha son obligatorios');
   }
 
   // Actualizar en la base de datos
   const { data, error } = await supabase
-    .from("competitions")
+    .from('competitions')
     .update(competitionData)
-    .eq("id", id)
-    .eq("user_id", user.id)
+    .eq('id', id)
+    .eq('user_id', user.id)
     .select()
     .single();
 
   if (error) {
-    console.error("Error actualizando competición:", error);
-    throw new Error("Error al actualizar la competición");
+    console.error('Error actualizando competición:', error);
+    throw new Error('Error al actualizar la competición');
   }
 
   // Revalidar páginas
-  revalidatePath("/planificacion");
-  revalidatePath("/dashboard");
+  revalidatePath('/planificacion');
+  revalidatePath('/dashboard');
 
   return data;
 }
@@ -186,23 +186,23 @@ export async function deleteCompetition(id: string) {
     error: authError,
   } = await supabase.auth.getUser();
   if (authError || !user) {
-    throw new Error("Usuario no autenticado");
+    throw new Error('Usuario no autenticado');
   }
 
   const { error } = await supabase
-    .from("competitions")
+    .from('competitions')
     .delete()
-    .eq("id", id)
-    .eq("user_id", user.id);
+    .eq('id', id)
+    .eq('user_id', user.id);
 
   if (error) {
-    console.error("Error eliminando competición:", error);
-    throw new Error("Error al eliminar la competición");
+    console.error('Error eliminando competición:', error);
+    throw new Error('Error al eliminar la competición');
   }
 
   // Revalidar páginas
-  revalidatePath("/planificacion");
-  revalidatePath("/dashboard");
+  revalidatePath('/planificacion');
+  revalidatePath('/dashboard');
 }
 
 // =====================================================
@@ -216,23 +216,23 @@ export async function getMainCompetition() {
     error: authError,
   } = await supabase.auth.getUser();
   if (authError || !user) {
-    throw new Error("Usuario no autenticado");
+    throw new Error('Usuario no autenticado');
   }
 
   const { data, error } = await supabase
-    .from("competitions")
-    .select("*")
-    .eq("user_id", user.id)
-    .eq("priority", "high")
-    .gte("date", new Date().toISOString().split("T")[0]) // Solo futuras
-    .order("date", { ascending: true })
+    .from('competitions')
+    .select('*')
+    .eq('user_id', user.id)
+    .eq('priority', 'high')
+    .gte('date', new Date().toISOString().split('T')[0]) // Solo futuras
+    .order('date', { ascending: true })
     .limit(1)
     .single();
 
-  if (error && error.code !== "PGRST116") {
+  if (error && error.code !== 'PGRST116') {
     // PGRST116 = no rows returned
-    console.error("Error obteniendo competición principal:", error);
-    throw new Error("Error al obtener la competición principal");
+    console.error('Error obteniendo competición principal:', error);
+    throw new Error('Error al obtener la competición principal');
   }
 
   return data as Competition | null;
@@ -264,7 +264,7 @@ export async function getDaysToCompetition() {
 // OBTENER COMPETICIONES POR PRIORIDAD
 // =====================================================
 export async function getCompetitionsByPriority(
-  priority: "low" | "medium" | "high"
+  priority: 'low' | 'medium' | 'high'
 ) {
   const supabase = await createClient();
 
@@ -273,19 +273,19 @@ export async function getCompetitionsByPriority(
     error: authError,
   } = await supabase.auth.getUser();
   if (authError || !user) {
-    throw new Error("Usuario no autenticado");
+    throw new Error('Usuario no autenticado');
   }
 
   const { data, error } = await supabase
-    .from("competitions")
-    .select("*")
-    .eq("user_id", user.id)
-    .eq("priority", priority)
-    .order("date", { ascending: true });
+    .from('competitions')
+    .select('*')
+    .eq('user_id', user.id)
+    .eq('priority', priority)
+    .order('date', { ascending: true });
 
   if (error) {
-    console.error("Error obteniendo competiciones por prioridad:", error);
-    throw new Error("Error al obtener las competiciones");
+    console.error('Error obteniendo competiciones por prioridad:', error);
+    throw new Error('Error al obtener las competiciones');
   }
 
   return data as Competition[];
@@ -302,20 +302,20 @@ export async function getUpcomingCompetitions(limit: number = 5) {
     error: authError,
   } = await supabase.auth.getUser();
   if (authError || !user) {
-    throw new Error("Usuario no autenticado");
+    throw new Error('Usuario no autenticado');
   }
 
   const { data, error } = await supabase
-    .from("competitions")
-    .select("*")
-    .eq("user_id", user.id)
-    .gte("date", new Date().toISOString().split("T")[0]) // Solo futuras
-    .order("date", { ascending: true })
+    .from('competitions')
+    .select('*')
+    .eq('user_id', user.id)
+    .gte('date', new Date().toISOString().split('T')[0]) // Solo futuras
+    .order('date', { ascending: true })
     .limit(limit);
 
   if (error) {
-    console.error("Error obteniendo competiciones próximas:", error);
-    throw new Error("Error al obtener las competiciones próximas");
+    console.error('Error obteniendo competiciones próximas:', error);
+    throw new Error('Error al obtener las competiciones próximas');
   }
 
   return data as Competition[];

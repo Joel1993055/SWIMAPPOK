@@ -12,7 +12,7 @@ export interface ChartData {
 export interface TrainingReport {
   id: string;
   title: string;
-  type: "performance" | "volume" | "intensity" | "technique";
+  type: 'performance' | 'volume' | 'intensity' | 'technique';
   data: ChartData[];
   period: string;
   generatedAt: Date;
@@ -34,22 +34,25 @@ export interface ReportsContextType {
   selectedReport: TrainingReport | null;
   isLoading: boolean;
   error: string | null;
-  addReport: (report: Omit<TrainingReport, "id" | "generatedAt">) => void;
+  addReport: (report: Omit<TrainingReport, 'id' | 'generatedAt'>) => void;
   updateReport: (id: string, updates: Partial<TrainingReport>) => void;
   deleteReport: (id: string) => void;
   selectReport: (id: string) => void;
-  generateReport: (type: TrainingReport["type"], filters: ReportFilters) => void;
+  generateReport: (
+    type: TrainingReport['type'],
+    filters: ReportFilters
+  ) => void;
   clearReports: () => void;
 }
 
 export interface ReportTemplate {
   id: string;
   name: string;
-  type: TrainingReport["type"];
+  type: TrainingReport['type'];
   config: {
-    chartType: "bar" | "line" | "pie" | "area";
+    chartType: 'bar' | 'line' | 'pie' | 'area';
     metrics: string[];
-    grouping: "day" | "week" | "month";
+    grouping: 'day' | 'week' | 'month';
   };
   isDefault: boolean;
   created_at: string;
@@ -57,7 +60,7 @@ export interface ReportTemplate {
 }
 
 export interface ReportGenerationRequest {
-  type: TrainingReport["type"];
+  type: TrainingReport['type'];
   filters: ReportFilters;
   templateId?: string;
 }

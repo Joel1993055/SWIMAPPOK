@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { MailIcon, type LucideIcon } from "lucide-react";
-import Link from "next/link";
+import { MailIcon, type LucideIcon } from 'lucide-react';
+import Link from 'next/link';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { QuickCreate } from "@/components/forms/quick-create";
+} from '@/components/ui/sidebar';
+import { QuickCreate } from '@/components/forms/quick-create';
 
 export function NavMain({
   items,
@@ -24,17 +24,17 @@ export function NavMain({
 }) {
   return (
     <SidebarGroup>
-      <SidebarGroupContent className="flex flex-col gap-2">
+      <SidebarGroupContent className='flex flex-col gap-2'>
         <SidebarMenu>
-          <SidebarMenuItem className="flex items-center gap-2">
+          <SidebarMenuItem className='flex items-center gap-2'>
             <QuickCreate />
             <Button
-              size="icon"
-              className="h-9 w-9 shrink-0 group-data-[collapsible=icon]:opacity-0"
-              variant="outline"
+              size='icon'
+              className='h-9 w-9 shrink-0 group-data-[collapsible=icon]:opacity-0'
+              variant='outline'
             >
               <MailIcon />
-              <span className="sr-only">Inbox</span>
+              <span className='sr-only'>Inbox</span>
             </Button>
           </SidebarMenuItem>
         </SidebarMenu>

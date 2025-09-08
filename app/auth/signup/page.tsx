@@ -1,24 +1,24 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { signUpAction } from "@/lib/actions/auth";
-import { ArrowLeft, UserPlus } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { signUpAction } from '@/lib/actions/auth';
+import { ArrowLeft, UserPlus } from 'lucide-react';
+import Link from 'next/link';
+import { useState } from 'react';
 
 export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<{
-    type: "success" | "error";
+    type: 'success' | 'error';
     text: string;
   } | null>(null);
 
@@ -30,17 +30,17 @@ export default function SignUpPage() {
       const result = await signUpAction(formData);
 
       if (result.error) {
-        setMessage({ type: "error", text: result.error });
+        setMessage({ type: 'error', text: result.error });
       } else {
         setMessage({
-          type: "success",
-          text: result.success || "Usuario registrado correctamente",
+          type: 'success',
+          text: result.success || 'Usuario registrado correctamente',
         });
       }
     } catch {
       setMessage({
-        type: "error",
-        text: "Error inesperado. Inténtalo de nuevo.",
+        type: 'error',
+        text: 'Error inesperado. Inténtalo de nuevo.',
       });
     } finally {
       setIsLoading(false);
@@ -48,19 +48,19 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="w-full max-w-md">
+    <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4'>
+      <div className='w-full max-w-md'>
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className='text-center mb-8'>
           <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4"
+            href='/'
+            className='inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4'
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className='h-4 w-4' />
             Volver al inicio
           </Link>
-          <h1 className="text-3xl font-bold text-foreground">Crear Cuenta</h1>
-          <p className="text-muted-foreground mt-2">
+          <h1 className='text-3xl font-bold text-foreground'>Crear Cuenta</h1>
+          <p className='text-muted-foreground mt-2'>
             Únete a nuestra plataforma de entrenamiento de natación
           </p>
         </div>
@@ -68,8 +68,8 @@ export default function SignUpPage() {
         {/* Formulario */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <UserPlus className="h-5 w-5" />
+            <CardTitle className='flex items-center gap-2'>
+              <UserPlus className='h-5 w-5' />
               Registro
             </CardTitle>
             <CardDescription>
@@ -77,36 +77,36 @@ export default function SignUpPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form action={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+            <form action={handleSubmit} className='space-y-4'>
+              <div className='space-y-2'>
+                <Label htmlFor='email'>Email</Label>
                 <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="tu@email.com"
+                  id='email'
+                  name='email'
+                  type='email'
+                  placeholder='tu@email.com'
                   required
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password">Contraseña</Label>
+              <div className='space-y-2'>
+                <Label htmlFor='password'>Contraseña</Label>
                 <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="Mínimo 6 caracteres"
+                  id='password'
+                  name='password'
+                  type='password'
+                  placeholder='Mínimo 6 caracteres'
                   required
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirmar Contraseña</Label>
+              <div className='space-y-2'>
+                <Label htmlFor='confirmPassword'>Confirmar Contraseña</Label>
                 <Input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  placeholder="Repite tu contraseña"
+                  id='confirmPassword'
+                  name='confirmPassword'
+                  type='password'
+                  placeholder='Repite tu contraseña'
                   required
                 />
               </div>
@@ -115,26 +115,26 @@ export default function SignUpPage() {
               {message && (
                 <div
                   className={`p-3 rounded-md text-sm ${
-                    message.type === "success"
-                      ? "bg-green-50 text-green-700 border border-green-200"
-                      : "bg-red-50 text-red-700 border border-red-200"
+                    message.type === 'success'
+                      ? 'bg-green-50 text-green-700 border border-green-200'
+                      : 'bg-red-50 text-red-700 border border-red-200'
                   }`}
                 >
                   {message.text}
                 </div>
               )}
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Creando cuenta..." : "Crear Cuenta"}
+              <Button type='submit' className='w-full' disabled={isLoading}>
+                {isLoading ? 'Creando cuenta...' : 'Crear Cuenta'}
               </Button>
             </form>
 
-            <div className="mt-6 text-center">
-              <p className="text-sm text-muted-foreground">
-                ¿Ya tienes cuenta?{" "}
+            <div className='mt-6 text-center'>
+              <p className='text-sm text-muted-foreground'>
+                ¿Ya tienes cuenta?{' '}
                 <Link
-                  href="/auth/signin"
-                  className="text-primary hover:underline"
+                  href='/auth/signin'
+                  className='text-primary hover:underline'
                 >
                   Inicia sesión
                 </Link>
@@ -144,8 +144,8 @@ export default function SignUpPage() {
         </Card>
 
         {/* Footer */}
-        <div className="text-center mt-8">
-          <p className="text-xs text-muted-foreground">
+        <div className='text-center mt-8'>
+          <p className='text-xs text-muted-foreground'>
             Al crear una cuenta, aceptas nuestros términos de servicio y
             política de privacidad
           </p>

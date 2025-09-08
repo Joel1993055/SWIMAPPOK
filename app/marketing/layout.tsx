@@ -1,15 +1,15 @@
-import "@/app/globals.css";
+import '@/app/globals.css';
 
-import type { Metadata } from "next";
+import type { Metadata } from 'next';
 
-import { ThemeProvider } from "next-themes";
-import { Geist } from "next/font/google";
+import { ThemeProvider } from 'next-themes';
+import { Geist } from 'next/font/google';
 
-import { siteConfig } from "@/config/site";
+import { siteConfig } from '@/config/site';
 
 const geistSans = Geist({
-  display: "swap",
-  subsets: ["latin"],
+  display: 'swap',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
@@ -20,24 +20,24 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.getStartedUrl),
   description: siteConfig.description,
   keywords: [
-    "Landing page template",
-    "Components",
-    "Shadcn",
-    "Next.js",
-    "React",
-    "Tailwind CSS",
-    "Radix UI",
+    'Landing page template',
+    'Components',
+    'Shadcn',
+    'Next.js',
+    'React',
+    'Tailwind CSS',
+    'Radix UI',
   ],
   authors: [
     {
-      name: "Mikolaj Dobrucki",
-      url: "https://mikolajdobrucki.com",
+      name: 'Mikolaj Dobrucki',
+      url: 'https://mikolajdobrucki.com',
     },
   ],
-  creator: "mikolajdobrucki",
+  creator: 'mikolajdobrucki',
   openGraph: {
-    type: "website",
-    locale: "en_US",
+    type: 'website',
+    locale: 'en_US',
     url: siteConfig.getStartedUrl,
     title: siteConfig.name,
     description: siteConfig.description,
@@ -52,15 +52,15 @@ export const metadata: Metadata = {
     ],
   },
   twitter: {
-    card: "summary_large_image",
+    card: 'summary_large_image',
     title: siteConfig.name,
     description: siteConfig.description,
     images: [siteConfig.ogImage],
-    creator: "@mikolajdobrucki",
+    creator: '@mikolajdobrucki',
   },
   icons: {
-    icon: "/favicon.svg",
-    apple: "/apple-touch-icon.png",
+    icon: '/favicon.svg',
+    apple: '/apple-touch-icon.png',
   },
 };
 
@@ -70,11 +70,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={geistSans.className} suppressHydrationWarning>
-      <body className="bg-background text-foreground">
+    <html lang='en' className={geistSans.className} suppressHydrationWarning>
+      <body className='bg-background text-foreground'>
         <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
+          attribute='class'
+          defaultTheme='system'
           enableSystem
           disableTransitionOnChange
         >

@@ -4,10 +4,10 @@
 
 export interface AICoachAdvice {
   id: string;
-  type: "performance" | "technique" | "recovery" | "nutrition" | "motivation";
+  type: 'performance' | 'technique' | 'recovery' | 'nutrition' | 'motivation';
   title: string;
   message: string;
-  priority: "high" | "medium" | "low";
+  priority: 'high' | 'medium' | 'low';
   actionable: boolean;
   actionText?: string;
   createdAt: Date;
@@ -18,6 +18,9 @@ export interface AICoachAnalysis {
   strengths: string[];
   weaknesses: string[];
   recommendations: string[];
+  recoveryStatus?: 'excellent' | 'good' | 'fair' | 'poor';
+  nextTrainingFocus?: string;
+  improvements?: string[];
 }
 
 export interface AICoachContextType {
@@ -25,7 +28,7 @@ export interface AICoachContextType {
   analysis: AICoachAnalysis | null;
   isLoading: boolean;
   error: string | null;
-  addAdvice: (advice: Omit<AICoachAdvice, "id" | "createdAt">) => void;
+  addAdvice: (advice: Omit<AICoachAdvice, 'id' | 'createdAt'>) => void;
   updateAdvice: (id: string, updates: Partial<AICoachAdvice>) => void;
   deleteAdvice: (id: string) => void;
   generateAnalysis: (context: string) => AICoachAdvice[];
@@ -34,8 +37,8 @@ export interface AICoachContextType {
 
 export interface AICoachRequest {
   context: string;
-  type: AICoachAdvice["type"];
-  priority?: AICoachAdvice["priority"];
+  type: AICoachAdvice['type'];
+  priority?: AICoachAdvice['priority'];
 }
 
 export interface AICoachResponse {

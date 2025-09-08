@@ -1,15 +1,17 @@
-import type { NextConfig } from "next";
 import { withSentryConfig } from '@sentry/nextjs';
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   /* config options here */
-  
+
   // Bundle optimization
   webpack: (config, { dev, isServer }) => {
     // Optimize bundle size
     if (!dev && !isServer) {
       config.optimization.splitChunks = {
         chunks: 'all',
+        minSize: 20000,
+        maxSize: 244000,
         cacheGroups: {
           default: {
             minChunks: 2,
@@ -41,22 +43,34 @@ const nextConfig: NextConfig = {
             priority: 10,
             chunks: 'all',
           },
+          charts: {
+            test: /[\\/]node_modules[\\/](chart\.js|react-chartjs-2)[\\/]/,
+            name: 'charts',
+            priority: 10,
+            chunks: 'all',
+          },
+          utils: {
+            test: /[\\/]node_modules[\\/](date-fns|clsx|tailwind-merge)[\\/]/,
+            name: 'utils',
+            priority: 10,
+            chunks: 'all',
+          },
         },
       };
     }
-    
+
     return config;
   },
-  
+
   // Image optimization
   images: {
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 60,
   },
-  
+
   // Compression
   compress: true,
-  
+
   // Performance optimizations
   poweredByHeader: false,
   generateEtags: false,
@@ -77,11 +91,6 @@ const sentryWebpackPluginOptions = {
 
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options
-
-  // Suppresses source map uploading logs during build
-  silent: true,
-  org: process.env.SENTRY_ORG,
-  project: process.env.SENTRY_PROJECT,
 };
 
 export default withSentryConfig(nextConfig, sentryWebpackPluginOptions);

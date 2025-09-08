@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { TrendingUp } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import { TrendingUp } from 'lucide-react';
+import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 
 import {
   Card,
@@ -10,7 +10,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   ChartConfig,
   ChartContainer,
@@ -18,25 +18,25 @@ import {
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
+} from '@/components/ui/chart';
 
 const chartData = [
-  { month: "January", aerobico: 186, anaerobico: 80 },
-  { month: "February", aerobico: 305, anaerobico: 200 },
-  { month: "March", aerobico: 237, anaerobico: 120 },
-  { month: "April", aerobico: 73, anaerobico: 190 },
-  { month: "May", aerobico: 209, anaerobico: 130 },
-  { month: "June", aerobico: 214, anaerobico: 140 },
+  { month: 'January', aerobico: 186, anaerobico: 80 },
+  { month: 'February', aerobico: 305, anaerobico: 200 },
+  { month: 'March', aerobico: 237, anaerobico: 120 },
+  { month: 'April', aerobico: 73, anaerobico: 190 },
+  { month: 'May', aerobico: 209, anaerobico: 130 },
+  { month: 'June', aerobico: 214, anaerobico: 140 },
 ];
 
 const chartConfig = {
   aerobico: {
-    label: "Aeróbico",
-    color: "hsl(var(--chart-1))",
+    label: 'Aeróbico',
+    color: 'hsl(var(--chart-1))',
   },
   anaerobico: {
-    label: "Anaeróbico",
-    color: "hsl(var(--chart-2))",
+    label: 'Anaeróbico',
+    color: 'hsl(var(--chart-2))',
   },
 } satisfies ChartConfig;
 
@@ -52,7 +52,7 @@ export default function BarStackedChartLegend() {
           <BarChart accessibilityLayer data={chartData}>
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="month"
+              dataKey='month'
               tickLine={false}
               tickMargin={10}
               axisLine={false}
@@ -61,25 +61,25 @@ export default function BarStackedChartLegend() {
             <ChartTooltip content={<ChartTooltipContent hideLabel />} />
             <ChartLegend content={<ChartLegendContent />} />
             <Bar
-              dataKey="aerobico"
-              stackId="a"
-              fill="var(--color-aerobico)"
+              dataKey='aerobico'
+              stackId='a'
+              fill='var(--color-aerobico)'
               radius={[0, 0, 4, 4]}
             />
             <Bar
-              dataKey="anaerobico"
-              stackId="a"
-              fill="var(--color-anaerobico)"
+              dataKey='anaerobico'
+              stackId='a'
+              fill='var(--color-anaerobico)'
               radius={[4, 4, 0, 0]}
             />
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+      <CardFooter className='flex-col items-start gap-2 text-sm'>
+        <div className='flex gap-2 font-medium leading-none'>
+          Trending up by 5.2% this month <TrendingUp className='h-4 w-4' />
         </div>
-        <div className="leading-none text-muted-foreground">
+        <div className='leading-none text-muted-foreground'>
           Showing total visitors for the last 6 months
         </div>
       </CardFooter>

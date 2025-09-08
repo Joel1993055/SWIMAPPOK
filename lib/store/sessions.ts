@@ -1,11 +1,11 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import { Session } from "../types/session";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { Session } from '../types/session';
 
 // Función para generar IDs únicos que funcione en todos los entornos
 function generateId(): string {
   // Usar crypto.randomUUID() si está disponible (navegadores modernos)
-  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
     return crypto.randomUUID();
   }
 
@@ -19,7 +19,7 @@ interface SessionsState {
   error: string | null;
 
   // Actions
-  addSession: (session: Omit<Session, "id">) => void;
+  addSession: (session: Omit<Session, 'id'>) => void;
   updateSession: (id: string, updates: Partial<Session>) => void;
   deleteSession: (id: string) => void;
   loadSessions: () => void;
@@ -87,7 +87,7 @@ export const useSessionsStore = create<SessionsState>()(
       },
     }),
     {
-      name: "swim-sessions-storage",
+      name: 'swim-sessions-storage',
       partialize: state => ({ sessions: state.sessions }),
     }
   )

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import VolumeBarchart from "@/components/charts/barchart";
-import ChartComponent from "@/components/charts/chartcomponent";
+import VolumeBarchart from '@/components/charts/barchart';
+import ChartComponent from '@/components/charts/chartcomponent';
 
 export function ChartsSection() {
   return (

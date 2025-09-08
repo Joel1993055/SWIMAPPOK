@@ -21,7 +21,7 @@ export async function mockApiResponse(
     route.fulfill({
       status,
       contentType: 'application/json',
-      body: JSON.stringify(response)
+      body: JSON.stringify(response),
     });
   });
 }
@@ -39,7 +39,7 @@ export async function mockApiError(
     route.fulfill({
       status,
       contentType: 'application/json',
-      body: JSON.stringify({ error })
+      body: JSON.stringify({ error }),
     });
   });
 }
@@ -47,10 +47,7 @@ export async function mockApiError(
 /**
  * Helper function to fill form fields
  */
-export async function fillForm(
-  page: Page,
-  formData: Record<string, string>
-) {
+export async function fillForm(page: Page, formData: Record<string, string>) {
   for (const [field, value] of Object.entries(formData)) {
     await page.fill(`[name="${field}"]`, value);
   }
@@ -62,7 +59,7 @@ export async function fillForm(
 export async function expectErrorMessage(page: Page, message?: string) {
   const errorElement = page.locator('[data-testid="error-message"]');
   await expect(errorElement).toBeVisible();
-  
+
   if (message) {
     await expect(errorElement).toContainText(message);
   }
@@ -82,7 +79,7 @@ export async function expectLoadingState(page: Page) {
 export async function expectSuccessMessage(page: Page, message?: string) {
   const successElement = page.locator('[data-testid="success-message"]');
   await expect(successElement).toBeVisible();
-  
+
   if (message) {
     await expect(successElement).toContainText(message);
   }
@@ -96,10 +93,10 @@ export async function mockAuthenticatedUser(page: Page, user: any = {}) {
     id: '1',
     email: 'test@example.com',
     name: 'Test User',
-    ...user
+    ...user,
   };
 
-  await page.addInitScript((user) => {
+  await page.addInitScript(user => {
     window.localStorage.setItem('user', JSON.stringify(user));
   }, defaultUser);
 }

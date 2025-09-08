@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { useState } from 'react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { useState } from 'react';
 
 // =====================================================
 // CONFIGURACIÓN DE REACT QUERY
@@ -19,7 +19,7 @@ function createQueryClient() {
         // Reintentar 3 veces en caso de error
         retry: 3,
         // Retry delay con backoff exponencial
-        retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+        retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
         // Refetch automático cuando la ventana recupera el foco
         refetchOnWindowFocus: true,
         // Refetch automático cuando se reconecta la red
@@ -34,7 +34,7 @@ function createQueryClient() {
         retryDelay: 1000,
       },
     },
-  })
+  });
 }
 
 // =====================================================
@@ -42,23 +42,20 @@ function createQueryClient() {
 // =====================================================
 
 interface QueryProviderProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export function QueryProvider({ children }: QueryProviderProps) {
   // Crear QueryClient una sola vez por instancia del provider
-  const [queryClient] = useState(() => createQueryClient())
+  const [queryClient] = useState(() => createQueryClient());
 
   return (
     <QueryClientProvider client={queryClient}>
       {children}
       {/* Solo mostrar devtools en desarrollo */}
       {process.env.NODE_ENV === 'development' && (
-        <ReactQueryDevtools 
-          initialIsOpen={false}
-          position="bottom-right"
-        />
+        <ReactQueryDevtools initialIsOpen={false} position='bottom-right' />
       )}
     </QueryClientProvider>
-  )
+  );
 }

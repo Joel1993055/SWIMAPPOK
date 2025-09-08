@@ -7,38 +7,66 @@ export type { Session } from './session';
 
 // Auth Types
 export type {
-    AuthResponse, Session as AuthSession, AuthState, PasswordResetData, SignInData,
-    SignUpData, User
+  AuthResponse,
+  Session as AuthSession,
+  AuthState,
+  PasswordResetData,
+  SignInData,
+  SignUpData,
+  User,
 } from './auth';
 
 // Competition Types
 export type {
-    Competition, CompetitionContextType, CompetitionFormData, CompetitionResult
+  Competition,
+  CompetitionContextType,
+  CompetitionFormData,
+  CompetitionResult,
 } from './competition';
 
 // Training Types
 export type {
-    TrainingMetrics, TrainingPhase, TrainingPhaseFormData,
-    TrainingPhasesContextType, TrainingZones, TrainingZonesContextType, ZoneDetection, ZoneDetectionResult
+  TrainingMetrics,
+  TrainingPhase,
+  TrainingPhaseFormData,
+  TrainingPhasesContextType,
+  TrainingZones,
+  TrainingZonesContextType,
+  ZoneDetection,
+  ZoneDetectionResult,
 } from './training';
 
 // AI Coach Types
 export type {
-    AICoachAdvice,
-    AICoachAnalysis,
-    AICoachContextType,
-    AICoachRequest,
-    AICoachResponse
+  AICoachAdvice,
+  AICoachAnalysis,
+  AICoachContextType,
+  AICoachRequest,
+  AICoachResponse,
 } from './ai-coach';
 
 // Reports Types
 export type {
-    ChartData, ReportFilters, ReportGenerationRequest, ReportTemplate, ReportsContextType, TrainingReport
+  ChartData,
+  ReportFilters,
+  ReportGenerationRequest,
+  ReportTemplate,
+  ReportsContextType,
+  TrainingReport,
 } from './reports';
 
 // API Types
 export type {
-    ApiClient, ApiError, ApiResponse, DatabaseTable, PaginatedResponse, RequestConfig, SessionTable, SupabaseAuthResponse, SupabaseResponse, UserTable
+  ApiClient,
+  ApiError,
+  ApiResponse,
+  DatabaseTable,
+  PaginatedResponse,
+  RequestConfig,
+  SessionTable,
+  SupabaseAuthResponse,
+  SupabaseResponse,
+  UserTable,
 } from './api';
 
 // Form Types
@@ -74,19 +102,25 @@ export interface StoreState {
 
 export interface SessionsStoreState extends StoreState {
   sessions: import('./session').Session[];
-  addSession: (session: Omit<import('./session').Session, "id">) => void;
-  updateSession: (id: string, updates: Partial<import('./session').Session>) => void;
+  addSession: (session: Omit<import('./session').Session, 'id'>) => void;
+  updateSession: (
+    id: string,
+    updates: Partial<import('./session').Session>
+  ) => void;
   deleteSession: (id: string) => void;
   getSessionsByDate: (date: string) => import('./session').Session[];
-  getSessionsByRange: (startDate: string, endDate: string) => import('./session').Session[];
+  getSessionsByRange: (
+    startDate: string,
+    endDate: string
+  ) => import('./session').Session[];
 }
 
 // UI Types
-export type Theme = "light" | "dark" | "system";
+export type Theme = 'light' | 'dark' | 'system';
 
 export interface Notification {
   id: string;
-  type: "success" | "error" | "warning" | "info";
+  type: 'success' | 'error' | 'warning' | 'info';
   title: string;
   message: string;
   duration?: number;

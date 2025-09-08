@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { ThemeProvider as NextThemeProvider } from "next-themes";
-import { useEffect, useState } from "react";
+import { ThemeProvider as NextThemeProvider } from 'next-themes';
+import { useEffect, useState } from 'react';
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
@@ -16,8 +16,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <NextThemeProvider
-      attribute="class"
-      defaultTheme="dark"
+      attribute='class'
+      defaultTheme='dark'
       enableSystem={false}
     >
       {children}

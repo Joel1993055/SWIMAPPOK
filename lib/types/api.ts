@@ -26,17 +26,31 @@ export interface ApiError {
 }
 
 export interface RequestConfig {
-  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   headers?: Record<string, string>;
   body?: unknown;
   params?: Record<string, string>;
 }
 
 export interface ApiClient {
-  get: <T>(url: string, config?: Partial<RequestConfig>) => Promise<ApiResponse<T>>;
-  post: <T>(url: string, data?: unknown, config?: Partial<RequestConfig>) => Promise<ApiResponse<T>>;
-  put: <T>(url: string, data?: unknown, config?: Partial<RequestConfig>) => Promise<ApiResponse<T>>;
-  delete: <T>(url: string, config?: Partial<RequestConfig>) => Promise<ApiResponse<T>>;
+  get: <T>(
+    url: string,
+    config?: Partial<RequestConfig>
+  ) => Promise<ApiResponse<T>>;
+  post: <T>(
+    url: string,
+    data?: unknown,
+    config?: Partial<RequestConfig>
+  ) => Promise<ApiResponse<T>>;
+  put: <T>(
+    url: string,
+    data?: unknown,
+    config?: Partial<RequestConfig>
+  ) => Promise<ApiResponse<T>>;
+  delete: <T>(
+    url: string,
+    config?: Partial<RequestConfig>
+  ) => Promise<ApiResponse<T>>;
 }
 
 // Supabase specific types

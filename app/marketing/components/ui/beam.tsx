@@ -1,7 +1,7 @@
-import { cva, type VariantProps } from "class-variance-authority";
-import * as React from "react";
+import { cva, type VariantProps } from 'class-variance-authority';
+import * as React from 'react';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 const beamVariants = cva(
   "relative after:content-[''] after:absolute after:inset-0 after:rounded-full after:scale-200",
@@ -9,17 +9,17 @@ const beamVariants = cva(
     variants: {
       tone: {
         default:
-          "after:bg-radial after:from-foreground/30 after:from-10% after:to-foreground/0 after:to-60%",
+          'after:bg-radial after:from-foreground/30 after:from-10% after:to-foreground/0 after:to-60%',
         brand:
-          "after:bg-radial after:from-brand/30 after:from-10% after:to-brand/0 after:to-60%",
+          'after:bg-radial after:from-brand/30 after:from-10% after:to-brand/0 after:to-60%',
         brandLight:
-          "after:bg-radial after:from-brand-foreground/30 after:from-10% after:to-brand-foreground/0 after:to-60%",
+          'after:bg-radial after:from-brand-foreground/30 after:from-10% after:to-brand-foreground/0 after:to-60%',
       },
     },
     defaultVariants: {
-      tone: "default",
+      tone: 'default',
     },
-  },
+  }
 );
 
 export interface BeamProps
@@ -29,7 +29,7 @@ export interface BeamProps
 function Beam({ className, tone, ...props }: BeamProps) {
   return (
     <div
-      data-slot="beam"
+      data-slot='beam'
       className={cn(beamVariants({ tone, className }))}
       {...props}
     />

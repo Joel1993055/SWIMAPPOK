@@ -1,6 +1,6 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
-type DashboardTab = "overview" | "log" | "analytics";
+type DashboardTab = 'overview' | 'log' | 'analytics';
 
 interface DashboardTabsState {
   activeTab: DashboardTab;
@@ -8,6 +8,6 @@ interface DashboardTabsState {
 }
 
 export const useDashboardTabsStore = create<DashboardTabsState>(set => ({
-  activeTab: "overview",
+  activeTab: 'overview',
   setActiveTab: tab => set({ activeTab: tab }),
 }));

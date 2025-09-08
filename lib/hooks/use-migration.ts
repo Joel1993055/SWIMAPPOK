@@ -2,7 +2,14 @@
 // HOOK DE MIGRACIÓN - FACILITAR TRANSICIÓN
 // =====================================================
 
-import { useAICoachStore, useAuthStore, useCompetitionsStore, useReportsStore, useSessionsStore, useTrainingStore } from '@/lib/store/unified';
+import {
+  useAICoachStore,
+  useAuthStore,
+  useCompetitionsStore,
+  useReportsStore,
+  useSessionsStore,
+  useTrainingStore,
+} from '@/lib/store/unified';
 import { useEffect } from 'react';
 
 // =====================================================
@@ -67,11 +74,11 @@ export function useTrainingZonesMigration() {
       try {
         const methodology = localStorage.getItem('training-zones-methodology');
         const customZones = localStorage.getItem('training-zones-custom');
-        
+
         if (methodology) {
           setMethodology(methodology);
         }
-        
+
         if (customZones) {
           const zones = JSON.parse(customZones);
           setZones(zones);
@@ -112,29 +119,29 @@ export function useStoreCompatibility() {
     isAuthenticated: authStore.isAuthenticated,
     authLoading: authStore.isLoading,
     authError: authStore.error,
-    
+
     // Sessions
     sessions: sessionsStore.sessions,
     sessionsLoading: sessionsStore.isLoading,
     sessionsError: sessionsStore.error,
-    
+
     // Competitions
     competitions: competitionsStore.competitions,
     competitionsLoading: competitionsStore.isLoading,
     competitionsError: competitionsStore.error,
-    
+
     // Training
     phases: trainingStore.phases,
     zones: trainingStore.zones,
     trainingLoading: trainingStore.isLoading,
     trainingError: trainingStore.error,
-    
+
     // AI Coach
     advice: aiCoachStore.advice,
     analysis: aiCoachStore.analysis,
     aiCoachLoading: aiCoachStore.isLoading,
     aiCoachError: aiCoachStore.error,
-    
+
     // Reports
     reports: reportsStore.reports,
     selectedReport: reportsStore.selectedReport,

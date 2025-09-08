@@ -1,13 +1,13 @@
 # Dependencies
-node_modules
+node_modules/
 .pnp
 .pnp.js
 
-# Production builds
-.next
-out
-dist
-build
+# Production
+.next/
+out/
+build/
+dist/
 
 # Environment variables
 .env
@@ -29,17 +29,15 @@ pids
 *.pid.lock
 
 # Coverage directory used by tools like istanbul
-coverage
+coverage/
 *.lcov
 
 # nyc test coverage
 .nyc_output
 
 # Dependency directories
+node_modules/
 jspm_packages/
-
-# TypeScript cache
-*.tsbuildinfo
 
 # Optional npm cache directory
 .npm
@@ -71,6 +69,7 @@ jspm_packages/
 
 # Nuxt.js build / generate output
 .nuxt
+dist
 
 # Gatsby files
 .cache/
@@ -85,23 +84,28 @@ tmp/
 temp/
 
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
-# Database
-*.db
-*.sqlite
+# Test results
+test-results/
+playwright-report/
+coverage/
 
-# Package files
-*.tgz
-*.tar.gz
+# Bundle analysis
+.bundle-reports/
 
 # Generated files
-generated/
+*.generated.*

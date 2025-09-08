@@ -7,12 +7,12 @@ export interface Competition {
   name: string;
   date: string;
   location: string;
-  type: "nacional" | "regional" | "local" | "internacional";
+  type: 'nacional' | 'regional' | 'local' | 'internacional';
   events: string[];
   objectives: string;
   results?: CompetitionResult[];
-  status: "upcoming" | "completed" | "cancelled";
-  priority: "high" | "medium" | "low";
+  status: 'upcoming' | 'completed' | 'cancelled';
+  priority: 'high' | 'medium' | 'low';
   description?: string;
   created_at?: string;
   updated_at?: string;
@@ -31,11 +31,11 @@ export interface CompetitionFormData {
   name: string;
   date: string;
   location: string;
-  type: Competition["type"];
+  type: Competition['type'];
   events: string[];
   objectives: string;
   description?: string;
-  priority: Competition["priority"];
+  priority: Competition['priority'];
 }
 
 export interface CompetitionContextType {

@@ -1,10 +1,10 @@
-import { User, Users } from "lucide-react";
+import { User, Users } from 'lucide-react';
 
-import { siteConfig } from "@/config/site";
-import { cn } from "@/lib/utils";
+import { siteConfig } from '@/config/site';
+import { cn } from '@/lib/utils';
 
-import { PricingColumn, PricingColumnProps } from "../../ui/pricing-column";
-import { Section } from "../../ui/section";
+import { PricingColumn, PricingColumnProps } from '../../ui/pricing-column';
+import { Section } from '../../ui/section';
 
 interface PricingProps {
   title?: string | false;
@@ -14,36 +14,36 @@ interface PricingProps {
 }
 
 export default function Pricing({
-  title = "Build your dream landing page, today.",
-  description = "Get lifetime access to all the components. No recurring fees. Just simple, transparent pricing.",
+  title = 'Build your dream landing page, today.',
+  description = 'Get lifetime access to all the components. No recurring fees. Just simple, transparent pricing.',
   plans = [
     {
-      name: "Free",
-      description: "For everyone starting out on a website for their big idea",
+      name: 'Free',
+      description: 'For everyone starting out on a website for their big idea',
       price: 0,
-      priceNote: "Free and open-source forever.",
+      priceNote: 'Free and open-source forever.',
       cta: {
-        variant: "glow",
-        label: "Get started for free",
-        href: "/docs/getting-started/introduction",
+        variant: 'glow',
+        label: 'Get started for free',
+        href: '/docs/getting-started/introduction',
       },
       features: [
-        "1 website template",
-        "9 blocks and sections",
-        "4 custom animations",
+        '1 website template',
+        '9 blocks and sections',
+        '4 custom animations',
       ],
-      variant: "default",
-      className: "hidden lg:flex",
+      variant: 'default',
+      className: 'hidden lg:flex',
     },
     {
-      name: "Pro",
-      icon: <User className="size-4" />,
-      description: "For early-stage founders, solopreneurs and indie devs",
+      name: 'Pro',
+      icon: <User className='size-4' />,
+      description: 'For early-stage founders, solopreneurs and indie devs',
       price: 99,
-      priceNote: "Lifetime access. Free updates. No recurring fees.",
+      priceNote: 'Lifetime access. Free updates. No recurring fees.',
       cta: {
-        variant: "default",
-        label: "Get all-access",
+        variant: 'default',
+        label: 'Get all-access',
         href: siteConfig.pricing.pro,
       },
       features: [
@@ -53,47 +53,47 @@ export default function Pricing({
         `${siteConfig.stats.illustrations} illustrations`,
         `${siteConfig.stats.animations} custom animations`,
       ],
-      variant: "glow-brand",
+      variant: 'glow-brand',
     },
     {
-      name: "Pro Team",
-      icon: <Users className="size-4" />,
-      description: "For teams and agencies working on cool products together",
+      name: 'Pro Team',
+      icon: <Users className='size-4' />,
+      description: 'For teams and agencies working on cool products together',
       price: 499,
-      priceNote: "Lifetime access. Free updates. No recurring fees.",
+      priceNote: 'Lifetime access. Free updates. No recurring fees.',
       cta: {
-        variant: "default",
-        label: "Get all-access for your team",
+        variant: 'default',
+        label: 'Get all-access for your team',
         href: siteConfig.pricing.team,
       },
       features: [
-        "All the templates, components and sections available for your entire team",
+        'All the templates, components and sections available for your entire team',
       ],
-      variant: "glow",
+      variant: 'glow',
     },
   ],
-  className = "",
+  className = '',
 }: PricingProps) {
   return (
     <Section className={cn(className)}>
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-12">
+      <div className='mx-auto flex max-w-6xl flex-col items-center gap-12'>
         {(title || description) && (
-          <div className="flex flex-col items-center gap-4 px-4 text-center sm:gap-8">
+          <div className='flex flex-col items-center gap-4 px-4 text-center sm:gap-8'>
             {title && (
-              <h2 className="text-3xl leading-tight font-semibold sm:text-5xl sm:leading-tight">
+              <h2 className='text-3xl leading-tight font-semibold sm:text-5xl sm:leading-tight'>
                 {title}
               </h2>
             )}
             {description && (
-              <p className="text-md text-muted-foreground max-w-[600px] font-medium sm:text-xl">
+              <p className='text-md text-muted-foreground max-w-[600px] font-medium sm:text-xl'>
                 {description}
               </p>
             )}
           </div>
         )}
         {plans !== false && plans.length > 0 && (
-          <div className="max-w-container mx-auto grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {plans.map((plan) => (
+          <div className='max-w-container mx-auto grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3'>
+            {plans.map(plan => (
               <PricingColumn
                 key={plan.name}
                 name={plan.name}

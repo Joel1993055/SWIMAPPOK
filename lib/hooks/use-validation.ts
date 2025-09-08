@@ -1,24 +1,24 @@
-import { useCallback, useState } from 'react'
-import { z } from 'zod'
+import { useCallback, useState } from 'react';
+import { z } from 'zod';
 
 // =====================================================
 // TIPOS
 // =====================================================
 
 interface ValidationState<T> {
-  data: T | null
-  errors: Record<string, string>
-  isValid: boolean
-  isDirty: boolean
+  data: T | null;
+  errors: Record<string, string>;
+  isValid: boolean;
+  isDirty: boolean;
 }
 
 interface ValidationActions<T> {
-  setData: (data: T) => void
-  setField: (field: keyof T, value: unknown) => void
-  validate: () => boolean
-  validateField: (field: keyof T) => boolean
-  reset: () => void
-  setErrors: (errors: Record<string, string>) => void
+  setData: (data: T) => void;
+  setField: (field: keyof T, value: unknown) => void;
+  validate: () => boolean;
+  validateField: (field: keyof T) => boolean;
+  reset: () => void;
+  setErrors: (errors: Record<string, string>) => void;
 }
 
 // =====================================================
@@ -29,129 +29,141 @@ export function useValidation<T extends Record<string, unknown>>(
   schema: z.ZodSchema<T>,
   initialData?: Partial<T>
 ): ValidationState<T> & ValidationActions<T> {
-  const [data, setDataState] = useState<T | null>(initialData as T || null)
-  const [errors, setErrors] = useState<Record<string, string>>({})
-  const [isDirty, setIsDirty] = useState(false)
+  const [data, setDataState] = useState<T | null>((initialData as T) || null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isDirty, setIsDirty] = useState(false);
 
   // =====================================================
   // VALIDACIÓN COMPLETA
   // =====================================================
   const validate = useCallback((): boolean => {
     if (!data) {
-      setErrors({ general: 'No data to validate' })
-      return false
+      setErrors({ general: 'No data to validate' });
+      return false;
     }
 
     try {
-      schema.parse(data)
-      setErrors({})
-      return true
+      schema.parse(data);
+      setErrors({});
+      return true;
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const newErrors: Record<string, string> = {}
-        error.issues.forEach((err) => {
-          const path = err.path.join('.')
-          newErrors[path] = err.message
-        })
-        setErrors(newErrors)
+        const newErrors: Record<string, string> = {};
+        error.issues.forEach(err => {
+          const path = err.path.join('.');
+          newErrors[path] = err.message;
+        });
+        setErrors(newErrors);
       } else {
-        setErrors({ general: 'Validation error' })
+        setErrors({ general: 'Validation error' });
       }
-      return false
+      return false;
     }
-  }, [data, schema])
+  }, [data, schema]);
 
   // =====================================================
   // VALIDACIÓN DE CAMPO ESPECÍFICO
   // =====================================================
-  const validateField = useCallback((field: keyof T): boolean => {
-    if (!data) return false
+  const validateField = useCallback(
+    (field: keyof T): boolean => {
+      if (!data) return false;
 
-    try {
-      // Crear un schema parcial para el campo específico
-      const fieldSchema = schema.pick({ [field]: true } as Record<keyof T, true>)
-      fieldSchema.parse({ [field]: data[field] })
-      
-      // Limpiar error del campo
-      setErrors(prev => {
-        const newErrors = { ...prev }
-        delete newErrors[field as string]
-        return newErrors
-      })
-      
-      return true
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const fieldError = error.issues.find(err => err.path[0] === field)
-        if (fieldError) {
-          setErrors(prev => ({
-            ...prev,
-            [field as string]: fieldError.message
-          }))
+      try {
+        // Crear un schema parcial para el campo específico
+        const fieldSchema = schema.pick({ [field]: true } as Record<
+          keyof T,
+          true
+        >);
+        fieldSchema.parse({ [field]: data[field] });
+
+        // Limpiar error del campo
+        setErrors(prev => {
+          const newErrors = { ...prev };
+          delete newErrors[field as string];
+          return newErrors;
+        });
+
+        return true;
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          const fieldError = error.issues.find(err => err.path[0] === field);
+          if (fieldError) {
+            setErrors(prev => ({
+              ...prev,
+              [field as string]: fieldError.message,
+            }));
+          }
         }
+        return false;
       }
-      return false
-    }
-  }, [data, schema])
+    },
+    [data, schema]
+  );
 
   // =====================================================
   // ESTABLECER DATOS
   // =====================================================
-  const setData = useCallback((newData: T) => {
-    setDataState(newData)
-    setIsDirty(true)
-    // Validar automáticamente los nuevos datos
-    try {
-      schema.parse(newData)
-      setErrors({})
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const newErrors: Record<string, string> = {}
-        error.issues.forEach((err) => {
-          const path = err.path.join('.')
-          newErrors[path] = err.message
-        })
-        setErrors(newErrors)
-      } else {
-        setErrors({ general: 'Validation error' })
+  const setData = useCallback(
+    (newData: T) => {
+      setDataState(newData);
+      setIsDirty(true);
+      // Validar automáticamente los nuevos datos
+      try {
+        schema.parse(newData);
+        setErrors({});
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          const newErrors: Record<string, string> = {};
+          error.issues.forEach(err => {
+            const path = err.path.join('.');
+            newErrors[path] = err.message;
+          });
+          setErrors(newErrors);
+        } else {
+          setErrors({ general: 'Validation error' });
+        }
       }
-    }
-  }, [schema])
+    },
+    [schema]
+  );
 
   // =====================================================
   // ESTABLECER CAMPO ESPECÍFICO
   // =====================================================
-  const setField = useCallback((field: keyof T, value: unknown) => {
-    setDataState(prev => {
-      if (!prev) return { [field]: value } as T
-      return { ...prev, [field]: value }
-    })
-    setIsDirty(true)
-    
-    // Validar el campo automáticamente
-    setTimeout(() => validateField(field), 0)
-  }, [validateField])
+  const setField = useCallback(
+    (field: keyof T, value: unknown) => {
+      setDataState(prev => {
+        if (!prev) return { [field]: value } as T;
+        return { ...prev, [field]: value };
+      });
+      setIsDirty(true);
+
+      // Validar el campo automáticamente
+      setTimeout(() => validateField(field), 0);
+    },
+    [validateField]
+  );
 
   // =====================================================
   // RESET
   // =====================================================
   const reset = useCallback(() => {
-    setDataState(initialData as T || null)
-    setErrors({})
-    setIsDirty(false)
-  }, [initialData])
+    setDataState((initialData as T) || null);
+    setErrors({});
+    setIsDirty(false);
+  }, [initialData]);
 
   // =====================================================
   // ESTABLECER ERRORES MANUALMENTE
   // =====================================================
   const setErrorsManually = useCallback((newErrors: Record<string, string>) => {
-    setErrors(newErrors)
-  }, [])
+    setErrors(newErrors);
+  }, []);
 
   // =====================================================
   // CALCULAR VALIDEZ
   // =====================================================
-  const isValid = Object.keys(errors).length === 0 && data !== null
+  const isValid = Object.keys(errors).length === 0 && data !== null;
 
   return {
     data,
@@ -164,7 +176,7 @@ export function useValidation<T extends Record<string, unknown>>(
     validateField,
     reset,
     setErrors: setErrorsManually,
-  }
+  };
 }
 
 // =====================================================
@@ -175,31 +187,43 @@ export function useFormValidation<T extends Record<string, unknown>>(
   schema: z.ZodSchema<T>,
   initialData?: Partial<T>
 ) {
-  const validation = useValidation(schema, initialData)
-  
-  const handleSubmit = useCallback((onSubmit: (data: T) => void) => {
-    return (e: React.FormEvent) => {
-      e.preventDefault()
-      
-      if (validation.validate() && validation.data) {
-        onSubmit(validation.data)
-      }
-    }
-  }, [validation])
+  const validation = useValidation(schema, initialData);
 
-  const handleFieldChange = useCallback((field: keyof T) => {
-    return (value: unknown) => {
-      validation.setField(field, value)
-    }
-  }, [validation])
+  const handleSubmit = useCallback(
+    (onSubmit: (data: T) => void) => {
+      return (e: React.FormEvent) => {
+        e.preventDefault();
 
-  const getFieldError = useCallback((field: keyof T) => {
-    return validation.errors[field as string] || ''
-  }, [validation.errors])
+        if (validation.validate() && validation.data) {
+          onSubmit(validation.data);
+        }
+      };
+    },
+    [validation]
+  );
 
-  const hasFieldError = useCallback((field: keyof T) => {
-    return !!validation.errors[field as string]
-  }, [validation.errors])
+  const handleFieldChange = useCallback(
+    (field: keyof T) => {
+      return (value: unknown) => {
+        validation.setField(field, value);
+      };
+    },
+    [validation]
+  );
+
+  const getFieldError = useCallback(
+    (field: keyof T) => {
+      return validation.errors[field as string] || '';
+    },
+    [validation.errors]
+  );
+
+  const hasFieldError = useCallback(
+    (field: keyof T) => {
+      return !!validation.errors[field as string];
+    },
+    [validation.errors]
+  );
 
   return {
     ...validation,
@@ -207,7 +231,7 @@ export function useFormValidation<T extends Record<string, unknown>>(
     handleFieldChange,
     getFieldError,
     hasFieldError,
-  }
+  };
 }
 
 // =====================================================
@@ -219,37 +243,42 @@ export function useRealtimeValidation<T extends Record<string, unknown>>(
   initialData?: Partial<T>,
   debounceMs: number = 300
 ) {
-  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null)
-  const validation = useValidation(schema, initialData)
+  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(
+    null
+  );
+  const validation = useValidation(schema, initialData);
 
-  const setFieldWithDebounce = useCallback((field: keyof T, value: unknown) => {
-    // Establecer el valor inmediatamente
-    validation.setField(field, value)
-    
-    // Limpiar timer anterior
-    if (debounceTimer) {
-      clearTimeout(debounceTimer)
-    }
-    
-    // Establecer nuevo timer para validación
-    const newTimer = setTimeout(() => {
-      validation.validateField(field)
-    }, debounceMs)
-    
-    setDebounceTimer(newTimer)
-  }, [validation, debounceTimer, debounceMs])
+  const setFieldWithDebounce = useCallback(
+    (field: keyof T, value: unknown) => {
+      // Establecer el valor inmediatamente
+      validation.setField(field, value);
+
+      // Limpiar timer anterior
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
+      }
+
+      // Establecer nuevo timer para validación
+      const newTimer = setTimeout(() => {
+        validation.validateField(field);
+      }, debounceMs);
+
+      setDebounceTimer(newTimer);
+    },
+    [validation, debounceTimer, debounceMs]
+  );
 
   const cleanup = useCallback(() => {
     if (debounceTimer) {
-      clearTimeout(debounceTimer)
+      clearTimeout(debounceTimer);
     }
-  }, [debounceTimer])
+  }, [debounceTimer]);
 
   return {
     ...validation,
     setField: setFieldWithDebounce,
     cleanup,
-  }
+  };
 }
 
 // =====================================================
@@ -259,7 +288,7 @@ export function useRealtimeValidation<T extends Record<string, unknown>>(
 export function createValidationSchema<T extends Record<string, unknown>>(
   fields: Record<keyof T, z.ZodSchema<unknown>>
 ): z.ZodSchema<T> {
-  return z.object(fields as Record<keyof T, z.ZodSchema<unknown>>)
+  return z.object(fields as Record<keyof T, z.ZodSchema<unknown>>);
 }
 
 export function validateAsync<T>(
@@ -268,10 +297,10 @@ export function validateAsync<T>(
 ): Promise<T> {
   return new Promise((resolve, reject) => {
     try {
-      const result = schema.parse(data)
-      resolve(result)
+      const result = schema.parse(data);
+      resolve(result);
     } catch (error) {
-      reject(error)
+      reject(error);
     }
-  })
+  });
 }

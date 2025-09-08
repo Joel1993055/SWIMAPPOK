@@ -1,16 +1,16 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 
-import { siteConfig } from "@/config/site";
-import { cn } from "@/lib/utils";
+import { siteConfig } from '@/config/site';
+import { cn } from '@/lib/utils';
 
-import LaunchUI from "../../logos/launch-ui";
+import LaunchUI from '../../logos/launch-ui';
 import {
   Footer,
   FooterBottom,
   FooterColumn,
   FooterContent,
-} from "../../ui/footer";
-import { ModeToggle } from "../../ui/mode-toggle";
+} from '../../ui/footer';
+import { ModeToggle } from '../../ui/mode-toggle';
 
 interface FooterLink {
   text: string;
@@ -34,59 +34,59 @@ interface FooterProps {
 
 export default function FooterSection({
   logo = <LaunchUI />,
-  name = "Launch UI",
+  name = 'Launch UI',
   columns = [
     {
-      title: "Product",
+      title: 'Product',
       links: [
-        { text: "Changelog", href: siteConfig.url },
-        { text: "Documentation", href: siteConfig.url },
+        { text: 'Changelog', href: siteConfig.url },
+        { text: 'Documentation', href: siteConfig.url },
       ],
     },
     {
-      title: "Company",
+      title: 'Company',
       links: [
-        { text: "About", href: siteConfig.url },
-        { text: "Careers", href: siteConfig.url },
-        { text: "Blog", href: siteConfig.url },
+        { text: 'About', href: siteConfig.url },
+        { text: 'Careers', href: siteConfig.url },
+        { text: 'Blog', href: siteConfig.url },
       ],
     },
     {
-      title: "Contact",
+      title: 'Contact',
       links: [
-        { text: "Discord", href: siteConfig.url },
-        { text: "Twitter", href: siteConfig.url },
-        { text: "Github", href: siteConfig.links.github },
+        { text: 'Discord', href: siteConfig.url },
+        { text: 'Twitter', href: siteConfig.url },
+        { text: 'Github', href: siteConfig.links.github },
       ],
     },
   ],
-  copyright = "© 2025 Mikołaj Dobrucki. All rights reserved",
+  copyright = '© 2025 Mikołaj Dobrucki. All rights reserved',
   policies = [
-    { text: "Privacy Policy", href: siteConfig.url },
-    { text: "Terms of Service", href: siteConfig.url },
+    { text: 'Privacy Policy', href: siteConfig.url },
+    { text: 'Terms of Service', href: siteConfig.url },
   ],
   showModeToggle = true,
   className,
 }: FooterProps) {
   return (
-    <footer className={cn("bg-background w-full px-4", className)}>
-      <div className="max-w-container mx-auto">
+    <footer className={cn('bg-background w-full px-4', className)}>
+      <div className='max-w-container mx-auto'>
         <Footer>
           <FooterContent>
-            <FooterColumn className="col-span-2 sm:col-span-3 md:col-span-1">
-              <div className="flex items-center gap-2">
+            <FooterColumn className='col-span-2 sm:col-span-3 md:col-span-1'>
+              <div className='flex items-center gap-2'>
                 {logo}
-                <h3 className="text-xl font-bold">{name}</h3>
+                <h3 className='text-xl font-bold'>{name}</h3>
               </div>
             </FooterColumn>
             {columns.map((column, index) => (
               <FooterColumn key={index}>
-                <h3 className="text-md pt-1 font-semibold">{column.title}</h3>
+                <h3 className='text-md pt-1 font-semibold'>{column.title}</h3>
                 {column.links.map((link, linkIndex) => (
                   <a
                     key={linkIndex}
                     href={link.href}
-                    className="text-muted-foreground text-sm"
+                    className='text-muted-foreground text-sm'
                   >
                     {link.text}
                   </a>
@@ -96,7 +96,7 @@ export default function FooterSection({
           </FooterContent>
           <FooterBottom>
             <div>{copyright}</div>
-            <div className="flex items-center gap-4">
+            <div className='flex items-center gap-4'>
               {policies.map((policy, index) => (
                 <a key={index} href={policy.href}>
                   {policy.text}

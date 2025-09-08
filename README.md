@@ -85,9 +85,10 @@
 
 ### **Estado y Gestión de Datos**
 
-- **Zustand** - Gestión de estado ligera y eficiente
+- **Zustand** - Sistema de estado unificado y eficiente
 - **React Query** - Gestión de datos del servidor
 - **Zod** - Validación de esquemas TypeScript
+- **Persistencia automática** - Datos guardados en localStorage
 
 ### **Herramientas de Desarrollo**
 
@@ -262,11 +263,15 @@ interface Session {
 }
 ```
 
-### **Stores de Estado**
+### **Stores de Estado (Zustand)**
 
-- **`useSessionsStore`** - Gestión de sesiones de entrenamiento
-- **`useAuthStore`** - Estado de autenticación del usuario
-- **`useThemeStore`** - Gestión del tema (claro/oscuro)
+- **`useAuthStore`** - Autenticación de usuario
+- **`useSessionsStore`** - Sesiones de entrenamiento
+- **`useCompetitionsStore`** - Competiciones
+- **`useTrainingStore`** - Fases y zonas de entrenamiento
+- **`useAICoachStore`** - AI Coach y consejos
+- **`useReportsStore`** - Reportes y análisis
+- **`useUIStore`** - Estado de UI (tema, sidebar, notificaciones)
 
 ### **Componentes Principales**
 

@@ -5,23 +5,23 @@
  * Ejecutar antes de cambios importantes
  */
 
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
-const BACKUP_DIR = "./backups";
+const BACKUP_DIR = './backups';
 const CRITICAL_FILES = [
-  "app/page.tsx",
-  "app/preview-dashboard/page.tsx",
-  "app/dashboard-demo/page.tsx",
-  "components/dashboard-demo/sidebar.tsx",
-  "components/dashboard-demo/navbar.tsx",
-  "components/dashboard-demo/sessions-table.tsx",
-  "lib/seed.ts",
-  "lib/types/session.ts",
+  'app/page.tsx',
+  'app/preview-dashboard/page.tsx',
+  'app/dashboard-demo/page.tsx',
+  'components/dashboard-demo/sidebar.tsx',
+  'components/dashboard-demo/navbar.tsx',
+  'components/dashboard-demo/sessions-table.tsx',
+  'lib/seed.ts',
+  'lib/types/session.ts',
 ];
 
 function createBackup() {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   const backupPath = path.join(BACKUP_DIR, `backup-${timestamp}`);
 
   // Crear directorio de backup
@@ -57,13 +57,13 @@ function createBackup() {
   // Crear archivo de información del backup
   const backupInfo = {
     timestamp: new Date().toISOString(),
-    description: "Backup automático antes de cambios",
+    description: 'Backup automático antes de cambios',
     files: CRITICAL_FILES,
     totalFiles: CRITICAL_FILES.length,
   };
 
   fs.writeFileSync(
-    path.join(backupPath, "backup-info.json"),
+    path.join(backupPath, 'backup-info.json'),
     JSON.stringify(backupInfo, null, 2)
   );
 
@@ -74,7 +74,7 @@ function createBackup() {
 
 function listBackups() {
   if (!fs.existsSync(BACKUP_DIR)) {
-    console.log("❌ No hay backups disponibles");
+    console.log('❌ No hay backups disponibles');
     return;
   }
 
@@ -84,14 +84,14 @@ function listBackups() {
     .sort()
     .reverse();
 
-  console.log("📋 Backups disponibles:");
+  console.log('📋 Backups disponibles:');
   backups.forEach((backup, index) => {
     const backupPath = path.join(BACKUP_DIR, backup);
-    const infoPath = path.join(backupPath, "backup-info.json");
+    const infoPath = path.join(backupPath, 'backup-info.json');
 
     if (fs.existsSync(infoPath)) {
       try {
-        const info = JSON.parse(fs.readFileSync(infoPath, "utf8"));
+        const info = JSON.parse(fs.readFileSync(infoPath, 'utf8'));
         console.log(`${index + 1}. ${backup} - ${info.timestamp}`);
       } catch (e) {
         console.log(`${index + 1}. ${backup}`);
@@ -106,15 +106,15 @@ function listBackups() {
 const command = process.argv[2];
 
 switch (command) {
-  case "create":
+  case 'create':
   case undefined:
     createBackup();
     break;
-  case "list":
+  case 'list':
     listBackups();
     break;
   default:
-    console.log("Uso: node scripts/backup.js [create|list]");
-    console.log("  create - Crear nuevo backup (por defecto)");
-    console.log("  list   - Listar backups existentes");
+    console.log('Uso: node scripts/backup.js [create|list]');
+    console.log('  create - Crear nuevo backup (por defecto)');
+    console.log('  list   - Listar backups existentes');
 }

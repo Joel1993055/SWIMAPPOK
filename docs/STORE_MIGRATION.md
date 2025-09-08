@@ -2,7 +2,8 @@
 
 ## 📋 Resumen
 
-Hemos creado un sistema de estado unificado usando Zustand que reemplaza gradualmente los múltiples React Contexts existentes.
+Hemos creado un sistema de estado unificado usando Zustand que reemplaza gradualmente los múltiples
+React Contexts existentes.
 
 ## 🎯 Beneficios
 
@@ -81,11 +82,11 @@ import { useAuthStore } from '@/lib/store/unified';
 
 function LoginButton() {
   const { user, isAuthenticated, signOut } = useAuthStore();
-  
+
   if (isAuthenticated) {
     return <Button onClick={signOut}>Cerrar Sesión</Button>;
   }
-  
+
   return <Button>Iniciar Sesión</Button>;
 }
 ```
@@ -96,14 +97,14 @@ function LoginButton() {
 import { useSessionsStore } from '@/lib/store/unified';
 
 function SessionsList() {
-  const { 
-    sessions, 
-    addSession, 
-    updateSession, 
+  const {
+    sessions,
+    addSession,
+    updateSession,
     deleteSession,
-    getTotalDistance 
+    getTotalDistance
   } = useSessionsStore();
-  
+
   return (
     <div>
       <p>Total distancia: {getTotalDistance()}m</p>
@@ -124,7 +125,7 @@ import { useUIStore } from '@/lib/store/unified';
 
 function ThemeToggle() {
   const { theme, setTheme } = useUIStore();
-  
+
   return (
     <Button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
       {theme === 'light' ? '🌙' : '☀️'}
@@ -150,29 +151,25 @@ useCompleteMigration();
 import { useStoreCompatibility } from '@/lib/hooks/use-migration';
 
 // Acceso a todos los stores en un solo hook
-const {
-  user,
-  sessions,
-  competitions,
-  phases,
-  advice,
-  reports
-} = useStoreCompatibility();
+const { user, sessions, competitions, phases, advice, reports } = useStoreCompatibility();
 ```
 
 ## ⚠️ Consideraciones Importantes
 
 ### 1. Migración Gradual
+
 - **NO eliminar contexts existentes** hasta migrar todos los componentes
 - **Usar ambos sistemas** durante la transición
 - **Verificar funcionalidad** después de cada migración
 
 ### 2. Persistencia
+
 - Los datos se guardan automáticamente en localStorage
 - Cada store tiene su propia clave de almacenamiento
 - La migración preserva datos existentes
 
 ### 3. Performance
+
 - Zustand es más eficiente que Context para estado complejo
 - Menos re-renders innecesarios
 - Mejor para aplicaciones grandes
@@ -185,7 +182,7 @@ import { useSessionsStore } from '@/lib/store/unified';
 
 test('should add session', () => {
   const { result } = renderHook(() => useSessionsStore());
-  
+
   act(() => {
     result.current.addSession({
       date: '2024-01-01',
@@ -195,10 +192,10 @@ test('should add session', () => {
       stroke: 'freestyle',
       sessionType: 'aerobic',
       mainSet: 'Test',
-      RPE: 6
+      RPE: 6,
     });
   });
-  
+
   expect(result.current.sessions).toHaveLength(1);
 });
 ```
@@ -213,12 +210,14 @@ test('should add session', () => {
 ## 🆘 Troubleshooting
 
 ### Error: "Cannot find module"
+
 ```bash
 # Verificar que el archivo existe
 ls lib/store/unified.ts
 ```
 
 ### Error: "Store not updating"
+
 ```typescript
 // Verificar que estás usando el hook correctamente
 const { sessions } = useSessionsStore(); // ✅ Correcto
@@ -226,11 +225,14 @@ const sessions = useSessionsStore().sessions; // ❌ Incorrecto
 ```
 
 ### Error: "Data not persisting"
+
 ```typescript
 // Verificar que el store tiene persist middleware
 export const useSessionsStore = create<SessionsStore>()(
   persist(
-    (set, get) => ({ /* ... */ }),
+    (set, get) => ({
+      /* ... */
+    }),
     { name: 'sessions-storage' } // ✅ Clave de persistencia
   )
 );
@@ -239,6 +241,7 @@ export const useSessionsStore = create<SessionsStore>()(
 ## 🎉 Conclusión
 
 El nuevo sistema de stores unificado proporciona:
+
 - **Mejor organización** del código
 - **Mejor performance** de la aplicación
 - **Mejor experiencia de desarrollo**

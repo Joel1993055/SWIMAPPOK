@@ -3,10 +3,10 @@ import { expect, test } from '@playwright/test';
 test.describe('Database Operations', () => {
   test('should display data from database', async ({ page }) => {
     await page.goto('/');
-    
+
     // Wait for data to load
     await page.waitForSelector('[data-testid="data-list"]');
-    
+
     // Check if data is displayed
     const dataList = page.locator('[data-testid="data-list"]');
     await expect(dataList).toBeVisible();
@@ -18,12 +18,12 @@ test.describe('Database Operations', () => {
       route.fulfill({
         status: 500,
         contentType: 'application/json',
-        body: JSON.stringify({ error: 'Database connection failed' })
+        body: JSON.stringify({ error: 'Database connection failed' }),
       });
     });
 
     await page.goto('/');
-    
+
     // Check if error message is displayed
     await expect(page.locator('[data-testid="error-message"]')).toBeVisible();
   });
@@ -35,13 +35,13 @@ test.describe('Database Operations', () => {
         route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify({ data: [] })
+          body: JSON.stringify({ data: [] }),
         });
       }, 1000);
     });
 
     await page.goto('/');
-    
+
     // Check for loading state
     await expect(page.locator('[data-testid="loading-spinner"]')).toBeVisible();
   });

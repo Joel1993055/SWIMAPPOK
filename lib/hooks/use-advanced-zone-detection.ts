@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 interface ZoneDetectionResult {
   zone: string;
@@ -38,24 +38,24 @@ class ZoneDetectionEngine {
   private zoneKeywords = {
     Z1: {
       keywords: [
-        "calentamiento",
-        "calma",
-        "recuperación",
-        "regenerativo",
-        "suave",
-        "fácil",
-        "relajado",
-        "tranquilo",
-        "lento",
-        "warm-up",
-        "cool-down",
-        "vuelta a la calma",
-        "z1",
-        "zona 1",
-        "recuperación",
-        "regenerativo",
-        "aeróbico base",
-        "fondo suave",
+        'calentamiento',
+        'calma',
+        'recuperación',
+        'regenerativo',
+        'suave',
+        'fácil',
+        'relajado',
+        'tranquilo',
+        'lento',
+        'warm-up',
+        'cool-down',
+        'vuelta a la calma',
+        'z1',
+        'zona 1',
+        'recuperación',
+        'regenerativo',
+        'aeróbico base',
+        'fondo suave',
       ],
       patterns: [
         /calentamiento/gi,
@@ -69,24 +69,24 @@ class ZoneDetectionEngine {
         /z1/gi,
         /zona 1/gi,
       ],
-      intensity: "baja",
-      heartRate: "60-70%",
+      intensity: 'baja',
+      heartRate: '60-70%',
       weight: 1.0,
     },
     Z2: {
       keywords: [
-        "aeróbico",
-        "base",
-        "resistencia",
-        "continuo",
-        "moderado",
-        "confortable",
-        "z2",
-        "zona 2",
-        "aeróbico base",
-        "resistencia base",
-        "fondo",
-        "ritmo base",
+        'aeróbico',
+        'base',
+        'resistencia',
+        'continuo',
+        'moderado',
+        'confortable',
+        'z2',
+        'zona 2',
+        'aeróbico base',
+        'resistencia base',
+        'fondo',
+        'ritmo base',
       ],
       patterns: [
         /aeróbico/gi,
@@ -99,25 +99,25 @@ class ZoneDetectionEngine {
         /fondo/gi,
         /ritmo base/gi,
       ],
-      intensity: "moderada",
-      heartRate: "70-80%",
+      intensity: 'moderada',
+      heartRate: '70-80%',
       weight: 1.0,
     },
     Z3: {
       keywords: [
-        "umbral",
-        "tempo",
-        "ritmo",
-        "intenso",
-        "fuerte",
-        "desafiante",
-        "esfuerzo",
-        "z3",
-        "zona 3",
-        "aeróbico umbral",
-        "umbral aeróbico",
-        "tempo",
-        "ritmo umbral",
+        'umbral',
+        'tempo',
+        'ritmo',
+        'intenso',
+        'fuerte',
+        'desafiante',
+        'esfuerzo',
+        'z3',
+        'zona 3',
+        'aeróbico umbral',
+        'umbral aeróbico',
+        'tempo',
+        'ritmo umbral',
       ],
       patterns: [
         /umbral/gi,
@@ -131,24 +131,24 @@ class ZoneDetectionEngine {
         /aeróbico umbral/gi,
         /umbral aeróbico/gi,
       ],
-      intensity: "moderada-alta",
-      heartRate: "80-90%",
+      intensity: 'moderada-alta',
+      heartRate: '80-90%',
       weight: 1.2,
     },
     Z4: {
       keywords: [
-        "vo2",
-        "máximo",
-        "muy intenso",
-        "sprint",
-        "velocidad",
-        "potencia",
-        "z4",
-        "zona 4",
-        "vo2 max",
-        "máximo consumo",
-        "lactato",
-        "anaeróbico",
+        'vo2',
+        'máximo',
+        'muy intenso',
+        'sprint',
+        'velocidad',
+        'potencia',
+        'z4',
+        'zona 4',
+        'vo2 max',
+        'máximo consumo',
+        'lactato',
+        'anaeróbico',
       ],
       patterns: [
         /vo2/gi,
@@ -163,22 +163,22 @@ class ZoneDetectionEngine {
         /lactato/gi,
         /anaeróbico/gi,
       ],
-      intensity: "alta",
-      heartRate: "90-95%",
+      intensity: 'alta',
+      heartRate: '90-95%',
       weight: 1.3,
     },
     Z5: {
       keywords: [
-        "neuromuscular",
-        "explosivo",
-        "máxima velocidad",
-        "sprint máximo",
-        "z5",
-        "zona 5",
-        "neuromuscular",
-        "velocidad máxima",
-        "fuerza",
-        "explosión",
+        'neuromuscular',
+        'explosivo',
+        'máxima velocidad',
+        'sprint máximo',
+        'z5',
+        'zona 5',
+        'neuromuscular',
+        'velocidad máxima',
+        'fuerza',
+        'explosión',
       ],
       patterns: [
         /neuromuscular/gi,
@@ -191,42 +191,42 @@ class ZoneDetectionEngine {
         /fuerza/gi,
         /explosión/gi,
       ],
-      intensity: "máxima",
-      heartRate: "95-100%",
+      intensity: 'máxima',
+      heartRate: '95-100%',
       weight: 1.4,
     },
   };
 
   private strokeKeywords = {
-    Libre: ["libre", "crawl", "crol", "freestyle", "estilo libre"],
-    Espalda: ["espalda", "backstroke", "dorso", "estilo espalda"],
-    Pecho: ["pecho", "braza", "breaststroke", "brazada", "estilo pecho"],
-    Mariposa: ["mariposa", "butterfly", "estilo mariposa"],
+    Libre: ['libre', 'crawl', 'crol', 'freestyle', 'estilo libre'],
+    Espalda: ['espalda', 'backstroke', 'dorso', 'estilo espalda'],
+    Pecho: ['pecho', 'braza', 'breaststroke', 'brazada', 'estilo pecho'],
+    Mariposa: ['mariposa', 'butterfly', 'estilo mariposa'],
   };
 
   private intensityKeywords = {
-    Baja: ["fácil", "suave", "relajado", "tranquilo", "lento", "cómodo"],
-    Media: ["moderado", "confortable", "medio", "normal", "equilibrado"],
-    Alta: ["intenso", "fuerte", "desafiante", "esfuerzo", "duro", "exigente"],
-    Máxima: ["máximo", "sprint", "explosivo", "velocidad máxima", "extremo"],
+    Baja: ['fácil', 'suave', 'relajado', 'tranquilo', 'lento', 'cómodo'],
+    Media: ['moderado', 'confortable', 'medio', 'normal', 'equilibrado'],
+    Alta: ['intenso', 'fuerte', 'desafiante', 'esfuerzo', 'duro', 'exigente'],
+    Máxima: ['máximo', 'sprint', 'explosivo', 'velocidad máxima', 'extremo'],
   };
 
   private contextualAnalysis = {
     trainingType: {
-      fondo: ["Z1", "Z2"],
-      tempo: ["Z2", "Z3"],
-      intervalos: ["Z3", "Z4", "Z5"],
-      sprint: ["Z4", "Z5"],
-      recuperación: ["Z1"],
-      técnica: ["Z1", "Z2"],
-      fuerza: ["Z4", "Z5"],
+      fondo: ['Z1', 'Z2'],
+      tempo: ['Z2', 'Z3'],
+      intervalos: ['Z3', 'Z4', 'Z5'],
+      sprint: ['Z4', 'Z5'],
+      recuperación: ['Z1'],
+      técnica: ['Z1', 'Z2'],
+      fuerza: ['Z4', 'Z5'],
     },
     phase: {
-      preparación: ["Z1", "Z2"],
-      base: ["Z2", "Z3"],
-      específica: ["Z3", "Z4"],
-      competición: ["Z4", "Z5"],
-      recuperación: ["Z1"],
+      preparación: ['Z1', 'Z2'],
+      base: ['Z2', 'Z3'],
+      específica: ['Z3', 'Z4'],
+      competición: ['Z4', 'Z5'],
+      recuperación: ['Z1'],
     },
   };
 
@@ -237,11 +237,11 @@ class ZoneDetectionEngine {
 
     Object.entries(this.zoneKeywords).forEach(([zone, config]) => {
       let confidence = 0;
-      let context = "";
+      let context = '';
 
       // Análisis de palabras clave
       config.keywords.forEach(keyword => {
-        const regex = new RegExp(`\\b${keyword}\\b`, "gi");
+        const regex = new RegExp(`\\b${keyword}\\b`, 'gi');
         const matches = text.match(regex);
         if (matches) {
           confidence += matches.length * 15 * config.weight;
@@ -291,21 +291,21 @@ class ZoneDetectionEngine {
         // Clasificar por distancia del intervalo
         if (distance <= 50) {
           results.push({
-            zone: "Z5",
+            zone: 'Z5',
             confidence: 80,
             context: `Intervalos cortos ${match}`,
             metrics: { distance: intervalDistance, duration: reps * 2 },
           });
         } else if (distance <= 100) {
           results.push({
-            zone: "Z4",
+            zone: 'Z4',
             confidence: 75,
             context: `Intervalos medios ${match}`,
             metrics: { distance: intervalDistance, duration: reps * 3 },
           });
         } else {
           results.push({
-            zone: "Z3",
+            zone: 'Z3',
             confidence: 70,
             context: `Intervalos largos ${match}`,
             metrics: { distance: intervalDistance, duration: reps * 5 },
@@ -320,17 +320,17 @@ class ZoneDetectionEngine {
     const restMatches = text.match(restRegex);
     if (restMatches) {
       restMatches.forEach(match => {
-        const restTime = parseInt(match.replace(/[^\d]/g, ""));
+        const restTime = parseInt(match.replace(/[^\d]/g, ''));
         if (restTime <= 30) {
           results.push({
-            zone: "Z5",
+            zone: 'Z5',
             confidence: 85,
             context: `Descanso corto ${match}`,
             metrics: { duration: restTime },
           });
         } else if (restTime <= 60) {
           results.push({
-            zone: "Z4",
+            zone: 'Z4',
             confidence: 80,
             context: `Descanso medio ${match}`,
             metrics: { duration: restTime },
@@ -428,7 +428,7 @@ class ZoneDetectionEngine {
       .map(([zone, data]) => ({
         zone,
         confidence: data.confidence,
-        context: data.contexts.join(", "),
+        context: data.contexts.join(', '),
         metrics: data.metrics,
       }))
       .sort((a, b) => b.confidence - a.confidence)
@@ -442,7 +442,7 @@ class ZoneDetectionEngine {
 
     Object.entries(this.strokeKeywords).forEach(([stroke, keywords]) => {
       keywords.forEach(keyword => {
-        const regex = new RegExp(`\\b${keyword}\\b`, "gi");
+        const regex = new RegExp(`\\b${keyword}\\b`, 'gi');
         if (regex.test(text) && !detectedStrokes.includes(stroke)) {
           detectedStrokes.push(stroke);
         }
@@ -459,7 +459,7 @@ class ZoneDetectionEngine {
 
     Object.entries(this.intensityKeywords).forEach(([intensity, keywords]) => {
       keywords.forEach(keyword => {
-        const regex = new RegExp(`\\b${keyword}\\b`, "gi");
+        const regex = new RegExp(`\\b${keyword}\\b`, 'gi');
         if (regex.test(text) && !detectedIntensities.includes(intensity)) {
           detectedIntensities.push(intensity);
         }
@@ -488,8 +488,8 @@ class ZoneDetectionEngine {
 
     if (distanceMatches) {
       totalDistance = distanceMatches.reduce((sum, match) => {
-        const value = parseFloat(match.replace(/[^\d.]/g, ""));
-        const unit = match.toLowerCase().includes("km") ? value * 1000 : value;
+        const value = parseFloat(match.replace(/[^\d.]/g, ''));
+        const unit = match.toLowerCase().includes('km') ? value * 1000 : value;
         return sum + unit;
       }, 0);
     }
@@ -537,43 +537,43 @@ class ZoneDetectionEngine {
 
     if (detectedZones.length === 0) {
       suggestions.push(
-        "Considera agregar zonas de intensidad (Z1, Z2, Z3, Z4, Z5) para un mejor análisis"
+        'Considera agregar zonas de intensidad (Z1, Z2, Z3, Z4, Z5) para un mejor análisis'
       );
     }
 
-    if (detectedZones.length > 0 && !detectedZones.some(z => z.zone === "Z1")) {
+    if (detectedZones.length > 0 && !detectedZones.some(z => z.zone === 'Z1')) {
       suggestions.push(
-        "Agrega un calentamiento en Z1 para comenzar el entrenamiento"
-      );
-    }
-
-    if (
-      detectedZones.some(z => ["Z3", "Z4", "Z5"].includes(z.zone)) &&
-      !detectedZones.some(z => z.zone === "Z1")
-    ) {
-      suggestions.push(
-        "Incluye vuelta a la calma en Z1 después del trabajo intenso"
+        'Agrega un calentamiento en Z1 para comenzar el entrenamiento'
       );
     }
 
     if (
-      !text.includes("m") &&
-      !text.includes("metros") &&
-      !text.includes("km")
+      detectedZones.some(z => ['Z3', 'Z4', 'Z5'].includes(z.zone)) &&
+      !detectedZones.some(z => z.zone === 'Z1')
     ) {
       suggestions.push(
-        "Especifica las distancias (ej: 200m, 1.5km) para un análisis más preciso"
+        'Incluye vuelta a la calma en Z1 después del trabajo intenso'
       );
     }
 
     if (
-      !text.includes("libre") &&
-      !text.includes("espalda") &&
-      !text.includes("pecho") &&
-      !text.includes("mariposa")
+      !text.includes('m') &&
+      !text.includes('metros') &&
+      !text.includes('km')
     ) {
       suggestions.push(
-        "Menciona los estilos de natación (libre, espalda, pecho, mariposa)"
+        'Especifica las distancias (ej: 200m, 1.5km) para un análisis más preciso'
+      );
+    }
+
+    if (
+      !text.includes('libre') &&
+      !text.includes('espalda') &&
+      !text.includes('pecho') &&
+      !text.includes('mariposa')
+    ) {
+      suggestions.push(
+        'Menciona los estilos de natación (libre, espalda, pecho, mariposa)'
       );
     }
 
@@ -582,7 +582,7 @@ class ZoneDetectionEngine {
       detectedZones.every(z => z.confidence < 70)
     ) {
       suggestions.push(
-        "Considera ser más específico con las zonas de intensidad para mayor precisión"
+        'Considera ser más específico con las zonas de intensidad para mayor precisión'
       );
     }
 
@@ -591,15 +591,15 @@ class ZoneDetectionEngine {
 
   private getIntensityValue(intensity: string): number {
     switch (intensity) {
-      case "baja":
+      case 'baja':
         return 1;
-      case "moderada":
+      case 'moderada':
         return 2;
-      case "moderada-alta":
+      case 'moderada-alta':
         return 3;
-      case "alta":
+      case 'alta':
         return 4;
-      case "máxima":
+      case 'máxima':
         return 5;
       default:
         return 0;
@@ -686,7 +686,7 @@ export function useAdvancedZoneDetection(
         isLoading: false,
       });
     } catch (error) {
-      console.error("Error in zone detection:", error);
+      console.error('Error in zone detection:', error);
       setDetection(prev => ({ ...prev, isLoading: false }));
     }
   }, [content, context, engine]);

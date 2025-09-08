@@ -1,8 +1,8 @@
-"use server";
+'use server';
 
-import { createClient } from "@/utils/supabase/server";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { createClient } from '@/utils/supabase/server';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 // =====================================================
 // REGISTRAR USUARIO
@@ -10,21 +10,21 @@ import { redirect } from "next/navigation";
 export async function signUpAction(formData: FormData) {
   const supabase = await createClient();
 
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-  const confirmPassword = formData.get("confirmPassword") as string;
+  const email = formData.get('email') as string;
+  const password = formData.get('password') as string;
+  const confirmPassword = formData.get('confirmPassword') as string;
 
   // Validaciones básicas
   if (!email || !password) {
-    return { error: "Email y contraseña son obligatorios" };
+    return { error: 'Email y contraseña son obligatorios' };
   }
 
   if (password !== confirmPassword) {
-    return { error: "Las contraseñas no coinciden" };
+    return { error: 'Las contraseñas no coinciden' };
   }
 
   if (password.length < 6) {
-    return { error: "La contraseña debe tener al menos 6 caracteres" };
+    return { error: 'La contraseña debe tener al menos 6 caracteres' };
   }
 
   // Registrar usuario
@@ -34,19 +34,19 @@ export async function signUpAction(formData: FormData) {
   });
 
   if (error) {
-    console.error("Error registrando usuario:", error);
+    console.error('Error registrando usuario:', error);
     return { error: error.message };
   }
 
   if (data.user) {
-    revalidatePath("/");
+    revalidatePath('/');
     return {
       success:
-        "Usuario registrado correctamente. Revisa tu email para confirmar la cuenta.",
+        'Usuario registrado correctamente. Revisa tu email para confirmar la cuenta.',
     };
   }
 
-  return { error: "Error desconocido al registrar usuario" };
+  return { error: 'Error desconocido al registrar usuario' };
 }
 
 // =====================================================
@@ -55,12 +55,12 @@ export async function signUpAction(formData: FormData) {
 export async function signInAction(formData: FormData) {
   const supabase = await createClient();
 
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+  const email = formData.get('email') as string;
+  const password = formData.get('password') as string;
 
   // Validaciones básicas
   if (!email || !password) {
-    return { error: "Email y contraseña son obligatorios" };
+    return { error: 'Email y contraseña son obligatorios' };
   }
 
   // Iniciar sesión
@@ -70,16 +70,16 @@ export async function signInAction(formData: FormData) {
   });
 
   if (error) {
-    console.error("Error iniciando sesión:", error);
+    console.error('Error iniciando sesión:', error);
     return { error: error.message };
   }
 
   if (data.user) {
-    revalidatePath("/");
-    redirect("/dashboard");
+    revalidatePath('/');
+    redirect('/dashboard');
   }
 
-  return { error: "Error desconocido al iniciar sesión" };
+  return { error: 'Error desconocido al iniciar sesión' };
 }
 
 // =====================================================
@@ -91,12 +91,12 @@ export async function signOutAction() {
   const { error } = await supabase.auth.signOut();
 
   if (error) {
-    console.error("Error cerrando sesión:", error);
+    console.error('Error cerrando sesión:', error);
     return { error: error.message };
   }
 
-  revalidatePath("/");
-  redirect("/");
+  revalidatePath('/');
+  redirect('/');
 }
 
 // =====================================================
@@ -111,7 +111,7 @@ export async function getCurrentUser() {
   } = await supabase.auth.getUser();
 
   if (error) {
-    console.error("Error obteniendo usuario:", error);
+    console.error('Error obteniendo usuario:', error);
     return null;
   }
 
@@ -124,10 +124,10 @@ export async function getCurrentUser() {
 export async function resetPasswordAction(formData: FormData) {
   const supabase = await createClient();
 
-  const email = formData.get("email") as string;
+  const email = formData.get('email') as string;
 
   if (!email) {
-    return { error: "Email es obligatorio" };
+    return { error: 'Email es obligatorio' };
   }
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -135,9 +135,9 @@ export async function resetPasswordAction(formData: FormData) {
   });
 
   if (error) {
-    console.error("Error enviando email de restablecimiento:", error);
+    console.error('Error enviando email de restablecimiento:', error);
     return { error: error.message };
   }
 
-  return { success: "Se ha enviado un email para restablecer tu contraseña" };
+  return { success: 'Se ha enviado un email para restablecer tu contraseña' };
 }
