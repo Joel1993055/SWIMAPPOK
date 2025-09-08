@@ -1,5 +1,4 @@
 import { ErrorBoundary } from '@/components/error-boundary';
-import { MigrationProvider } from '@/components/migration/migration-provider';
 import { ThemeProvider } from 'next-themes';
 import { Geist } from 'next/font/google';
 import './globals.css';
@@ -35,9 +34,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <MigrationProvider>
-              <main className='min-h-screen'>{children}</main>
-            </MigrationProvider>
+            <main className='min-h-screen'>{children}</main>
           </ThemeProvider>
         </ErrorBoundary>
       </body>

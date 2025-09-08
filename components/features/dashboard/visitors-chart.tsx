@@ -1,66 +1,56 @@
 'use client';
 
-import {
-  TrendingUp,
-  BarChart3,
-  AreaChart as AreaChartIcon,
-} from 'lucide-react';
-import { Bar, BarChart, CartesianGrid, XAxis, Area, AreaChart } from 'recharts';
-import { useState, useEffect } from 'react';
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
-  ChartTooltip,
-  ChartTooltipContent,
-} from '@/components/ui/chart';
-import { getSessions } from '@/lib/actions/sessions';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { Session } from '@/lib/actions/sessions';
-import { metersToKm, zoneLabels, zoneColors } from '@/lib/utils/zone-detection';
+import { getSessions } from '@/lib/actions/sessions';
+import { ChartConfig } from '@/lib/types/chart';
+import { AreaChartIcon, BarChart3 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 
-// Función para generar datos de la semana actual usando volúmenes manuales
+// Colores para las zonas de intensidad
+const zoneColors = {
+  Z1: '#3b82f6', // Azul
+  Z2: '#10b981', // Verde
+  Z3: '#f59e0b', // Amarillo
+  Z4: '#ef4444', // Rojo
+  Z5: '#8b5cf6', // Púrpura
+};
+
+// Etiquetas para las zonas
+const zoneLabels = {
+  Z1: 'Z1 - Recuperación',
+  Z2: 'Z2 - Aeróbico Base',
+  Z3: 'Z3 - Aeróbico Umbral',
+  Z4: 'Z4 - Anaeróbico Láctico',
+  Z5: 'Z5 - Anaeróbico Aláctico',
+};
+
+// Función para generar datos de la semana actual
 const generateWeeklyData = (sessions: Session[]) => {
-  const now = new Date();
-  const startOfWeek = new Date(now);
-  startOfWeek.setDate(now.getDate() - now.getDay() + 1); // Lunes
+  const today = new Date();
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - today.getDay()); // Domingo
+  startOfWeek.setHours(0, 0, 0, 0);
 
-  const days = [
-    'Lunes',
-    'Martes',
-    'Miércoles',
-    'Jueves',
-    'Viernes',
-    'Sábado',
-    'Domingo',
-  ];
+  const daysOfWeek = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+  
+  return Array.from({ length: 7 }, (_, index) => {
+    const currentDay = new Date(startOfWeek);
+    currentDay.setDate(startOfWeek.getDate() + index);
+    
+    const dayName = daysOfWeek[index];
+    
+    // Filtrar sesiones del día actual
+    const daySessions = sessions.filter(session => {
+      const sessionDate = new Date(session.date);
+      return sessionDate.toDateString() === currentDay.toDateString();
+    });
 
-  return days.map((dayName, index) => {
-    const dayDate = new Date(startOfWeek);
-    dayDate.setDate(startOfWeek.getDate() + index);
-    const dayString = dayDate.toISOString().split('T')[0];
-
-    // Filtrar sesiones de este día
-    const daySessions = sessions.filter(session => session.date === dayString);
-
-    // Sumar volúmenes manuales por zona (no detección automática)
-    const zoneVolumes = {
+    // Calcular metros por zona para el día
+    const dayZones = {
       Z1: 0,
       Z2: 0,
       Z3: 0,
@@ -69,29 +59,23 @@ const generateWeeklyData = (sessions: Session[]) => {
     };
 
     daySessions.forEach(session => {
-      // Usar los volúmenes manuales que introduces en el formulario
-      zoneVolumes.Z1 += session.zone_volumes?.z1 || 0;
-      zoneVolumes.Z2 += session.zone_volumes?.z2 || 0;
-      zoneVolumes.Z3 += session.zone_volumes?.z3 || 0;
-      zoneVolumes.Z4 += session.zone_volumes?.z4 || 0;
-      zoneVolumes.Z5 += session.zone_volumes?.z5 || 0;
+      if (session.zone_volumes) {
+        dayZones.Z1 += session.zone_volumes.z1 || 0;
+        dayZones.Z2 += session.zone_volumes.z2 || 0;
+        dayZones.Z3 += session.zone_volumes.z3 || 0;
+        dayZones.Z4 += session.zone_volumes.z4 || 0;
+        dayZones.Z5 += session.zone_volumes.z5 || 0;
+      }
     });
 
-    // Calcular total del día en metros
-    const totalDayMeters =
-      zoneVolumes.Z1 +
-      zoneVolumes.Z2 +
-      zoneVolumes.Z3 +
-      zoneVolumes.Z4 +
-      zoneVolumes.Z5;
+    // Convertir metros a kilómetros
+    const totalDayMeters = Object.values(dayZones).reduce((sum, meters) => sum + meters, 0);
 
     return {
       day: dayName,
-      Z1: metersToKm(zoneVolumes.Z1),
-      Z2: metersToKm(zoneVolumes.Z2),
-      Z3: metersToKm(zoneVolumes.Z3),
-      Z4: metersToKm(zoneVolumes.Z4),
-      Z5: metersToKm(zoneVolumes.Z5),
+      ...Object.fromEntries(
+        Object.entries(dayZones).map(([zone, meters]) => [zone, Math.round(meters / 1000 * 10) / 10])
+      ),
       totalMeters: totalDayMeters,
     };
   });
@@ -196,53 +180,53 @@ export function VisitorsChart() {
   return (
     <Card className='col-span-4 bg-muted/50 border-muted'>
       <CardHeader>
-        <CardTitle>Progreso Semanal</CardTitle>
-        <CardDescription>
-          Distancia por zonas de entrenamiento (kilómetros)
-        </CardDescription>
+        <div className='flex items-center justify-between'>
+          <div>
+            <CardTitle>Progreso Semanal</CardTitle>
+            <CardDescription>
+              Distancia por zonas de entrenamiento (kilómetros)
+            </CardDescription>
+          </div>
+          <Select
+            value={chartType}
+            onValueChange={value => setChartType(value as 'bar' | 'area')}
+          >
+            <SelectTrigger className='w-40 h-8 text-xs'>
+              <SelectValue>
+                <div className='flex items-center gap-1.5'>
+                  {chartType === 'bar' ? (
+                    <>
+                      <BarChart3 className='h-3.5 w-3.5' />
+                      <span>Barras</span>
+                    </>
+                  ) : (
+                    <>
+                      <AreaChartIcon className='h-3.5 w-3.5' />
+                      <span>Área</span>
+                    </>
+                  )}
+                </div>
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value='bar'>
+                <div className='flex items-center gap-1.5'>
+                  <BarChart3 className='h-3.5 w-3.5' />
+                  <span>Gráfico de Barras</span>
+                </div>
+              </SelectItem>
+              <SelectItem value='area'>
+                <div className='flex items-center gap-1.5'>
+                  <AreaChartIcon className='h-3.5 w-3.5' />
+                  <span>Gráfico de Área</span>
+                </div>
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </CardHeader>
       <CardContent>
         <div className='space-y-4'>
-          {/* Selector de tipo de gráfico */}
-          <div className='flex justify-end'>
-            <Select
-              value={chartType}
-              onValueChange={value => setChartType(value as 'bar' | 'area')}
-            >
-              <SelectTrigger className='w-48'>
-                <SelectValue>
-                  <div className='flex items-center gap-2'>
-                    {chartType === 'bar' ? (
-                      <>
-                        <BarChart3 className='h-4 w-4' />
-                        Gráfico de Barras
-                      </>
-                    ) : (
-                      <>
-                        <AreaChartIcon className='h-4 w-4' />
-                        Gráfico de Área
-                      </>
-                    )}
-                  </div>
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value='bar'>
-                  <div className='flex items-center gap-2'>
-                    <BarChart3 className='h-4 w-4' />
-                    Gráfico de Barras
-                  </div>
-                </SelectItem>
-                <SelectItem value='area'>
-                  <div className='flex items-center gap-2'>
-                    <AreaChartIcon className='h-4 w-4' />
-                    Gráfico de Área
-                  </div>
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
           {/* Gráfico de Barras */}
           {chartType === 'bar' && (
             <ChartContainer config={chartConfig}>
@@ -254,56 +238,31 @@ export function VisitorsChart() {
                   tickMargin={10}
                   axisLine={false}
                   tickFormatter={(value, index) => {
-                    const data = chartData[index];
-                    const totalKm = data
-                      ? (data.totalMeters / 1000).toFixed(1)
-                      : '0';
-                    return `${value.slice(0, 3)}\n${totalKm}km`;
+                    return value;
                   }}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={10}
+                  tickFormatter={(value) => `${value}km`}
                 />
                 <ChartTooltip
                   content={
                     <ChartTooltipContent
-                      hideLabel
                       formatter={(value, name) => [
-                        `${value} km`,
-                        chartConfig[name as keyof typeof chartConfig]?.label ||
-                          name,
+                        `${value}km`,
+                        chartConfig[name as keyof typeof chartConfig]?.label || name,
                       ]}
+                      labelFormatter={(label) => `Día: ${label}`}
                     />
                   }
                 />
-                <ChartLegend content={<ChartLegendContent />} />
-                <Bar
-                  dataKey='Z1'
-                  stackId='a'
-                  fill='var(--color-Z1)'
-                  radius={[0, 0, 4, 4]}
-                />
-                <Bar
-                  dataKey='Z2'
-                  stackId='a'
-                  fill='var(--color-Z2)'
-                  radius={[0, 0, 0, 0]}
-                />
-                <Bar
-                  dataKey='Z3'
-                  stackId='a'
-                  fill='var(--color-Z3)'
-                  radius={[0, 0, 0, 0]}
-                />
-                <Bar
-                  dataKey='Z4'
-                  stackId='a'
-                  fill='var(--color-Z4)'
-                  radius={[0, 0, 0, 0]}
-                />
-                <Bar
-                  dataKey='Z5'
-                  stackId='a'
-                  fill='var(--color-Z5)'
-                  radius={[4, 4, 0, 0]}
-                />
+                <Bar dataKey='Z1' stackId='a' fill={zoneColors.Z1} />
+                <Bar dataKey='Z2' stackId='a' fill={zoneColors.Z2} />
+                <Bar dataKey='Z3' stackId='a' fill={zoneColors.Z3} />
+                <Bar dataKey='Z4' stackId='a' fill={zoneColors.Z4} />
+                <Bar dataKey='Z5' stackId='a' fill={zoneColors.Z5} />
               </BarChart>
             </ChartContainer>
           )}
@@ -311,100 +270,96 @@ export function VisitorsChart() {
           {/* Gráfico de Área */}
           {chartType === 'area' && (
             <ChartContainer config={areaChartConfig}>
-              <AreaChart
-                data={areaChartData}
-                margin={{
-                  left: 12,
-                  right: 12,
-                }}
-              >
+              <AreaChart accessibilityLayer data={areaChartData}>
                 <CartesianGrid vertical={false} />
                 <XAxis
                   dataKey='day'
                   tickLine={false}
+                  tickMargin={10}
                   axisLine={false}
-                  tickMargin={8}
-                  tickFormatter={(value, index) => {
-                    const data = areaChartData[index];
-                    const totalKm = data
-                      ? (data.totalMeters / 1000).toFixed(1)
-                      : '0';
-                    return `${value.slice(0, 3)}\n${totalKm}km`;
-                  }}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={10}
+                  tickFormatter={(value) => `${value}km`}
                 />
                 <ChartTooltip
-                  cursor={false}
                   content={
                     <ChartTooltipContent
-                      hideLabel
                       formatter={(value, name) => [
-                        `${value} km`,
-                        chartConfig[name as keyof typeof chartConfig]?.label ||
-                          name,
+                        `${value}km`,
+                        areaChartConfig[name as keyof typeof areaChartConfig]?.label || name,
                       ]}
+                      labelFormatter={(label) => `Día: ${label}`}
                     />
                   }
                 />
-                <ChartLegend content={<ChartLegendContent />} />
                 <Area
+                  type='monotone'
                   dataKey='Z1'
-                  stackId='a'
-                  type='monotone'
-                  fill='var(--color-Z1)'
-                  fillOpacity={0.8}
-                  stroke='var(--color-Z1)'
-                  strokeWidth={1}
+                  stackId='1'
+                  stroke={zoneColors.Z1}
+                  fill={zoneColors.Z1}
+                  fillOpacity={0.6}
                 />
                 <Area
+                  type='monotone'
                   dataKey='Z2'
-                  stackId='a'
-                  type='monotone'
-                  fill='var(--color-Z2)'
-                  fillOpacity={0.8}
-                  stroke='var(--color-Z2)'
-                  strokeWidth={1}
+                  stackId='1'
+                  stroke={zoneColors.Z2}
+                  fill={zoneColors.Z2}
+                  fillOpacity={0.6}
                 />
                 <Area
+                  type='monotone'
                   dataKey='Z3'
-                  stackId='a'
-                  type='monotone'
-                  fill='var(--color-Z3)'
-                  fillOpacity={0.8}
-                  stroke='var(--color-Z3)'
-                  strokeWidth={1}
+                  stackId='1'
+                  stroke={zoneColors.Z3}
+                  fill={zoneColors.Z3}
+                  fillOpacity={0.6}
                 />
                 <Area
+                  type='monotone'
                   dataKey='Z4'
-                  stackId='a'
-                  type='monotone'
-                  fill='var(--color-Z4)'
-                  fillOpacity={0.8}
-                  stroke='var(--color-Z4)'
-                  strokeWidth={1}
+                  stackId='1'
+                  stroke={zoneColors.Z4}
+                  fill={zoneColors.Z4}
+                  fillOpacity={0.6}
                 />
                 <Area
-                  dataKey='Z5'
-                  stackId='a'
                   type='monotone'
-                  fill='var(--color-Z5)'
-                  fillOpacity={0.8}
-                  stroke='var(--color-Z5)'
-                  strokeWidth={1}
+                  dataKey='Z5'
+                  stackId='1'
+                  stroke={zoneColors.Z5}
+                  fill={zoneColors.Z5}
+                  fillOpacity={0.6}
                 />
               </AreaChart>
             </ChartContainer>
           )}
+
+          {/* Estadísticas */}
+          <div className='grid grid-cols-2 gap-4 pt-4 border-t'>
+            <div className='text-center'>
+              <div className='text-2xl font-bold text-primary'>
+                {totalSemanal.toFixed(1)}km
+              </div>
+              <div className='text-sm text-muted-foreground'>
+                Total Semanal
+              </div>
+            </div>
+            <div className='text-center'>
+              <div className='text-2xl font-bold text-primary'>
+                {promedioDiario.toFixed(1)}km
+              </div>
+              <div className='text-sm text-muted-foreground'>
+                Promedio Diario
+              </div>
+            </div>
+          </div>
         </div>
       </CardContent>
-      <CardFooter className='flex-col items-start gap-2 text-sm'>
-        <div className='flex gap-2 leading-none font-medium'>
-          Total semanal: {totalSemanal.toLocaleString()} km{' '}
-          <TrendingUp className='h-4 w-4' />
-        </div>
-        <div className='text-muted-foreground leading-none'>
-          Promedio diario: {promedioDiario.toLocaleString()} km
-        </div>
-      </CardFooter>
     </Card>
   );
 }
