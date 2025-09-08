@@ -1,7 +1,8 @@
+import { BaseEntity, CreateEntity } from '@/lib/types/base-entity';
 import {
-  useMutation,
-  UseMutationOptions,
-  useQueryClient,
+    useMutation,
+    UseMutationOptions,
+    useQueryClient,
 } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
@@ -114,7 +115,7 @@ export function useOptimisticMutation<TData, TVariables, TContext = unknown>(
 // =====================================================
 
 // Helper para operaciones CRUD estándar
-export function createCrudOptimisticConfig<T extends { id: string }>(
+export function createCrudOptimisticConfig<T extends BaseEntity>(
   entityName: string,
   queryKeys: {
     all: (string | number)[];
@@ -126,13 +127,13 @@ export function createCrudOptimisticConfig<T extends { id: string }>(
     // Configuración para CREATE
     create: (): OptimisticUpdateConfig<
       T,
-      Omit<T, 'id' | 'created_at' | 'updated_at' | 'user_id'>
+      CreateEntity<T>
     > => ({
       queryKeys: [queryKeys.all],
-      getPreviousData: queryClient => ({
+      getPreviousData: (queryClient: any) => ({
         previousData: queryClient.getQueriesData({ queryKey: queryKeys.all }),
       }),
-      applyOptimisticUpdate: (queryClient, newItem, context) => {
+      applyOptimisticUpdate: (queryClient: any, newItem: CreateEntity<T>, context: any) => {
         const optimisticItem: T = {
           ...newItem,
           id: `temp-${Date.now()}`,
@@ -149,7 +150,7 @@ export function createCrudOptimisticConfig<T extends { id: string }>(
           }
         );
       },
-      revertOnError: (queryClient, context) => {
+      revertOnError: (queryClient: any, context: any) => {
         if (context.previousData) {
           context.previousData.forEach(([queryKey, data]) => {
             queryClient.setQueryData(queryKey, data);
@@ -176,7 +177,7 @@ export function createCrudOptimisticConfig<T extends { id: string }>(
       { id: string; updates: Partial<T> }
     > => ({
       queryKeys: [queryKeys.all],
-      getPreviousData: queryClient => ({
+      getPreviousData: (queryClient: any) => ({
         previousData: queryClient.getQueriesData({ queryKey: queryKeys.all }),
       }),
       applyOptimisticUpdate: (queryClient, { id, updates }, context) => {
@@ -197,7 +198,7 @@ export function createCrudOptimisticConfig<T extends { id: string }>(
           return { ...old, ...updates, updated_at: new Date().toISOString() };
         });
       },
-      revertOnError: (queryClient, context) => {
+      revertOnError: (queryClient: any, context: any) => {
         if (context.previousData) {
           context.previousData.forEach(([queryKey, data]) => {
             queryClient.setQueryData(queryKey, data);
@@ -219,7 +220,7 @@ export function createCrudOptimisticConfig<T extends { id: string }>(
     // Configuración para DELETE
     delete: (): OptimisticUpdateConfig<{ id: string }, string> => ({
       queryKeys: [queryKeys.all],
-      getPreviousData: queryClient => ({
+      getPreviousData: (queryClient: any) => ({
         previousData: queryClient.getQueriesData({ queryKey: queryKeys.all }),
       }),
       applyOptimisticUpdate: (queryClient, id, context) => {
@@ -240,7 +241,7 @@ export function createCrudOptimisticConfig<T extends { id: string }>(
           };
         });
       },
-      revertOnError: (queryClient, context) => {
+      revertOnError: (queryClient: any, context: any) => {
         if (context.previousData) {
           context.previousData.forEach(([queryKey, data]) => {
             queryClient.setQueryData(queryKey, data);
