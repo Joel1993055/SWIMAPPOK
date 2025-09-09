@@ -108,10 +108,10 @@ export default function Hero({
             <div className='relative w-full max-w-6xl mx-auto pt-12'>
               {/* Glow separado - AZUL */}
               <div
-                className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1600px] h-[1200px] blur-3xl z-0'
+                className='absolute top-[60%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[1600px] h-[1200px] blur-3xl z-0'
                 style={{
                   background:
-                    'radial-gradient(circle, rgba(59, 130, 246, 0.6) 0%, rgba(37, 99, 235, 0.3) 15%, rgba(29, 78, 216, 0.2) 30%, rgba(30, 64, 175, 0.1) 50%, transparent 80%)',
+                    'radial-gradient(ellipse at center top, rgba(59, 130, 246, 0.7) 0%, rgba(37, 99, 235, 0.4) 20%, rgba(29, 78, 216, 0.3) 40%, rgba(30, 64, 175, 0.2) 60%, transparent 85%)',
                 }}
               ></div>
 
