@@ -1,51 +1,47 @@
 'use client';
 
+import { WeeklyTrendsChart } from '@/components/charts/lazy-charts';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { SiteHeader } from '@/components/layout/site-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from '@/components/ui/chart';
 import { Progress } from '@/components/ui/progress';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from '@/components/ui/select';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { getSessions, type Session } from '@/lib/actions/sessions';
-import { format, startOfWeek, subDays, subMonths, subWeeks } from 'date-fns';
+import { useSessionsData } from '@/lib/hooks/use-sessions-data';
+import { format, subDays, subMonths, subWeeks } from 'date-fns';
 import { es } from 'date-fns/locale';
 import {
-  Activity,
-  AlertTriangle,
-  ArrowDown,
-  ArrowUp,
-  BarChart3,
-  Calendar,
-  CheckCircle,
-  Download,
-  Filter,
-  Minus,
-  Target,
-  TrendingUp,
-  Zap,
+    Activity,
+    AlertTriangle,
+    ArrowDown,
+    ArrowUp,
+    BarChart3,
+    Calendar,
+    CheckCircle,
+    Download,
+    Filter,
+    Minus,
+    Target,
+    TrendingUp,
+    Zap,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts';
+import { useCallback, useMemo, useState } from 'react';
 
 // Colores para las zonas de intensidad
 const ZONE_COLORS = {
@@ -57,59 +53,51 @@ const ZONE_COLORS = {
 };
 
 function AnalysisContent() {
-  const [sessions, setSessions] = useState<Session[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const {
+    sessions,
+    metrics,
+    zoneAnalysis,
+    weeklyAnalysis,
+    isLoading,
+    getFilteredSessions,
+  } = useSessionsData();
+
   const [selectedPeriod, setSelectedPeriod] = useState('last-30-days');
   const [comparisonPeriod, setComparisonPeriod] = useState('previous-week');
 
-  // Cargar sesiones reales
-  useEffect(() => {
-    const loadSessions = async () => {
-      try {
-        const data = await getSessions();
-        setSessions(data);
-      } catch (error) {
-        console.error('Error cargando sesiones:', error);
-        setSessions([]);
-      } finally {
-        setIsLoading(false);
+  // Función para filtrar sesiones por período - OPTIMIZADA
+  const getFilteredSessionsByPeriod = useMemo(() => {
+    return (period: string) => {
+      const now = new Date();
+      let startDate: Date;
+      const endDate = now;
+
+      switch (period) {
+        case 'last-7-days':
+          startDate = subDays(now, 7);
+          break;
+        case 'last-30-days':
+          startDate = subDays(now, 30);
+          break;
+        case 'last-3-months':
+          startDate = subMonths(now, 3);
+          break;
+        case 'last-6-months':
+          startDate = subMonths(now, 6);
+          break;
+        case 'last-year':
+          startDate = subMonths(now, 12);
+          break;
+        default:
+          startDate = subDays(now, 30);
       }
+
+      return getFilteredSessions({
+        startDate,
+        endDate,
+      });
     };
-
-    loadSessions();
-  }, []);
-
-  // Función para filtrar sesiones por período
-  const getFilteredSessions = (period: string) => {
-    const now = new Date();
-    let startDate: Date;
-    const endDate = now;
-
-    switch (period) {
-      case 'last-7-days':
-        startDate = subDays(now, 7);
-        break;
-      case 'last-30-days':
-        startDate = subDays(now, 30);
-        break;
-      case 'last-3-months':
-        startDate = subMonths(now, 3);
-        break;
-      case 'last-6-months':
-        startDate = subMonths(now, 6);
-        break;
-      case 'last-year':
-        startDate = subMonths(now, 12);
-        break;
-      default:
-        startDate = subDays(now, 30);
-    }
-
-    return sessions.filter(session => {
-      const sessionDate = new Date(session.date);
-      return sessionDate >= startDate && sessionDate <= endDate;
-    });
-  };
+  }, [getFilteredSessions]);
 
   // Función para obtener período de comparación
   const getComparisonSessions = (period: string) => {
@@ -197,155 +185,118 @@ function AnalysisContent() {
     });
   };
 
-  const currentSessions = getFilteredSessions(selectedPeriod);
-  const comparisonSessions = getComparisonSessions(comparisonPeriod);
+  // Sesiones filtradas - OPTIMIZADO CON USEMEMO
+  const currentSessions = useMemo(
+    () => getFilteredSessionsByPeriod(selectedPeriod),
+    [getFilteredSessionsByPeriod, selectedPeriod]
+  );
 
-  // Calcular métricas del período actual
-  const currentMetrics = {
-    totalDistance: currentSessions.reduce(
-      (sum, s) => sum + (s.distance || 0),
-      0
-    ),
-    totalSessions: currentSessions.length,
-    avgDistance:
-      currentSessions.length > 0
-        ? currentSessions.reduce((sum, s) => sum + (s.distance || 0), 0) /
-          currentSessions.length
-        : 0,
-    avgDuration:
-      currentSessions.length > 0
-        ? currentSessions.reduce((sum, s) => sum + (s.duration || 0), 0) /
-          currentSessions.length
-        : 0,
-    avgRPE:
-      currentSessions.length > 0
-        ? currentSessions.reduce((sum, s) => sum + (s.rpe || 0), 0) /
-          currentSessions.length
-        : 0,
-    totalTime: currentSessions.reduce((sum, s) => sum + (s.duration || 0), 0),
-  };
+  const comparisonSessions = useMemo(
+    () => getComparisonSessions(comparisonPeriod),
+    [comparisonPeriod, sessions]
+  );
 
-  // Calcular métricas del período de comparación
-  const comparisonMetrics = {
-    totalDistance: comparisonSessions.reduce(
-      (sum, s) => sum + (s.distance || 0),
-      0
-    ),
-    totalSessions: comparisonSessions.length,
-    avgDistance:
-      comparisonSessions.length > 0
-        ? comparisonSessions.reduce((sum, s) => sum + (s.distance || 0), 0) /
-          comparisonSessions.length
-        : 0,
-    avgDuration:
-      comparisonSessions.length > 0
-        ? comparisonSessions.reduce((sum, s) => sum + (s.duration || 0), 0) /
-          comparisonSessions.length
-        : 0,
-    avgRPE:
-      comparisonSessions.length > 0
-        ? comparisonSessions.reduce((sum, s) => sum + (s.rpe || 0), 0) /
-          comparisonSessions.length
-        : 0,
-    totalTime: comparisonSessions.reduce(
-      (sum, s) => sum + (s.duration || 0),
-      0
-    ),
-  };
+  // Métricas del período actual - OPTIMIZADO
+  const currentMetrics = useMemo(() => {
+    if (currentSessions.length === 0) {
+      return {
+        totalDistance: 0,
+        totalSessions: 0,
+        avgDistance: 0,
+        avgDuration: 0,
+        avgRPE: 0,
+        totalTime: 0,
+      };
+    }
 
-  // Función para calcular cambio porcentual
-  const calculateChange = (current: number, previous: number) => {
+    const totals = currentSessions.reduce(
+      (acc, s) => ({
+        distance: acc.distance + (s.distance || 0),
+        duration: acc.duration + (s.duration || 0),
+        rpe: acc.rpe + (s.rpe || 0),
+        sessions: acc.sessions + 1,
+      }),
+      { distance: 0, duration: 0, rpe: 0, sessions: 0 }
+    );
+
+    return {
+      totalDistance: totals.distance,
+      totalSessions: totals.sessions,
+      avgDistance: totals.sessions > 0 ? totals.distance / totals.sessions : 0,
+      avgDuration: totals.sessions > 0 ? totals.duration / totals.sessions : 0,
+      avgRPE: totals.sessions > 0 ? totals.rpe / totals.sessions : 0,
+      totalTime: totals.duration,
+    };
+  }, [currentSessions]);
+
+  // Métricas del período de comparación - OPTIMIZADO
+  const comparisonMetrics = useMemo(() => {
+    if (comparisonSessions.length === 0) {
+      return {
+        totalDistance: 0,
+        totalSessions: 0,
+        avgDistance: 0,
+        avgDuration: 0,
+        avgRPE: 0,
+        totalTime: 0,
+      };
+    }
+
+    const totals = comparisonSessions.reduce(
+      (acc, s) => ({
+        distance: acc.distance + (s.distance || 0),
+        duration: acc.duration + (s.duration || 0),
+        rpe: acc.rpe + (s.rpe || 0),
+        sessions: acc.sessions + 1,
+      }),
+      { distance: 0, duration: 0, rpe: 0, sessions: 0 }
+    );
+
+    return {
+      totalDistance: totals.distance,
+      totalSessions: totals.sessions,
+      avgDistance: totals.sessions > 0 ? totals.distance / totals.sessions : 0,
+      avgDuration: totals.sessions > 0 ? totals.duration / totals.sessions : 0,
+      avgRPE: totals.sessions > 0 ? totals.rpe / totals.sessions : 0,
+      totalTime: totals.duration,
+    };
+  }, [comparisonSessions]);
+
+  // Funciones de utilidad - OPTIMIZADAS CON USECALLBACK
+  const calculateChange = useCallback((current: number, previous: number) => {
     if (previous === 0) return current > 0 ? 100 : 0;
     return ((current - previous) / previous) * 100;
-  };
+  }, []);
 
-  // Función para obtener icono de cambio
-  const getChangeIcon = (change: number) => {
+  const getChangeIcon = useCallback((change: number) => {
     if (change > 0) return <ArrowUp className='h-4 w-4 text-green-600' />;
     if (change < 0) return <ArrowDown className='h-4 w-4 text-red-600' />;
     return <Minus className='h-4 w-4 text-gray-600' />;
-  };
+  }, []);
 
-  // Función para obtener color de cambio
-  const getChangeColor = (change: number) => {
+  const getChangeColor = useCallback((change: number) => {
     if (change > 0) return 'text-green-600';
     if (change < 0) return 'text-red-600';
     return 'text-gray-600';
-  };
+  }, []);
 
-  // Función para formatear números
-  const formatNumber = (num: number) => {
+  const formatNumber = useCallback((num: number) => {
     return num.toLocaleString('es-ES');
-  };
+  }, []);
 
-  // Función para formatear tiempo
-  const formatTime = (minutes: number) => {
+  const formatTime = useCallback((minutes: number) => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
     return `${hours}h ${mins}m`;
-  };
+  }, []);
 
-  // Análisis por zonas de intensidad
-  const getZoneAnalysis = (sessions: Session[]) => {
-    const zoneTotals = { z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 };
-    let totalDistance = 0;
-
-    sessions.forEach(session => {
-      if (session.zone_volumes) {
-        Object.entries(session.zone_volumes).forEach(([zone, volume]) => {
-          if (zone in zoneTotals) {
-            zoneTotals[zone as keyof typeof zoneTotals] += volume;
-            totalDistance += volume;
-          }
-        });
-      }
-    });
-
-    return Object.entries(zoneTotals).map(([zone, distance]) => ({
-      zone: `Z${zone.slice(1)}`,
-      distance,
-      percentage: totalDistance > 0 ? (distance / totalDistance) * 100 : 0,
-      color: ZONE_COLORS[zone as keyof typeof ZONE_COLORS],
-    }));
-  };
-
-  // Análisis semanal
-  const getWeeklyAnalysis = (sessions: Session[]) => {
-    const weeklyData: {
-      [key: string]: { distance: number; sessions: number; avgRPE: number };
-    } = {};
-
-    sessions.forEach(session => {
-      const sessionDate = new Date(session.date);
-      const weekStart = startOfWeek(sessionDate, { weekStartsOn: 1 });
-      const weekKey = format(weekStart, 'dd/MM', { locale: es });
-
-      if (!weeklyData[weekKey]) {
-        weeklyData[weekKey] = { distance: 0, sessions: 0, avgRPE: 0 };
-      }
-
-      weeklyData[weekKey].distance += session.distance || 0;
-      weeklyData[weekKey].sessions += 1;
-      weeklyData[weekKey].avgRPE += session.rpe || 0;
-    });
-
-    return Object.entries(weeklyData)
-      .map(([week, data]) => ({
-        week,
-        distance: data.distance,
-        sessions: data.sessions,
-        avgRPE: data.sessions > 0 ? data.avgRPE / data.sessions : 0,
-      }))
-      .sort((a, b) => a.week.localeCompare(b.week));
-  };
-
-  // Análisis de tendencias mensuales
-  const getMonthlyAnalysis = (sessions: Session[]) => {
+  // Análisis mensual - OPTIMIZADO
+  const monthlyAnalysis = useMemo(() => {
     const monthlyData: {
       [key: string]: { distance: number; sessions: number; avgRPE: number };
     } = {};
 
-    sessions.forEach(session => {
+    currentSessions.forEach(session => {
       const sessionDate = new Date(session.date);
       const monthKey = format(sessionDate, 'MMM yyyy', { locale: es });
 
@@ -366,11 +317,11 @@ function AnalysisContent() {
         avgRPE: data.sessions > 0 ? data.avgRPE / data.sessions : 0,
       }))
       .sort((a, b) => a.month.localeCompare(b.month));
-  };
+  }, [currentSessions]);
 
-  // Generar insights automáticos
-  const generateInsights = () => {
-    const insights = {
+  // Insights automáticos - OPTIMIZADO
+  const insights = useMemo(() => {
+    const result = {
       strengths: [] as string[],
       improvements: [] as string[],
     };
@@ -378,27 +329,27 @@ function AnalysisContent() {
     // Análisis de consistencia
     const avgSessionsPerWeek = currentSessions.length / 4; // Aproximado para 30 días
     if (avgSessionsPerWeek >= 4) {
-      insights.strengths.push(
+      result.strengths.push(
         `Excelente consistencia: ${avgSessionsPerWeek.toFixed(1)} sesiones por semana`
       );
     } else if (avgSessionsPerWeek < 2) {
-      insights.improvements.push(
+      result.improvements.push(
         `Aumenta la frecuencia: solo ${avgSessionsPerWeek.toFixed(1)} sesiones por semana`
       );
     }
 
     // Análisis de zonas de intensidad
-    const zoneAnalysis = getZoneAnalysis(currentSessions);
-    const z4z5Percentage = zoneAnalysis
+    const currentZoneAnalysis = zoneAnalysis;
+    const z4z5Percentage = currentZoneAnalysis
       .filter(z => z.zone === 'Z4' || z.zone === 'Z5')
       .reduce((sum, z) => sum + z.percentage, 0);
 
     if (z4z5Percentage < 10) {
-      insights.improvements.push(
+      result.improvements.push(
         `Más trabajo de alta intensidad: solo ${z4z5Percentage.toFixed(1)}% en Z4-Z5`
       );
     } else if (z4z5Percentage > 30) {
-      insights.improvements.push(
+      result.improvements.push(
         `Equilibra la intensidad: ${z4z5Percentage.toFixed(1)}% en Z4-Z5 puede ser excesivo`
       );
     }
@@ -409,22 +360,23 @@ function AnalysisContent() {
       comparisonMetrics.totalDistance
     );
     if (distanceChange > 20) {
-      insights.strengths.push(
+      result.strengths.push(
         `Excelente progreso: +${distanceChange.toFixed(1)}% en distancia`
       );
     } else if (distanceChange < -10) {
-      insights.improvements.push(
+      result.improvements.push(
         `Revisa el volumen: -${Math.abs(distanceChange).toFixed(1)}% en distancia`
       );
     }
 
-    return insights;
-  };
-
-  const insights = generateInsights();
-  const zoneAnalysis = getZoneAnalysis(currentSessions);
-  const weeklyAnalysis = getWeeklyAnalysis(currentSessions);
-  const monthlyAnalysis = getMonthlyAnalysis(currentSessions);
+    return result;
+  }, [
+    currentSessions,
+    zoneAnalysis,
+    currentMetrics,
+    comparisonMetrics,
+    calculateChange,
+  ]);
 
   if (isLoading) {
     return (
@@ -441,11 +393,11 @@ function AnalysisContent() {
           {[...Array(4)].map((_, i) => (
             <Card key={i} className='bg-muted/50'>
               <CardHeader className='space-y-0 pb-2'>
-                <div className='h-4 w-24 bg-muted animate-pulse rounded'></div>
+                <Skeleton className='h-4 w-24' />
               </CardHeader>
               <CardContent>
-                <div className='h-8 w-16 bg-muted animate-pulse rounded mb-2'></div>
-                <div className='h-3 w-32 bg-muted animate-pulse rounded'></div>
+                <Skeleton className='h-8 w-16 mb-2' />
+                <Skeleton className='h-3 w-32' />
               </CardContent>
             </Card>
           ))}
@@ -604,7 +556,6 @@ function AnalysisContent() {
           <CardContent>
             <div className='text-2xl font-bold'>
               {(() => {
-                const zoneAnalysis = getZoneAnalysis(currentSessions);
                 const weightedIntensity =
                   zoneAnalysis.reduce((sum, zone) => {
                     const zoneNumber = parseInt(zone.zone.replace('Z', ''));
@@ -802,54 +753,7 @@ function AnalysisContent() {
         {/* Tab: Tendencias */}
         <TabsContent value='trends' className='space-y-6'>
           <div className='grid gap-6'>
-            <Card className='bg-muted/50'>
-              <CardHeader>
-                <CardTitle className='flex items-center gap-2'>
-                  <Activity className='h-5 w-5' />
-                  Tendencias Semanales
-                </CardTitle>
-                <CardDescription>
-                  Evolución semanal de distancia y RPE
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className='h-80'>
-                  <ChartContainer
-                    config={{
-                      distance: {
-                        label: 'Distancia (m)',
-                      },
-                      avgRPE: {
-                        label: 'RPE Promedio',
-                      },
-                    }}
-                    className='h-full w-full'
-                  >
-                    <LineChart data={weeklyAnalysis}>
-                      <CartesianGrid strokeDasharray='3 3' />
-                      <XAxis dataKey='week' />
-                      <YAxis yAxisId='left' />
-                      <YAxis yAxisId='right' orientation='right' />
-                      <ChartTooltip content={<ChartTooltipContent />} />
-                      <Line
-                        yAxisId='left'
-                        type='monotone'
-                        dataKey='distance'
-                        stroke='#3b82f6'
-                        strokeWidth={2}
-                      />
-                      <Line
-                        yAxisId='right'
-                        type='monotone'
-                        dataKey='avgRPE'
-                        stroke='#ef4444'
-                        strokeWidth={2}
-                      />
-                    </LineChart>
-                  </ChartContainer>
-                </div>
-              </CardContent>
-            </Card>
+            <WeeklyTrendsChart data={weeklyAnalysis} />
           </div>
         </TabsContent>
 
@@ -961,37 +865,33 @@ function AnalysisContent() {
               </CardHeader>
               <CardContent>
                 <div className='space-y-4'>
-                  {(() => {
-                    const comparisonZoneAnalysis =
-                      getZoneAnalysis(comparisonSessions);
-                    return comparisonZoneAnalysis.map(zone => (
-                      <div key={zone.zone} className='space-y-2'>
-                        <div className='flex items-center justify-between'>
-                          <span className='font-medium'>{zone.zone}</span>
-                          <div className='flex items-center gap-2'>
-                            <span className='text-sm text-muted-foreground'>
-                              {formatNumber(zone.distance)}m
-                            </span>
-                            <Badge
-                              variant='outline'
-                              className='text-xs'
-                              style={{
-                                backgroundColor: `${zone.color}20`,
-                                color: zone.color,
-                              }}
-                            >
-                              {zone.percentage.toFixed(1)}%
-                            </Badge>
-                          </div>
+                  {comparisonZoneAnalysis.map(zone => (
+                    <div key={zone.zone} className='space-y-2'>
+                      <div className='flex items-center justify-between'>
+                        <span className='font-medium'>{zone.zone}</span>
+                        <div className='flex items-center gap-2'>
+                          <span className='text-sm text-muted-foreground'>
+                            {formatNumber(zone.distance)}m
+                          </span>
+                          <Badge
+                            variant='outline'
+                            className='text-xs'
+                            style={{
+                              backgroundColor: `${zone.color}20`,
+                              color: zone.color,
+                            }}
+                          >
+                            {zone.percentage.toFixed(1)}%
+                          </Badge>
                         </div>
-                        <Progress
-                          value={zone.percentage}
-                          className='h-3'
-                          style={{ backgroundColor: `${zone.color}20` }}
-                        />
                       </div>
-                    ));
-                  })()}
+                      <Progress
+                        value={zone.percentage}
+                        className='h-3'
+                        style={{ backgroundColor: `${zone.color}20` }}
+                      />
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -1010,71 +910,65 @@ function AnalysisContent() {
             </CardHeader>
             <CardContent>
               <div className='space-y-4'>
-                {(() => {
-                  const comparisonZoneAnalysis =
-                    getZoneAnalysis(comparisonSessions);
-                  return zoneAnalysis.map(currentZone => {
-                    const comparisonZone = comparisonZoneAnalysis.find(
-                      z => z.zone === currentZone.zone
-                    );
-                    const change = comparisonZone
-                      ? calculateChange(
-                          currentZone.percentage,
-                          comparisonZone.percentage
-                        )
-                      : 0;
+                {zoneAnalysis.map(currentZone => {
+                  const comparisonZone = comparisonZoneAnalysis.find(
+                    z => z.zone === currentZone.zone
+                  );
+                  const change = comparisonZone
+                    ? calculateChange(
+                        currentZone.percentage,
+                        comparisonZone.percentage
+                      )
+                    : 0;
 
-                    return (
-                      <div key={currentZone.zone} className='space-y-2'>
-                        <div className='flex items-center justify-between'>
-                          <span className='font-medium'>
-                            {currentZone.zone}
+                  return (
+                    <div key={currentZone.zone} className='space-y-2'>
+                      <div className='flex items-center justify-between'>
+                        <span className='font-medium'>{currentZone.zone}</span>
+                        <div className='flex items-center gap-2'>
+                          <span className='text-sm text-muted-foreground'>
+                            {currentZone.percentage.toFixed(1)}% vs{' '}
+                            {comparisonZone?.percentage.toFixed(1) || 0}%
                           </span>
-                          <div className='flex items-center gap-2'>
-                            <span className='text-sm text-muted-foreground'>
-                              {currentZone.percentage.toFixed(1)}% vs{' '}
-                              {comparisonZone?.percentage.toFixed(1) || 0}%
+                          <div className='flex items-center gap-1'>
+                            {getChangeIcon(change)}
+                            <span
+                              className={`text-xs font-medium ${getChangeColor(change)}`}
+                            >
+                              {Math.abs(change).toFixed(1)}%
                             </span>
-                            <div className='flex items-center gap-1'>
-                              {getChangeIcon(change)}
-                              <span
-                                className={`text-xs font-medium ${getChangeColor(change)}`}
-                              >
-                                {Math.abs(change).toFixed(1)}%
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className='grid grid-cols-2 gap-2'>
-                          <div>
-                            <div className='text-xs text-muted-foreground mb-1'>
-                              Actual
-                            </div>
-                            <Progress
-                              value={currentZone.percentage}
-                              className='h-2'
-                              style={{
-                                backgroundColor: `${currentZone.color}20`,
-                              }}
-                            />
-                          </div>
-                          <div>
-                            <div className='text-xs text-muted-foreground mb-1'>
-                              Comparación
-                            </div>
-                            <Progress
-                              value={comparisonZone?.percentage || 0}
-                              className='h-2'
-                              style={{
-                                backgroundColor: `${currentZone.color}20`,
-                              }}
-                            />
                           </div>
                         </div>
                       </div>
-                    );
-                  });
-                })()}
+                      <div className='grid grid-cols-2 gap-2'>
+                        <div>
+                          <div className='text-xs text-muted-foreground mb-1'>
+                            Actual
+                          </div>
+                          <Progress
+                            value={currentZone.percentage}
+                            className='h-2'
+                            style={{
+                              backgroundColor: `${currentZone.color}20`,
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <div className='text-xs text-muted-foreground mb-1'>
+                            Comparación
+                          </div>
+                          <Progress
+                            value={comparisonZone?.percentage || 0}
+                            className='h-2'
+                            style={{
+                              backgroundColor: `${currentZone.color}20`,
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </CardContent>
           </Card>

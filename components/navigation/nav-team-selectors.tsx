@@ -1,13 +1,13 @@
 'use client';
 
-import * as React from 'react';
-import { Building2, Users, ChevronDown, Check } from 'lucide-react';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
 } from '@/components/ui/select';
+import { Building2, Check, ChevronDown, Users } from 'lucide-react';
+import * as React from 'react';
 
 // Datos de ejemplo para clubes y grupos (mismo que en la página de equipo)
 const sampleData = {
@@ -123,6 +123,12 @@ export function NavTeamSelectors({
   onClubChange,
   onGroupChange,
 }: NavTeamSelectorsProps) {
+  const [isMounted, setIsMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const currentClub = sampleData.clubs.find(club => club.id === selectedClub);
   const currentGroups =
     sampleData.groups[selectedClub as keyof typeof sampleData.groups] || [];
@@ -136,6 +142,17 @@ export function NavTeamSelectors({
       onGroupChange(newGroups[0].id);
     }
   };
+
+  if (!isMounted) {
+    return (
+      <div className='px-3 py-2'>
+        <div className='space-y-3'>
+          <div className='h-8 bg-muted/30 rounded animate-pulse' />
+          <div className='h-8 bg-muted/30 rounded animate-pulse' />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className='px-3 py-2'>

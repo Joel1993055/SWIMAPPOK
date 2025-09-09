@@ -3,45 +3,45 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { useCompetitionsStore, useTrainingStore } from '@/lib/store/unified';
 import {
-  Activity,
-  Calendar,
-  Clock,
-  Edit,
-  MapPin,
-  Plus,
-  Save,
-  Target,
-  Trash2,
-  TrendingUp,
-  Trophy,
-  X,
+    Activity,
+    Calendar,
+    Clock,
+    Edit,
+    MapPin,
+    Plus,
+    Save,
+    Target,
+    Trash2,
+    TrendingUp,
+    Trophy,
+    X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 // NUEVO: Importar el store unificado

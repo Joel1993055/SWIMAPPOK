@@ -3,28 +3,28 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
 } from '@/components/ui/dialog';
 import { getSessions, type Session } from '@/lib/actions/sessions';
 import { useCompetitionsStore } from '@/lib/store/unified';
 import {
-  Activity,
-  Calendar as CalendarIcon,
-  ChevronLeft,
-  ChevronRight,
-  Clock,
-  Target,
+    Activity,
+    Calendar as CalendarIcon,
+    ChevronLeft,
+    ChevronRight,
+    Clock,
+    Target,
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 // NUEVO: Importar el store unificado
@@ -330,43 +330,59 @@ export function DashboardCalendar() {
 
           {/* Leyenda del calendario */}
           <div className='mt-4 pt-4 border-t border-border'>
-            <div className='flex flex-col gap-2 text-xs text-muted-foreground'>
-              <div className='flex items-center gap-4'>
-                <div className='flex items-center gap-2'>
-                  <div className='flex gap-0.5'>
+            <div className='flex flex-col gap-3 text-xs text-muted-foreground'>
+              {/* Entrenamientos */}
+              <div className='space-y-2'>
+                <h4 className='text-sm font-medium text-foreground mb-2'>Entrenamientos</h4>
+                <div className='flex items-center gap-4'>
+                  <div className='flex items-center gap-2'>
                     <div className='w-1.5 h-1.5 bg-blue-500 rounded-full'></div>
-                    <div className='w-1.5 h-1.5 bg-blue-500 rounded-full'></div>
+                    <span>1 entrenamiento</span>
                   </div>
-                  <span>2 entrenamientos</span>
+                  <div className='flex items-center gap-2'>
+                    <div className='flex gap-0.5'>
+                      <div className='w-1.5 h-1.5 bg-blue-500 rounded-full'></div>
+                      <div className='w-1.5 h-1.5 bg-blue-500 rounded-full'></div>
+                    </div>
+                    <span>2 entrenamientos</span>
+                  </div>
+                  <div className='flex items-center gap-2'>
+                    <div className='flex gap-0.5'>
+                      <div className='w-1.5 h-1.5 bg-blue-500 rounded-full'></div>
+                      <div className='w-1.5 h-1.5 bg-blue-500 rounded-full'></div>
+                      <div className='w-1.5 h-1.5 bg-blue-500 rounded-full'></div>
+                      <div className='w-1.5 h-1.5 bg-blue-300 rounded-full'></div>
+                    </div>
+                    <span>4+ entrenamientos</span>
+                  </div>
                 </div>
+              </div>
+
+              {/* Competiciones */}
+              <div className='space-y-2'>
+                <h4 className='text-sm font-medium text-foreground mb-2'>Competiciones</h4>
+                <div className='flex items-center gap-4'>
+                  <div className='flex items-center gap-2'>
+                    <div className='w-1.5 h-1.5 bg-red-500 rounded-full'></div>
+                    <span>Alta prioridad</span>
+                  </div>
+                  <div className='flex items-center gap-2'>
+                    <div className='w-1.5 h-1.5 bg-orange-500 rounded-full'></div>
+                    <span>Media prioridad</span>
+                  </div>
+                  <div className='flex items-center gap-2'>
+                    <div className='w-1.5 h-1.5 bg-green-500 rounded-full'></div>
+                    <span>Baja prioridad</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Día actual */}
+              <div className='space-y-2'>
+                <h4 className='text-sm font-medium text-foreground mb-2'>Indicadores</h4>
                 <div className='flex items-center gap-2'>
                   <div className='w-3 h-3 bg-accent border border-primary rounded-full'></div>
                   <span>Hoy</span>
-                </div>
-              </div>
-              <div className='flex items-center gap-4'>
-                <div className='flex items-center gap-2'>
-                  <div className='flex gap-0.5'>
-                    <div className='w-1.5 h-1.5 bg-blue-500 rounded-full'></div>
-                    <div className='w-1.5 h-1.5 bg-blue-500 rounded-full'></div>
-                    <div className='w-1.5 h-1.5 bg-blue-500 rounded-full'></div>
-                    <div className='w-1.5 h-1.5 bg-blue-300 rounded-full'></div>
-                  </div>
-                  <span>4+ entrenamientos</span>
-                </div>
-                <div className='flex items-center gap-2'>
-                  <div className='w-1.5 h-1.5 bg-red-500 rounded-full'></div>
-                  <span>Competición alta prioridad</span>
-                </div>
-              </div>
-              <div className='flex items-center gap-4'>
-                <div className='flex items-center gap-2'>
-                  <div className='w-1.5 h-1.5 bg-orange-500 rounded-full'></div>
-                  <span>Competición media prioridad</span>
-                </div>
-                <div className='flex items-center gap-2'>
-                  <div className='w-1.5 h-1.5 bg-green-500 rounded-full'></div>
-                  <span>Competición baja prioridad</span>
                 </div>
               </div>
             </div>

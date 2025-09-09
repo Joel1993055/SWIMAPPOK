@@ -6,49 +6,49 @@ import { SiteHeader } from '@/components/layout/site-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Textarea } from '@/components/ui/textarea';
 import {
-  createSession,
-  deleteSession,
-  getSessions,
-  updateSession,
-  type Session as SupabaseSession,
+    createSession,
+    deleteSession,
+    updateSession,
+    type Session as SupabaseSession
 } from '@/lib/actions/sessions';
+import { useSessionsData } from '@/lib/hooks/use-sessions-data';
 import { useAICoachStore, useSessionsStore } from '@/lib/store/unified';
 import type { Session } from '@/lib/types/session';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import {
-  Activity,
-  Calendar as CalendarIcon,
-  Clock,
-  Edit,
-  FileText,
-  MapPin,
-  Plus,
-  Save,
-  Target,
-  Trash2,
-  Users,
+    Activity,
+    Calendar as CalendarIcon,
+    Clock,
+    Edit,
+    FileText,
+    MapPin,
+    Plus,
+    Save,
+    Target,
+    Trash2,
+    Users,
 } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // Datos de ejemplo de entrenamientos guardados (comentado para evitar warning)
 /*
@@ -143,7 +143,8 @@ const mapSessionToSupabase = (session: Session): SupabaseSession => ({
 });
 
 function TrainingContent() {
-  // OPTIMIZADO: Solo usar lo necesario del store
+  // OPTIMIZADO: Usar hook centralizado
+  const { sessions, isLoading: dataLoading } = useSessionsData();
   const { setSessions } = useSessionsStore();
 
   const [activeTab, setActiveTab] = useState<'create' | 'saved'>('create');
@@ -187,26 +188,14 @@ function TrainingContent() {
     console.log('Fecha formateada:', trainingDate.toISOString().split('T')[0]);
   }, [trainingDate]);
 
-  // Cargar entrenamientos al montar el componente
-  const loadTrainings = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const trainings = await getSessions();
-      const mappedTrainings = trainings.map(mapSupabaseToSession);
-      setSavedTrainings(mappedTrainings);
-      // OPTIMIZADO: Sincronizar con el store
-      setSessions(mappedTrainings);
-    } catch (error) {
-      console.error('Error cargando entrenamientos:', error);
-      setError('Error al cargar los entrenamientos');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [setSessions]);
-
+  // OPTIMIZADO: Usar datos del hook centralizado
   useEffect(() => {
-    loadTrainings();
-  }, [loadTrainings]);
+    if (sessions.length > 0) {
+      const mappedTrainings = sessions.map(mapSupabaseToSession);
+      setSavedTrainings(mappedTrainings);
+      setSessions(mappedTrainings);
+    }
+  }, [sessions, setSessions]);
 
   // Calcular total de metros de todas las filas
   const totalMeters = zoneVolumes.reduce((total, row) => {
@@ -368,8 +357,7 @@ function TrainingContent() {
       );
       setEditingTraining(null);
 
-      // Recargar entrenamientos
-      await loadTrainings();
+      // Los datos se actualizarán automáticamente via el hook centralizado
     } catch (error) {
       console.error('Error guardando entrenamiento:', error);
       setError('Error al guardar el entrenamiento');
@@ -417,7 +405,7 @@ function TrainingContent() {
       setIsLoading(true);
       await deleteSession(id);
       setSuccess('Entrenamiento eliminado correctamente');
-      await loadTrainings();
+      // Los datos se actualizarán automáticamente via el hook centralizado
     } catch (error) {
       console.error('Error eliminando entrenamiento:', error);
       setError('Error al eliminar el entrenamiento');
@@ -934,7 +922,7 @@ function TrainingContent() {
             </CardHeader>
             <CardContent>
               <div className='space-y-4'>
-                {isLoading ? (
+                {dataLoading ? (
                   <div className='text-center py-8'>
                     <Clock className='h-8 w-8 animate-spin mx-auto mb-4' />
                     <p>Cargando entrenamientos...</p>

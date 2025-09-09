@@ -3,11 +3,11 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
 import { getSessions, type Session } from '@/lib/actions/sessions';
 import { addDays, format, isSameDay, isToday, startOfWeek } from 'date-fns';
@@ -337,9 +337,9 @@ export function WeeklyTrainingSchedule({
               const isCurrentDay = isToday(day);
 
               return (
-                <div key={`am-${index}`} className='min-h-[180px]'>
+                <div key={`am-${index}`} className='min-h-[200px]'>
                   <div
-                    className={`h-full p-4 rounded-lg border ${isCurrentDay ? 'border-primary/50 bg-primary/5 dark:bg-primary/10' : 'border-muted bg-background/50 dark:bg-background/80'}`}
+                    className={`h-full p-2 rounded-lg border ${isCurrentDay ? 'border-primary/50 bg-primary/5 dark:bg-primary/10' : 'border-muted bg-background/50 dark:bg-background/80'}`}
                   >
                     {trainings.length === 0 ? (
                       <div className='flex items-center justify-center h-full'>
@@ -352,23 +352,26 @@ export function WeeklyTrainingSchedule({
                         </Button>
                       </div>
                     ) : (
-                      <div className='space-y-3'>
+                      <div className='h-full flex flex-col'>
                         {trainings.map(training => (
                           <div
                             key={training.id}
-                            className={`p-3 rounded-lg text-sm border ${getObjectiveColor(training.objective)}`}
+                            className={`flex-1 p-3 rounded-lg text-sm border ${getObjectiveColor(training.objective)} flex flex-col justify-center items-center`}
                           >
                             <div className='flex items-center justify-center mb-2'>
                               <Badge
-                                className={`${getObjectiveBadgeColor(training.objective)} text-sm px-3 py-1 font-medium`}
+                                className={`${getObjectiveBadgeColor(training.objective)} text-xs px-3 py-1 font-medium`}
                               >
                                 {training.objective}
                               </Badge>
                             </div>
-                            <div className='flex items-center justify-center'>
-                              <span className='text-sm text-muted-foreground'>
+                            <div className='text-center space-y-1'>
+                              <div className='text-sm text-muted-foreground font-medium'>
                                 {training.distance}m
-                              </span>
+                              </div>
+                              <div className='text-xs text-muted-foreground'>
+                                {training.duration}min
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -390,9 +393,9 @@ export function WeeklyTrainingSchedule({
               const isCurrentDay = isToday(day);
 
               return (
-                <div key={`pm-${index}`} className='min-h-[180px]'>
+                <div key={`pm-${index}`} className='min-h-[200px]'>
                   <div
-                    className={`h-full p-4 rounded-lg border ${isCurrentDay ? 'border-primary/50 bg-primary/5 dark:bg-primary/10' : 'border-muted bg-background/50 dark:bg-background/80'}`}
+                    className={`h-full p-2 rounded-lg border ${isCurrentDay ? 'border-primary/50 bg-primary/5 dark:bg-primary/10' : 'border-muted bg-background/50 dark:bg-background/80'}`}
                   >
                     {trainings.length === 0 ? (
                       <div className='flex items-center justify-center h-full'>
@@ -405,23 +408,26 @@ export function WeeklyTrainingSchedule({
                         </Button>
                       </div>
                     ) : (
-                      <div className='space-y-3'>
+                      <div className='h-full flex flex-col'>
                         {trainings.map(training => (
                           <div
                             key={training.id}
-                            className={`p-3 rounded-lg text-sm border ${getObjectiveColor(training.objective)}`}
+                            className={`flex-1 p-3 rounded-lg text-sm border ${getObjectiveColor(training.objective)} flex flex-col justify-center items-center`}
                           >
                             <div className='flex items-center justify-center mb-2'>
                               <Badge
-                                className={`${getObjectiveBadgeColor(training.objective)} text-sm px-3 py-1 font-medium`}
+                                className={`${getObjectiveBadgeColor(training.objective)} text-xs px-3 py-1 font-medium`}
                               >
                                 {training.objective}
                               </Badge>
                             </div>
-                            <div className='flex items-center justify-center'>
-                              <span className='text-sm text-muted-foreground'>
+                            <div className='text-center space-y-1'>
+                              <div className='text-sm text-muted-foreground font-medium'>
                                 {training.distance}m
-                              </span>
+                              </div>
+                              <div className='text-xs text-muted-foreground'>
+                                {training.duration}min
+                              </div>
                             </div>
                           </div>
                         ))}
