@@ -1,3 +1,4 @@
+import BentoGrid from './components/sections/bento-grid/default';
 import CTA from './components/sections/cta/default';
 import Demo from './components/sections/demo/default';
 import FAQ from './components/sections/faq/default';
@@ -20,6 +21,7 @@ export default function Home() {
       <Stats />
       <Demo />
       <Features />
+      <BentoGrid />
       <Pricing />
       <FAQ />
       <CTA />

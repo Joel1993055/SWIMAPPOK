@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { ReactNode } from 'react';
 
-import { siteConfig } from '@/config/site';
 
 import {
   Accordion,
@@ -24,85 +23,85 @@ interface FAQProps {
 }
 
 export default function FAQ({
-  title = 'Questions and Answers',
+  title = 'Frequently Asked Questions',
   items = [
     {
-      question:
-        'Why building a great landing page is critical for your business?',
+      question: 'What is SwimApp PRO and how does it help swimmers?',
       answer: (
         <>
           <p className='text-muted-foreground mb-4 max-w-[640px] text-balance'>
-            In today&apos;s AI-driven world, standing out is harder than ever.
-            While anyone can build a product, a professional landing page makes
-            the difference between success and failure.
+            SwimApp PRO is the most advanced swimming analytics platform designed for swimmers of all levels. 
+            It provides comprehensive performance tracking, personalized training plans, and detailed analytics 
+            to help you improve your swimming technique and achieve your goals.
           </p>
           <p className='text-muted-foreground mb-4 max-w-[640px] text-balance'>
-            Launch UI helps you ship faster without compromising on quality.
+            Whether you're a beginner looking to learn proper technique or an elite athlete seeking to optimize 
+            performance, SwimApp PRO offers the tools and insights you need to excel in the water.
           </p>
         </>
       ),
     },
     {
-      question: 'Why use Launch UI instead of a no-code tool?',
+      question: 'Do I need any special equipment to use SwimApp PRO?',
       answer: (
         <>
           <p className='text-muted-foreground mb-4 max-w-[600px]'>
-            No-code tools lock you into their ecosystem with recurring fees and
-            limited control. They often come with performance issues and make it
-            difficult to integrate with your product.
+            SwimApp PRO works with most modern smartphones and smartwatches. For basic tracking, you only need 
+            your phone to log sessions manually. For advanced analytics, we recommend using a compatible 
+            smartwatch or fitness tracker.
           </p>
           <p className='text-muted-foreground mb-4 max-w-[600px]'>
-            You can&apos;t even change your hosting provider and basic things
-            like web analytics come as extra costs and paid add-ons.
-          </p>
-          <p className='text-muted-foreground mb-4 max-w-[600px]'>
-            What might seem like a convenient solution today could paint you
-            into a corner tomorrow, limiting your ability to scale and adapt.
-            Launch UI gives you full control of your code while maintaining
-            professional quality.
+            The app integrates with popular devices like Apple Watch, Garmin, and Fitbit, automatically 
+            syncing your swimming data for detailed analysis and insights.
           </p>
         </>
       ),
     },
     {
-      question:
-        'How Launch UI is different from other components libraries and templates?',
+      question: 'How accurate are the swimming analytics and performance metrics?',
       answer: (
         <>
           <p className='text-muted-foreground mb-4 max-w-[580px]'>
-            Launch UI stands out with premium design quality and delightful
-            touches of custom animations and illustrations.
+            Our analytics are powered by advanced algorithms that have been validated by swimming coaches 
+            and sports scientists. The platform uses machine learning to provide highly accurate insights 
+            into your swimming performance.
           </p>
           <p className='text-muted-foreground mb-4 max-w-[580px]'>
-            All components are carefully crafted to help position your product
-            as a professional tool, avoiding the generic template look.
-          </p>
-          <p className='text-muted-foreground mb-4 max-w-[640px] text-balance'>
-            Unlike many libraries that rely on outdated CSS practices and old
-            dependencies, Launch UI is built with modern technologies and best
-            practices in mind.
+            We track over 20 different metrics including stroke rate, stroke length, pace consistency, 
+            and efficiency ratios, giving you a complete picture of your swimming technique and progress.
           </p>
         </>
       ),
     },
     {
-      question: 'Why exactly does it mean that "The code is yours"?',
+      question: 'Can SwimApp PRO help me with different swimming strokes?',
       answer: (
         <>
           <p className='text-muted-foreground mb-4 max-w-[580px]'>
-            The basic version of Launch UI is open-source and free forever,
-            under a do-whatever-you-want license.
+            Absolutely! SwimApp PRO supports all four competitive strokes: freestyle, backstroke, breaststroke, 
+            and butterfly. Each stroke has its own specific analytics and training recommendations.
           </p>
           <p className='text-muted-foreground mb-4 max-w-[580px]'>
-            The pro version that contains more components and options is a
-            one-time purchase that gives you lifetime access to all current and
-            future content. Use it for unlimited personal and commercial
-            projects - no recurring fees or restrictions.
+            The app also includes specialized training for individual medley (IM) events and provides 
+            stroke-specific drills and technique improvements tailored to your current skill level.
+          </p>
+        </>
+      ),
+    },
+    {
+      question: 'Is my swimming data secure and private?',
+      answer: (
+        <>
+          <p className='text-muted-foreground mb-4 max-w-[580px]'>
+            Yes, your data security and privacy are our top priorities. All your swimming data is encrypted 
+            and stored securely using industry-standard security protocols. We never share your personal 
+            information with third parties without your explicit consent.
           </p>
           <p className='text-muted-foreground mb-4 max-w-[580px]'>
-            For complete details about licensing and usage rights, check out{' '}
-            <Link href='/pricing' className='text-foreground underline'>
-              the pricing page
+            You have complete control over your data and can export or delete it at any time. For more 
+            details, please review our{' '}
+            <Link href='/privacy' className='text-foreground underline'>
+              Privacy Policy
             </Link>
             .
           </p>
@@ -110,35 +109,51 @@ export default function FAQ({
       ),
     },
     {
-      question: 'Are Figma files included?',
-      answer: (
-        <p className='text-muted-foreground mb-4 max-w-[580px]'>
-          Yes! The complete Launch UI template is available for free on the{' '}
-          <Link
-            href='https://www.figma.com/community/file/1420131743903900629/launch-ui-landing-page-components-ui-kit'
-            className='text-foreground underline'
-          >
-            Figma community
-          </Link>
-          .
-        </p>
-      ),
-    },
-    {
-      question: 'Can I get a discount?',
+      question: 'Does SwimApp PRO work for both pool and open water swimming?',
       answer: (
         <>
           <p className='text-muted-foreground mb-4 max-w-[580px]'>
-            Actually, yes! I&apos;m always acively looking for beta testers of
-            new features. If you are interested in exchanging feedback for a
-            discount, please contact me via{' '}
-            <a
-              href={siteConfig.links.email}
-              className='underline underline-offset-2'
-            >
-              email
-            </a>
-            .
+            Yes! SwimApp PRO is designed for both pool and open water swimming. The app automatically 
+            detects your swimming environment and adjusts the analytics accordingly.
+          </p>
+          <p className='text-muted-foreground mb-4 max-w-[580px]'>
+            For open water swimming, we provide specialized features like GPS tracking, current analysis, 
+            and weather integration to help you train safely and effectively in natural water conditions.
+          </p>
+        </>
+      ),
+    },
+    {
+      question: 'Can I use SwimApp PRO with my swimming coach?',
+      answer: (
+        <>
+          <p className='text-muted-foreground mb-4 max-w-[580px]'>
+            Absolutely! SwimApp PRO includes coach collaboration features that allow you to share your 
+            training data and progress with your coach. They can provide feedback, adjust your training 
+            plans, and monitor your development remotely.
+          </p>
+          <p className='text-muted-foreground mb-4 max-w-[580px]'>
+            Coaches can access detailed analytics, set training goals, and track your improvement over time, 
+            making it easier to provide personalized guidance and support.
+          </p>
+        </>
+      ),
+    },
+    {
+      question: 'What if I have technical issues or need support?',
+      answer: (
+        <>
+          <p className='text-muted-foreground mb-4 max-w-[580px]'>
+            We provide comprehensive support through multiple channels. You can reach our support team via 
+            email, live chat, or our community forum. We typically respond within 24 hours.
+          </p>
+          <p className='text-muted-foreground mb-4 max-w-[580px]'>
+            For urgent technical issues, we offer priority support for premium users. You can also check 
+            our{' '}
+            <Link href='/help' className='text-foreground underline'>
+              Help Center
+            </Link>
+            {' '}for detailed guides and troubleshooting tips.
           </p>
         </>
       ),

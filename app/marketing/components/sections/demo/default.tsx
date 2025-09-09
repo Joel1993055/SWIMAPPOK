@@ -2,18 +2,17 @@
 
 import Image from 'next/image';
 
+import { Section } from '../../ui/section';
+
 export default function Demo() {
   return (
-    <section
-      className='px-12 md:px-24 py-24 flex flex-col md:flex-row items-center gap-12 md:gap-16'
-      style={{ backgroundColor: '#0b0b0f' }}
-    >
+    <Section className='py-24 flex flex-col md:flex-row items-center gap-12 md:gap-16'>
       {/* Columna izquierda - Texto */}
       <div className='flex-1'>
-        <h2 className='text-4xl md:text-5xl font-semibold text-white'>
+        <h2 className='text-4xl md:text-5xl font-semibold text-foreground'>
           Everything you need at your fingertips
         </h2>
-        <p className='text-gray-400 text-lg max-w-md mt-6'>
+        <p className='text-muted-foreground text-lg max-w-md mt-6'>
           A comprehensive collection of components written in modern React,
           Typescript and Tailwind CSS.
           <br />
@@ -44,6 +43,6 @@ export default function Demo() {
           />
         </div>
       </div>
-    </section>
+    </Section>
   );
 }

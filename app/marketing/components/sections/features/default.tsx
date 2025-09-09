@@ -3,6 +3,8 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
+import { Section } from '../../ui/section';
+
 export default function Features() {
   const [activeTab, setActiveTab] = useState(0);
 
@@ -28,13 +30,13 @@ export default function Features() {
   ];
 
   return (
-    <section className='px-12 md:px-24 py-24 bg-black'>
+    <Section className='py-24'>
       {/* Título y subtítulo centrados */}
       <div className='text-center'>
-        <h2 className='text-4xl md:text-5xl font-semibold text-white'>
+        <h2 className='text-4xl md:text-5xl font-semibold text-foreground'>
           Make the right impression
         </h2>
-        <p className='text-gray-400 text-lg max-w-2xl mx-auto mt-4'>
+        <p className='text-muted-foreground text-lg max-w-2xl mx-auto mt-4'>
           Launch UI makes it easy to build an unforgettable website that
           resonates with professional design-centric audiences.
         </p>
@@ -49,17 +51,17 @@ export default function Features() {
               key={index}
               className={`rounded-xl p-4 flex gap-4 items-start transition cursor-pointer ${
                 activeTab === index
-                  ? 'bg-[#141414]'
-                  : 'bg-transparent hover:bg-gray-800/20'
+                  ? 'bg-muted'
+                  : 'bg-transparent hover:bg-muted/20'
               }`}
               onClick={() => setActiveTab(index)}
             >
               <div className='text-2xl'>{tab.icon}</div>
               <div>
-                <h3 className='text-white font-semibold text-lg mb-2'>
+                <h3 className='text-foreground font-semibold text-lg mb-2'>
                   {tab.title}
                 </h3>
-                <p className='text-gray-400 text-sm'>{tab.description}</p>
+                <p className='text-muted-foreground text-sm'>{tab.description}</p>
               </div>
             </div>
           ))}
@@ -88,6 +90,6 @@ export default function Features() {
           </div>
         </div>
       </div>
-    </section>
+    </Section>
   );
 }
