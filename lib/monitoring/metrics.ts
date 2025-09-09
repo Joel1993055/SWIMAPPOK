@@ -235,7 +235,6 @@ class MetricsCollector {
 
   // Update time series data
   private updateTimeSeriesData(timestamp: number): void {
-    const now = Date.now();
     const intervalMs = this.config.aggregationInterval * 60 * 1000;
     const currentInterval = Math.floor(timestamp / intervalMs) * intervalMs;
 
@@ -457,7 +456,7 @@ export function formatBytes(bytes: number): string {
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   if (bytes === 0) return '0 Bytes';
   const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + ' ' + sizes[i];
+  return `${Math.round((bytes / Math.pow(1024, i)) * 100) / 100} ${sizes[i]}`;
 }
 
 export function formatDuration(ms: number): string {

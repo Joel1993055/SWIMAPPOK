@@ -243,9 +243,9 @@ export function useRealtimeValidation<T extends Record<string, unknown>>(
   initialData?: Partial<T>,
   debounceMs: number = 300
 ) {
-  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(
-    null
-  );
+  const [debounceTimer, setDebounceTimer] = useState<ReturnType<
+    typeof setTimeout
+  > | null>(null);
   const validation = useValidation(schema, initialData);
 
   const setFieldWithDebounce = useCallback(

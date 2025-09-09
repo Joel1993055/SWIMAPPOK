@@ -3,15 +3,15 @@
 // =====================================================
 
 import type {
-    AICoachAdvice,
-    AICoachAnalysis,
-    AuthState,
-    Competition,
-    Session,
-    TrainingPhase,
-    TrainingReport,
-    TrainingZones,
-    User,
+  AICoachAdvice,
+  AICoachAnalysis,
+  AuthState,
+  Competition,
+  Session,
+  TrainingPhase,
+  TrainingReport,
+  TrainingZones,
+  User,
 } from '@/lib/types';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';

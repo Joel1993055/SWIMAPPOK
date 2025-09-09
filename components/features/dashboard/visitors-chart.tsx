@@ -1,14 +1,37 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import type { Session } from '@/lib/actions/sessions';
-import { getSessions } from '@/lib/actions/sessions';
-import { ChartConfig } from '@/lib/types/chart';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
+import {
+    ChartConfig,
+    ChartContainer,
+    ChartTooltip,
+    ChartTooltipContent,
+} from '@/components/ui/chart';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import { getSessions, type Session } from '@/lib/actions/sessions';
 import { AreaChartIcon, BarChart3 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import {
+    Area,
+    AreaChart,
+    Bar,
+    BarChart,
+    CartesianGrid,
+    XAxis,
+    YAxis,
+} from 'recharts';
 
 // Colores para las zonas de intensidad
 const zoneColors = {
@@ -36,13 +59,13 @@ const generateWeeklyData = (sessions: Session[]) => {
   startOfWeek.setHours(0, 0, 0, 0);
 
   const daysOfWeek = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-  
+
   return Array.from({ length: 7 }, (_, index) => {
     const currentDay = new Date(startOfWeek);
     currentDay.setDate(startOfWeek.getDate() + index);
-    
+
     const dayName = daysOfWeek[index];
-    
+
     // Filtrar sesiones del día actual
     const daySessions = sessions.filter(session => {
       const sessionDate = new Date(session.date);
@@ -69,19 +92,25 @@ const generateWeeklyData = (sessions: Session[]) => {
     });
 
     // Convertir metros a kilómetros
-    const totalDayMeters = Object.values(dayZones).reduce((sum, meters) => sum + meters, 0);
+    const totalDayMeters = Object.values(dayZones).reduce(
+      (sum, meters) => sum + meters,
+      0
+    );
 
     return {
       day: dayName,
       ...Object.fromEntries(
-        Object.entries(dayZones).map(([zone, meters]) => [zone, Math.round(meters / 1000 * 10) / 10])
+        Object.entries(dayZones).map(([zone, meters]) => [
+          zone,
+          Math.round((meters / 1000) * 10) / 10,
+        ])
       ),
       totalMeters: totalDayMeters,
     };
   });
 };
 
-const chartConfig = {
+const chartConfig: ChartConfig = {
   Z1: {
     label: zoneLabels.Z1,
     color: zoneColors.Z1,
@@ -102,7 +131,7 @@ const chartConfig = {
     label: zoneLabels.Z5,
     color: zoneColors.Z5,
   },
-} satisfies ChartConfig;
+};
 
 // Usar la misma configuración que el gráfico de barras
 const areaChartConfig = chartConfig;
@@ -135,11 +164,11 @@ export function VisitorsChart() {
   // Generar datos para el área chart (con todas las zonas)
   const areaChartData = chartData.map(day => ({
     day: day.day,
-    Z1: day.Z1,
-    Z2: day.Z2,
-    Z3: day.Z3,
-    Z4: day.Z4,
-    Z5: day.Z5,
+    Z1: (day as any).Z1 || 0,
+    Z2: (day as any).Z2 || 0,
+    Z3: (day as any).Z3 || 0,
+    Z4: (day as any).Z4 || 0,
+    Z5: (day as any).Z5 || 0,
     totalMeters: day.totalMeters,
   }));
 
@@ -150,7 +179,7 @@ export function VisitorsChart() {
 
   // Calcular total semanal
   const totalSemanal = chartData.reduce((total, day) => {
-    return total + day.Z1 + day.Z2 + day.Z3 + day.Z4 + day.Z5;
+    return total + ((day as any).Z1 || 0) + ((day as any).Z2 || 0) + ((day as any).Z3 || 0) + ((day as any).Z4 || 0) + ((day as any).Z5 || 0);
   }, 0);
 
   // Calcular promedio diario
@@ -237,7 +266,7 @@ export function VisitorsChart() {
                   tickLine={false}
                   tickMargin={10}
                   axisLine={false}
-                  tickFormatter={(value, index) => {
+                  tickFormatter={value => {
                     return value;
                   }}
                 />
@@ -245,16 +274,17 @@ export function VisitorsChart() {
                   tickLine={false}
                   axisLine={false}
                   tickMargin={10}
-                  tickFormatter={(value) => `${value}km`}
+                  tickFormatter={value => `${value}km`}
                 />
                 <ChartTooltip
                   content={
                     <ChartTooltipContent
                       formatter={(value, name) => [
                         `${value}km`,
-                        chartConfig[name as keyof typeof chartConfig]?.label || name,
+                        chartConfig[name as keyof typeof chartConfig]?.label ||
+                          name,
                       ]}
-                      labelFormatter={(label) => `Día: ${label}`}
+                      labelFormatter={label => `Día: ${label}`}
                     />
                   }
                 />
@@ -269,7 +299,7 @@ export function VisitorsChart() {
 
           {/* Gráfico de Área */}
           {chartType === 'area' && (
-            <ChartContainer config={areaChartConfig}>
+            <ChartContainer config={chartConfig}>
               <AreaChart accessibilityLayer data={areaChartData}>
                 <CartesianGrid vertical={false} />
                 <XAxis
@@ -282,16 +312,17 @@ export function VisitorsChart() {
                   tickLine={false}
                   axisLine={false}
                   tickMargin={10}
-                  tickFormatter={(value) => `${value}km`}
+                  tickFormatter={value => `${value}km`}
                 />
                 <ChartTooltip
                   content={
                     <ChartTooltipContent
                       formatter={(value, name) => [
                         `${value}km`,
-                        areaChartConfig[name as keyof typeof areaChartConfig]?.label || name,
+                        areaChartConfig[name as keyof typeof areaChartConfig]
+                          ?.label || name,
                       ]}
-                      labelFormatter={(label) => `Día: ${label}`}
+                      labelFormatter={label => `Día: ${label}`}
                     />
                   }
                 />
@@ -345,9 +376,7 @@ export function VisitorsChart() {
               <div className='text-2xl font-bold text-primary'>
                 {totalSemanal.toFixed(1)}km
               </div>
-              <div className='text-sm text-muted-foreground'>
-                Total Semanal
-              </div>
+              <div className='text-sm text-muted-foreground'>Total Semanal</div>
             </div>
             <div className='text-center'>
               <div className='text-2xl font-bold text-primary'>

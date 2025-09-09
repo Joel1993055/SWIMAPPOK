@@ -210,7 +210,7 @@ export function useFormApiValidation<T>(
 
 export function useMultiSchemaValidation<T extends Record<string, unknown>>(
   schemas: Record<keyof T, z.ZodSchema<unknown>>,
-  options?: {
+  _options?: {
     onSuccess?: (data: T) => void;
     onError?: (error: Error) => void;
   }

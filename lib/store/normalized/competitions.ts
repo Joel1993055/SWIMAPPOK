@@ -84,8 +84,6 @@ function normalizeCompetitions(
     international: [] as string[],
   };
 
-  const today = new Date().toISOString().split('T')[0];
-
   competitions.forEach(competition => {
     byId[competition.id] = competition;
     allIds.push(competition.id);

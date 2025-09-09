@@ -9,8 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import type { Session } from '@/lib/actions/sessions';
-import { getSessions } from '@/lib/actions/sessions';
+import { getSessions, type Session } from '@/lib/actions/sessions';
 import { addDays, format, isSameDay, isToday, startOfWeek } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Activity, Calendar, Clock, MapPin, Plus } from 'lucide-react';

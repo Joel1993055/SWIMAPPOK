@@ -27,9 +27,7 @@ export function SessionsListExample() {
     updateSession,
     deleteSession,
     searchSessions,
-    getSessionsByDate,
     getTotalDistance,
-    getTotalDuration,
     getAverageRPE,
   } = useSessions();
 

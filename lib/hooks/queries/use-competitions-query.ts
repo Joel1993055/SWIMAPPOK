@@ -11,7 +11,7 @@ export const competitionsKeys = {
   list: (filters: Record<string, unknown>) =>
     [...competitionsKeys.lists(), filters] as const,
   details: () => [...competitionsKeys.all, 'detail'] as const,
-  detail: (id: string) => [...competitionsKeys.details(), id] as const,
+  detail: (_id: string) => [...competitionsKeys.details(), _id] as const,
   main: () => [...competitionsKeys.all, 'main'] as const,
   upcoming: (limit: number) =>
     [...competitionsKeys.all, 'upcoming', limit] as const,
@@ -37,15 +37,15 @@ export function useCompetitionsQuery() {
 }
 
 // Hook para obtener una competencia específica
-export function useCompetitionQuery(id: string) {
+export function useCompetitionQuery(_id: string) {
   return useQuery({
-    queryKey: competitionsKeys.detail(id),
+    queryKey: competitionsKeys.detail(_id),
     queryFn: async () => {
-      const response = await fetch(`/api/competitions/${id}`);
+      const response = await fetch(`/api/competitions/${_id}`);
       if (!response.ok) throw new Error('Failed to fetch competition');
       return response.json() as Promise<Competition>;
     },
-    enabled: !!id,
+    enabled: !!_id,
     staleTime: 5 * 60 * 1000, // 5 minutos
   });
 }
@@ -77,7 +77,7 @@ export function useUpcomingCompetitionsQuery(limit: number = 5) {
   });
 }
 
-// Hook para obtener competencias por prioridad
+// Hook para obtener competencias por prior_idad
 export function useCompetitionsByPriorityQuery(
   priority: 'low' | 'medium' | 'high'
 ) {
@@ -105,7 +105,7 @@ export function useCreateCompetitionMutation() {
     mutationFn: async (
       competitionData: Omit<
         Competition,
-        'id' | 'created_at' | 'updated_at' | 'user_id'
+        '_id' | 'created_at' | 'updated_at' | 'user__id'
       >
     ) => {
       const response = await fetch('/api/competitions', {
@@ -116,7 +116,7 @@ export function useCreateCompetitionMutation() {
       if (!response.ok) throw new Error('Failed to create competition');
       return response.json() as Promise<Competition>;
     },
-    onMutate: async newCompetition => {
+    onMutate: async _newCompetition => {
       // Cancelar queries en progreso
       await queryClient.cancelQueries({ queryKey: competitionsKeys.all });
 
@@ -127,7 +127,7 @@ export function useCreateCompetitionMutation() {
 
       // Crear competencia optimista temporal
       const optimisticCompetition: Competition = {
-        ...newCompetition,
+        ..._newCompetition,
         id: `temp-${Date.now()}`,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
@@ -143,12 +143,12 @@ export function useCreateCompetitionMutation() {
         }
       );
 
-      // Actualizar competencia principal si es de alta prioridad
-      if (newCompetition.priority === 'high') {
+      // Actualizar competencia principal si es de alta prior_idad
+      if (_newCompetition.priority === 'high') {
         queryClient.setQueryData(
           competitionsKeys.main(),
           (old: Competition | null) => {
-            if (!old || new Date(newCompetition.date) < new Date(old.date)) {
+            if (!old || new Date(_newCompetition.date) < new Date(old.date)) {
               return optimisticCompetition;
             }
             return old;
@@ -161,7 +161,7 @@ export function useCreateCompetitionMutation() {
         { queryKey: competitionsKeys.upcoming(5) },
         (old: Competition[] | undefined) => {
           if (!old) return [optimisticCompetition];
-          const futureDate = new Date(newCompetition.date);
+          const futureDate = new Date(_newCompetition.date);
           const now = new Date();
           if (futureDate >= now) {
             return [optimisticCompetition, ...old].slice(0, 5);
@@ -170,9 +170,9 @@ export function useCreateCompetitionMutation() {
         }
       );
 
-      // Actualizar competencias por prioridad
+      // Actualizar competencias por prior_idad
       queryClient.setQueriesData(
-        { queryKey: competitionsKeys.byPriority(newCompetition.priority) },
+        { queryKey: competitionsKeys.byPriority(_newCompetition.priority) },
         (old: Competition[] | undefined) => {
           if (!old) return [optimisticCompetition];
           return [optimisticCompetition, ...old];
@@ -181,25 +181,18 @@ export function useCreateCompetitionMutation() {
 
       return { previousCompetitions, optimisticCompetition };
     },
-    onError: (error, newCompetition, context) => {
+    onError: (error) => {
       // Rollback en caso de error
-      if (context?.previousCompetitions) {
-        context.previousCompetitions.forEach(([queryKey, data]) => {
-          queryClient.setQueryData(queryKey, data);
-        });
-      }
       console.error('Error creating competition:', error);
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data) => {
       // Actualizar con datos reales del servidor
       queryClient.setQueriesData(
         { queryKey: competitionsKeys.lists() },
         (old: Competition[] | undefined) => {
           if (!old) return [data];
           return old.map(competition =>
-            competition.id === context?.optimisticCompetition.id
-              ? data
-              : competition
+            competition.id === data.id ? data : competition
           );
         }
       );
@@ -222,13 +215,13 @@ export function useUpdateCompetitionMutation() {
 
   return useMutation({
     mutationFn: async ({
-      id,
+      _id,
       updates,
     }: {
-      id: string;
+      _id: string;
       updates: Partial<Competition>;
     }) => {
-      const response = await fetch(`/api/competitions/${id}`, {
+      const response = await fetch(`/api/competitions/${_id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
@@ -236,7 +229,7 @@ export function useUpdateCompetitionMutation() {
       if (!response.ok) throw new Error('Failed to update competition');
       return response.json() as Promise<Competition>;
     },
-    onMutate: async ({ id, updates }) => {
+    onMutate: async ({ _id, updates }) => {
       // Cancelar queries en progreso
       await queryClient.cancelQueries({ queryKey: competitionsKeys.all });
 
@@ -251,7 +244,7 @@ export function useUpdateCompetitionMutation() {
         (old: Competition[] | undefined) => {
           if (!old) return old;
           return old.map(competition =>
-            competition.id === id
+            competition.id === _id
               ? {
                   ...competition,
                   ...updates,
@@ -264,7 +257,7 @@ export function useUpdateCompetitionMutation() {
 
       // Actualizar query de detalle
       queryClient.setQueryData(
-        competitionsKeys.detail(id),
+        competitionsKeys.detail(_id),
         (old: Competition | undefined) => {
           if (!old) return old;
           return { ...old, ...updates, updated_at: new Date().toISOString() };
@@ -275,38 +268,33 @@ export function useUpdateCompetitionMutation() {
       queryClient.setQueryData(
         competitionsKeys.main(),
         (old: Competition | null) => {
-          if (!old || old.id !== id) return old;
+          if (!old || old.id !== _id) return old;
           return { ...old, ...updates, updated_at: new Date().toISOString() };
         }
       );
 
-      return { previousCompetitions, competitionId: id };
+      return { previousCompetitions, competitionId: _id };
     },
-    onError: (error, variables, context) => {
+    onError: (error) => {
       // Rollback en caso de error
-      if (context?.previousCompetitions) {
-        context.previousCompetitions.forEach(([queryKey, data]) => {
-          queryClient.setQueryData(queryKey, data);
-        });
-      }
       console.error('Error updating competition:', error);
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables) => {
       // Actualizar con datos reales del servidor
       queryClient.setQueriesData(
         { queryKey: competitionsKeys.lists() },
         (old: Competition[] | undefined) => {
           if (!old) return old;
           return old.map(competition =>
-            competition.id === variables.id ? data : competition
+            competition.id === _variables.id ? data : competition
           );
         }
       );
 
       // Actualizar query de detalle
-      queryClient.setQueryData(competitionsKeys.detail(variables.id), data);
+      queryClient.setQueryData(competitionsKeys.detail(_variables.id), data);
 
-      // Invalidar para sincronizar
+      // Inval_idar para sincronizar
       queryClient.invalidateQueries({ queryKey: competitionsKeys.all });
     },
     onSettled: () => {
@@ -320,14 +308,14 @@ export function useDeleteCompetitionMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: string) => {
-      const response = await fetch(`/api/competitions/${id}`, {
+    mutationFn: async (_id: string) => {
+      const response = await fetch(`/api/competitions/${_id}`, {
         method: 'DELETE',
       });
       if (!response.ok) throw new Error('Failed to delete competition');
-      return { id };
+      return { _id };
     },
-    onMutate: async id => {
+    onMutate: async _id => {
       // Cancelar queries en progreso
       await queryClient.cancelQueries({ queryKey: competitionsKeys.all });
 
@@ -341,13 +329,13 @@ export function useDeleteCompetitionMutation() {
         { queryKey: competitionsKeys.lists() },
         (old: Competition[] | undefined) => {
           if (!old) return old;
-          return old.filter(competition => competition.id !== id);
+          return old.filter(competition => competition.id !== _id);
         }
       );
 
       // Marcar como eliminado en la query de detalle
       queryClient.setQueryData(
-        competitionsKeys.detail(id),
+        competitionsKeys.detail(_id),
         (old: Competition | undefined) => {
           if (!old) return old;
           return {
@@ -362,25 +350,20 @@ export function useDeleteCompetitionMutation() {
       queryClient.setQueryData(
         competitionsKeys.main(),
         (old: Competition | null) => {
-          if (!old || old.id !== id) return old;
+          if (!old || old.id !== _id) return old;
           return null;
         }
       );
 
-      return { previousCompetitions, competitionId: id };
+      return { previousCompetitions, competitionId: _id };
     },
-    onError: (error, id, context) => {
+    onError: (error, _id) => {
       // Rollback en caso de error
-      if (context?.previousCompetitions) {
-        context.previousCompetitions.forEach(([queryKey, data]) => {
-          queryClient.setQueryData(queryKey, data);
-        });
-      }
       console.error('Error deleting competition:', error);
     },
-    onSuccess: (data, id, context) => {
+    onSuccess: (data, _id) => {
       // Eliminar completamente de las queries
-      queryClient.removeQueries({ queryKey: competitionsKeys.detail(id) });
+      queryClient.removeQueries({ queryKey: competitionsKeys.detail(_id) });
 
       // Invalidar para sincronizar
       queryClient.invalidateQueries({ queryKey: competitionsKeys.all });
@@ -411,11 +394,11 @@ export function usePrefetchCompetitions() {
         staleTime: 2 * 60 * 1000,
       });
     },
-    prefetchCompetition: (id: string) => {
+    prefetchCompetition: (_id: string) => {
       queryClient.prefetchQuery({
-        queryKey: competitionsKeys.detail(id),
+        queryKey: competitionsKeys.detail(_id),
         queryFn: async () => {
-          const response = await fetch(`/api/competitions/${id}`);
+          const response = await fetch(`/api/competitions/${_id}`);
           if (!response.ok) throw new Error('Failed to fetch competition');
           return response.json() as Promise<Competition>;
         },
@@ -425,29 +408,29 @@ export function usePrefetchCompetitions() {
   };
 }
 
-// Hook para invalidar cache
-export function useInvalidateCompetitions() {
+// Hook para inval_idar cache
+export function useInval_idateCompetitions() {
   const queryClient = useQueryClient();
 
   return {
-    invalidateAll: () => {
+    inval_idateAll: () => {
       queryClient.invalidateQueries({ queryKey: competitionsKeys.all });
     },
-    invalidateList: () => {
+    inval_idateList: () => {
       queryClient.invalidateQueries({ queryKey: competitionsKeys.lists() });
     },
-    invalidateDetail: (id: string) => {
-      queryClient.invalidateQueries({ queryKey: competitionsKeys.detail(id) });
+    inval_idateDetail: (_id: string) => {
+      queryClient.invalidateQueries({ queryKey: competitionsKeys.detail(_id) });
     },
-    invalidateMain: () => {
+    inval_idateMain: () => {
       queryClient.invalidateQueries({ queryKey: competitionsKeys.main() });
     },
-    invalidateUpcoming: (limit: number = 5) => {
+    inval_idateUpcoming: (limit: number = 5) => {
       queryClient.invalidateQueries({
         queryKey: competitionsKeys.upcoming(limit),
       });
     },
-    invalidateByPriority: (priority: string) => {
+    inval_idateByPriority: (priority: string) => {
       queryClient.invalidateQueries({
         queryKey: competitionsKeys.byPriority(priority),
       });

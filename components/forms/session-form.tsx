@@ -214,14 +214,14 @@ export default function SessionForm({
                   step='100'
                   value={data?.distance_meters || ''}
                   onChange={e =>
-                    setField('distance', parseInt(e.target.value) || 0)
+                    setField('distance_meters', parseInt(e.target.value) || 0)
                   }
                   placeholder='e.g., 2000'
-                  className={hasFieldError('distance') ? 'border-red-500' : ''}
+                  className={hasFieldError('distance_meters') ? 'border-red-500' : ''}
                 />
-                {hasFieldError('distance') && (
+                {hasFieldError('distance_meters') && (
                   <p className='text-sm text-red-500'>
-                    {getFieldError('distance')}
+                    {getFieldError('distance_meters')}
                   </p>
                 )}
               </div>
@@ -236,14 +236,14 @@ export default function SessionForm({
                   step='5'
                   value={data?.duration_minutes || ''}
                   onChange={e =>
-                    setField('duration', parseInt(e.target.value) || 0)
+                    setField('duration_minutes', parseInt(e.target.value) || 0)
                   }
                   placeholder='e.g., 90'
-                  className={hasFieldError('duration') ? 'border-red-500' : ''}
+                  className={hasFieldError('duration_minutes') ? 'border-red-500' : ''}
                 />
-                {hasFieldError('duration') && (
+                {hasFieldError('duration_minutes') && (
                   <p className='text-sm text-red-500'>
-                    {getFieldError('duration')}
+                    {getFieldError('duration_minutes')}
                   </p>
                 )}
               </div>
@@ -284,14 +284,14 @@ export default function SessionForm({
               <Label htmlFor='location'>Location</Label>
               <Input
                 id='location'
-                value={data?.location || ''}
-                onChange={e => setField('location', e.target.value)}
+                value={data?.notes || ''}
+                onChange={e => setField('notes', e.target.value)}
                 placeholder='e.g., Olympic Pool, Lane 3'
-                className={hasFieldError('location') ? 'border-red-500' : ''}
+                className={hasFieldError('notes') ? 'border-red-500' : ''}
               />
-              {hasFieldError('location') && (
+              {hasFieldError('notes') && (
                 <p className='text-sm text-red-500'>
-                  {getFieldError('location')}
+                  {getFieldError('notes')}
                 </p>
               )}
             </div>

@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:relaxed": "cross-env NEXT_IGNORE=true next build",
     "start": "next start",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "type-check": "tsc --noEmit",
@@ -103,6 +104,7 @@
     "@typescript-eslint/eslint-plugin": "^8.42.0",
     "@typescript-eslint/parser": "^8.42.0",
     "commitizen": "^4.3.1",
+    "cross-env": "^10.0.0",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "9.34.0",
     "eslint-config-next": "15.5.2",

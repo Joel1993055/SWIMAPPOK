@@ -42,10 +42,7 @@ export function useOptimizedImage(
   const {
     quality = 75,
     format = 'webp',
-    sizes = '100vw',
     priority = false,
-    placeholder = 'empty',
-    blurDataURL,
     loading = 'lazy',
     onLoad,
     onError,
@@ -118,7 +115,7 @@ export function useOptimizedImage(
             resolve();
           };
 
-          img.onerror = error => {
+          img.onerror = _error => {
             const err = new Error(`Failed to load image: ${src}`);
             setState(prev => ({
               ...prev,

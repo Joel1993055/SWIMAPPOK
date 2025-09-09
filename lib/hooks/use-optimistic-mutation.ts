@@ -1,8 +1,8 @@
 import { BaseEntity, CreateEntity } from '@/lib/types/base-entity';
 import {
-    useMutation,
-    UseMutationOptions,
-    useQueryClient,
+  useMutation,
+  UseMutationOptions,
+  useQueryClient,
 } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
@@ -21,18 +21,18 @@ export interface OptimisticUpdateConfig<TData, TVariables, TContext = unknown> {
   applyOptimisticUpdate: (
     queryClient: unknown,
     variables: TVariables,
-    context: TContext
+    _context: TContext
   ) => void;
 
   // Función para revertir en caso de error
-  revertOnError?: (queryClient: unknown, context: TContext) => void;
+  revertOnError?: (queryClient: unknown, _context: TContext) => void;
 
   // Función para actualizar con datos reales del servidor
   updateWithServerData?: (
     queryClient: unknown,
     data: TData,
     variables: TVariables,
-    context: TContext
+    _context: TContext
   ) => void;
 }
 
@@ -62,21 +62,21 @@ export function useOptimisticMutation<TData, TVariables, TContext = unknown>(
         );
 
         // Crear snapshot del estado anterior
-        const context = config.getPreviousData(queryClient);
+        const _context = config.getPreviousData(queryClient);
 
         // Aplicar actualización optimista
-        config.applyOptimisticUpdate(queryClient, variables, context);
+        config.applyOptimisticUpdate(queryClient, variables, _context);
 
-        return context;
+        return _context;
       },
       [queryClient, config]
     ),
 
     onError: useCallback(
-      (error: Error, variables: TVariables, context: TContext) => {
+      (error: Error, variables: TVariables, _context: TContext) => {
         // Revertir en caso de error
         if (config.revertOnError) {
-          config.revertOnError(queryClient, context);
+          config.revertOnError(queryClient, _context);
         }
 
         console.error('Optimistic update failed:', error);
@@ -85,10 +85,10 @@ export function useOptimisticMutation<TData, TVariables, TContext = unknown>(
     ),
 
     onSuccess: useCallback(
-      (data: TData, variables: TVariables, context: TContext) => {
+      (data: TData, variables: TVariables, _context: TContext) => {
         // Actualizar con datos reales del servidor
         if (config.updateWithServerData) {
-          config.updateWithServerData(queryClient, data, variables, context);
+          config.updateWithServerData(queryClient, data, variables, _context);
         }
 
         // Invalidar queries para sincronizar
@@ -125,15 +125,16 @@ export function createCrudOptimisticConfig<T extends BaseEntity>(
 ) {
   return {
     // Configuración para CREATE
-    create: (): OptimisticUpdateConfig<
-      T,
-      CreateEntity<T>
-    > => ({
+    create: (): OptimisticUpdateConfig<T, CreateEntity<T>> => ({
       queryKeys: [queryKeys.all],
       getPreviousData: (queryClient: any) => ({
         previousData: queryClient.getQueriesData({ queryKey: queryKeys.all }),
       }),
-      applyOptimisticUpdate: (queryClient: any, newItem: CreateEntity<T>, context: any) => {
+      applyOptimisticUpdate: (
+        queryClient: any,
+        newItem: CreateEntity<T>,
+        __context: any
+      ) => {
         const optimisticItem: T = {
           ...newItem,
           id: `temp-${Date.now()}`,
@@ -150,20 +151,20 @@ export function createCrudOptimisticConfig<T extends BaseEntity>(
           }
         );
       },
-      revertOnError: (queryClient: any, context: any) => {
-        if (context.previousData) {
-          context.previousData.forEach(([queryKey, data]) => {
+      revertOnError: (queryClient: any, _context: any) => {
+        if (_context.previousData) {
+          _context.previousData.forEach(([queryKey, data]) => {
             queryClient.setQueryData(queryKey, data);
           });
         }
       },
-      updateWithServerData: (queryClient, data, variables, context) => {
+      updateWithServerData: (queryClient, data, variables, _context) => {
         queryClient.setQueriesData(
           { queryKey: queryKeys.lists() },
           (old: T[] | undefined) => {
             if (!old) return [data];
             return old.map(item =>
-              item.id === context.optimisticItem?.id ? data : item
+              item.id === _context.optimisticItem?.id ? data : item
             );
           }
         );
@@ -180,7 +181,7 @@ export function createCrudOptimisticConfig<T extends BaseEntity>(
       getPreviousData: (queryClient: any) => ({
         previousData: queryClient.getQueriesData({ queryKey: queryKeys.all }),
       }),
-      applyOptimisticUpdate: (queryClient, { id, updates }, context) => {
+      applyOptimisticUpdate: (queryClient, { id, updates }, _context) => {
         queryClient.setQueriesData(
           { queryKey: queryKeys.lists() },
           (old: T[] | undefined) => {
@@ -198,14 +199,14 @@ export function createCrudOptimisticConfig<T extends BaseEntity>(
           return { ...old, ...updates, updated_at: new Date().toISOString() };
         });
       },
-      revertOnError: (queryClient: any, context: any) => {
-        if (context.previousData) {
-          context.previousData.forEach(([queryKey, data]) => {
+      revertOnError: (queryClient: any, _context: any) => {
+        if (_context.previousData) {
+          _context.previousData.forEach(([queryKey, data]) => {
             queryClient.setQueryData(queryKey, data);
           });
         }
       },
-      updateWithServerData: (queryClient, data, { id }, context) => {
+      updateWithServerData: (queryClient, data, { id }, _context) => {
         queryClient.setQueriesData(
           { queryKey: queryKeys.lists() },
           (old: T[] | undefined) => {
@@ -223,7 +224,7 @@ export function createCrudOptimisticConfig<T extends BaseEntity>(
       getPreviousData: (queryClient: any) => ({
         previousData: queryClient.getQueriesData({ queryKey: queryKeys.all }),
       }),
-      applyOptimisticUpdate: (queryClient, id, context) => {
+      applyOptimisticUpdate: (queryClient, id, _context) => {
         queryClient.setQueriesData(
           { queryKey: queryKeys.lists() },
           (old: T[] | undefined) => {
@@ -241,14 +242,14 @@ export function createCrudOptimisticConfig<T extends BaseEntity>(
           };
         });
       },
-      revertOnError: (queryClient: any, context: any) => {
-        if (context.previousData) {
-          context.previousData.forEach(([queryKey, data]) => {
+      revertOnError: (queryClient: any, _context: any) => {
+        if (_context.previousData) {
+          _context.previousData.forEach(([queryKey, data]) => {
             queryClient.setQueryData(queryKey, data);
           });
         }
       },
-      updateWithServerData: (queryClient, data, id, context) => {
+      updateWithServerData: (queryClient, data, id, _context) => {
         queryClient.removeQueries({ queryKey: queryKeys.detail(id) });
       },
     }),

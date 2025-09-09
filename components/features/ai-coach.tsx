@@ -23,7 +23,6 @@ import {
   Settings,
   Sparkles,
   Target,
-  TrendingUp,
   X,
 } from 'lucide-react';
 import React, { useState } from 'react';
@@ -37,10 +36,7 @@ export function AICoach({ className }: AICoachProps) {
   const {
     isEnabled,
     analysis: currentAnalysis,
-    adviceHistory,
     toggleAICoach,
-    analyzeTraining,
-    markAdviceAsRead,
     getPersonalizedAdvice,
   } = useAICoachStore();
 
@@ -73,36 +69,6 @@ export function AICoach({ className }: AICoachProps) {
       setAnalysis(mappedAnalysis);
     }
   }, [currentAnalysis, storeAnalysis, setAnalysis]);
-
-  const getAdviceIcon = (type: string) => {
-    switch (type) {
-      case 'performance':
-        return <TrendingUp className='h-4 w-4' />;
-      case 'technique':
-        return <Target className='h-4 w-4' />;
-      case 'recovery':
-        return <Heart className='h-4 w-4' />;
-      case 'nutrition':
-        return <Brain className='h-4 w-4' />;
-      case 'motivation':
-        return <Sparkles className='h-4 w-4' />;
-      default:
-        return <Lightbulb className='h-4 w-4' />;
-    }
-  };
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high':
-        return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300';
-      case 'medium':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300';
-      case 'low':
-        return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300';
-      default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300';
-    }
-  };
 
   const getRecoveryStatusColor = (status: string) => {
     switch (status) {

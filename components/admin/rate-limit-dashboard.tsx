@@ -1,5 +1,8 @@
 'use client';
 
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -7,19 +10,15 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Activity,
   AlertTriangle,
   CheckCircle,
+  Clock,
+  Database,
   RefreshCw,
   Shield,
-  TrendingUp,
-  Database,
-  Clock,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -303,7 +302,7 @@ export function RateLimitDashboard() {
         </CardHeader>
         <CardContent>
           <div className='space-y-4'>
-            {analytics.topBlockedTypes.map(({ type, hits }, index) => (
+            {analytics.topBlockedTypes.map(({ type, hits }) => (
               <div key={type} className='flex items-center justify-between'>
                 <div className='flex items-center space-x-2'>
                   <Badge variant='outline'>{type}</Badge>

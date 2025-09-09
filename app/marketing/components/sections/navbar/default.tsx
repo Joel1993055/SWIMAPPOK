@@ -6,9 +6,9 @@ import { cn } from '@/lib/utils';
 
 import { Button, type ButtonProps } from '../../ui/button';
 import {
-  Navbar as NavbarComponent,
-  NavbarLeft,
-  NavbarRight,
+    Navbar as NavbarComponent,
+    NavbarLeft,
+    NavbarRight,
 } from '../../ui/navbar';
 import Navigation from '../../ui/navigation';
 import { Sheet, SheetContent, SheetTrigger } from '../../ui/sheet';

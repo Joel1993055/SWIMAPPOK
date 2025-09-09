@@ -177,7 +177,7 @@ export const OptimizedImage = forwardRef<
             lazyImage.preload();
             onLoad?.();
           }}
-          onError={error => {
+          onError={_error => {
             const err = new Error(`Failed to load image: ${src}`);
             onError?.(err);
           }}

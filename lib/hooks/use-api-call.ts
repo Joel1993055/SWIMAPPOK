@@ -152,7 +152,7 @@ export function useCrudApi<T extends { id: string }>(entityName: string) {
   const { data, error, loading, execute } = useApiCall<T[]>();
 
   const create = useCallback(
-    async (item: Omit<T, 'id'>) => {
+    async (_item: Omit<T, 'id'>) => {
       return execute(
         async () => {
           // Implementar lógica de creación
@@ -169,7 +169,7 @@ export function useCrudApi<T extends { id: string }>(entityName: string) {
   );
 
   const read = useCallback(
-    async (id?: string) => {
+    async (_id?: string) => {
       return execute(async () => {
         // Implementar lógica de lectura
         throw new Error('Not implemented');
@@ -179,7 +179,7 @@ export function useCrudApi<T extends { id: string }>(entityName: string) {
   );
 
   const update = useCallback(
-    async (id: string, updates: Partial<T>) => {
+    async (_id: string, _updates: Partial<T>) => {
       return execute(
         async () => {
           // Implementar lógica de actualización
@@ -196,7 +196,7 @@ export function useCrudApi<T extends { id: string }>(entityName: string) {
   );
 
   const remove = useCallback(
-    async (id: string) => {
+    async (_id: string) => {
       return execute(
         async () => {
           // Implementar lógica de eliminación
@@ -228,7 +228,7 @@ export function useSearchApi<T>(entityName: string) {
   const { data, error, loading, execute } = useApiCall<T[]>();
 
   const search = useCallback(
-    async (query: string, filters?: Record<string, unknown>) => {
+    async (_query: string, _filters?: Record<string, unknown>) => {
       return execute(
         async () => {
           // Implementar lógica de búsqueda
@@ -245,7 +245,7 @@ export function useSearchApi<T>(entityName: string) {
   );
 
   const filter = useCallback(
-    async (filters: Record<string, unknown>) => {
+    async (_filters: Record<string, unknown>) => {
       return execute(async () => {
         // Implementar lógica de filtrado
         throw new Error('Not implemented');
@@ -274,7 +274,7 @@ export function usePaginatedApi<T>(entityName: string) {
   }>();
 
   const fetchPage = useCallback(
-    async (page: number, limit: number = 10) => {
+    async (page: number, _limit: number = 10) => {
       return execute(
         async () => {
           // Implementar lógica de paginación

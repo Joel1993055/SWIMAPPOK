@@ -16,8 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import type { Session } from '@/lib/actions/sessions';
-import { getSessions } from '@/lib/actions/sessions';
+import { getSessions, type Session } from '@/lib/actions/sessions';
 import { useCompetitionsStore } from '@/lib/store/unified';
 import {
   Activity,

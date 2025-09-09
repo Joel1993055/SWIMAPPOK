@@ -260,7 +260,7 @@ class AlertManager {
   }
 
   // Format message for specific channel
-  private formatChannelMessage(alert: Alert, channel: AlertChannel): string {
+  private formatChannelMessage(alert: Alert, _channel: AlertChannel): string {
     const severityEmoji = {
       low: '🟡',
       medium: '🟠',

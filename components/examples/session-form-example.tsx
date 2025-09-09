@@ -51,7 +51,7 @@ export default function SessionFormExample() {
 
       // Limpiar mensaje después de 3 segundos
       setTimeout(() => setMessage(null), 3000);
-    } catch (error) {
+    } catch {
       setMessage({
         type: 'error',
         text: 'Failed to create session. Please try again.',
@@ -82,7 +82,7 @@ export default function SessionFormExample() {
 
       // Limpiar mensaje después de 3 segundos
       setTimeout(() => setMessage(null), 3000);
-    } catch (error) {
+    } catch {
       setMessage({
         type: 'error',
         text: 'Failed to update session. Please try again.',

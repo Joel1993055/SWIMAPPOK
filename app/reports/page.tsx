@@ -22,8 +22,7 @@ import {
 } from '@/components/ui/select';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import type { Session } from '@/lib/actions/sessions';
-import { getSessions } from '@/lib/actions/sessions';
+import { getSessions, type Session } from '@/lib/actions/sessions';
 import { format, subDays, subMonths, subWeeks } from 'date-fns';
 import { es } from 'date-fns/locale';
 import {

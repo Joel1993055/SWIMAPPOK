@@ -31,9 +31,7 @@ import {
   updateSession,
   type Session as SupabaseSession,
 } from '@/lib/actions/sessions';
-import { useAICoachStore } from '@/lib/store/unified';
-// NUEVO: Importar el store unificado
-import { useSessionsStore } from '@/lib/store/unified';
+import { useAICoachStore, useSessionsStore } from '@/lib/store/unified';
 import type { Session } from '@/lib/types/session';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';

@@ -56,7 +56,7 @@ export default function OptimizedImagesExample() {
   const [showLazyLoading, setShowLazyLoading] = useState(true);
 
   // Hook para cargar múltiples imágenes
-  const { images, reload, isLoading, hasErrors } = useOptimizedImages(
+  const { reload, isLoading, hasErrors } = useOptimizedImages(
     sampleImages.map(img => img.src),
     { quality: selectedQuality }
   );

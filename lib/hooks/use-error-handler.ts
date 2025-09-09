@@ -43,7 +43,7 @@ export function useErrorHandler() {
     (feedback: { name: string; email: string; message: string }) => {
       // Log user feedback to console
       console.log('User feedback:', feedback);
-      
+
       // In production, you might want to send this to a feedback service
       // or store it in your database
     },

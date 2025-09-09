@@ -61,7 +61,9 @@ export default function Features() {
                 <h3 className='text-foreground font-semibold text-lg mb-2'>
                   {tab.title}
                 </h3>
-                <p className='text-muted-foreground text-sm'>{tab.description}</p>
+                <p className='text-muted-foreground text-sm'>
+                  {tab.description}
+                </p>
               </div>
             </div>
           ))}

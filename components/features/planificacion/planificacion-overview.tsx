@@ -3,45 +3,45 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { useCompetitionsStore, useTrainingStore } from '@/lib/store/unified';
 import {
-    Activity,
-    Calendar,
-    Clock,
-    Edit,
-    MapPin,
-    Plus,
-    Save,
-    Target,
-    Trash2,
-    TrendingUp,
-    Trophy,
-    X,
+  Activity,
+  Calendar,
+  Clock,
+  Edit,
+  MapPin,
+  Plus,
+  Save,
+  Target,
+  Trash2,
+  TrendingUp,
+  Trophy,
+  X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 // NUEVO: Importar el store unificado
@@ -273,12 +273,6 @@ export function PlanificacionOverview() {
   } = useCompetitionsStore();
 
   // OPTIMIZADO: Solo usar lo necesario del store
-  const { phases: storePhases, addPhase: storeAddPhase } = useTrainingStore();
-
-  const {
-    competitions: storeCompetitions,
-    addCompetition: storeAddCompetition,
-  } = useCompetitionsStore();
 
   const [selectedPhase, setSelectedPhase] = useState<string>(
     phases.length > 0 ? phases[0].id : ''
@@ -1731,7 +1725,9 @@ export function PlanificacionOverview() {
                     className='text-center p-3 border rounded-lg bg-background/50'
                   >
                     <div className='text-lg font-bold text-primary'>{zone}</div>
-                    <div className='text-sm text-muted-foreground'>{zoneData.name}</div>
+                    <div className='text-sm text-muted-foreground'>
+                      {zoneData.name}
+                    </div>
                     <div className='text-xs text-muted-foreground mt-1'>
                       {zoneData.min}%-{zoneData.max}%
                     </div>

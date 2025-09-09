@@ -46,28 +46,21 @@ export default function ApiValidationExample() {
   // =====================================================
   // HOOK DE VALIDACIÓN DE API
   // =====================================================
-  const {
-    data,
-    error,
-    loading,
-    isValid,
-    validationErrors,
-    handleSubmit,
-    reset,
-  } = useFormApiValidation(
-    sessionSchema,
-    () => simulateApiCall(formData as SessionFormData),
-    {
-      onSuccess: () => {
-        setSessions(prev => [formData as SessionFormData, ...prev]);
-        setFormData({});
-        reset();
-      },
-      onError: error => {
-        console.error('API Error:', error);
-      },
-    }
-  );
+  const { error, loading, isValid, validationErrors, handleSubmit, reset } =
+    useFormApiValidation(
+      sessionSchema,
+      () => simulateApiCall(formData as SessionFormData),
+      {
+        onSuccess: () => {
+          setSessions(prev => [formData as SessionFormData, ...prev]);
+          setFormData({});
+          reset();
+        },
+        onError: error => {
+          console.error('API Error:', error);
+        },
+      }
+    );
 
   // =====================================================
   // MANEJADORES

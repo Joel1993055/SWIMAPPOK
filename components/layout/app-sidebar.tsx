@@ -1,18 +1,18 @@
 'use client';
 
 import {
-    ArrowUpCircleIcon,
-    BarChartIcon,
-    BookOpenIcon,
-    CalendarIcon,
-    ClipboardListIcon,
-    HelpCircleIcon,
-    LayoutDashboardIcon,
-    Plus,
-    SettingsIcon,
-    Target,
-    Users,
-    Wrench,
+  ArrowUpCircleIcon,
+  BarChartIcon,
+  BookOpenIcon,
+  CalendarIcon,
+  ClipboardListIcon,
+  HelpCircleIcon,
+  LayoutDashboardIcon,
+  Plus,
+  SettingsIcon,
+  Target,
+  Users,
+  Wrench,
 } from 'lucide-react';
 import * as React from 'react';
 
@@ -22,13 +22,13 @@ import { NavSecondary } from '@/components/navigation/nav-secondary';
 import { NavTeamSelectors } from '@/components/navigation/nav-team-selectors';
 import { NavUser } from '@/components/navigation/nav-user';
 import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
-    SidebarHeader,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
 } from '@/components/ui/sidebar';
 
 const data = {

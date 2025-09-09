@@ -12,7 +12,7 @@ export const sessionsKeys = {
   list: (filters: Record<string, unknown>) =>
     [...sessionsKeys.lists(), filters] as const,
   details: () => [...sessionsKeys.all, 'detail'] as const,
-  detail: (id: string) => [...sessionsKeys.details(), id] as const,
+  detail: (_id: string) => [...sessionsKeys.details(), _id] as const,
   stats: () => [...sessionsKeys.all, 'stats'] as const,
   statsWithFilters: (filters: Record<string, unknown>) =>
     [...sessionsKeys.stats(), filters] as const,
@@ -27,8 +27,8 @@ export function useSessionsQuery(filters?: {
   date?: string;
   startDate?: string;
   endDate?: string;
-  training_phase_id?: string;
-  competition_id?: string;
+  training_phase__id?: string;
+  competition__id?: string;
   stroke_type?: string;
   session_type?: string;
 }) {
@@ -42,13 +42,13 @@ export function useSessionsQuery(filters?: {
 }
 
 // Hook para obtener una sesión específica
-export function useSessionQuery(id: string) {
+export function useSessionQuery(_id: string) {
   const api = useSessionsApi();
 
   return useQuery({
-    queryKey: sessionsKeys.detail(id),
-    queryFn: () => api.getSession(id),
-    enabled: !!id,
+    queryKey: sessionsKeys.detail(_id),
+    queryFn: () => api.getSession(_id),
+    enabled: !!_id,
     staleTime: 5 * 60 * 1000, // 5 minutos
   });
 }
@@ -60,8 +60,8 @@ export function useSessionsPaginatedQuery(
   filters?: {
     startDate?: string;
     endDate?: string;
-    training_phase_id?: string;
-    competition_id?: string;
+    training_phase__id?: string;
+    competition__id?: string;
   }
 ) {
   const api = useSessionsApi();
@@ -89,7 +89,7 @@ export function useSessionsSearchQuery(query: string) {
 export function useSessionsStatsQuery(filters?: {
   startDate?: string;
   endDate?: string;
-  training_phase_id?: string;
+  training_phase__id?: string;
 }) {
   const api = useSessionsApi();
 
@@ -111,9 +111,12 @@ export function useCreateSessionMutation() {
 
   return useMutation({
     mutationFn: (
-      sessionData: Omit<Session, 'id' | 'created_at' | 'updated_at' | 'user_id'>
+      sessionData: Omit<
+        Session,
+        '_id' | 'created_at' | 'updated_at' | 'user__id'
+      >
     ) => api.createSession(sessionData),
-    onMutate: async newSession => {
+    onMutate: async _newSession => {
       // Cancelar queries en progreso para evitar conflictos
       await queryClient.cancelQueries({ queryKey: sessionsKeys.all });
 
@@ -124,11 +127,11 @@ export function useCreateSessionMutation() {
 
       // Crear sesión optimista temporal
       const optimisticSession: Session = {
-        ...newSession,
-        id: `temp-${Date.now()}`,
+        ..._newSession,
+        _id: `temp-${Date.now()}`,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        user_id: 'current-user', // Se actualizará con el ID real del usuario
+        user__id: 'current-user', // Se actualizará con el ID real del usuario
       };
 
       // Actualizar cache optimistamente
@@ -140,27 +143,20 @@ export function useCreateSessionMutation() {
         }
       );
 
-      // Retornar contexto para rollback
+      // Retornar _contexto para rollback
       return { previousSessions, optimisticSession };
     },
-    onError: (error, newSession, context) => {
+    onError: (error, _newSession) => {
       // Rollback en caso de error
-      if (context?.previousSessions) {
-        context.previousSessions.forEach(([queryKey, data]) => {
-          queryClient.setQueryData(queryKey, data);
-        });
-      }
       console.error('Error creating session:', error);
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, _variables) => {
       // Actualizar con datos reales del servidor
       queryClient.setQueriesData(
         { queryKey: sessionsKeys.lists() },
         (old: Session[] | undefined) => {
           if (!old) return [data];
-          return old.map(session =>
-            session.id === context?.optimisticSession.id ? data : session
-          );
+          return old.map(session => (session.id === data.id ? data : session));
         }
       );
 
@@ -168,7 +164,7 @@ export function useCreateSessionMutation() {
       queryClient.invalidateQueries({ queryKey: sessionsKeys.all });
     },
     onSettled: () => {
-      // Siempre invalidar al final para asegurar consistencia
+      // Siempre inval_idar al final para asegurar consistencia
       queryClient.invalidateQueries({ queryKey: sessionsKeys.all });
     },
   });
@@ -180,9 +176,14 @@ export function useUpdateSessionMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, updates }: { id: string; updates: Partial<Session> }) =>
-      api.updateSession(id, updates),
-    onMutate: async ({ id, updates }) => {
+    mutationFn: ({
+      _id,
+      updates,
+    }: {
+      _id: string;
+      updates: Partial<Session>;
+    }) => api.updateSession(_id, updates),
+    onMutate: async ({ _id, updates }) => {
       // Cancelar queries en progreso
       await queryClient.cancelQueries({ queryKey: sessionsKeys.all });
 
@@ -197,7 +198,7 @@ export function useUpdateSessionMutation() {
         (old: Session[] | undefined) => {
           if (!old) return old;
           return old.map(session =>
-            session.id === id
+            session._id === _id
               ? { ...session, ...updates, updated_at: new Date().toISOString() }
               : session
           );
@@ -206,40 +207,35 @@ export function useUpdateSessionMutation() {
 
       // Actualizar también la query de detalle
       queryClient.setQueryData(
-        sessionsKeys.detail(id),
+        sessionsKeys.detail(_id),
         (old: Session | undefined) => {
           if (!old) return old;
           return { ...old, ...updates, updated_at: new Date().toISOString() };
         }
       );
 
-      return { previousSessions, sessionId: id };
+      return { previousSessions, sessionId: _id };
     },
-    onError: (error, variables, context) => {
+    onError: (error, _variables) => {
       // Rollback en caso de error
-      if (context?.previousSessions) {
-        context.previousSessions.forEach(([queryKey, data]) => {
-          queryClient.setQueryData(queryKey, data);
-        });
-      }
       console.error('Error updating session:', error);
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, _variables) => {
       // Actualizar con datos reales del servidor
       queryClient.setQueriesData(
         { queryKey: sessionsKeys.lists() },
         (old: Session[] | undefined) => {
           if (!old) return old;
           return old.map(session =>
-            session.id === variables.id ? data : session
+            session.id === _variables.id ? data : session
           );
         }
       );
 
       // Actualizar query de detalle
-      queryClient.setQueryData(sessionsKeys.detail(variables.id), data);
+      queryClient.setQueryData(sessionsKeys.detail(_variables.id), data);
 
-      // Invalidar para sincronizar
+      // Inval_idar para sincronizar
       queryClient.invalidateQueries({ queryKey: sessionsKeys.all });
     },
     onSettled: () => {
@@ -254,8 +250,8 @@ export function useDeleteSessionMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => api.deleteSession(id),
-    onMutate: async id => {
+    mutationFn: (_id: string) => api.deleteSession(_id),
+    onMutate: async _id => {
       // Cancelar queries en progreso
       await queryClient.cancelQueries({ queryKey: sessionsKeys.all });
 
@@ -269,13 +265,13 @@ export function useDeleteSessionMutation() {
         { queryKey: sessionsKeys.lists() },
         (old: Session[] | undefined) => {
           if (!old) return old;
-          return old.filter(session => session.id !== id);
+          return old.filter(session => session._id !== _id);
         }
       );
 
       // Marcar como eliminado en la query de detalle
       queryClient.setQueryData(
-        sessionsKeys.detail(id),
+        sessionsKeys.detail(_id),
         (old: Session | undefined) => {
           if (!old) return old;
           return {
@@ -286,20 +282,15 @@ export function useDeleteSessionMutation() {
         }
       );
 
-      return { previousSessions, sessionId: id };
+      return { previousSessions, sessionId: _id };
     },
-    onError: (error, id, context) => {
+    onError: (error, _id) => {
       // Rollback en caso de error
-      if (context?.previousSessions) {
-        context.previousSessions.forEach(([queryKey, data]) => {
-          queryClient.setQueryData(queryKey, data);
-        });
-      }
       console.error('Error deleting session:', error);
     },
-    onSuccess: (data, id, context) => {
+    onSuccess: (data, _id) => {
       // Eliminar completamente de las queries
-      queryClient.removeQueries({ queryKey: sessionsKeys.detail(id) });
+      queryClient.removeQueries({ queryKey: sessionsKeys.detail(_id) });
 
       // Invalidar para sincronizar
       queryClient.invalidateQueries({ queryKey: sessionsKeys.all });
@@ -327,33 +318,33 @@ export function usePrefetchSessions() {
         staleTime: 2 * 60 * 1000,
       });
     },
-    prefetchSession: (id: string) => {
+    prefetchSession: (_id: string) => {
       queryClient.prefetchQuery({
-        queryKey: sessionsKeys.detail(id),
-        queryFn: () => sessionsApi.getSession(id),
+        queryKey: sessionsKeys.detail(_id),
+        queryFn: () => sessionsApi.getSession(_id),
         staleTime: 5 * 60 * 1000,
       });
     },
   };
 }
 
-// Hook para invalidar cache
-export function useInvalidateSessions() {
+// Hook para inval_idar cache
+export function useInval_idateSessions() {
   const queryClient = useQueryClient();
 
   return {
-    invalidateAll: () => {
+    inval_idateAll: () => {
       queryClient.invalidateQueries({ queryKey: sessionsKeys.all });
     },
-    invalidateList: (filters?: Record<string, unknown>) => {
+    inval_idateList: (filters?: Record<string, unknown>) => {
       queryClient.invalidateQueries({
         queryKey: sessionsKeys.list(filters || {}),
       });
     },
-    invalidateDetail: (id: string) => {
-      queryClient.invalidateQueries({ queryKey: sessionsKeys.detail(id) });
+    inval_idateDetail: (_id: string) => {
+      queryClient.invalidateQueries({ queryKey: sessionsKeys.detail(_id) });
     },
-    invalidateStats: (filters?: Record<string, unknown>) => {
+    inval_idateStats: (filters?: Record<string, unknown>) => {
       queryClient.invalidateQueries({
         queryKey: sessionsKeys.statsWithFilters(filters || {}),
       });

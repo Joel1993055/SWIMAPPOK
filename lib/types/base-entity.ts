@@ -17,6 +17,8 @@ export type CreateEntity<T extends BaseEntity> = Omit<T, keyof BaseEntity>;
 /**
  * Tipo para actualizar una entidad (sin las propiedades auto-generadas)
  */
-export type UpdateEntity<T extends BaseEntity> = Partial<Omit<T, keyof BaseEntity>> & {
+export type UpdateEntity<T extends BaseEntity> = Partial<
+  Omit<T, keyof BaseEntity>
+> & {
   id: string;
 };

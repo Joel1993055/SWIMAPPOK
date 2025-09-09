@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { SiteHeader } from '@/components/layout/site-header';
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -11,7 +11,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart';
+import { Progress } from '@/components/ui/progress';
 import {
   Select,
   SelectContent,
@@ -19,34 +24,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from '@/components/ui/chart';
-import { XAxis, YAxis, CartesianGrid, LineChart, Line } from 'recharts';
-import {
-  BarChart3,
-  TrendingUp,
-  Activity,
-  Target,
-  Calendar,
-  Zap,
-  AlertTriangle,
-  CheckCircle,
-  ArrowUp,
-  ArrowDown,
-  Minus,
-  Filter,
-  Download,
-} from 'lucide-react';
-import { getSessions } from '@/lib/actions/sessions';
-import type { Session } from '@/lib/actions/sessions';
-import { format, subDays, subMonths, subWeeks, startOfWeek } from 'date-fns';
+import { getSessions, type Session } from '@/lib/actions/sessions';
+import { format, startOfWeek, subDays, subMonths, subWeeks } from 'date-fns';
 import { es } from 'date-fns/locale';
+import {
+  Activity,
+  AlertTriangle,
+  ArrowDown,
+  ArrowUp,
+  BarChart3,
+  Calendar,
+  CheckCircle,
+  Download,
+  Filter,
+  Minus,
+  Target,
+  TrendingUp,
+  Zap,
+} from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts';
 
 // Colores para las zonas de intensidad
 const ZONE_COLORS = {
@@ -143,7 +142,7 @@ function AnalysisContent() {
         endDate = subMonths(now, 12);
         startDate = subMonths(now, 13);
         break;
-      case 'best-week':
+      case 'best-week': {
         // Encontrar la mejor semana
         const allSessions = sessions.sort(
           (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
@@ -164,7 +163,8 @@ function AnalysisContent() {
         }
 
         return allSessions.slice(bestStart, bestStart + 7);
-      case 'best-month':
+      }
+      case 'best-month': {
         // Encontrar el mejor mes
         const allSessionsMonth = sessions.sort(
           (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
@@ -185,6 +185,7 @@ function AnalysisContent() {
         }
 
         return allSessionsMonth.slice(bestMonthStart, bestMonthStart + 30);
+      }
       default:
         endDate = subWeeks(now, 1);
         startDate = subWeeks(now, 2);
@@ -917,7 +918,7 @@ function AnalysisContent() {
                             variant='outline'
                             className='text-xs'
                             style={{
-                              backgroundColor: zone.color + '20',
+                              backgroundColor: `${zone.color}20`,
                               color: zone.color,
                             }}
                           >
@@ -928,7 +929,7 @@ function AnalysisContent() {
                       <Progress
                         value={zone.percentage}
                         className='h-3'
-                        style={{ backgroundColor: zone.color + '20' }}
+                        style={{ backgroundColor: `${zone.color}20` }}
                       />
                     </div>
                   ))}
@@ -975,7 +976,7 @@ function AnalysisContent() {
                               variant='outline'
                               className='text-xs'
                               style={{
-                                backgroundColor: zone.color + '20',
+                                backgroundColor: `${zone.color}20`,
                                 color: zone.color,
                               }}
                             >
@@ -986,7 +987,7 @@ function AnalysisContent() {
                         <Progress
                           value={zone.percentage}
                           className='h-3'
-                          style={{ backgroundColor: zone.color + '20' }}
+                          style={{ backgroundColor: `${zone.color}20` }}
                         />
                       </div>
                     ));
@@ -1053,7 +1054,7 @@ function AnalysisContent() {
                               value={currentZone.percentage}
                               className='h-2'
                               style={{
-                                backgroundColor: currentZone.color + '20',
+                                backgroundColor: `${currentZone.color}20`,
                               }}
                             />
                           </div>
@@ -1065,7 +1066,7 @@ function AnalysisContent() {
                               value={comparisonZone?.percentage || 0}
                               className='h-2'
                               style={{
-                                backgroundColor: currentZone.color + '20',
+                                backgroundColor: `${currentZone.color}20`,
                               }}
                             />
                           </div>

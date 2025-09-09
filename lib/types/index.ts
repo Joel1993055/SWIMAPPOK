@@ -5,68 +5,78 @@
 // Session Types
 export type { Session } from './session';
 
+// Chart Types
+export {
+    createBarChartConfig, createLineChartConfig, createPieChartConfig, defaultChartConfig
+} from './chart';
+export type {
+    BarChartConfig, ChartConfig, ChartData, ChartDataset, ChartOptions,
+    ChartType,
+    LineChartConfig, PieChartConfig
+} from './chart';
+
 // Auth Types
 export type {
-  AuthResponse,
-  Session as AuthSession,
-  AuthState,
-  PasswordResetData,
-  SignInData,
-  SignUpData,
-  User,
+    AuthResponse,
+    Session as AuthSession,
+    AuthState,
+    PasswordResetData,
+    SignInData,
+    SignUpData,
+    User
 } from './auth';
 
 // Competition Types
 export type {
-  Competition,
-  CompetitionContextType,
-  CompetitionFormData,
-  CompetitionResult,
+    Competition,
+    CompetitionContextType,
+    CompetitionFormData,
+    CompetitionResult
 } from './competition';
 
 // Training Types
 export type {
-  TrainingMetrics,
-  TrainingPhase,
-  TrainingPhaseFormData,
-  TrainingPhasesContextType,
-  TrainingZones,
-  TrainingZonesContextType,
-  ZoneDetection,
-  ZoneDetectionResult,
+    TrainingMetrics,
+    TrainingPhase,
+    TrainingPhaseFormData,
+    TrainingPhasesContextType,
+    TrainingZones,
+    TrainingZonesContextType,
+    ZoneDetection,
+    ZoneDetectionResult
 } from './training';
 
 // AI Coach Types
 export type {
-  AICoachAdvice,
-  AICoachAnalysis,
-  AICoachContextType,
-  AICoachRequest,
-  AICoachResponse,
+    AICoachAdvice,
+    AICoachAnalysis,
+    AICoachContextType,
+    AICoachRequest,
+    AICoachResponse
 } from './ai-coach';
 
 // Reports Types
 export type {
-  ChartData,
-  ReportFilters,
-  ReportGenerationRequest,
-  ReportTemplate,
-  ReportsContextType,
-  TrainingReport,
+    ChartData,
+    ReportFilters,
+    ReportGenerationRequest,
+    ReportTemplate,
+    ReportsContextType,
+    TrainingReport
 } from './reports';
 
 // API Types
 export type {
-  ApiClient,
-  ApiError,
-  ApiResponse,
-  DatabaseTable,
-  PaginatedResponse,
-  RequestConfig,
-  SessionTable,
-  SupabaseAuthResponse,
-  SupabaseResponse,
-  UserTable,
+    ApiClient,
+    ApiError,
+    ApiResponse,
+    DatabaseTable,
+    PaginatedResponse,
+    RequestConfig,
+    SessionTable,
+    SupabaseAuthResponse,
+    SupabaseResponse,
+    UserTable
 } from './api';
 
 // Form Types

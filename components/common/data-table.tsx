@@ -1,6 +1,5 @@
 'use client';
 
-import * as React from 'react';
 import {
   DndContext,
   KeyboardSensor,
@@ -49,6 +48,7 @@ import {
   PlusIcon,
   TrendingUpIcon,
 } from 'lucide-react';
+import * as React from 'react';
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -321,7 +321,7 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
       className='relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80'
       style={{
         transform: CSS.Transform.toString(transform),
-        transition: transition,
+        transition,
       }}
     >
       {row.getVisibleCells().map(cell => (

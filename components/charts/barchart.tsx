@@ -15,8 +15,7 @@ import {
 } from '@/components/ui/chart';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import type { Session } from '@/lib/actions/sessions';
-import { getSessions } from '@/lib/actions/sessions';
+import { getSessions, type Session } from '@/lib/actions/sessions';
 import {
   calculateZoneVolumes,
   metersToKm,

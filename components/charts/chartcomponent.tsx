@@ -22,8 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { Session } from '@/lib/actions/sessions';
-import { getSessions } from '@/lib/actions/sessions';
+import { getSessions, type Session } from '@/lib/actions/sessions';
 import {
   calculateZoneVolumes,
   metersToKm,
