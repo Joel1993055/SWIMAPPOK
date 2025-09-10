@@ -22,13 +22,12 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { createSession } from '@/lib/actions/sessions';
-import { Calendar, Plus, Save, Target, X, Zap } from 'lucide-react';
+import { Calendar, Plus, Save, X, Zap } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 // Tipos de datos
 interface QuickSession {
   date: string;
-  distance: number;
   objective: string;
   time_slot: 'AM' | 'PM';
   content: string;
@@ -66,7 +65,6 @@ export function QuickCreate({
   const [isLoading, setIsLoading] = useState(false);
   const [session, setSession] = useState<QuickSession>({
     date: defaultDate || new Date().toISOString().split('T')[0],
-    distance: 0,
     objective: '',
     time_slot: defaultTimeSlot,
     content: '',
@@ -110,7 +108,7 @@ export function QuickCreate({
     try {
       const formData = new FormData();
       formData.append('date', session.date);
-      formData.append('distance', session.distance.toString());
+      formData.append('distance', totalMeters.toString()); // Usar distancia total calculada
       formData.append('stroke', 'Libre'); // Default stroke
       formData.append('rpe', '5'); // Default RPE
       formData.append('objective', session.objective);
@@ -192,8 +190,8 @@ export function QuickCreate({
             </div>
 
             <form onSubmit={handleSubmit} className='space-y-4'>
-              {/* Fecha, Horario, Distancia y Objetivo */}
-              <div className='grid grid-cols-2 gap-4'>
+              {/* Fecha, Horario y Objetivo */}
+              <div className='grid grid-cols-3 gap-4'>
                 <div className='space-y-2'>
                   <Label htmlFor='date' className='flex items-center gap-2'>
                     <Calendar className='w-4 h-4' />
@@ -228,25 +226,6 @@ export function QuickCreate({
                       <SelectItem value='PM'>PM (Tarde/Noche)</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
-                <div className='space-y-2'>
-                  <Label htmlFor='distance' className='flex items-center gap-2'>
-                    <Target className='w-4 h-4' />
-                    Distancia (m)
-                  </Label>
-                  <Input
-                    id='distance'
-                    type='number'
-                    value={session.distance || ''}
-                    onChange={e =>
-                      setSession({
-                        ...session,
-                        distance: parseInt(e.target.value) || 0,
-                      })
-                    }
-                    placeholder='2000'
-                    required
-                  />
                 </div>
                 <div className='space-y-2'>
                   <Label>Objetivo del Entrenamiento</Label>
@@ -382,8 +361,8 @@ export function QuickCreate({
             <CardContent className='space-y-2'>
               <div className='grid grid-cols-2 gap-4 text-sm'>
                 <div className='flex items-center justify-between'>
-                  <span>Distancia:</span>
-                  <Badge variant='outline'>{session.distance}m</Badge>
+                  <span>Distancia Total:</span>
+                  <Badge variant='outline'>{totalMeters}m</Badge>
                 </div>
                 {selectedObjective && (
                   <div className='flex items-center justify-between'>
