@@ -262,6 +262,36 @@ function AnalysisContent() {
     };
   }, [comparisonSessions]);
 
+  // Análisis de zonas de comparación - NUEVO
+  const comparisonZoneAnalysis = useMemo(() => {
+    if (comparisonSessions.length === 0) {
+      return [];
+    }
+
+    const zoneData: { [key: string]: { distance: number; sessions: number } } = {};
+    
+    comparisonSessions.forEach(session => {
+      const zone = session.zone || 'Z1';
+      if (!zoneData[zone]) {
+        zoneData[zone] = { distance: 0, sessions: 0 };
+      }
+      zoneData[zone].distance += session.distance || 0;
+      zoneData[zone].sessions += 1;
+    });
+
+    const totalDistance = Object.values(zoneData).reduce((sum, z) => sum + z.distance, 0);
+
+    return Object.entries(zoneData)
+      .map(([zone, data]) => ({
+        zone,
+        distance: data.distance,
+        sessions: data.sessions,
+        percentage: totalDistance > 0 ? (data.distance / totalDistance) * 100 : 0,
+        color: ZONE_COLORS[zone as keyof typeof ZONE_COLORS] || '#6b7280',
+      }))
+      .sort((a, b) => a.zone.localeCompare(b.zone));
+  }, [comparisonSessions]);
+
   // Funciones de utilidad - OPTIMIZADAS CON USECALLBACK
   const calculateChange = useCallback((current: number, previous: number) => {
     if (previous === 0) return current > 0 ? 100 : 0;
