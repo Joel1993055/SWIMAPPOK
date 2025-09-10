@@ -71,30 +71,30 @@ interface ClubsData {
 // CONSTANTES
 // =====================================================
 const CLUBS_DATA: ClubsData = {
-  'club-1': {
-    name: 'Club Natación Madrid',
-    groups: [
-      { id: 'group-1-1', name: 'Grupo A - Competición' },
-      { id: 'group-1-2', name: 'Grupo B - Desarrollo' },
-      { id: 'group-1-3', name: 'Grupo C - Iniciación' },
-    ],
-  },
-  'club-2': {
-    name: 'Club Acuático Barcelona',
-    groups: [
-      { id: 'group-2-1', name: 'Elite' },
-      { id: 'group-2-2', name: 'Promesas' },
-      { id: 'group-2-3', name: 'Base' },
-    ],
-  },
-  'club-3': {
-    name: 'Centro Deportivo Valencia',
-    groups: [
-      { id: 'group-3-1', name: 'Senior' },
-      { id: 'group-3-2', name: 'Junior' },
-      { id: 'group-3-3', name: 'Infantil' },
-    ],
-  },
+    'club-1': {
+      name: 'Club Natación Madrid',
+      groups: [
+        { id: 'group-1-1', name: 'Grupo A - Competición' },
+        { id: 'group-1-2', name: 'Grupo B - Desarrollo' },
+        { id: 'group-1-3', name: 'Grupo C - Iniciación' },
+      ],
+    },
+    'club-2': {
+      name: 'Club Acuático Barcelona',
+      groups: [
+        { id: 'group-2-1', name: 'Elite' },
+        { id: 'group-2-2', name: 'Promesas' },
+        { id: 'group-2-3', name: 'Base' },
+      ],
+    },
+    'club-3': {
+      name: 'Centro Deportivo Valencia',
+      groups: [
+        { id: 'group-3-1', name: 'Senior' },
+        { id: 'group-3-2', name: 'Junior' },
+        { id: 'group-3-3', name: 'Infantil' },
+      ],
+    },
 } as const;
 
 const OBJECTIVE_OPTIONS = [
@@ -153,12 +153,12 @@ const mapSessionToSupabase = (session: Session): SupabaseSession => ({
 });
 
 const createEmptyZoneVolumes = (): ZoneVolumeRow[] =>
-  Array.from({ length: 10 }, () => ({
-    z1: 0,
-    z2: 0,
-    z3: 0,
-    z4: 0,
-    z5: 0,
+        Array.from({ length: 10 }, () => ({
+          z1: 0,
+          z2: 0,
+          z3: 0,
+          z4: 0,
+          z5: 0,
   }));
 
 // =====================================================
@@ -229,13 +229,13 @@ function TrainingPageContent() {
 
   const handleDeleteTraining = useCallback(
     async (id: string) => {
-      if (!confirm('¿Estás seguro de que quieres eliminar este entrenamiento?')) {
-        return;
-      }
+    if (!confirm('¿Estás seguro de que quieres eliminar este entrenamiento?')) {
+      return;
+    }
 
-      try {
-        setIsLoading(true);
-        await deleteSession(id);
+    try {
+      setIsLoading(true);
+      await deleteSession(id);
         
         // Recargar las sesiones para mostrar los cambios
         setIsRefreshing(true);
@@ -246,12 +246,12 @@ function TrainingPageContent() {
         }
         
         handleSaveSuccess('Entrenamiento eliminado correctamente');
-      } catch (error) {
-        console.error('Error eliminando entrenamiento:', error);
+    } catch (error) {
+      console.error('Error eliminando entrenamiento:', error);
         handleSaveError('Error al eliminar el entrenamiento');
-      } finally {
-        setIsLoading(false);
-      }
+    } finally {
+      setIsLoading(false);
+    }
     },
     [handleSaveSuccess, handleSaveError, loadSessions]
   );
@@ -321,6 +321,14 @@ function TrainingPageContent() {
           clubsData={CLUBS_DATA}
           objectiveOptions={OBJECTIVE_OPTIONS}
           analyzeTraining={analyzeTraining}
+          onRefresh={async () => {
+            setIsRefreshing(true);
+            try {
+              await loadSessions(true);
+            } finally {
+              setIsRefreshing(false);
+            }
+          }}
         />
       ) : (
         <TrainingList
@@ -345,6 +353,7 @@ interface TrainingFormProps {
   clubsData: ClubsData;
   objectiveOptions: readonly Array<{ value: string; label: string }>;
   analyzeTraining: (data: any) => void;
+  onRefresh: () => Promise<void>;
 }
 
 function TrainingForm({
@@ -355,6 +364,7 @@ function TrainingForm({
   clubsData,
   objectiveOptions,
   analyzeTraining,
+  onRefresh,
 }: TrainingFormProps) {
   // Estados del formulario
   const [formData, setFormData] = useState<TrainingFormData>(() => ({
@@ -501,13 +511,8 @@ function TrainingForm({
 
       // Recargar las sesiones para mostrar los cambios
       console.log('Recargando sesiones después de guardar...');
-      setIsRefreshing(true);
-      try {
-        await loadSessions(true);
-        console.log('Sesiones recargadas correctamente');
-      } finally {
-        setIsRefreshing(false);
-      }
+      await onRefresh();
+      console.log('Sesiones recargadas correctamente');
 
       // Analizar con AI Coach
       await analyzeTraining({
@@ -541,7 +546,7 @@ function TrainingForm({
     } finally {
       setIsLoading(false);
     }
-  }, [formData, editingTraining, clubsData, onSaveSuccess, onSaveError, analyzeTraining]);
+  }, [formData, editingTraining, clubsData, onSaveSuccess, onSaveError, analyzeTraining, onRefresh]);
 
   // =====================================================
   // CÁLCULOS DERIVADOS
@@ -561,159 +566,159 @@ function TrainingForm({
   // =====================================================
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      {/* Editor Principal */}
+          {/* Editor Principal */}
       <div className="lg:col-span-2">
         <Card className="bg-muted/50">
-          <CardHeader>
+              <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Plus className="h-5 w-5" />
               {editingTraining ? 'Editar Entrenamiento' : 'Crear Nuevo Entrenamiento'}
-            </CardTitle>
-            <CardDescription>
-              {editingTraining
-                ? 'Modifica los detalles de tu entrenamiento'
-                : 'Escribe tu entrenamiento con todos los detalles'}
-            </CardDescription>
-          </CardHeader>
+                </CardTitle>
+                <CardDescription>
+                  {editingTraining
+                    ? 'Modifica los detalles de tu entrenamiento'
+                    : 'Escribe tu entrenamiento con todos los detalles'}
+                </CardDescription>
+              </CardHeader>
           <CardContent className="space-y-6">
-            {/* Información básica */}
+                {/* Información básica */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="training-title">Título del entrenamiento</Label>
-                <Input
+                    <Input
                   id="training-title"
                   placeholder="Ej: Entrenamiento de resistencia"
                   value={formData.title}
                   onChange={e => handleInputChange('title', e.target.value)}
-                />
-              </div>
+                    />
+                  </div>
               <div className="space-y-2">
                 <Label htmlFor="training-date">Fecha</Label>
                 <div className="flex gap-2">
-                  <Input
+                      <Input
                     type="date"
                     value={formData.date.toISOString().split('T')[0]}
-                    onChange={e => {
-                      const dateValue = e.target.value;
-                      if (dateValue) {
+                        onChange={e => {
+                          const dateValue = e.target.value;
+                          if (dateValue) {
                         handleInputChange('date', new Date(dateValue));
-                      }
-                    }}
+                          }
+                        }}
                     className="flex-1"
-                  />
-                  <Button
+                      />
+                      <Button
                     type="button"
                     variant="outline"
                     onClick={() => handleInputChange('date', new Date())}
-                  >
-                    Hoy
-                  </Button>
-                </div>
+                      >
+                        Hoy
+                      </Button>
+                    </div>
                 <div className="text-sm text-muted-foreground">
                   Fecha seleccionada: {format(formData.date, 'dd/MM/yyyy', { locale: es })}
-                </div>
-              </div>
+                    </div>
+                  </div>
               <div className="space-y-2">
                 <Label htmlFor="training-location">Ubicación</Label>
-                <Input
+                    <Input
                   id="training-location"
                   placeholder="Ej: Piscina Municipal"
                   value={formData.location}
                   onChange={e => handleInputChange('location', e.target.value)}
-                />
-              </div>
+                    />
+                  </div>
               <div className="space-y-2">
                 <Label htmlFor="training-coach">Entrenador</Label>
-                <Input
+                    <Input
                   id="training-coach"
                   placeholder="Ej: María García"
                   value={formData.coach}
                   onChange={e => handleInputChange('coach', e.target.value)}
-                />
-              </div>
+                    />
+                  </div>
               <div className="space-y-2">
                 <Label htmlFor="training-club">Club</Label>
                 <Select value={formData.club} onValueChange={handleClubChange}>
-                  <SelectTrigger>
+                      <SelectTrigger>
                     <SelectValue placeholder="Selecciona el club" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(clubsData).map(([clubId, club]) => (
-                      <SelectItem key={clubId} value={clubId}>
-                        {club.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(clubsData).map(([clubId, club]) => (
+                          <SelectItem key={clubId} value={clubId}>
+                            {club.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
               <div className="space-y-2">
                 <Label htmlFor="training-group">Grupo</Label>
-                <Select
+                    <Select
                   value={formData.group}
                   onValueChange={value => handleInputChange('group', value)}
-                >
-                  <SelectTrigger>
+                    >
+                      <SelectTrigger>
                     <SelectValue placeholder="Selecciona el grupo" />
-                  </SelectTrigger>
-                  <SelectContent>
+                      </SelectTrigger>
+                      <SelectContent>
                     {selectedClubGroups.map(group => (
-                      <SelectItem key={group.id} value={group.id}>
-                        {group.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+                          <SelectItem key={group.id} value={group.id}>
+                            {group.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
               <div className="space-y-2">
                 <Label htmlFor="training-objective">Objetivo del Entrenamiento</Label>
-                <Select
+                    <Select
                   value={formData.objective}
                   onValueChange={value => handleInputChange('objective', value)}
-                >
-                  <SelectTrigger>
+                    >
+                      <SelectTrigger>
                     <SelectValue placeholder="Selecciona el objetivo" />
-                  </SelectTrigger>
-                  <SelectContent>
+                      </SelectTrigger>
+                      <SelectContent>
                     {objectiveOptions.map(option => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
-                      </SelectItem>
+                        </SelectItem>
                     ))}
-                  </SelectContent>
-                </Select>
-              </div>
+                      </SelectContent>
+                    </Select>
+                  </div>
               <div className="space-y-2">
                 <Label htmlFor="training-time-slot">Horario</Label>
-                <Select
+                    <Select
                   value={formData.timeSlot}
                   onValueChange={value => handleInputChange('timeSlot', value as 'AM' | 'PM')}
-                >
-                  <SelectTrigger>
+                    >
+                      <SelectTrigger>
                     <SelectValue placeholder="Selecciona el horario" />
-                  </SelectTrigger>
-                  <SelectContent>
+                      </SelectTrigger>
+                      <SelectContent>
                     <SelectItem value="AM">AM (Mañana)</SelectItem>
                     <SelectItem value="PM">PM (Tarde/Noche)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
 
-            <Separator />
+                <Separator />
 
             {/* Editor de contenido y Volúmenes por zona */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Editor de contenido */}
               <div className="lg:col-span-2 space-y-2">
                 <Label htmlFor="training-content">Contenido del entrenamiento</Label>
-                <Textarea
+                    <Textarea
                   id="training-content"
                   placeholder="Escribe tu entrenamiento aquí... Ejemplo:&#10;&#10;Calentamiento: 200m libre Z1&#10;Serie principal: 8x100m libre Z3 con 20s descanso&#10;Vuelta a la calma: 200m espalda Z1&#10;&#10;Puedes incluir:&#10;- Distancias (200m, 1.5km)&#10;- Tiempos (45min, 1h 30min)&#10;- Zonas (Z1, Z2, Z3, Z4, Z5)&#10;- Estilos (libre, espalda, pecho, mariposa)"
                   value={formData.content}
                   onChange={e => handleInputChange('content', e.target.value)}
                   className="min-h-[400px] resize-none"
-                />
-              </div>
+                    />
+                  </div>
 
               {/* Volúmenes por zona */}
               <div className="space-y-4">
@@ -721,8 +726,8 @@ function TrainingForm({
                   <Label className="text-base font-medium">Volúmenes por Zona</Label>
                   <div className="text-sm text-muted-foreground">
                     Total: <span className="font-semibold text-foreground">{totalMeters.toLocaleString()}m</span>
-                  </div>
-                </div>
+                      </div>
+                    </div>
 
                 {/* Tabla estilo Google Sheets mejorada */}
                 <div className="border border-muted rounded-lg overflow-hidden shadow-sm">
@@ -738,47 +743,47 @@ function TrainingForm({
                       <div key={zone} className={`p-2 text-xs font-medium text-muted-foreground border-r border-muted text-center last:border-r-0 ${color}`}>
                         <div className="font-semibold">{zone}</div>
                         <div className="text-[10px] opacity-75">{name}</div>
-                      </div>
+                        </div>
                     ))}
-                  </div>
+                      </div>
 
-                  {/* 10 filas de datos */}
+                      {/* 10 filas de datos */}
                   {formData.zoneVolumes.map((row, rowIndex) => (
                     <div key={rowIndex} className="grid grid-cols-5 bg-background border-t border-muted hover:bg-muted/20 transition-colors">
-                      {Object.entries(row).map(([zone, volume]) => (
+                          {Object.entries(row).map(([zone, volume]) => (
                         <div key={`${rowIndex}-${zone}`} className="p-0.5 border-r border-muted last:border-r-0">
-                          <Input
+                              <Input
                             type="number"
                             min="0"
                             step="50"
                             placeholder="0"
-                            value={volume || ''}
+                                value={volume || ''}
                             onChange={e => handleZoneVolumeChange(rowIndex, zone as keyof ZoneVolumeRow, e.target.value)}
                             className="text-center border-0 focus:ring-1 focus:ring-primary h-8 text-[10px] font-mono [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield] bg-transparent hover:bg-muted/50 focus:bg-background transition-colors px-1 w-full"
-                          />
+                              />
+                            </div>
+                          ))}
                         </div>
                       ))}
-                    </div>
-                  ))}
 
                   {/* Fila de totales mejorada */}
                   <div className="grid grid-cols-5 bg-muted/30 dark:bg-muted/20 border-t-2 border-muted">
-                    {['z1', 'z2', 'z3', 'z4', 'z5'].map(zone => {
+                        {['z1', 'z2', 'z3', 'z4', 'z5'].map(zone => {
                       const total = formData.zoneVolumes.reduce(
                         (sum, row) => sum + row[zone as keyof ZoneVolumeRow],
-                        0
-                      );
-                      return (
-                        <div
-                          key={`total-${zone}`}
+                            0
+                          );
+                          return (
+                            <div
+                              key={`total-${zone}`}
                           className="p-2 text-[12px] font-bold text-foreground border-r border-muted last:border-r-0 text-center font-mono bg-primary/5"
-                        >
+                            >
                           {total > 0 ? `${total.toLocaleString()}` : '0'}m
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
 
                 {/* Botones de utilidad */}
                 <div className="flex gap-2">
@@ -827,121 +832,121 @@ function TrainingForm({
                 <div className="text-xs text-muted-foreground space-y-1">
                   <div>💡 <strong>Consejo:</strong> Introduce los metros que nadaste en cada zona de intensidad.</div>
                   <div>📊 <strong>Total calculado:</strong> {totalMeters.toLocaleString()} metros</div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Botones de acción */}
+                {/* Botones de acción */}
             <div className="flex justify-between">
-              <div>
-                {editingTraining && (
+                  <div>
+                    {editingTraining && (
                   <Button variant="outline" onClick={onCancelEdit} className="gap-2">
                     <Trash2 className="h-4 w-4" />
-                    Cancelar Edición
-                  </Button>
-                )}
-              </div>
+                        Cancelar Edición
+                      </Button>
+                    )}
+                  </div>
               <div className="flex gap-2">
-                <Button
+                    <Button
                   variant="outline"
                   onClick={() => handleInputChange('content', '')}
-                >
-                  Limpiar
-                </Button>
+                    >
+                      Limpiar
+                    </Button>
                 <Button onClick={handleSave} disabled={isLoading} className="gap-2">
-                  {isLoading ? (
-                    <>
+                      {isLoading ? (
+                        <>
                       <Clock className="h-4 w-4 animate-spin" />
-                      Guardando...
-                    </>
-                  ) : (
-                    <>
+                          Guardando...
+                        </>
+                      ) : (
+                        <>
                       <Save className="h-4 w-4" />
                       {editingTraining ? 'Actualizar' : 'Guardar'} Entrenamiento
-                    </>
-                  )}
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
       {/* Panel lateral */}
       <div className="lg:col-span-1 space-y-6">
-        {/* AI Coach */}
-        <AICoach />
+            {/* AI Coach */}
+            <AICoach />
 
-        {/* Detector de Zonas Avanzado */}
-        <AdvancedZoneDetector
+            {/* Detector de Zonas Avanzado */}
+            <AdvancedZoneDetector
           content={formData.content}
           trainingType="Personalizado"
           phase="base"
-          competition={false}
-        />
+              competition={false}
+            />
 
-        {/* Panel de Ayuda */}
+            {/* Panel de Ayuda */}
         <Card className="bg-muted/50">
-          <CardHeader>
+              <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FileText className="h-5 w-5" />
-              Consejos para Escribir
-            </CardTitle>
+                  Consejos para Escribir
+                </CardTitle>
             <CardDescription>Mejores prácticas para crear entrenamientos</CardDescription>
-          </CardHeader>
+              </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-4">
-              <div>
+                  <div>
                 <h4 className="font-medium mb-2">Estructura recomendada:</h4>
                 <ul className="text-sm text-muted-foreground space-y-1">
                   <li>• <strong>Calentamiento:</strong> 200-400m Z1</li>
                   <li>• <strong>Serie principal:</strong> Ejercicios específicos</li>
                   <li>• <strong>Vuelta a la calma:</strong> 200-300m Z1</li>
-                </ul>
-              </div>
+                    </ul>
+                  </div>
 
-              <Separator />
+                  <Separator />
 
-              <div>
+                  <div>
                 <h4 className="font-medium mb-2">Formato de distancias:</h4>
                 <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>• 200m, 400m, 800m</li>
-                  <li>• 1km, 1.5km, 2km</li>
-                  <li>• 2000 metros</li>
-                </ul>
-              </div>
+                      <li>• 200m, 400m, 800m</li>
+                      <li>• 1km, 1.5km, 2km</li>
+                      <li>• 2000 metros</li>
+                    </ul>
+                  </div>
 
-              <div>
+                  <div>
                 <h4 className="font-medium mb-2">Zonas de intensidad:</h4>
                 <div className="space-y-2">
                   <div className="flex flex-wrap gap-1">
                     {['Z1', 'Z2', 'Z3', 'Z4', 'Z5'].map(zone => (
                       <Badge key={zone} variant="outline">{zone}</Badge>
                     ))}
-                  </div>
+                      </div>
                   <div className="text-xs text-muted-foreground">
                     <div>• <strong>Z1:</strong> Recuperación activa</div>
                     <div>• <strong>Z2:</strong> Aeróbico base</div>
                     <div>• <strong>Z3:</strong> Aeróbico umbral</div>
                     <div>• <strong>Z4:</strong> Anaeróbico láctico</div>
                     <div>• <strong>Z5:</strong> Anaeróbico aláctico</div>
+                        </div>
+                    </div>
                   </div>
-                </div>
-              </div>
 
-              <div>
+                  <div>
                 <h4 className="font-medium mb-2">Estilos de natación:</h4>
                 <div className="flex flex-wrap gap-1">
                   {['Libre', 'Espalda', 'Pecho', 'Mariposa'].map(style => (
                     <Badge key={style} variant="secondary">{style}</Badge>
                   ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
   );
 }
 
@@ -983,11 +988,11 @@ function TrainingList({ sessions, isLoading, onEdit, onDelete }: TrainingListPro
 
   return (
     <Card className="bg-muted/50">
-      <CardHeader>
-        <CardTitle>Entrenamientos Guardados</CardTitle>
+            <CardHeader>
+              <CardTitle>Entrenamientos Guardados</CardTitle>
         <CardDescription>{sessions.length} entrenamientos guardados</CardDescription>
-      </CardHeader>
-      <CardContent>
+            </CardHeader>
+            <CardContent>
         <div className="space-y-4">
           {sessions.map(training => (
             <div key={training.id} className="border rounded-lg p-4 bg-background/50">
@@ -997,65 +1002,65 @@ function TrainingList({ sessions, isLoading, onEdit, onDelete }: TrainingListPro
                     <h3 className="font-semibold text-lg">{training.mainSet}</h3>
                     <Badge variant="outline">{training.sessionType}</Badge>
                     <Badge variant="secondary">{training.stroke}</Badge>
-                  </div>
+                          </div>
 
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
                     <div className="flex items-center gap-2 text-sm">
                       <CalendarIcon className="h-4 w-4 text-muted-foreground" />
                       <span>{format(new Date(training.date), 'dd/MM/yyyy', { locale: es })}</span>
-                    </div>
+                            </div>
                     <div className="flex items-center gap-2 text-sm">
                       <Clock className="h-4 w-4 text-muted-foreground" />
-                      <span>{training.durationMin} min</span>
-                    </div>
+                              <span>{training.durationMin} min</span>
+                            </div>
                     <div className="flex items-center gap-2 text-sm">
                       <Target className="h-4 w-4 text-muted-foreground" />
-                      <span>{training.distance}m</span>
-                    </div>
+                              <span>{training.distance}m</span>
+                            </div>
                     <div className="flex items-center gap-2 text-sm">
                       <Activity className="h-4 w-4 text-muted-foreground" />
-                      <span>RPE {training.RPE}/10</span>
-                    </div>
-                  </div>
+                              <span>RPE {training.RPE}/10</span>
+                            </div>
+                          </div>
 
                   <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
                     <MapPin className="h-4 w-4" />
-                    <span>N/A</span>
+                            <span>N/A</span>
                     <Users className="h-4 w-4 ml-4" />
-                    <span>{training.swimmer}</span>
-                  </div>
+                            <span>{training.swimmer}</span>
+                          </div>
 
                   <div className="bg-muted/50 rounded-lg p-3">
                     <pre className="text-sm whitespace-pre-wrap font-mono">{training.mainSet}</pre>
-                  </div>
-                </div>
+                          </div>
+                        </div>
 
                 <div className="ml-4 flex gap-2">
-                  <Button
+                          <Button
                     variant="outline"
                     size="sm"
                     onClick={() => onEdit(training)}
                     className="gap-2"
                   >
                     <Edit className="h-4 w-4" />
-                    Editar
-                  </Button>
-                  <Button
+                            Editar
+                          </Button>
+                          <Button
                     variant="outline"
                     size="sm"
                     onClick={() => onDelete(training.id)}
                     className="gap-2 text-destructive hover:text-destructive"
                   >
                     <Trash2 className="h-4 w-4" />
-                    Eliminar
-                  </Button>
-                </div>
-              </div>
-            </div>
+                            Eliminar
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
           ))}
-        </div>
-      </CardContent>
-    </Card>
+              </div>
+            </CardContent>
+          </Card>
   );
 }
 

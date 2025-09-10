@@ -20,7 +20,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { useSessionsStore } from '@/lib/store/unified';
+import { useSessionsData } from '@/lib/hooks/use-sessions-data';
 import { AreaChartIcon, BarChart3 } from 'lucide-react';
 import { useState } from 'react';
 import {
@@ -55,12 +55,15 @@ const zoneLabels = {
 const generateWeeklyData = (sessions: any[]) => {
   const today = new Date();
   const startOfWeek = new Date(today);
-  startOfWeek.setDate(today.getDate() - today.getDay()); // Domingo
+  // Calcular el lunes de la semana actual
+  const dayOfWeek = today.getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
+  const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Si es domingo, retroceder 6 días; si no, retroceder (día - 1)
+  startOfWeek.setDate(today.getDate() - daysToMonday);
   startOfWeek.setHours(0, 0, 0, 0);
 
-  const daysOfWeek = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+  const daysOfWeek = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
-  return Array.from({ length: 7 }, (_, index) => {
+  const weeklyData = Array.from({ length: 7 }, (_, index) => {
     const currentDay = new Date(startOfWeek);
     currentDay.setDate(startOfWeek.getDate() + index);
 
@@ -97,7 +100,7 @@ const generateWeeklyData = (sessions: any[]) => {
       0
     );
 
-    return {
+    const dayData = {
       day: dayName,
       ...Object.fromEntries(
         Object.entries(dayZones).map(([zone, meters]) => [
@@ -107,7 +110,11 @@ const generateWeeklyData = (sessions: any[]) => {
       ),
       totalMeters: totalDayMeters,
     };
+
+    return dayData;
   });
+
+  return weeklyData;
 };
 
 const chartConfig: ChartConfig = {
@@ -137,8 +144,26 @@ const chartConfig: ChartConfig = {
 const areaChartConfig = chartConfig;
 
 export function VisitorsChart() {
-  const { sessions, isLoading } = useSessionsStore();
+  const { sessions, isLoading } = useSessionsData();
   const [chartType, setChartType] = useState<'bar' | 'area'>('bar');
+
+  // Debug para verificar conexión (solo en desarrollo)
+  if (process.env.NODE_ENV === 'development') {
+    console.log("=== DEBUG PROGRESO SEMANAL ===");
+    console.log("Número de sesiones:", sessions.length);
+    
+    // Verificar que las sesiones tienen zone_volumes
+    const sessionsWithZones = sessions.filter(session => session.zone_volumes);
+    console.log("Sesiones con zonas:", sessionsWithZones.length);
+    
+    if (sessionsWithZones.length > 0) {
+      console.log("Primera sesión con zonas:", {
+        title: sessionsWithZones[0].title,
+        date: sessionsWithZones[0].date,
+        zone_volumes: sessionsWithZones[0].zone_volumes
+      });
+    }
+  }
 
   // Generar datos de la semana actual
   const chartData = generateWeeklyData(sessions);
@@ -154,11 +179,11 @@ export function VisitorsChart() {
     totalMeters: day.totalMeters,
   }));
 
-  // Debug para verificar conexión (comentado para producción)
-  // console.log("=== DEBUG PROGRESO SEMANAL ===");
-  // console.log("Sessions del store:", sessions);
-  // console.log("Datos del gráfico generados:", chartData);
-  // console.log("Total semanal calculado:", chartData.reduce((total, day) => total + day.totalMeters, 0));
+  // Debug solo en desarrollo
+  if (process.env.NODE_ENV === 'development') {
+    console.log("Datos del gráfico generados:", chartData);
+    console.log("Total semanal calculado:", chartData.reduce((total, day) => total + day.totalMeters, 0));
+  }
 
   // Calcular total semanal
   const totalSemanal = chartData.reduce((total, day) => {
@@ -182,6 +207,28 @@ export function VisitorsChart() {
           <div className='h-[300px] flex items-center justify-center'>
             <div className='animate-pulse text-muted-foreground'>
               Cargando datos...
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Mostrar mensaje si no hay datos
+  if (sessions.length === 0) {
+    return (
+      <Card className='col-span-4 bg-muted/50 border-muted'>
+        <CardHeader>
+          <CardTitle>Progreso Semanal</CardTitle>
+          <CardDescription>
+            Distancia por zonas de entrenamiento (kilómetros)
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className='h-[300px] flex items-center justify-center'>
+            <div className='text-center text-muted-foreground'>
+              <div className='text-lg font-medium mb-2'>No hay entrenamientos</div>
+              <div className='text-sm'>Crea tu primer entrenamiento para ver el progreso semanal</div>
             </div>
           </div>
         </CardContent>
