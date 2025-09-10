@@ -58,7 +58,7 @@ export function useSessionsData() {
     if (!isInitialized && !isLoading) {
       loadSessions();
     }
-  }, [isInitialized, isLoading, loadSessions]);
+  }, [isInitialized, isLoading]); // Removido loadSessions de las dependencias
 
   // =====================================================
   // FILTROS OPTIMIZADOS CON USEMEMO

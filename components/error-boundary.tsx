@@ -7,7 +7,7 @@ import React from 'react';
 
 interface ErrorBoundaryState {
   hasError: boolean;
-  error?: Error;
+  error?: Error | any;
   errorInfo?: React.ErrorInfo;
 }
 
@@ -18,7 +18,7 @@ interface ErrorBoundaryProps {
 }
 
 interface ErrorFallbackProps {
-  error: Error;
+  error: Error | any;
   resetError: () => void;
 }
 
@@ -31,14 +31,14 @@ class ErrorBoundary extends React.Component<
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+  static getDerivedStateFromError(error: any): ErrorBoundaryState {
     return {
       hasError: true,
       error,
     };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+  componentDidCatch(error: any, errorInfo: React.ErrorInfo) {
     this.setState({
       error,
       errorInfo,
@@ -81,6 +81,31 @@ function DefaultErrorFallback({ error, resetError }: ErrorFallbackProps) {
     });
   }, [error, captureError]);
 
+  // Helper function to safely get error message
+  const getErrorMessage = (error: any): string => {
+    if (error instanceof Error) {
+      return error.message;
+    }
+    if (typeof error === 'string') {
+      return error;
+    }
+    if (error && typeof error === 'object') {
+      return error.message || error.title || error.type || JSON.stringify(error);
+    }
+    return 'Error desconocido';
+  };
+
+  // Helper function to safely get error stack
+  const getErrorStack = (error: any): string => {
+    if (error instanceof Error && error.stack) {
+      return error.stack;
+    }
+    if (error && typeof error === 'object' && error.stack) {
+      return error.stack;
+    }
+    return 'No hay información de stack disponible';
+  };
+
   return (
     <div className='min-h-screen flex items-center justify-center bg-background'>
       <div className='max-w-md w-full mx-auto p-6'>
@@ -120,8 +145,9 @@ function DefaultErrorFallback({ error, resetError }: ErrorFallbackProps) {
                 Detalles del error (desarrollo)
               </summary>
               <pre className='mt-2 p-4 bg-muted rounded text-xs overflow-auto'>
-                {error.message}
-                {error.stack}
+                {getErrorMessage(error)}
+                {'\n\n'}
+                {getErrorStack(error)}
               </pre>
             </details>
           )}

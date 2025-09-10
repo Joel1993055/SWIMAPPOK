@@ -11,6 +11,7 @@ export function KPICards() {
   // OPTIMIZADO: Usar solo el store unificado
   const { sessions, setSessions } = useSessionsStore();
   const { getCurrentPhase } = useTrainingStore();
+  const [isHydrated, setIsHydrated] = useState(false);
 
   // Estados para los períodos seleccionados
   const [selectedDistancePeriod, setSelectedDistancePeriod] = useState<
@@ -19,6 +20,11 @@ export function KPICards() {
   const [selectedPeriod, setSelectedPeriod] = useState<
     'year' | 'month' | 'week'
   >('week');
+
+  // Inicializar después de la hidratación para evitar errores de SSR
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   // Cargar sesiones al montar el componente
   useEffect(() => {
@@ -150,6 +156,18 @@ export function KPICards() {
 
   // Calcular estado del ciclo de entrenamiento usando las fases reales
   const getTrainingCycleStatus = () => {
+    if (!isHydrated) {
+      return {
+        phase: 'Cargando...',
+        progress: 0,
+        description: 'Calculando progreso',
+        additionalInfo: '',
+        color: 'bg-gray-500',
+        status: 'inactive',
+        daysRemaining: 0,
+      };
+    }
+
     const currentPhase = getCurrentPhase();
 
     if (!currentPhase) {
@@ -157,6 +175,7 @@ export function KPICards() {
         phase: 'Sin fase activa',
         progress: 0,
         description: 'No hay fase de entrenamiento activa',
+        additionalInfo: '',
         color: 'bg-gray-500',
         status: 'inactive',
         daysRemaining: 0,
@@ -328,11 +347,6 @@ export function KPICards() {
           <div className='flex items-center gap-2 mb-2'>
             <div className={`w-3 h-3 rounded-full ${cycleStatus.color}`}></div>
             <span className='text-sm font-medium'>{cycleStatus.phase}</span>
-            {cycleStatus.status === 'active' && (
-              <span className='text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full'>
-                Activa
-              </span>
-            )}
             {cycleStatus.status === 'upcoming' && (
               <span className='text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full'>
                 Próxima

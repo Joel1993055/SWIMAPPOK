@@ -6,24 +6,24 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import {
-  AlertTriangle,
-  Bot,
-  Brain,
-  CheckCircle,
-  Heart,
-  Lightbulb,
-  Settings,
-  Sparkles,
-  Target,
-  X,
+    AlertTriangle,
+    Bot,
+    Brain,
+    CheckCircle,
+    Heart,
+    Lightbulb,
+    Settings,
+    Sparkles,
+    Target,
+    X,
 } from 'lucide-react';
 import React, { useState } from 'react';
 
@@ -68,7 +68,7 @@ export function AICoach({ className }: AICoachProps) {
       const mappedAnalysis = mapContextAnalysisToStore(currentAnalysis);
       setAnalysis(mappedAnalysis);
     }
-  }, [currentAnalysis, storeAnalysis, setAnalysis]);
+  }, [currentAnalysis, storeAnalysis]); // Removido setAnalysis de las dependencias
 
   const getRecoveryStatusColor = (status: string) => {
     switch (status) {
@@ -276,7 +276,9 @@ export function AICoach({ className }: AICoachProps) {
                 <div className='flex items-start gap-2'>
                   <Lightbulb className='h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0' />
                   <div className='flex-1'>
-                    <AlertDescription>{advice}</AlertDescription>
+                    <AlertDescription>
+                      {typeof advice === 'string' ? advice : advice.message || advice.title || 'Recomendación'}
+                    </AlertDescription>
                   </div>
                 </div>
               </Alert>

@@ -20,9 +20,9 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { getSessions, type Session } from '@/lib/actions/sessions';
+import { useSessionsStore } from '@/lib/store/unified';
 import { AreaChartIcon, BarChart3 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
     Area,
     AreaChart,
@@ -52,7 +52,7 @@ const zoneLabels = {
 };
 
 // Función para generar datos de la semana actual
-const generateWeeklyData = (sessions: Session[]) => {
+const generateWeeklyData = (sessions: any[]) => {
   const today = new Date();
   const startOfWeek = new Date(today);
   startOfWeek.setDate(today.getDate() - today.getDay()); // Domingo
@@ -137,26 +137,8 @@ const chartConfig: ChartConfig = {
 const areaChartConfig = chartConfig;
 
 export function VisitorsChart() {
-  const [sessions, setSessions] = useState<Session[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { sessions, isLoading } = useSessionsStore();
   const [chartType, setChartType] = useState<'bar' | 'area'>('bar');
-
-  // Cargar sesiones reales desde Supabase
-  useEffect(() => {
-    const loadSessions = async () => {
-      try {
-        const data = await getSessions();
-        setSessions(data);
-      } catch (error) {
-        console.error('Error cargando sesiones:', error);
-        setSessions([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadSessions();
-  }, []);
 
   // Generar datos de la semana actual
   const chartData = generateWeeklyData(sessions);
@@ -172,10 +154,11 @@ export function VisitorsChart() {
     totalMeters: day.totalMeters,
   }));
 
-  // Debug temporal (comentado para producción)
+  // Debug para verificar conexión (comentado para producción)
   // console.log("=== DEBUG PROGRESO SEMANAL ===");
-  // console.log("Sessions cargadas:", sessions);
+  // console.log("Sessions del store:", sessions);
   // console.log("Datos del gráfico generados:", chartData);
+  // console.log("Total semanal calculado:", chartData.reduce((total, day) => total + day.totalMeters, 0));
 
   // Calcular total semanal
   const totalSemanal = chartData.reduce((total, day) => {
