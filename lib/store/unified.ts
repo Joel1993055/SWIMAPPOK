@@ -3,15 +3,15 @@
 // =====================================================
 
 import type {
-  AICoachAdvice,
-  AICoachAnalysis,
-  AuthState,
-  Competition,
-  Session,
-  TrainingPhase,
-  TrainingReport,
-  TrainingZones,
-  User,
+    AICoachAdvice,
+    AICoachAnalysis,
+    AuthState,
+    Competition,
+    Session,
+    TrainingPhase,
+    TrainingReport,
+    TrainingZones,
+    User,
 } from '@/lib/types';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -337,52 +337,90 @@ const zoneMethodologies = {
 };
 
 // Default phases data
-const defaultPhases: TrainingPhase[] = [
-  {
-    id: 'base',
-    name: 'Base',
-    duration: 4,
-    description: 'Fase de construcción de la base aeróbica y técnica',
-    focus: ['Aeróbico', 'Técnica'],
-    intensity: 4,
-    volume: 25000,
-    color: 'bg-blue-500',
-    order: 1,
-  },
-  {
-    id: 'construccion',
-    name: 'Construcción',
-    duration: 4,
-    description: 'Fase de desarrollo de la potencia aeróbica y umbral',
-    focus: ['Umbral', 'Aeróbico'],
-    intensity: 6,
-    volume: 30000,
-    color: 'bg-green-500',
-    order: 2,
-  },
-  {
-    id: 'especifico',
-    name: 'Específico',
-    duration: 4,
-    description: 'Fase de trabajo específico de velocidad y VO2 Max',
-    focus: ['VO2 Max', 'Velocidad'],
-    intensity: 8,
-    volume: 28000,
-    color: 'bg-orange-500',
-    order: 3,
-  },
-  {
-    id: 'pico',
-    name: 'Pico',
-    duration: 2,
-    description: 'Fase de puesta a punto y competición',
-    focus: ['Velocidad', 'Recuperación'],
-    intensity: 9,
-    volume: 20000,
-    color: 'bg-red-500',
-    order: 4,
-  },
-];
+// Función para generar fechas de ejemplo basadas en la fecha actual
+const generateExamplePhases = (): TrainingPhase[] => {
+  const today = new Date();
+  const startDate = new Date(today);
+  startDate.setDate(today.getDate() - 7); // Empezar hace una semana para tener una fase activa
+  
+  const calculateEndDate = (start: Date, weeks: number): string => {
+    const end = new Date(start);
+    end.setDate(start.getDate() + (weeks * 7));
+    return end.toISOString().split('T')[0];
+  };
+  
+  const phase1Start = startDate.toISOString().split('T')[0];
+  const phase1End = calculateEndDate(startDate, 4);
+  
+  const phase2Start = new Date(phase1End);
+  phase2Start.setDate(phase2Start.getDate() + 1);
+  const phase2End = calculateEndDate(phase2Start, 4);
+  
+  const phase3Start = new Date(phase2End);
+  phase3Start.setDate(phase3Start.getDate() + 1);
+  const phase3End = calculateEndDate(phase3Start, 4);
+  
+  const phase4Start = new Date(phase3End);
+  phase4Start.setDate(phase4Start.getDate() + 1);
+  const phase4End = calculateEndDate(phase4Start, 2);
+  
+  return [
+    {
+      id: 'base',
+      name: 'Base',
+      duration: 4,
+      description: 'Fase de construcción de la base aeróbica y técnica',
+      focus: ['Aeróbico', 'Técnica'],
+      intensity: 4,
+      volume: 25000,
+      color: 'bg-blue-500',
+      order: 1,
+      startDate: phase1Start,
+      endDate: phase1End,
+    },
+    {
+      id: 'construccion',
+      name: 'Construcción',
+      duration: 4,
+      description: 'Fase de desarrollo de la potencia aeróbica y umbral',
+      focus: ['Umbral', 'Aeróbico'],
+      intensity: 6,
+      volume: 30000,
+      color: 'bg-green-500',
+      order: 2,
+      startDate: phase2Start.toISOString().split('T')[0],
+      endDate: phase2End,
+    },
+    {
+      id: 'especifico',
+      name: 'Específico',
+      duration: 4,
+      description: 'Fase de trabajo específico de velocidad y VO2 Max',
+      focus: ['VO2 Max', 'Velocidad'],
+      intensity: 8,
+      volume: 28000,
+      color: 'bg-orange-500',
+      order: 3,
+      startDate: phase3Start.toISOString().split('T')[0],
+      endDate: phase3End,
+    },
+    {
+      id: 'pico',
+      name: 'Pico',
+      duration: 2,
+      description: 'Fase de puesta a punto y competición',
+      focus: ['Velocidad', 'Recuperación'],
+      intensity: 9,
+      volume: 20000,
+      color: 'bg-red-500',
+      order: 4,
+      startDate: phase4Start.toISOString().split('T')[0],
+      endDate: phase4End,
+    },
+  ];
+};
+
+const defaultPhases: TrainingPhase[] = generateExamplePhases();
 
 export const useTrainingStore = create<TrainingStore>()(
   persist(
@@ -455,12 +493,29 @@ export const useTrainingStore = create<TrainingStore>()(
       getCurrentPhase: () => {
         const { phases } = get();
         const now = new Date().toISOString().split('T')[0];
-        return (
-          phases
-            .filter(phase => phase.startDate && phase.endDate)
-            .find(phase => phase.startDate! <= now && phase.endDate! >= now) ||
-          null
-        );
+        
+        // Buscar fase activa por fechas
+        const activePhase = phases
+          .filter(phase => phase.startDate && phase.endDate)
+          .find(phase => phase.startDate! <= now && phase.endDate! >= now);
+        
+        if (activePhase) return activePhase;
+        
+        // Si no hay fase activa, buscar la próxima fase
+        const upcomingPhases = phases
+          .filter(phase => phase.startDate && phase.startDate > now)
+          .sort((a, b) => new Date(a.startDate!).getTime() - new Date(b.startDate!).getTime());
+        
+        if (upcomingPhases.length > 0) {
+          return upcomingPhases[0];
+        }
+        
+        // Si no hay fases futuras, buscar la última fase completada
+        const completedPhases = phases
+          .filter(phase => phase.endDate && phase.endDate < now)
+          .sort((a, b) => new Date(b.endDate!).getTime() - new Date(a.endDate!).getTime());
+        
+        return completedPhases.length > 0 ? completedPhases[0] : null;
       },
 
       getPhaseById: id => {

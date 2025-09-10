@@ -158,10 +158,11 @@ export function KPICards() {
         progress: 0,
         description: 'No hay fase de entrenamiento activa',
         color: 'bg-gray-500',
+        status: 'inactive',
+        daysRemaining: 0,
       };
     }
 
-    // Calcular progreso de la fase actual
     const now = new Date();
     const phaseStart = currentPhase.startDate
       ? new Date(currentPhase.startDate)
@@ -169,22 +170,54 @@ export function KPICards() {
     const phaseEnd = currentPhase.endDate
       ? new Date(currentPhase.endDate)
       : now;
+    
+    // Determinar el estado de la fase
+    let status: 'upcoming' | 'active' | 'completed' = 'upcoming';
+    if (phaseStart <= now && phaseEnd >= now) {
+      status = 'active';
+    } else if (phaseEnd < now) {
+      status = 'completed';
+    }
+
+    // Calcular progreso de la fase actual
     const totalPhaseDays = Math.ceil(
       (phaseEnd.getTime() - phaseStart.getTime()) / (1000 * 60 * 60 * 24)
     );
     const daysPassed = Math.ceil(
       (now.getTime() - phaseStart.getTime()) / (1000 * 60 * 60 * 24)
     );
-    const progress = Math.min(
-      Math.max((daysPassed / totalPhaseDays) * 100, 0),
-      100
+    const daysRemaining = Math.ceil(
+      (phaseEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
     );
+    
+    const progress = status === 'active' 
+      ? Math.min(Math.max((daysPassed / totalPhaseDays) * 100, 0), 100)
+      : status === 'completed' ? 100 : 0;
+
+    // Generar descripción basada en el estado
+    let description = currentPhase.description;
+    let additionalInfo = '';
+    
+    if (status === 'upcoming') {
+      description = `Inicia en ${Math.max(0, daysRemaining)} días`;
+      additionalInfo = `Duración: ${currentPhase.duration} semanas`;
+    } else if (status === 'active') {
+      const daysInPhase = Math.ceil((now.getTime() - phaseStart.getTime()) / (1000 * 60 * 60 * 24));
+      description = `${Math.max(0, daysRemaining)} días restantes`;
+      additionalInfo = `${Math.max(0, daysInPhase)} días en la fase`;
+    } else if (status === 'completed') {
+      description = `Completada hace ${Math.abs(daysRemaining)} días`;
+      additionalInfo = `Duración: ${currentPhase.duration} semanas`;
+    }
 
     return {
       phase: currentPhase.name,
       progress: Math.round(progress),
-      description: currentPhase.description,
+      description,
+      additionalInfo,
       color: currentPhase.color,
+      status,
+      daysRemaining: Math.max(0, daysRemaining),
     };
   };
 
@@ -295,6 +328,21 @@ export function KPICards() {
           <div className='flex items-center gap-2 mb-2'>
             <div className={`w-3 h-3 rounded-full ${cycleStatus.color}`}></div>
             <span className='text-sm font-medium'>{cycleStatus.phase}</span>
+            {cycleStatus.status === 'active' && (
+              <span className='text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full'>
+                Activa
+              </span>
+            )}
+            {cycleStatus.status === 'upcoming' && (
+              <span className='text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full'>
+                Próxima
+              </span>
+            )}
+            {cycleStatus.status === 'completed' && (
+              <span className='text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded-full'>
+                Completada
+              </span>
+            )}
           </div>
           <Progress value={cycleStatus.progress} className='h-2 mb-2' />
           <p className='text-xs text-muted-foreground'>
@@ -303,6 +351,11 @@ export function KPICards() {
           <p className='text-xs text-muted-foreground mt-1'>
             {cycleStatus.description}
           </p>
+          {cycleStatus.additionalInfo && (
+            <p className='text-xs text-muted-foreground mt-1'>
+              {cycleStatus.additionalInfo}
+            </p>
+          )}
         </CardContent>
       </Card>
 

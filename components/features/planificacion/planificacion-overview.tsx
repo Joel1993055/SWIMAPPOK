@@ -282,9 +282,8 @@ export function PlanificacionOverview() {
   );
 
   // Estado para la competición principal (prioridad alta)
-  const [mainCompetition, setMainCompetition] = useState<Competition | null>(
-    getMainCompetition()
-  );
+  const [mainCompetition, setMainCompetition] = useState<Competition | null>(null);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   // Estados para edición
   const [editingPhase, setEditingPhase] = useState<string | null>(null);
@@ -293,6 +292,10 @@ export function PlanificacionOverview() {
   );
   const [isAddingPhase, setIsAddingPhase] = useState(false);
   const [isAddingCompetition, setIsAddingCompetition] = useState(false);
+  const [phaseScheduleInfo, setPhaseScheduleInfo] = useState<{
+    message: string;
+    type: 'info' | 'success' | 'warning';
+  } | null>(null);
 
   // Estados para formularios
   const [phaseForm, setPhaseForm] = useState({
@@ -322,10 +325,18 @@ export function PlanificacionOverview() {
     comp => comp.id === selectedCompetition
   );
 
-  // Sincronizar la competición principal cuando cambien las competiciones
+  // Inicializar después de la hidratación para evitar errores de SSR
   useEffect(() => {
+    setIsHydrated(true);
     setMainCompetition(getMainCompetition());
   }, [getMainCompetition]);
+
+  // Sincronizar la competición principal cuando cambien las competiciones
+  useEffect(() => {
+    if (isHydrated) {
+      setMainCompetition(getMainCompetition());
+    }
+  }, [getMainCompetition, isHydrated]);
 
   // Reiniciar formulario cuando se abra el modal de agregar fase
   useEffect(() => {
@@ -373,6 +384,98 @@ export function PlanificacionOverview() {
     setEditingPhase(phase.id);
   };
 
+  // Función para calcular la fecha de inicio de la siguiente fase
+  const getNextPhaseStartDate = (): string | undefined => {
+    if (!phaseForm.startDate) return undefined;
+    
+    // Obtener todas las fases ordenadas por fecha de inicio
+    const phasesWithDates = phases
+      .filter(phase => phase.startDate)
+      .sort((a, b) => new Date(a.startDate!).getTime() - new Date(b.startDate!).getTime());
+    
+    // Si no hay fases con fechas, usar la fecha del formulario
+    if (phasesWithDates.length === 0) {
+      return phaseForm.startDate;
+    }
+    
+    // Encontrar la última fase por fecha de fin
+    const lastPhase = phasesWithDates.reduce((latest, phase) => {
+      if (!phase.endDate) return latest;
+      const phaseEnd = new Date(phase.endDate);
+      const latestEnd = latest ? new Date(latest.endDate!) : new Date(0);
+      return phaseEnd > latestEnd ? phase : latest;
+    }, null as TrainingPhase | null);
+    
+    // Si hay una última fase con fecha de fin, la siguiente fase empieza al día siguiente
+    if (lastPhase?.endDate) {
+      const nextStart = new Date(lastPhase.endDate);
+      nextStart.setDate(nextStart.getDate() + 1);
+      return nextStart.toISOString().split('T')[0];
+    }
+    
+    // Si no hay fases con fechas de fin, usar la fecha del formulario
+    return phaseForm.startDate;
+  };
+
+  // Función para recalcular fechas de todas las fases después de una edición
+  const recalculateAllPhaseDates = (updatedPhase: TrainingPhase) => {
+    const calculateEndDate = (startDate: string, durationWeeks: number): string => {
+      const start = new Date(startDate);
+      const end = new Date(start);
+      end.setDate(start.getDate() + (durationWeeks * 7));
+      return end.toISOString().split('T')[0];
+    };
+
+    // Obtener todas las fases excepto la que se está editando, ordenadas por orden
+    const otherPhases = phases
+      .filter(phase => phase.id !== updatedPhase.id)
+      .sort((a, b) => a.order - b.order);
+
+    // Recalcular fechas secuencialmente
+    let currentDate = new Date(updatedPhase.startDate!);
+    const updatedPhases: TrainingPhase[] = [];
+
+    // Agregar la fase actualizada
+    updatedPhases.push({
+      ...updatedPhase,
+      endDate: calculateEndDate(updatedPhase.startDate!, updatedPhase.duration),
+    });
+
+    // Recalcular las siguientes fases
+    for (const phase of otherPhases) {
+      if (phase.order > updatedPhase.order) {
+        // Fase posterior: empieza al día siguiente de la anterior
+        currentDate.setDate(currentDate.getDate() + 1);
+        const newStartDate = currentDate.toISOString().split('T')[0];
+        const newEndDate = calculateEndDate(newStartDate, phase.duration);
+        
+        updatedPhases.push({
+          ...phase,
+          startDate: newStartDate,
+          endDate: newEndDate,
+          updated_at: new Date().toISOString(),
+        });
+        
+        // Actualizar currentDate para la siguiente fase
+        currentDate = new Date(newEndDate);
+      } else {
+        // Fase anterior: mantener fechas originales
+        updatedPhases.push(phase);
+      }
+    }
+
+    // Actualizar todas las fases en el store
+    updatedPhases.forEach(phase => {
+      if (phase.id !== updatedPhase.id) {
+        updatePhase(phase.id, {
+          startDate: phase.startDate,
+          endDate: phase.endDate,
+          updated_at: phase.updated_at,
+        });
+      }
+    });
+  };
+
   const handleSavePhase = () => {
     // Validar que todos los campos requeridos estén llenos
     if (!phaseForm.name.trim()) {
@@ -389,8 +492,23 @@ export function PlanificacionOverview() {
     }
 
     try {
+      // Calcular fecha de fin basada en la duración
+      const calculateEndDate = (startDate: string, durationWeeks: number): string => {
+        const start = new Date(startDate);
+        const end = new Date(start);
+        end.setDate(start.getDate() + (durationWeeks * 7));
+        return end.toISOString().split('T')[0];
+      };
+
+      // Obtener la fecha de inicio correcta (secuencial si es necesario)
+      const actualStartDate = getNextPhaseStartDate() || phaseForm.startDate;
+
       if (isAddingPhase) {
-        // Crear nueva fase
+        // Crear nueva fase con fechas calculadas secuencialmente
+        const endDate = actualStartDate 
+          ? calculateEndDate(actualStartDate, phaseForm.duration)
+          : undefined;
+
         const newPhase: TrainingPhase = {
           id: `phase-${Date.now()}`,
           name: phaseForm.name,
@@ -400,13 +518,52 @@ export function PlanificacionOverview() {
           intensity: phaseForm.intensity,
           volume: phaseForm.volume,
           color: 'bg-purple-500', // Color por defecto
-          startDate: phaseForm.startDate,
+          startDate: actualStartDate,
+          endDate: endDate,
           order: phaseForm.order,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         };
         addPhase(newPhase);
         console.log('Fase agregada:', newPhase);
+        
+        // Mostrar información sobre las fechas calculadas
+        if (actualStartDate !== phaseForm.startDate) {
+          console.log(`Fase programada secuencialmente: ${actualStartDate} - ${endDate}`);
+          setPhaseScheduleInfo({
+            message: `Fase programada secuencialmente: ${new Date(actualStartDate).toLocaleDateString('es-ES')} - ${new Date(endDate!).toLocaleDateString('es-ES')}`,
+            type: 'info'
+          });
+          // Limpiar el mensaje después de 5 segundos
+          setTimeout(() => setPhaseScheduleInfo(null), 5000);
+        } else {
+          setPhaseScheduleInfo({
+            message: `Fase creada: ${new Date(actualStartDate).toLocaleDateString('es-ES')} - ${new Date(endDate!).toLocaleDateString('es-ES')}`,
+            type: 'success'
+          });
+          setTimeout(() => setPhaseScheduleInfo(null), 3000);
+        }
       } else if (editingPhase) {
-        // Actualizar fase existente
+        // Crear la fase actualizada
+        const updatedPhase: TrainingPhase = {
+          id: editingPhase,
+          name: phaseForm.name,
+          duration: phaseForm.duration,
+          description: phaseForm.description,
+          focus: phaseForm.focus,
+          intensity: phaseForm.intensity,
+          volume: phaseForm.volume,
+          color: phases.find(p => p.id === editingPhase)?.color || 'bg-purple-500',
+          startDate: phaseForm.startDate,
+          endDate: phaseForm.startDate 
+            ? calculateEndDate(phaseForm.startDate, phaseForm.duration)
+            : undefined,
+          order: phaseForm.order,
+          created_at: phases.find(p => p.id === editingPhase)?.created_at || new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+
+        // Actualizar la fase en el store
         updatePhase(editingPhase, {
           name: phaseForm.name,
           duration: phaseForm.duration,
@@ -415,8 +572,18 @@ export function PlanificacionOverview() {
           intensity: phaseForm.intensity,
           volume: phaseForm.volume,
           startDate: phaseForm.startDate,
+          endDate: phaseForm.startDate 
+            ? calculateEndDate(phaseForm.startDate, phaseForm.duration)
+            : undefined,
           order: phaseForm.order,
+          updated_at: new Date().toISOString(),
         });
+
+        // Recalcular fechas de todas las fases si se cambió la fecha de inicio
+        if (phaseForm.startDate) {
+          recalculateAllPhaseDates(updatedPhase);
+        }
+
         console.log('Fase actualizada:', editingPhase);
       }
 
@@ -581,7 +748,7 @@ export function PlanificacionOverview() {
 
   // Función para calcular días restantes hasta la competición principal
   const getDaysToMainCompetition = () => {
-    if (!mainCompetition) return null;
+    if (!isHydrated || !mainCompetition) return null;
 
     const today = new Date();
     const competitionDate = new Date(mainCompetition.date);
@@ -595,6 +762,28 @@ export function PlanificacionOverview() {
 
   return (
     <div className='space-y-6'>
+      {/* Mensaje informativo sobre programación de fases */}
+      {phaseScheduleInfo && (
+        <div className={`p-4 rounded-lg border ${
+          phaseScheduleInfo.type === 'info' 
+            ? 'bg-blue-50 border-blue-200 text-blue-800'
+            : phaseScheduleInfo.type === 'success'
+            ? 'bg-green-50 border-green-200 text-green-800'
+            : 'bg-yellow-50 border-yellow-200 text-yellow-800'
+        }`}>
+          <div className='flex items-center gap-2'>
+            <div className={`w-2 h-2 rounded-full ${
+              phaseScheduleInfo.type === 'info' 
+                ? 'bg-blue-500'
+                : phaseScheduleInfo.type === 'success'
+                ? 'bg-green-500'
+                : 'bg-yellow-500'
+            }`}></div>
+            <span className='text-sm font-medium'>{phaseScheduleInfo.message}</span>
+          </div>
+        </div>
+      )}
+
       {/* Header con objetivos principales */}
       <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
         <Card className='bg-muted/50 border-muted'>
@@ -605,7 +794,16 @@ export function PlanificacionOverview() {
             <Target className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            {mainCompetition ? (
+            {!isHydrated ? (
+              <>
+                <div className='text-2xl font-bold text-muted-foreground'>
+                  Cargando...
+                </div>
+                <p className='text-xs text-muted-foreground'>
+                  Calculando días restantes
+                </p>
+              </>
+            ) : mainCompetition ? (
               <>
                 <div className='text-2xl font-bold'>
                   {daysToCompetition !== null
