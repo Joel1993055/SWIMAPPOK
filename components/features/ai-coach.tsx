@@ -2,7 +2,6 @@
 
 import { useAICoachStore } from '@/lib/store/unified';
 // NUEVO: Importar el store unificado
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,18 +11,12 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import {
-    AlertTriangle,
     Bot,
     Brain,
-    CheckCircle,
-    Heart,
-    Lightbulb,
     Settings,
     Sparkles,
-    Target,
-    X,
+    X
 } from 'lucide-react';
 import React, { useState } from 'react';
 
@@ -170,119 +163,15 @@ export function AICoach({ className }: AICoachProps) {
               Análisis del Entrenamiento
             </CardTitle>
           </CardHeader>
-          <CardContent className='space-y-4'>
-            {/* Score General */}
-            <div className='text-center p-4 border rounded-lg bg-background/50'>
-              <div className='text-3xl font-bold text-primary mb-2'>
+          <CardContent>
+            <div className='text-center p-4'>
+              <div className='text-2xl font-bold text-primary mb-2'>
                 {currentAnalysis.overallScore}/100
               </div>
-              <div className='text-sm text-muted-foreground mb-3'>
+              <div className='text-sm text-muted-foreground'>
                 Puntuación General
               </div>
-              <Progress value={currentAnalysis.overallScore} className='h-2' />
             </div>
-
-            {/* Estado de Recuperación */}
-            <div className='flex items-center justify-between p-3 border rounded-lg bg-background/50'>
-              <div className='flex items-center gap-2'>
-                <Heart className='h-4 w-4' />
-                <span className='font-medium'>Estado de Recuperación</span>
-              </div>
-              <Badge
-                className={getRecoveryStatusColor(
-                  currentAnalysis.recoveryStatus || 'fair'
-                )}
-              >
-                {getRecoveryStatusText(
-                  currentAnalysis.recoveryStatus || 'fair'
-                )}
-              </Badge>
-            </div>
-
-            {/* Próximo Enfoque */}
-            <div className='p-3 border rounded-lg bg-background/50'>
-              <div className='flex items-center gap-2 mb-2'>
-                <Target className='h-4 w-4' />
-                <span className='font-medium'>Próximo Enfoque</span>
-              </div>
-              <p className='text-sm text-muted-foreground'>
-                {currentAnalysis.nextTrainingFocus ||
-                  'Enfoque en técnica y resistencia'}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Fortalezas y Mejoras */}
-      {currentAnalysis && (
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-          {/* Fortalezas */}
-          <Card className='bg-muted/50'>
-            <CardHeader>
-              <CardTitle className='flex items-center gap-2 text-green-600'>
-                <CheckCircle className='h-5 w-5' />
-                Fortalezas
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className='space-y-2'>
-                {currentAnalysis.strengths.map((strength, index) => (
-                  <li key={index} className='flex items-start gap-2 text-sm'>
-                    <CheckCircle className='h-3 w-3 text-green-500 mt-0.5 flex-shrink-0' />
-                    <span>{strength}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-
-          {/* Mejoras */}
-          <Card className='bg-muted/50'>
-            <CardHeader>
-              <CardTitle className='flex items-center gap-2 text-yellow-600'>
-                <AlertTriangle className='h-5 w-5' />
-                Áreas de Mejora
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className='space-y-2'>
-                {(currentAnalysis.improvements || []).map(
-                  (improvement, index) => (
-                    <li key={index} className='flex items-start gap-2 text-sm'>
-                      <AlertTriangle className='h-3 w-3 text-yellow-500 mt-0.5 flex-shrink-0' />
-                      <span>{improvement}</span>
-                    </li>
-                  )
-                )}
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* Recomendaciones */}
-      {currentAnalysis && currentAnalysis.recommendations.length > 0 && (
-        <Card className='bg-muted/50'>
-          <CardHeader>
-            <CardTitle className='flex items-center gap-2'>
-              <Lightbulb className='h-5 w-5' />
-              Recomendaciones Personalizadas
-            </CardTitle>
-          </CardHeader>
-          <CardContent className='space-y-3'>
-            {currentAnalysis.recommendations.map((advice, index) => (
-              <Alert key={index}>
-                <div className='flex items-start gap-2'>
-                  <Lightbulb className='h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0' />
-                  <div className='flex-1'>
-                    <AlertDescription>
-                      {typeof advice === 'string' ? advice : advice.message || advice.title || 'Recomendación'}
-                    </AlertDescription>
-                  </div>
-                </div>
-              </Alert>
-            ))}
           </CardContent>
         </Card>
       )}

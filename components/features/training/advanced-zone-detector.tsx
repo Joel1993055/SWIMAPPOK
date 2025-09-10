@@ -7,28 +7,28 @@ import React from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 
 import {
-  Activity,
-  AlertCircle,
-  BarChart3,
-  Brain,
-  CheckCircle,
-  Clock,
-  Info,
-  Lightbulb,
-  Loader2,
-  MapPin,
-  Target,
-  TrendingUp,
-  Zap,
+    Activity,
+    AlertCircle,
+    BarChart3,
+    Brain,
+    CheckCircle,
+    Clock,
+    Info,
+    Lightbulb,
+    Loader2,
+    MapPin,
+    Target,
+    TrendingUp,
+    Zap,
 } from 'lucide-react';
 
 interface AdvancedZoneDetectorProps {
@@ -95,7 +95,7 @@ export function AdvancedZoneDetector({
     return <AlertCircle className='h-4 w-4 text-red-600' />;
   };
 
-  if (!content.trim()) {
+  if (!content || !content.trim()) {
     return (
       <Card className='bg-muted/50'>
         <CardHeader>
@@ -356,6 +356,7 @@ export function AdvancedZoneDetector({
 
       {/* Advertencia si no se detectan zonas */}
       {detection.detectedZones.length === 0 &&
+        content &&
         content.length > 50 &&
         !detection.isLoading && (
           <Alert>
