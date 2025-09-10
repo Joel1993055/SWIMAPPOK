@@ -1,5 +1,6 @@
 'use client';
 
+import { QuickCreate } from '@/components/forms/quick-create';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -343,13 +344,19 @@ export function WeeklyTrainingSchedule({
                   >
                     {trainings.length === 0 ? (
                       <div className='flex items-center justify-center h-full'>
-                        <Button
-                          size='sm'
-                          variant='ghost'
-                          className='h-12 w-12 p-0 opacity-50 hover:opacity-100'
-                        >
-                          <Plus className='h-6 w-6' />
-                        </Button>
+                        <QuickCreate
+                          defaultDate={format(day, 'yyyy-MM-dd')}
+                          defaultTimeSlot="AM"
+                          trigger={
+                            <Button
+                              size='sm'
+                              variant='ghost'
+                              className='h-12 w-12 p-0 opacity-50 hover:opacity-100'
+                            >
+                              <Plus className='h-6 w-6' />
+                            </Button>
+                          }
+                        />
                       </div>
                     ) : (
                       <div className='h-full flex flex-col'>
@@ -399,13 +406,19 @@ export function WeeklyTrainingSchedule({
                   >
                     {trainings.length === 0 ? (
                       <div className='flex items-center justify-center h-full'>
-                        <Button
-                          size='sm'
-                          variant='ghost'
-                          className='h-12 w-12 p-0 opacity-50 hover:opacity-100'
-                        >
-                          <Plus className='h-6 w-6' />
-                        </Button>
+                        <QuickCreate
+                          defaultDate={format(day, 'yyyy-MM-dd')}
+                          defaultTimeSlot="PM"
+                          trigger={
+                            <Button
+                              size='sm'
+                              variant='ghost'
+                              className='h-12 w-12 p-0 opacity-50 hover:opacity-100'
+                            >
+                              <Plus className='h-6 w-6' />
+                            </Button>
+                          }
+                        />
                       </div>
                     ) : (
                       <div className='h-full flex flex-col'>

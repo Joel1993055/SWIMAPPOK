@@ -23,7 +23,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { createSession } from '@/lib/actions/sessions';
 import { Calendar, Plus, Save, Target, X, Zap } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // Tipos de datos
 interface QuickSession {
@@ -51,17 +51,36 @@ const OBJECTIVE_OPTIONS = [
   { value: 'Competición', label: 'Competición', color: 'bg-yellow-500' },
 ];
 
-export function QuickCreate() {
+interface QuickCreateProps {
+  defaultDate?: string;
+  defaultTimeSlot?: 'AM' | 'PM';
+  trigger?: React.ReactNode;
+}
+
+export function QuickCreate({ 
+  defaultDate, 
+  defaultTimeSlot = 'AM',
+  trigger 
+}: QuickCreateProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [session, setSession] = useState<QuickSession>({
-    date: new Date().toISOString().split('T')[0],
+    date: defaultDate || new Date().toISOString().split('T')[0],
     distance: 0,
     objective: '',
-    time_slot: 'AM',
+    time_slot: defaultTimeSlot,
     content: '',
     zone_volumes: { z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 },
   });
+
+  // Actualizar la sesión cuando cambien las props
+  useEffect(() => {
+    setSession(prev => ({
+      ...prev,
+      date: defaultDate || prev.date,
+      time_slot: defaultTimeSlot || prev.time_slot,
+    }));
+  }, [defaultDate, defaultTimeSlot]);
 
   const handleZoneVolumeChange = (
     zone: 'z1' | 'z2' | 'z3' | 'z4' | 'z5',
@@ -138,13 +157,15 @@ export function QuickCreate() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button
-          className='min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground'
-          size='sm'
-        >
-          <Plus className='w-4 h-4 mr-2' />
-          <span>Quick Create</span>
-        </Button>
+        {trigger || (
+          <Button
+            className='min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground'
+            size='sm'
+          >
+            <Plus className='w-4 h-4 mr-2' />
+            <span>Quick Create</span>
+          </Button>
+        )}
       </DialogTrigger>
 
       <DialogContent className='max-w-4xl max-h-[90vh] overflow-y-auto'>

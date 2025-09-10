@@ -31,7 +31,18 @@ export function detectZoneFromSession(session: {
 
 // Función para calcular volúmenes por zona desde sesiones
 export function calculateZoneVolumes(
-  sessions: Array<{ rpe?: number; type?: string; distance?: number }>
+  sessions: Array<{ 
+    rpe?: number; 
+    type?: string; 
+    distance?: number;
+    zone_volumes?: {
+      z1?: number;
+      z2?: number;
+      z3?: number;
+      z4?: number;
+      z5?: number;
+    };
+  }>
 ): ZoneData {
   const zones: ZoneData = {
     Z1: 0,
@@ -42,9 +53,19 @@ export function calculateZoneVolumes(
   };
 
   sessions.forEach(session => {
-    const zone = detectZoneFromSession(session);
-    const distance = session.distance || 0;
-    zones[zone] += distance;
+    // Si hay datos de zone_volumes guardados, usarlos directamente
+    if (session.zone_volumes) {
+      zones.Z1 += session.zone_volumes.z1 || 0;
+      zones.Z2 += session.zone_volumes.z2 || 0;
+      zones.Z3 += session.zone_volumes.z3 || 0;
+      zones.Z4 += session.zone_volumes.z4 || 0;
+      zones.Z5 += session.zone_volumes.z5 || 0;
+    } else {
+      // Fallback: usar detección por RPE si no hay zone_volumes
+      const zone = detectZoneFromSession(session);
+      const distance = session.distance || 0;
+      zones[zone] += distance;
+    }
   });
 
   return zones;
