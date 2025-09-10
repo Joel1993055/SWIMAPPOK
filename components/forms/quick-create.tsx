@@ -1,5 +1,6 @@
 'use client';
 
+import { AIZoneDetection } from '@/components/features/training/ai-zone-detection';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -272,6 +273,20 @@ export function QuickCreate({
               </div>
             </form>
           </div>
+
+          {/* Detección automática de IA */}
+          <AIZoneDetection
+            content={session.content}
+            objective={session.objective}
+            timeSlot={session.time_slot}
+            onZonesDetected={(zones) => {
+              setSession(prev => ({
+                ...prev,
+                zone_volumes: zones
+              }));
+            }}
+            disabled={isLoading}
+          />
 
           {/* Volúmenes por zona - Minimalista */}
           <div className='space-y-3'>

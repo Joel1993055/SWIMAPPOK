@@ -1,26 +1,26 @@
 'use client';
 
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
 import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
+    ChartConfig,
+    ChartContainer,
+    ChartTooltip,
+    ChartTooltipContent,
 } from '@/components/ui/chart';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getSessions, type Session } from '@/lib/actions/sessions';
 import {
-  calculateZoneVolumes,
-  metersToKm,
-  zoneColors,
-  zoneLabels,
+    calculateZoneVolumes,
+    metersToKm,
+    zoneColors,
+    zoneLabels,
 } from '@/lib/utils/zone-detection';
 import * as React from 'react';
 import { useEffect, useState } from 'react';

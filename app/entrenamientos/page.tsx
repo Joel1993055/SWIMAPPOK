@@ -1,7 +1,6 @@
 'use client';
 
-import { AICoach } from '@/components/features/ai-coach';
-import { AdvancedZoneDetector } from '@/components/features/training/advanced-zone-detector';
+import { AIZoneDetection } from '@/components/features/training/ai-zone-detection';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { SiteHeader } from '@/components/layout/site-header';
 import { Badge } from '@/components/ui/badge';
@@ -15,7 +14,6 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Textarea } from '@/components/ui/textarea';
 import { createSession, deleteSession, updateSession, type Session as SupabaseSession } from '@/lib/actions/sessions';
 import { useSessionsData } from '@/lib/hooks/use-sessions-data';
-import { useAICoachStore } from '@/lib/store/unified';
 import type { Session } from '@/lib/types/session';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -193,7 +191,6 @@ function TrainingPageContent() {
 
   // Hook de datos
   const { sessions, isLoading: dataLoading, loadSessions } = useSessionsData();
-  const { analyzeTraining } = useAICoachStore();
 
   // =====================================================
   // EFECTOS
@@ -320,7 +317,6 @@ function TrainingPageContent() {
           onCancelEdit={handleCancelEdit}
           clubsData={CLUBS_DATA}
           objectiveOptions={OBJECTIVE_OPTIONS}
-          analyzeTraining={analyzeTraining}
           onRefresh={async () => {
             setIsRefreshing(true);
             try {
@@ -352,7 +348,6 @@ interface TrainingFormProps {
   onCancelEdit: () => void;
   clubsData: ClubsData;
   objectiveOptions: readonly Array<{ value: string; label: string }>;
-  analyzeTraining: (data: any) => void;
   onRefresh: () => Promise<void>;
 }
 
@@ -363,7 +358,6 @@ function TrainingForm({
   onCancelEdit,
   clubsData,
   objectiveOptions,
-  analyzeTraining,
   onRefresh,
 }: TrainingFormProps) {
   // Estados del formulario
@@ -514,15 +508,6 @@ function TrainingForm({
       await onRefresh();
       console.log('Sesiones recargadas correctamente');
 
-      // Analizar con AI Coach
-      await analyzeTraining({
-        title: formData.title,
-        content: formData.content,
-        type: 'Personalizado',
-        date: formData.date,
-        totalDistance: totalMeters,
-        detectedZones: [],
-      });
 
       // Reset form solo si no estamos editando
       if (!editingTraining) {
@@ -546,7 +531,7 @@ function TrainingForm({
     } finally {
       setIsLoading(false);
     }
-  }, [formData, editingTraining, clubsData, onSaveSuccess, onSaveError, analyzeTraining, onRefresh]);
+  }, [formData, editingTraining, clubsData, onSaveSuccess, onSaveError, onRefresh]);
 
   // =====================================================
   // CÁLCULOS DERIVADOS
@@ -874,15 +859,15 @@ function TrainingForm({
 
       {/* Panel lateral */}
       <div className="lg:col-span-1 space-y-6">
-            {/* AI Coach */}
-            <AICoach />
-
-            {/* Detector de Zonas Avanzado */}
-            <AdvancedZoneDetector
-          content={formData.content}
-          trainingType="Personalizado"
-          phase="base"
-              competition={false}
+            {/* Detección Automática de IA */}
+            <AIZoneDetection
+              content={formData.content}
+              objective={formData.objective}
+              timeSlot={formData.timeSlot}
+              onZonesDetected={(zones) => {
+                setZoneTotals(zones);
+              }}
+              disabled={isLoading}
             />
 
             {/* Panel de Ayuda */}

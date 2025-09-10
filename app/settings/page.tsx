@@ -6,20 +6,20 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
@@ -28,22 +28,22 @@ import { Textarea } from '@/components/ui/textarea';
 import { useTrainingStore } from '@/lib/store/unified';
 import { TrainingZones } from '@/lib/types/training';
 import {
-  Activity,
-  Bell,
-  Download,
-  Eye,
-  EyeOff,
-  Globe,
-  Lock,
-  Palette,
-  RotateCcw,
-  Save,
-  Settings as SettingsIcon,
-  Shield,
-  Smartphone,
-  Trash2,
-  Upload,
-  User,
+    Activity,
+    Bell,
+    Download,
+    Eye,
+    EyeOff,
+    Globe,
+    Lock,
+    Palette,
+    RotateCcw,
+    Save,
+    Settings as SettingsIcon,
+    Shield,
+    Smartphone,
+    Trash2,
+    Upload,
+    User,
 } from 'lucide-react';
 import React, { useState } from 'react';
 // NUEVO: Importar el store unificado
