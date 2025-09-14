@@ -250,10 +250,6 @@ export const AnalysisPage = createLazyComponent(
   { chunkName: 'analysis', fallback: RouteFallback }
 );
 
-export const PreviewDashboardPage = createLazyComponent(
-  () => import('@/app/preview-dashboard/page'),
-  { chunkName: 'preview-dashboard', fallback: RouteFallback }
-);
 
 // =====================================================
 // COMPONENTES DE FEATURES

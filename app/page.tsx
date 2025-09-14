@@ -62,14 +62,6 @@ export default function Home() {
             >
               <Link href='/dashboard'>Dashboard</Link>
             </Button>
-            <Button
-              asChild
-              variant='outline'
-              size='lg'
-              className='border-white text-white hover:bg-white hover:text-black'
-            >
-              <Link href='/preview-dashboard'>Preview</Link>
-            </Button>
           </div>
         </div>
       </div>

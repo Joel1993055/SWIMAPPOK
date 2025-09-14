@@ -11,7 +11,6 @@ const path = require('path');
 const BACKUP_DIR = './backups';
 const CRITICAL_FILES = [
   'app/page.tsx',
-  'app/preview-dashboard/page.tsx',
   'app/dashboard-demo/page.tsx',
   'components/dashboard-demo/sidebar.tsx',
   'components/dashboard-demo/navbar.tsx',

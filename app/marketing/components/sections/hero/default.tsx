@@ -57,11 +57,6 @@ export default function Hero({
       text: 'Start Free Trial',
       variant: 'secondary',
     },
-    {
-      href: '/preview-dashboard',
-      text: 'View Demo',
-      variant: 'outline',
-    },
   ],
   className,
 }: HeroProps) {
