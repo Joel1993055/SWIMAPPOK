@@ -30,6 +30,8 @@ import React, { useEffect, useState } from 'react';
 // NUEVO: Importar el store unificado
 
 export function DashboardCalendar() {
+  // SOLUCIÓN: Estado de hidratación para evitar errores SSR
+  const [isHydrated, setIsHydrated] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<{
     day: number;
@@ -45,6 +47,11 @@ export function DashboardCalendar() {
 
   // OPTIMIZADO: Solo usar lo necesario del store
   const { competitions: storeCompetitions } = useCompetitionsStore();
+
+  // SOLUCIÓN: Efecto para manejar la hidratación
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   // NUEVO: Sincronizar datos del context al store
   React.useEffect(() => {
@@ -192,6 +199,40 @@ export function DashboardCalendar() {
   const selectedDayData = getSelectedDayData();
   const selectedDayCompetitions = getSelectedDayCompetitions();
 
+  // SOLUCIÓN: Renderizar solo después de la hidratación
+  if (!isHydrated) {
+    return (
+      <Card className="bg-muted/50 border-muted">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <div className="text-center">
+              <h2 className="text-xl font-semibold capitalize text-gray-900 dark:text-white">
+                Cargando...
+              </h2>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-0 pb-6">
+          <div className="grid grid-cols-7 gap-1 mb-3">
+            {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map(day => (
+              <div
+                key={day}
+                className="h-10 flex items-center justify-center text-sm font-medium text-muted-foreground"
+              >
+                {day}
+              </div>
+            ))}
+          </div>
+          <div className="grid grid-cols-7 gap-1">
+            {Array.from({ length: 35 }, (_, i) => (
+              <div key={i} className="h-10 w-10 flex items-center justify-center text-sm font-medium rounded-lg bg-gray-100 dark:bg-gray-800" />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <>
       <Card className='bg-muted/50 border-muted col-span-3 h-full'>
@@ -311,8 +352,8 @@ export function DashboardCalendar() {
                         </>
                       )}
 
-                      {/* Puntos de competiciones */}
-                      {competitionsOnDay.length > 0 && (
+                      {/* Puntos de competiciones - Solo después de hidratación */}
+                      {competitionsOnDay.length > 0 && isHydrated && (
                         <>
                           {competitionsOnDay.map(comp => (
                             <div

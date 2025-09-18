@@ -86,44 +86,54 @@ export function usePWA(): PWAState & PWAActions {
   useEffect(() => {
     if (!state.isSupported) return;
 
+    // OPTIMIZACIÓN: Registrar SW en background, no bloquear UI
     const registerSW = async () => {
       try {
-        const reg = await navigator.serviceWorker.register('/sw.js', {
-          scope: '/',
-          updateViaCache: 'none',
-        });
+        // Usar requestIdleCallback para no bloquear el hilo principal
+        const registerInBackground = async () => {
+          const reg = await navigator.serviceWorker.register('/sw.js', {
+            scope: '/',
+            updateViaCache: 'none',
+          });
+          setRegistration(reg);
 
-        setRegistration(reg);
+          // Verificar actualizaciones
+          reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            if (newWorker) {
+              setState(prev => ({ ...prev, installing: true }));
 
-        // Verificar actualizaciones
-        reg.addEventListener('updatefound', () => {
-          const newWorker = reg.installing;
-          if (newWorker) {
-            setState(prev => ({ ...prev, installing: true }));
+              newWorker.addEventListener('statechange', () => {
+                if (
+                  newWorker.state === 'installed' &&
+                  navigator.serviceWorker.controller
+                ) {
+                  setState(prev => ({
+                    ...prev,
+                    updateAvailable: true,
+                    installing: false,
+                  }));
+                }
+              });
+            }
+          });
 
-            newWorker.addEventListener('statechange', () => {
-              if (
-                newWorker.state === 'installed' &&
-                navigator.serviceWorker.controller
-              ) {
-                setState(prev => ({
-                  ...prev,
-                  updateAvailable: true,
-                  installing: false,
-                }));
-              }
-            });
-          }
-        });
+          // Escuchar mensajes del service worker
+          navigator.serviceWorker.addEventListener('message', event => {
+            if (event.data.type === 'UPDATE_AVAILABLE') {
+              setState(prev => ({ ...prev, updateAvailable: true }));
+            }
+          });
 
-        // Escuchar mensajes del service worker
-        navigator.serviceWorker.addEventListener('message', event => {
-          if (event.data.type === 'UPDATE_AVAILABLE') {
-            setState(prev => ({ ...prev, updateAvailable: true }));
-          }
-        });
+          console.log('[PWA] Service Worker registered successfully');
+        };
 
-        console.log('[PWA] Service Worker registered successfully');
+        // Ejecutar en background
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(registerInBackground);
+        } else {
+          setTimeout(registerInBackground, 100);
+        }
       } catch (error) {
         captureError(
           error instanceof Error ? error : new Error('SW registration failed'),

@@ -22,16 +22,16 @@ import {
 } from '@/components/ui/select';
 import { useSessionsData } from '@/lib/hooks/use-sessions-data';
 import { AreaChartIcon, BarChart3 } from 'lucide-react';
-import { useState } from 'react';
-import {
-    Area,
-    AreaChart,
-    Bar,
-    BarChart,
-    CartesianGrid,
-    XAxis,
-    YAxis,
-} from 'recharts';
+import { lazy, Suspense, useState } from 'react';
+
+// OPTIMIZACIÓN: Lazy loading de Recharts
+const Area = lazy(() => import('recharts').then(module => ({ default: module.Area })));
+const AreaChart = lazy(() => import('recharts').then(module => ({ default: module.AreaChart })));
+const Bar = lazy(() => import('recharts').then(module => ({ default: module.Bar })));
+const BarChart = lazy(() => import('recharts').then(module => ({ default: module.BarChart })));
+const CartesianGrid = lazy(() => import('recharts').then(module => ({ default: module.CartesianGrid })));
+const XAxis = lazy(() => import('recharts').then(module => ({ default: module.XAxis })));
+const YAxis = lazy(() => import('recharts').then(module => ({ default: module.YAxis })));
 
 // Colores para las zonas de intensidad
 const zoneColors = {
@@ -288,8 +288,15 @@ export function VisitorsChart() {
         <div className='space-y-4'>
           {/* Gráfico de Barras */}
           {chartType === 'bar' && (
-            <ChartContainer config={chartConfig}>
-              <BarChart accessibilityLayer data={chartData}>
+            <Suspense fallback={
+              <div className='h-[300px] flex items-center justify-center'>
+                <div className='animate-pulse text-muted-foreground'>
+                  Cargando gráfico...
+                </div>
+              </div>
+            }>
+              <ChartContainer config={chartConfig}>
+                <BarChart accessibilityLayer data={chartData}>
                 <CartesianGrid vertical={false} />
                 <XAxis
                   dataKey='day'
@@ -325,12 +332,20 @@ export function VisitorsChart() {
                 <Bar dataKey='Z5' stackId='a' fill={zoneColors.Z5} />
               </BarChart>
             </ChartContainer>
+            </Suspense>
           )}
 
           {/* Gráfico de Área */}
           {chartType === 'area' && (
-            <ChartContainer config={chartConfig}>
-              <AreaChart accessibilityLayer data={areaChartData}>
+            <Suspense fallback={
+              <div className='h-[300px] flex items-center justify-center'>
+                <div className='animate-pulse text-muted-foreground'>
+                  Cargando gráfico...
+                </div>
+              </div>
+            }>
+              <ChartContainer config={chartConfig}>
+                <AreaChart accessibilityLayer data={areaChartData}>
                 <CartesianGrid vertical={false} />
                 <XAxis
                   dataKey='day'
@@ -398,6 +413,7 @@ export function VisitorsChart() {
                 />
               </AreaChart>
             </ChartContainer>
+            </Suspense>
           )}
 
           {/* Estadísticas */}

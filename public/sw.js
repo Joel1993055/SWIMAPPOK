@@ -32,18 +32,21 @@ const IMPORTANT_ROUTES = [
 self.addEventListener('install', (event) => {
   console.log('[SW] Installing service worker...');
   
+  // OPTIMIZACIÓN: No bloquear la instalación con cache
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then((cache) => {
-        console.log('[SW] Caching static assets');
-        return cache.addAll(STATIC_ASSETS);
-      })
-      .then(() => {
-        console.log('[SW] Static assets cached successfully');
+        console.log('[SW] Service worker ready');
+        // Cachear en background, no bloquear
+        cache.addAll(STATIC_ASSETS).catch(() => {
+          // Silently fail - no bloquear la instalación
+        });
         return self.skipWaiting(); // Activar inmediatamente
       })
       .catch((error) => {
-        console.error('[SW] Failed to cache static assets:', error);
+        console.error('[SW] Failed to install:', error);
+        // Aún así activar el SW
+        return self.skipWaiting();
       })
   );
 });
