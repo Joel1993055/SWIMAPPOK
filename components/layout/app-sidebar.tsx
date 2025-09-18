@@ -1,35 +1,37 @@
 'use client';
 
 import {
-  ArrowUpCircleIcon,
-  BarChartIcon,
-  BookOpenIcon,
-  CalendarIcon,
-  ClipboardListIcon,
-  HelpCircleIcon,
-  LayoutDashboardIcon,
-  Plus,
-  SettingsIcon,
-  Target,
-  Users,
-  Wrench,
+    ArrowUpCircleIcon,
+    BarChartIcon,
+    BookOpenIcon,
+    Building2,
+    CalendarIcon,
+    ClipboardListIcon,
+    HelpCircleIcon,
+    LayoutDashboardIcon,
+    Plus,
+    SettingsIcon,
+    Target,
+    Users,
+    Wrench,
 } from 'lucide-react';
 import * as React from 'react';
 
 import { NavDocuments } from '@/components/navigation/nav-documents';
 import { NavMain } from '@/components/navigation/nav-main';
 import { NavSecondary } from '@/components/navigation/nav-secondary';
-import { NavTeamSelectors } from '@/components/navigation/nav-team-selectors';
+import { NavTeamSelectors } from '@/components/navigation/nav-team-selectors-real';
 import { NavUser } from '@/components/navigation/nav-user';
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { useClubsStore } from '@/lib/store/clubs-store';
 
 const data = {
   navMain: [
@@ -37,6 +39,11 @@ const data = {
       title: 'Dashboard',
       url: '/dashboard',
       icon: LayoutDashboardIcon,
+    },
+    {
+      title: 'Clubes y Equipos',
+      url: '/clubes',
+      icon: Building2,
     },
     {
       title: 'Calendario',
@@ -96,8 +103,18 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const [selectedClub, setSelectedClub] = React.useState('club-1');
-  const [selectedGroup, setSelectedGroup] = React.useState('group-1-1');
+  const { navigation } = useClubsStore();
+  const [selectedClub, setSelectedClub] = React.useState(navigation.selectedClubId || 'none');
+  const [selectedGroup, setSelectedGroup] = React.useState(navigation.selectedTeamId || 'none');
+
+  // Sincronizar con el store
+  React.useEffect(() => {
+    setSelectedClub(navigation.selectedClubId || 'none');
+  }, [navigation.selectedClubId]);
+
+  React.useEffect(() => {
+    setSelectedGroup(navigation.selectedTeamId || 'none');
+  }, [navigation.selectedTeamId]);
 
   return (
     <Sidebar collapsible='offcanvas' {...props}>
