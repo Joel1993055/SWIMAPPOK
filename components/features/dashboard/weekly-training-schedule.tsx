@@ -111,7 +111,6 @@ export function WeeklyTrainingSchedule({
       id: '1',
       title: 'Entrenamiento de Resistencia',
       time: '07:00',
-      duration: 90,
       type: 'Aeróbico',
       location: 'Piscina Municipal',
       coach: 'María García',
@@ -376,9 +375,6 @@ export function WeeklyTrainingSchedule({
                               <div className='text-sm text-muted-foreground font-medium'>
                                 {training.distance}m
                               </div>
-                              <div className='text-xs text-muted-foreground'>
-                                {training.duration}min
-                              </div>
                             </div>
                           </div>
                         ))}
@@ -437,9 +433,6 @@ export function WeeklyTrainingSchedule({
                             <div className='text-center space-y-1'>
                               <div className='text-sm text-muted-foreground font-medium'>
                                 {training.distance}m
-                              </div>
-                              <div className='text-xs text-muted-foreground'>
-                                {training.duration}min
                               </div>
                             </div>
                           </div>
@@ -530,7 +523,6 @@ export function WeeklyTrainingSchedule({
                               <span>{training.distance}m</span>
                             </div>
                             <div className='flex items-center gap-1'>
-                              <span>{training.duration}min</span>
                             </div>
                           </div>
                         </div>
@@ -579,7 +571,6 @@ export function WeeklyTrainingSchedule({
                               <span>{training.distance}m</span>
                             </div>
                             <div className='flex items-center gap-1'>
-                              <span>{training.duration}min</span>
                             </div>
                           </div>
                         </div>

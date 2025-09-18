@@ -2,23 +2,23 @@
 
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { SiteHeader } from '@/components/layout/site-header';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import {
-  ChevronLeft,
-  ChevronRight,
-  Calendar as CalendarIcon,
-  Clock,
-  Target,
-  Activity,
+    Activity,
+    Calendar as CalendarIcon,
+    ChevronLeft,
+    ChevronRight,
+    Clock,
+    Target,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -196,16 +196,16 @@ export default function CalendarioPage() {
         <SiteHeader />
         <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>
           {/* Header */}
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center gap-3'>
-              <CalendarIcon className='h-8 w-8 text-primary' />
-              <div>
-                <h1 className='text-2xl font-bold'>Calendario</h1>
-                <p className='text-sm text-muted-foreground'>
-                  Vista mensual de tus entrenamientos
-                </p>
+          <div className='mb-8'>
+            <div className='flex items-center gap-3 mb-2'>
+              <div className='p-2 bg-primary/10 rounded-lg'>
+                <CalendarIcon className='h-6 w-6 text-primary' />
               </div>
+              <h1 className='text-3xl font-bold text-foreground'>Calendario</h1>
             </div>
+            <p className='text-muted-foreground'>
+              Vista mensual de tus entrenamientos
+            </p>
           </div>
 
           {/* Layout principal: Calendario y panel 50/50 */}

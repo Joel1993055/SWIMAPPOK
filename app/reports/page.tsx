@@ -5,20 +5,20 @@ import { SiteHeader } from '@/components/layout/site-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from '@/components/ui/select';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -26,21 +26,21 @@ import { getSessions, type Session } from '@/lib/actions/sessions';
 import { format, subDays, subMonths, subWeeks } from 'date-fns';
 import { es } from 'date-fns/locale';
 import {
-  Activity,
-  BarChart3,
-  Calendar,
-  Check,
-  ClipboardListIcon,
-  Clock,
-  Download,
-  Eye,
-  FileImage,
-  FileText,
-  Layout,
-  Printer,
-  Settings,
-  Target,
-  X,
+    Activity,
+    BarChart3,
+    Calendar,
+    Check,
+    ClipboardListIcon,
+    Clock,
+    Download,
+    Eye,
+    FileImage,
+    FileText,
+    Layout,
+    Printer,
+    Settings,
+    Target,
+    X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -433,18 +433,16 @@ function ReportsContent() {
   return (
     <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>
       {/* Header */}
-      <div className='flex items-center justify-between'>
-        <div>
-          <div className='flex items-center gap-3 mb-2'>
-            <div className='p-2 bg-primary/10 rounded-lg'>
-              <ClipboardListIcon className='h-6 w-6 text-primary' />
-            </div>
-            <h1 className='text-3xl font-bold text-foreground'>Reportes</h1>
+      <div className='mb-8'>
+        <div className='flex items-center gap-3 mb-2'>
+          <div className='p-2 bg-primary/10 rounded-lg'>
+            <ClipboardListIcon className='h-6 w-6 text-primary' />
           </div>
-          <p className='text-muted-foreground'>
-            Genera reportes personalizados de gráficos y entrenamientos
-          </p>
+          <h1 className='text-3xl font-bold text-foreground'>Reportes</h1>
         </div>
+        <p className='text-muted-foreground'>
+          Genera reportes personalizados de gráficos y entrenamientos
+        </p>
       </div>
 
       {/* Filtros y plantillas */}
