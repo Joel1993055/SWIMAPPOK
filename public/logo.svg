@@ -1,0 +1,25 @@
+<svg width="180" height="48" viewBox="0 0 180 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Símbolo de diamante estilizado -->
+    <g transform="translate(0, 8)">
+        <rect x="2" y="2" width="28" height="28" rx="4" fill="none" stroke="#B19CD9" stroke-width="2"/>
+        <rect x="8" y="8" width="16" height="16" rx="2" fill="#8B7BB8"/>
+    </g>
+    
+    <!-- Texto "DeckAPP" -->
+    <g transform="translate(45, 8)">
+        <!-- "Deck" en color púrpura claro -->
+        <text x="0" y="28" font-family="Arial, sans-serif" font-size="32" font-weight="600" fill="#B19CD9" letter-spacing="-1px">
+            <tspan x="0" y="28" font-size="36">D</tspan>eck
+        </text>
+        
+        <!-- "APP" en color púrpura más oscuro -->
+        <text x="120" y="28" font-family="Arial, sans-serif" font-size="32" font-weight="600" fill="#8B7BB8" letter-spacing="-1px">
+            <tspan x="120" y="28" font-size="36">A</tspan>PP
+        </text>
+        
+        <!-- Subtítulo "A Paddle Demo Brand" -->
+        <text x="0" y="42" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#9CA3AF" letter-spacing="0.5px">
+            A Paddle Demo Brand
+        </text>
+    </g>
+</svg>
