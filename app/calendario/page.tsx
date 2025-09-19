@@ -12,6 +12,8 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { getSessions, type Session } from '@/lib/actions/sessions';
+import { useCompetitionsStore } from '@/lib/store/unified';
 import {
     Activity,
     Calendar as CalendarIcon,
@@ -20,92 +22,49 @@ import {
     Clock,
     Target,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function CalendarioPage() {
+  // SOLUCIÓN: Estado de hidratación para evitar errores SSR
+  const [isHydrated, setIsHydrated] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<{
     day: number;
     month: string;
     year: number;
   } | null>(null);
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Datos de ejemplo para los entrenamientos
-  const trainingData: Record<
-    number,
-    Record<string, { distance: number; sessions: number }>
-  > = {
-    2025: {
-      enero: { distance: 25100, sessions: 31 },
-      febrero: { distance: 16300, sessions: 28 },
-      marzo: { distance: 16700, sessions: 31 },
-      abril: { distance: 0, sessions: 0 },
-      mayo: { distance: 0, sessions: 0 },
-      junio: { distance: 0, sessions: 0 },
-      julio: { distance: 0, sessions: 0 },
-      agosto: { distance: 0, sessions: 0 },
-      septiembre: { distance: 0, sessions: 0 },
-      octubre: { distance: 0, sessions: 0 },
-      noviembre: { distance: 0, sessions: 0 },
-      diciembre: { distance: 0, sessions: 0 },
-    },
-  };
+  // MANTENER: Context existente
+  const { getCompetitionsByDate } = useCompetitionsStore();
 
-  // Datos de ejemplo para entrenamientos específicos por día
-  const dailyTrainingData = {
-    '2025-01-15': {
-      sessions: [
-        {
-          time: '07:00',
-          type: 'Aeróbico',
-          distance: 2000,
-          duration: 45,
-          stroke: 'Libre',
-          rpe: 6,
-        },
-        {
-          time: '19:30',
-          type: 'Técnica',
-          distance: 1500,
-          duration: 30,
-          stroke: 'Espalda',
-          rpe: 4,
-        },
-      ],
-    },
-    '2025-02-20': {
-      sessions: [
-        {
-          time: '08:00',
-          type: 'Umbral',
-          distance: 3000,
-          duration: 60,
-          stroke: 'Libre',
-          rpe: 8,
-        },
-      ],
-    },
-    '2025-03-10': {
-      sessions: [
-        {
-          time: '07:30',
-          type: 'Velocidad',
-          distance: 1200,
-          duration: 25,
-          stroke: 'Mariposa',
-          rpe: 9,
-        },
-        {
-          time: '18:00',
-          type: 'Recuperación',
-          distance: 800,
-          duration: 20,
-          stroke: 'Pecho',
-          rpe: 3,
-        },
-      ],
-    },
-  };
+  // OPTIMIZADO: Solo usar lo necesario del store
+  const { competitions: storeCompetitions } = useCompetitionsStore();
+
+  // SOLUCIÓN: Efecto para manejar la hidratación
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  // Cargar sesiones reales
+  useEffect(() => {
+    const loadSessions = async () => {
+      try {
+        setIsLoading(true);
+        const data = await getSessions();
+        setSessions(data);
+      } catch (error) {
+        console.error('Error cargando sesiones:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (isHydrated) {
+      loadSessions();
+    }
+  }, [isHydrated]);
 
   const months = [
     { name: 'enero', short: 'ene', days: 31 },
@@ -127,6 +86,40 @@ export default function CalendarioPage() {
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
   const currentMonthName = months[currentMonth].name;
+
+  // Convertir sesiones reales a formato para el calendario
+  const dailyTrainingData = sessions.reduce(
+    (acc, session) => {
+      const dateKey = session.date;
+      if (!acc[dateKey]) {
+        acc[dateKey] = { sessions: [] };
+      }
+
+      acc[dateKey].sessions.push({
+        time: '09:00', // Podríamos agregar un campo de hora a las sesiones
+        type: session.type,
+        distance: session.distance || 0,
+        duration: session.duration || 0,
+        stroke: session.stroke || 'Libre',
+        rpe: session.rpe || 5,
+      });
+
+      return acc;
+    },
+    {} as Record<
+      string,
+      {
+        sessions: Array<{
+          time: string;
+          type: string;
+          distance: number;
+          duration: number;
+          stroke: string;
+          rpe: number;
+        }>;
+      }
+    >
+  );
 
   const generateCalendarDays = () => {
     const month = months[currentMonth];
@@ -183,11 +176,43 @@ export default function CalendarioPage() {
   const getSelectedDayData = () => {
     if (!selectedDate) return null;
 
-    const dateKey = `${selectedDate.year}-${String(months.findIndex(m => m.name === selectedDate.month) + 1).padStart(2, '0')}-${String(selectedDate.day).padStart(2, '0')}`;
+    const dateKey = `${selectedDate.year}-${String(
+      months.findIndex(m => m.name === selectedDate.month) + 1
+    ).padStart(2, '0')}-${String(selectedDate.day).padStart(2, '0')}`;
     return dailyTrainingData[dateKey as keyof typeof dailyTrainingData] || null;
   };
 
+  const getSelectedDayCompetitions = () => {
+    if (!selectedDate) return [];
+
+    const dateKey = `${selectedDate.year}-${String(
+      months.findIndex(m => m.name === selectedDate.month) + 1
+    ).padStart(2, '0')}-${String(selectedDate.day).padStart(2, '0')}`;
+    return getCompetitionsByDate(dateKey);
+  };
+
   const selectedDayData = getSelectedDayData();
+  const selectedDayCompetitions = getSelectedDayCompetitions();
+
+  // SOLUCIÓN: Renderizar solo después de la hidratación
+  if (!isHydrated) {
+    return (
+      <SidebarProvider>
+        <AppSidebar variant='inset' />
+        <SidebarInset>
+          <SiteHeader />
+          <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>
+            <div className='flex items-center justify-center min-h-[400px]'>
+              <div className='text-center'>
+                <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4'></div>
+                <p className='text-muted-foreground'>Cargando calendario...</p>
+              </div>
+            </div>
+          </div>
+        </SidebarInset>
+      </SidebarProvider>
+    );
+  }
 
   return (
     <SidebarProvider>
@@ -230,8 +255,11 @@ export default function CalendarioPage() {
                         {currentMonthName} {currentYear}
                       </h2>
                       <p className='text-sm text-gray-500 dark:text-gray-400'>
-                        {trainingData[currentYear]?.[currentMonthName]
-                          ?.sessions || 0}{' '}
+                        {sessions.filter(session => {
+                          const sessionDate = new Date(session.date);
+                          return sessionDate.getMonth() === currentMonth && 
+                                 sessionDate.getFullYear() === currentYear;
+                        }).length}{' '}
                         entrenamientos
                       </p>
                     </div>
@@ -286,11 +314,13 @@ export default function CalendarioPage() {
                   {/* Días del mes - mejor diseño */}
                   <div className='grid grid-cols-7 gap-1'>
                     {generateCalendarDays().map((day, index) => {
-                      const hasTraining =
-                        day !== null &&
-                        (currentMonthName === 'enero' ||
-                          currentMonthName === 'febrero' ||
-                          currentMonthName === 'marzo');
+                      // Verificar si hay entrenamientos reales para este día
+                      const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                      const hasTraining = day !== null && dailyTrainingData[dateKey]?.sessions.length > 0;
+                      
+                      // Verificar si hay competiciones para este día
+                      const competitionsOnDay = day !== null ? getCompetitionsByDate(dateKey) : [];
+                      
                       const isToday =
                         day === new Date().getDate() &&
                         currentMonth === new Date().getMonth() &&
@@ -300,17 +330,55 @@ export default function CalendarioPage() {
                         <div
                           key={index}
                           onClick={() => day && handleDayClick(day)}
-                          className={`h-10 w-10 flex items-center justify-center text-sm font-medium rounded-lg transition-all duration-200 ${
+                          className={`relative flex h-12 w-full items-center justify-center rounded-lg text-sm font-medium transition-all duration-200 ${
                             day === null
                               ? 'invisible'
-                              : hasTraining
-                                ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer shadow-sm'
-                                : isToday
-                                  ? 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white border-2 border-blue-500 cursor-pointer'
-                                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer'
+                              : isToday
+                              ? 'bg-accent text-accent-foreground border-primary cursor-pointer border-2'
+                              : 'text-foreground hover:bg-accent cursor-pointer'
                           }`}
                         >
-                          {day}
+                          <div className='flex flex-col items-center'>
+                            <span>{day}</span>
+                            <div className='mt-1 flex gap-0.5'>
+                              {/* Puntos de entrenamientos */}
+                              {hasTraining && (
+                                <>
+                                  {Array.from(
+                                    { length: Math.min(dailyTrainingData[dateKey]?.sessions.length || 0, 3) },
+                                    (_, i) => (
+                                      <div
+                                        key={`training-${i}`}
+                                        className='h-1.5 w-1.5 rounded-full bg-blue-500'
+                                      ></div>
+                                    )
+                                  )}
+                                  {(dailyTrainingData[dateKey]?.sessions.length || 0) > 3 && (
+                                    <div className='h-1.5 w-1.5 rounded-full bg-blue-300'></div>
+                                  )}
+                                </>
+                              )}
+
+                              {/* Puntos de competiciones - Solo después de hidratación */}
+                              {competitionsOnDay.length > 0 && isHydrated && (
+                                <>
+                                  {competitionsOnDay.map(comp => (
+                                    <div
+                                      key={`comp-${comp.id}`}
+                                      className={`h-1.5 w-1.5 rounded-full ${
+                                        comp.priority === 'high'
+                                          ? 'bg-red-500'
+                                          : comp.priority === 'medium'
+                                          ? 'bg-orange-500'
+                                          : 'bg-green-500'
+                                      }`}
+                                      title={comp.name}
+                                    ></div>
+                                  ))}
+                                </>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       );
                     })}
@@ -350,53 +418,114 @@ export default function CalendarioPage() {
                         </div>
                       </div>
 
-                      <div className='space-y-3'>
-                        {selectedDayData.sessions.map((session, index) => (
-                          <div
-                            key={index}
-                            className='border border-gray-200 dark:border-gray-700 rounded-xl p-4 space-y-3 bg-gray-50 dark:bg-gray-800/50'
-                          >
-                            <div className='flex items-center justify-between'>
-                              <div className='flex items-center gap-2'>
-                                <Clock className='h-4 w-4 text-gray-500 dark:text-gray-400' />
-                                <span className='font-semibold text-gray-900 dark:text-white'>
-                                  {session.time}
-                                </span>
+                      {/* Entrenamientos */}
+                      {selectedDayData.sessions.length > 0 && (
+                        <div className='space-y-3'>
+                          <h4 className='font-semibold text-gray-900 dark:text-white flex items-center gap-2'>
+                            <Activity className='h-4 w-4' />
+                            Entrenamientos ({selectedDayData.sessions.length})
+                          </h4>
+                          {selectedDayData.sessions.map((session, index) => (
+                            <div
+                              key={index}
+                              className='border border-gray-200 dark:border-gray-700 rounded-xl p-4 space-y-3 bg-gray-50 dark:bg-gray-800/50'
+                            >
+                              <div className='flex items-center justify-between'>
+                                <div className='flex items-center gap-2'>
+                                  <Clock className='h-4 w-4 text-gray-500 dark:text-gray-400' />
+                                  <span className='font-semibold text-gray-900 dark:text-white'>
+                                    {session.time}
+                                  </span>
+                                </div>
+                                <Badge
+                                  variant='secondary'
+                                  className='bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
+                                >
+                                  {session.type}
+                                </Badge>
                               </div>
-                              <Badge
-                                variant='secondary'
-                                className='bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
-                              >
-                                {session.type}
-                              </Badge>
-                            </div>
 
-                            <div className='grid grid-cols-2 gap-3'>
-                              <div className='flex items-center gap-2 text-sm'>
-                                <Target className='h-4 w-4 text-gray-500 dark:text-gray-400' />
-                                <span className='text-gray-700 dark:text-gray-300'>
-                                  {session.distance}m
-                                </span>
+                              <div className='grid grid-cols-2 gap-3'>
+                                <div className='flex items-center gap-2 text-sm'>
+                                  <Target className='h-4 w-4 text-gray-500 dark:text-gray-400' />
+                                  <span className='text-gray-700 dark:text-gray-300'>
+                                    {session.distance}m
+                                  </span>
+                                </div>
+                                <div className='flex items-center gap-2 text-sm'>
+                                  <Clock className='h-4 w-4 text-gray-500 dark:text-gray-400' />
+                                  <span className='text-gray-700 dark:text-gray-300'>
+                                    {session.duration}min
+                                  </span>
+                                </div>
                               </div>
-                              <div className='flex items-center gap-2 text-sm'>
-                                <Clock className='h-4 w-4 text-gray-500 dark:text-gray-400' />
-                                <span className='text-gray-700 dark:text-gray-300'>
-                                  {session.duration}min
-                                </span>
-                              </div>
-                            </div>
 
-                            <div className='flex items-center justify-between text-sm'>
-                              <span className='text-gray-600 dark:text-gray-400 font-medium'>
-                                {session.stroke}
-                              </span>
-                              <Badge variant='outline' className='text-xs'>
-                                RPE {session.rpe}/10
-                              </Badge>
+                              <div className='flex items-center justify-between text-sm'>
+                                <span className='text-gray-600 dark:text-gray-400 font-medium'>
+                                  {session.stroke}
+                                </span>
+                                <Badge variant='outline' className='text-xs'>
+                                  RPE {session.rpe}/10
+                                </Badge>
+                              </div>
                             </div>
-                          </div>
-                        ))}
-                      </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Competiciones */}
+                      {selectedDayCompetitions.length > 0 && (
+                        <div className='space-y-3 mt-4'>
+                          <h4 className='font-semibold text-gray-900 dark:text-white flex items-center gap-2'>
+                            <CalendarIcon className='h-4 w-4' />
+                            Competiciones ({selectedDayCompetitions.length})
+                          </h4>
+                          {selectedDayCompetitions.map((comp, index) => (
+                            <div
+                              key={index}
+                              className='border border-gray-200 dark:border-gray-700 rounded-xl p-4 space-y-3 bg-gray-50 dark:bg-gray-800/50'
+                            >
+                              <div className='flex items-center justify-between'>
+                                <div className='flex items-center gap-2'>
+                                  <div className={`h-3 w-3 rounded-full ${
+                                    comp.priority === 'high'
+                                      ? 'bg-red-500'
+                                      : comp.priority === 'medium'
+                                      ? 'bg-orange-500'
+                                      : 'bg-green-500'
+                                  }`}></div>
+                                  <span className='font-semibold text-gray-900 dark:text-white'>
+                                    {comp.name}
+                                  </span>
+                                </div>
+                                <Badge
+                                  variant='secondary'
+                                  className={`${
+                                    comp.priority === 'high'
+                                      ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
+                                      : comp.priority === 'medium'
+                                      ? 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300'
+                                      : 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+                                  }`}
+                                >
+                                  {comp.priority === 'high' ? 'Alta' : comp.priority === 'medium' ? 'Media' : 'Baja'}
+                                </Badge>
+                              </div>
+                              {comp.location && (
+                                <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
+                                  <Target className='h-4 w-4' />
+                                  <span>{comp.location}</span>
+                                </div>
+                              )}
+                              {comp.description && (
+                                <p className='text-sm text-gray-600 dark:text-gray-400'>
+                                  {comp.description}
+                                </p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ) : selectedDate ? (
                     <div className='flex-1 flex flex-col items-center justify-center text-center'>
@@ -428,12 +557,30 @@ export default function CalendarioPage() {
             </div>
           </div>
 
-          {/* Leyenda mejorada */}
-          <div className='flex items-center justify-center gap-8 text-sm'>
+          {/* Leyenda actualizada */}
+          <div className='flex flex-wrap items-center justify-center gap-6 text-sm'>
             <div className='flex items-center gap-3'>
               <div className='w-4 h-4 bg-blue-500 rounded-lg shadow-sm'></div>
               <span className='text-gray-600 dark:text-gray-400 font-medium'>
-                Con entrenamiento
+                Entrenamiento
+              </span>
+            </div>
+            <div className='flex items-center gap-3'>
+              <div className='w-4 h-4 bg-red-500 rounded-full'></div>
+              <span className='text-gray-600 dark:text-gray-400 font-medium'>
+                Competición Alta
+              </span>
+            </div>
+            <div className='flex items-center gap-3'>
+              <div className='w-4 h-4 bg-orange-500 rounded-full'></div>
+              <span className='text-gray-600 dark:text-gray-400 font-medium'>
+                Competición Media
+              </span>
+            </div>
+            <div className='flex items-center gap-3'>
+              <div className='w-4 h-4 bg-green-500 rounded-full'></div>
+              <span className='text-gray-600 dark:text-gray-400 font-medium'>
+                Competición Baja
               </span>
             </div>
             <div className='flex items-center gap-3'>

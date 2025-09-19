@@ -17,11 +17,15 @@ export async function POST(request: NextRequest) {
     if (!aiZoneDetector.isConfigured()) {
       return NextResponse.json(
         { 
-          error: 'OpenAI API key not configured',
+          error: 'OpenAI API key not configured. Please set OPENAI_API_KEY in your environment variables.',
           zones: { z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 },
           confidence: 0,
           reasoning: 'OpenAI no está configurado. Por favor, configura OPENAI_API_KEY en las variables de entorno.',
-          suggestions: ['Configura OPENAI_API_KEY en .env.local']
+          suggestions: [
+            'Configura OPENAI_API_KEY en tu archivo .env.local',
+            'Reinicia el servidor de desarrollo después de configurar la variable',
+            'Verifica que la clave de API sea válida y tenga permisos para usar GPT-4'
+          ]
         },
         { status: 503 }
       );

@@ -4,33 +4,35 @@ import { signOutAction } from '@/lib/actions/auth';
 import { createClient } from '@/utils/supabase/client';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import {
-  BellIcon,
-  LogOutIcon,
-  MoreVerticalIcon,
-  SettingsIcon,
-  UserCircleIcon,
+    BellIcon,
+    LogOutIcon,
+    MoreVerticalIcon,
+    SettingsIcon,
+    UserCircleIcon,
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    useSidebar,
 } from '@/components/ui/sidebar';
 
 export function NavUser() {
   const { isMobile } = useSidebar();
+  const router = useRouter();
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -61,6 +63,18 @@ export function NavUser() {
 
   const handleSignOut = async () => {
     await signOutAction();
+  };
+
+  const handleSettings = () => {
+    router.push('/settings');
+  };
+
+  const handleProfile = () => {
+    router.push('/profile');
+  };
+
+  const handleNotifications = () => {
+    router.push('/notifications');
   };
 
   if (isLoading) {
@@ -142,17 +156,15 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <a href='/settings' className='flex items-center'>
-                  <SettingsIcon className='mr-2 h-4 w-4' />
-                  <span>Configuración</span>
-                </a>
+              <DropdownMenuItem onClick={handleSettings} className='cursor-pointer'>
+                <SettingsIcon className='mr-2 h-4 w-4' />
+                <span>Configuración</span>
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleProfile} className='cursor-pointer'>
                 <UserCircleIcon className='mr-2 h-4 w-4' />
                 <span>Perfil</span>
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleNotifications} className='cursor-pointer'>
                 <BellIcon className='mr-2 h-4 w-4' />
                 <span>Notificaciones</span>
               </DropdownMenuItem>

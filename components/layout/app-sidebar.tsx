@@ -12,7 +12,6 @@ import {
     Plus,
     SettingsIcon,
     Target,
-    Users,
     Wrench,
 } from 'lucide-react';
 import * as React from 'react';
@@ -59,11 +58,6 @@ const data = {
       title: 'Análisis',
       url: '/analisis',
       icon: BarChartIcon,
-    },
-    {
-      title: 'Equipo',
-      url: '/equipo',
-      icon: Users,
     },
     {
       title: 'Entrenamientos',

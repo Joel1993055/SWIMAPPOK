@@ -50,7 +50,25 @@ export function AIZoneDetection({
   };
 
   if (!content.trim()) {
-    return null;
+    return (
+      <Card className="bg-muted/50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Brain className="h-5 w-5" />
+            Detección Automática de Zonas
+          </CardTitle>
+          <CardDescription>
+            Usa IA para detectar automáticamente los metros por zona basándose en tu descripción
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-4 text-muted-foreground">
+            <Brain className="h-8 w-8 mx-auto mb-2 opacity-50" />
+            <p>Escribe una descripción de tu entrenamiento para activar la detección automática</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
@@ -97,9 +115,24 @@ export function AIZoneDetection({
 
         {/* Error */}
         {error && (
-          <Alert>
+          <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
-            <AlertDescription>{error}</AlertDescription>
+            <AlertDescription>
+              <div className="space-y-2">
+                <p className="font-medium">Error en la detección de zonas:</p>
+                <p>{error}</p>
+                {error.includes('OpenAI') && (
+                  <div className="text-sm bg-muted p-2 rounded">
+                    <p className="font-medium">Solución:</p>
+                    <ol className="list-decimal list-inside space-y-1 mt-1">
+                      <li>Configura OPENAI_API_KEY en tu archivo .env.local</li>
+                      <li>Reinicia el servidor de desarrollo</li>
+                      <li>Verifica que la clave de API sea válida</li>
+                    </ol>
+                  </div>
+                )}
+              </div>
+            </AlertDescription>
           </Alert>
         )}
 
