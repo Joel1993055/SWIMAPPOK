@@ -26,7 +26,7 @@ export function HoverCard({
 }: HoverCardProps) {
   return (
     <div className={cn(
-      "group [background:linear-gradient(#0a0a0a,#0a0a0a)_padding-box,linear-gradient(45deg,theme(colors.gray.900),theme(colors.gray.800/.6),theme(colors.gray.900))_border-box] relative before:absolute before:inset-0 before:bg-[url('/noise.png')] before:bg-[length:352px_382px] before:rounded-[inherit] rounded-2xl border border-transparent backdrop-blur-sm",
+      "group [background:linear-gradient(#0a0a0a,#0a0a0a)_padding-box,linear-gradient(45deg,theme(colors.gray.900),theme(colors.gray.800/.6),theme(colors.gray.900))_border-box] relative before:absolute before:inset-0 before:bg-[url('/noise.png')] before:bg-[length:352px_382px] before:rounded-[inherit] rounded-none border border-transparent backdrop-blur-sm",
       className
     )}>
       <div className="relative">

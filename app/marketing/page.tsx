@@ -3,6 +3,7 @@
 import { HomePageBackground } from '@/components/gradients/home-page-background';
 import { FeaturesSection } from '@/components/home/features/features-section';
 import { HoverFeaturesSection } from '@/components/home/features/hover-features-section';
+import { WaterfallFeaturesSection } from '@/components/home/features/waterfall-features-section';
 import { Footer } from '@/components/home/footer/footer';
 import Header from '@/components/home/header/header';
 import { LocalizationBanner } from '@/components/home/header/localization-banner';
@@ -19,10 +20,11 @@ export default function MarketingPage() {
       <div>
         <HomePageBackground />
         <Header user={null} />
-        <HeroSection />
-        <HoverFeaturesSection />
-        <FeaturesSection />
-        <Footer />
+            <HeroSection />
+            <HoverFeaturesSection />
+            <WaterfallFeaturesSection />
+            <FeaturesSection />
+            <Footer />
       </div>
     </div>
   );
