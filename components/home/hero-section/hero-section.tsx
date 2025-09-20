@@ -2,7 +2,7 @@
 
 export function HeroSection() {
   return (
-    <section className={"mx-auto max-w-7xl px-[32px] relative mt-32 mb-12"}>
+    <section className={"mx-auto max-w-7xl px-[32px] relative mt-48 mb-12"}>
       <div className={"text-center w-full mb-16"}>
         <h1 className={"text-[48px] leading-[48px] md:text-[80px] md:leading-[80px] tracking-[-1.6px] font-medium text-white"}>
           Descubre el poder de la
@@ -24,11 +24,9 @@ export function HeroSection() {
             alt="DeckAPP Dashboard - Análisis de Natación"
             width={1200}
             height={800}
-            className="rounded-2xl shadow-2xl border border-gray-700/50"
+            className="rounded-2xl shadow-2xl border border-gray-700/50 relative z-10"
             priority
           />
-          {/* Overlay gradient for better integration */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent rounded-2xl"></div>
         </div>
       </div>
     </section>
