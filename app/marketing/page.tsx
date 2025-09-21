@@ -1,6 +1,7 @@
 'use client';
 
 import { HomePageBackground } from '@/components/gradients/home-page-background';
+import { SwimmingCTASection } from '@/components/home/cta-section/swimming-cta-section';
 import { FeaturesSection } from '@/components/home/features/features-section';
 import { HoverFeaturesSection } from '@/components/home/features/hover-features-section';
 import { TabsFeaturesSection } from '@/components/home/features/tabs-features-section';
@@ -22,10 +23,11 @@ export default function MarketingPage() {
         <HomePageBackground />
             <MarketingNavbar user={null} />
             <HeroSection />
-            <HoverFeaturesSection />
             <TabsFeaturesSection />
-            <WaterfallFeaturesSection />
+            <HoverFeaturesSection />
             <FeaturesSection />
+            <WaterfallFeaturesSection />
+            <SwimmingCTASection />
             <Footer />
       </div>
     </div>

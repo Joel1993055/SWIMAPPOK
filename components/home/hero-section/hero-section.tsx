@@ -1,8 +1,34 @@
 ﻿
+'use client';
 
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export function HeroSection() {
+  const [currentWord, setCurrentWord] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  
+  const words = [
+    "tecnología",
+    "data",
+    "análisis",
+    "inteligencia",
+    "innovación"
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsAnimating(true);
+      
+      setTimeout(() => {
+        setCurrentWord((prev) => (prev + 1) % words.length);
+        setIsAnimating(false);
+      }, 1000); // Duración de la animación de salida más larga
+    }, 5000); // Cambia cada 5 segundos
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <section id="hero" className={"mx-auto max-w-7xl px-[32px] relative mt-48 mb-12"}>
       <div className={"text-center w-full mb-16"}>
@@ -10,7 +36,15 @@ export function HeroSection() {
           Descubre el poder de la
           <br />
           <span className="text-gray-200">
-            tecnología en natación
+            <span 
+              className={`text-green-400 transition-all duration-1000 ease-in-out inline-block ${
+                isAnimating 
+                  ? 'opacity-0 scale-95 translate-y-1' 
+                  : 'opacity-100 scale-100 translate-y-0'
+              }`}
+            >
+              {words[currentWord]}
+            </span> en natación
           </span>
         </h1>
         <p className={"mt-6 text-[18px] leading-[27px] md:text-[20px] md:leading-[30px] text-gray-300 max-w-3xl mx-auto"}>

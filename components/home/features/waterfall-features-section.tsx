@@ -32,7 +32,7 @@ export function WaterfallFeaturesSection() {
           <h2 className="text-4xl lg:text-5xl font-bold text-white leading-tight">
             Descubre las características
             <br />
-            que marcan la diferencia
+            que <span className="text-green-400">marcan la diferencia</span>
           </h2>
           <p className="text-xl text-slate-400 mt-6 max-w-3xl mx-auto">
             Explora las funcionalidades avanzadas que hacen de nuestra plataforma la herramienta perfecta para entrenadores de natación

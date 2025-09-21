@@ -82,9 +82,9 @@ export function FeaturesSection() {
         {/* Title */}
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-bold text-white leading-tight">
-            Everything coaches need for
+            Todo lo que necesitas para
             <br />
-            swimming analysis
+            <span className="text-green-400">análisis de natación</span>
           </h2>
         </div>
 
