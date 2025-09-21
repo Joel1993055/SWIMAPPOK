@@ -28,7 +28,7 @@ export function HoverFeaturesSection() {
   ];
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8">
+    <section id="features" className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Title */}
         <div className="text-center mb-16">

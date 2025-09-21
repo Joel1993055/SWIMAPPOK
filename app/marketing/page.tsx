@@ -5,8 +5,8 @@ import { FeaturesSection } from '@/components/home/features/features-section';
 import { HoverFeaturesSection } from '@/components/home/features/hover-features-section';
 import { WaterfallFeaturesSection } from '@/components/home/features/waterfall-features-section';
 import { Footer } from '@/components/home/footer/footer';
-import Header from '@/components/home/header/header';
 import { LocalizationBanner } from '@/components/home/header/localization-banner';
+import { MarketingNavbar } from '@/components/home/header/marketing-navbar';
 import { HeroSection } from '@/components/home/hero-section/hero-section';
 import { useState } from 'react';
 import '../../styles/home-page.css';
@@ -19,7 +19,7 @@ export default function MarketingPage() {
       <LocalizationBanner country={country} onCountryChange={setCountry} />
       <div>
         <HomePageBackground />
-        <Header user={null} />
+            <MarketingNavbar user={null} />
             <HeroSection />
             <HoverFeaturesSection />
             <WaterfallFeaturesSection />
