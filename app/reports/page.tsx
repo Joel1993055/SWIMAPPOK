@@ -23,6 +23,7 @@ import {
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getSessions, type Session } from '@/lib/actions/sessions';
+import { useReportsPDFExport } from '@/lib/hooks/use-reports-pdf-export';
 import { format, subDays, subMonths, subWeeks } from 'date-fns';
 import { es } from 'date-fns/locale';
 import {
@@ -100,6 +101,9 @@ function ReportsContent() {
   );
   const [selectedTemplate, setSelectedTemplate] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState(false);
+  
+  // Hook para exportación PDF
+  const { isExporting, exportReport, generateReportData } = useReportsPDFExport();
 
   // Cargar sesiones reales
   useEffect(() => {
@@ -386,13 +390,60 @@ function ReportsContent() {
     }
   };
 
-  const exportToPDF = () => {
-    console.log('Exportando a PDF:', {
-      template: selectedTemplate,
-      charts: selectedCharts,
-      trainings: selectedTrainings,
-    });
-    alert('Funcionalidad de exportación a PDF en desarrollo');
+  const exportToPDF = async () => {
+    try {
+      const template = reportTemplates.find(t => t.id === selectedTemplate);
+      if (!template) {
+        alert('Por favor, selecciona una plantilla de reporte');
+        return;
+      }
+
+      // Obtener rango de fechas basado en el período seleccionado
+      let dateRange = template.dateRange;
+      if (selectedPeriod === 'last-7-days') {
+        dateRange = { start: subDays(new Date(), 7), end: new Date() };
+      } else if (selectedPeriod === 'last-30-days') {
+        dateRange = { start: subDays(new Date(), 30), end: new Date() };
+      } else if (selectedPeriod === 'last-3-months') {
+        dateRange = { start: subMonths(new Date(), 3), end: new Date() };
+      }
+
+      // Convertir gráficos seleccionados al formato PDF
+      const chartsPDF = selectedCharts.map(chart => ({
+        id: chart.id,
+        title: chart.title,
+        description: chart.description,
+        type: chart.type,
+        data: {}, // Los datos reales del gráfico se generarían aquí
+      }));
+
+      // Convertir entrenamientos seleccionados al formato PDF
+      const trainingsPDF = selectedTrainings.map(training => ({
+        id: training.id,
+        title: training.title,
+        date: training.date,
+        content: training.content,
+        zones: { z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 }, // Se calcularía basado en los datos reales
+        totalDistance: training.distance,
+        duration: training.duration,
+        objective: training.objective,
+        stroke: training.stroke,
+        rpe: training.rpe,
+      }));
+
+      await exportReport({
+        title: template.name,
+        subtitle: template.description,
+        dateRange,
+        charts: chartsPDF,
+        trainings: trainingsPDF,
+        sessions,
+      });
+
+    } catch (error) {
+      console.error('Error exportando a PDF:', error);
+      alert(error instanceof Error ? error.message : 'Error al exportar el PDF');
+    }
   };
 
   const printReport = () => {
@@ -690,12 +741,22 @@ function ReportsContent() {
                     variant='outline'
                     className='w-full gap-2'
                     disabled={
-                      selectedCharts.length === 0 &&
-                      selectedTrainings.length === 0
+                      isExporting ||
+                      (selectedCharts.length === 0 &&
+                      selectedTrainings.length === 0)
                     }
                   >
-                    <Download className='h-4 w-4' />
-                    Exportar a PDF
+                    {isExporting ? (
+                      <>
+                        <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-current'></div>
+                        Exportando...
+                      </>
+                    ) : (
+                      <>
+                        <Download className='h-4 w-4' />
+                        Exportar a PDF
+                      </>
+                    )}
                   </Button>
 
                   <Button
@@ -875,12 +936,22 @@ function ReportsContent() {
                     variant='outline'
                     className='w-full gap-2'
                     disabled={
-                      selectedCharts.length === 0 &&
-                      selectedTrainings.length === 0
+                      isExporting ||
+                      (selectedCharts.length === 0 &&
+                      selectedTrainings.length === 0)
                     }
                   >
-                    <Download className='h-4 w-4' />
-                    Exportar a PDF
+                    {isExporting ? (
+                      <>
+                        <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-current'></div>
+                        Exportando...
+                      </>
+                    ) : (
+                      <>
+                        <Download className='h-4 w-4' />
+                        Exportar a PDF
+                      </>
+                    )}
                   </Button>
 
                   <Button

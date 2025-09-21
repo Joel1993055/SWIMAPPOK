@@ -1,6 +1,7 @@
 'use client';
 
 import { AIZoneDetection } from '@/components/features/training/ai-zone-detection';
+import { PDFExportButton, useTrainingPDFData } from '@/components/features/training/pdf-export-button';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { SiteHeader } from '@/components/layout/site-header';
 import { Badge } from '@/components/ui/badge';
@@ -18,9 +19,7 @@ import type { Session } from '@/lib/types/session';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import {
-    Activity,
     Calendar as CalendarIcon,
-    Clock,
     Edit,
     FileText,
     MapPin,
@@ -28,7 +27,7 @@ import {
     Save,
     Target,
     Trash2,
-    Users,
+    Users
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -114,11 +113,9 @@ const mapSupabaseToSession = (supabaseSession: SupabaseSession): Session => ({
   date: supabaseSession.date,
   swimmer: supabaseSession.coach || 'N/A',
   distance: supabaseSession.distance,
-  durationMin: supabaseSession.duration,
   stroke: supabaseSession.stroke as Session['stroke'],
   sessionType: supabaseSession.type as Session['sessionType'],
   mainSet: supabaseSession.content || '',
-  RPE: supabaseSession.rpe as Session['RPE'],
   notes: supabaseSession.objective || '',
 });
 
@@ -130,10 +127,10 @@ const mapSessionToSupabase = (session: Session): SupabaseSession => ({
   title: session.mainSet,
   date: session.date,
   type: session.sessionType,
-  duration: session.durationMin,
+  duration: 0,
   distance: session.distance,
   stroke: session.stroke,
-  rpe: session.RPE,
+  rpe: 5,
   location: '',
   coach: session.swimmer,
   club: '',
@@ -845,7 +842,7 @@ function TrainingForm({
                 <Button onClick={handleSave} disabled={isLoading} className="gap-2">
                       {isLoading ? (
                         <>
-                      <Clock className="h-4 w-4 animate-spin" />
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                           Guardando...
                         </>
                       ) : (
@@ -950,11 +947,13 @@ interface TrainingListProps {
 }
 
 function TrainingList({ sessions, isLoading, onEdit, onDelete }: TrainingListProps) {
+  const { convertSessionToPDFData } = useTrainingPDFData();
+  
   if (isLoading) {
     return (
       <Card className="bg-muted/50">
         <CardContent className="text-center py-8">
-          <Clock className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-muted-foreground border-t-transparent mx-auto mb-4" />
           <p>Actualizando entrenamientos...</p>
         </CardContent>
       </Card>
@@ -979,7 +978,7 @@ function TrainingList({ sessions, isLoading, onEdit, onDelete }: TrainingListPro
     <Card className="bg-muted/50">
             <CardHeader>
               <CardTitle>Entrenamientos Guardados</CardTitle>
-        <CardDescription>{sessions.length} entrenamientos guardados</CardDescription>
+              <CardDescription>{sessions.length} entrenamientos guardados</CardDescription>
             </CardHeader>
             <CardContent>
         <div className="space-y-4">
@@ -993,22 +992,14 @@ function TrainingList({ sessions, isLoading, onEdit, onDelete }: TrainingListPro
                     <Badge variant="secondary">{training.stroke}</Badge>
                           </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                     <div className="flex items-center gap-2 text-sm">
                       <CalendarIcon className="h-4 w-4 text-muted-foreground" />
                       <span>{format(new Date(training.date), 'dd/MM/yyyy', { locale: es })}</span>
                             </div>
                     <div className="flex items-center gap-2 text-sm">
-                      <Clock className="h-4 w-4 text-muted-foreground" />
-                              <span>{training.durationMin} min</span>
-                            </div>
-                    <div className="flex items-center gap-2 text-sm">
                       <Target className="h-4 w-4 text-muted-foreground" />
                               <span>{training.distance}m</span>
-                            </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <Activity className="h-4 w-4 text-muted-foreground" />
-                              <span>RPE {training.RPE}/10</span>
                             </div>
                           </div>
 
@@ -1025,6 +1016,14 @@ function TrainingList({ sessions, isLoading, onEdit, onDelete }: TrainingListPro
                         </div>
 
                 <div className="ml-4 flex gap-2">
+                          <PDFExportButton
+                    training={convertSessionToPDFData(training)}
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                  >
+                    PDF
+                  </PDFExportButton>
                           <Button
                     variant="outline"
                     size="sm"
