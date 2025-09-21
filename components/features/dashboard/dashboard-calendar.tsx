@@ -1,30 +1,31 @@
 'use client';
 
+import { TrainingDetailModal } from '@/components/features/calendar/training-detail-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
 } from '@/components/ui/dialog';
 import { getSessions, type Session } from '@/lib/actions/sessions';
 import { useCompetitionsStore } from '@/lib/store/unified';
 import {
-  Activity,
-  Calendar as CalendarIcon,
-  ChevronLeft,
-  ChevronRight,
-  Clock,
-  Target,
+    Activity,
+    Calendar as CalendarIcon,
+    ChevronLeft,
+    ChevronRight,
+    Clock,
+    Target,
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 // NUEVO: Importar el store unificado
@@ -40,6 +41,8 @@ export function DashboardCalendar() {
   } | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [sessions, setSessions] = useState<Session[]>([]);
+  const [selectedTraining, setSelectedTraining] = useState<Session | null>(null);
+  const [isTrainingModalOpen, setIsTrainingModalOpen] = useState(false);
   // const [isLoading, setIsLoading] = useState(true);
 
   // MANTENER: Context existente
@@ -178,6 +181,23 @@ export function DashboardCalendar() {
     setIsDialogOpen(true);
   };
 
+  const handleTrainingClick = (training: Session) => {
+    setSelectedTraining(training);
+    setIsTrainingModalOpen(true);
+  };
+
+  const handleCloseTrainingModal = () => {
+    setIsTrainingModalOpen(false);
+    setSelectedTraining(null);
+  };
+
+  const handleEditTraining = (training: Session) => {
+    // Aquí podrías navegar a la página de edición o abrir un modal de edición
+    console.log('Editar entrenamiento:', training);
+    // Por ahora solo cerramos el modal
+    handleCloseTrainingModal();
+  };
+
   const getSelectedDayData = () => {
     if (!selectedDate) return null;
 
@@ -196,7 +216,18 @@ export function DashboardCalendar() {
     return getCompetitionsByDate(dateKey);
   };
 
+  const getSelectedDaySessions = () => {
+    if (!selectedDate) return [];
+
+    const dateKey = `${selectedDate.year}-${String(
+      months.findIndex(m => m.name === selectedDate.month) + 1
+    ).padStart(2, '0')}-${String(selectedDate.day).padStart(2, '0')}`;
+    
+    return sessions.filter(session => session.date === dateKey);
+  };
+
   const selectedDayData = getSelectedDayData();
+  const selectedDaySessions = getSelectedDaySessions();
   const selectedDayCompetitions = getSelectedDayCompetitions();
 
   // SOLUCIÓN: Renderizar solo después de la hidratación
@@ -443,10 +474,10 @@ export function DashboardCalendar() {
 
           <div className='space-y-4'>
             {selectedDate &&
-            (selectedDayData || selectedDayCompetitions.length > 0) ? (
+            (selectedDaySessions.length > 0 || selectedDayCompetitions.length > 0) ? (
               <>
                 {/* Entrenamientos */}
-                {selectedDayData && selectedDayData.sessions.length > 0 && (
+                {selectedDaySessions.length > 0 && (
                   <>
                     <div className='bg-primary/10 flex items-center gap-3 rounded-lg p-3'>
                       <div className='bg-primary rounded-full p-2'>
@@ -454,8 +485,8 @@ export function DashboardCalendar() {
                       </div>
                       <div>
                         <p className='text-foreground font-semibold'>
-                          {selectedDayData.sessions.length} sesión
-                          {selectedDayData.sessions.length !== 1 ? 'es' : ''}
+                          {selectedDaySessions.length} sesión
+                          {selectedDaySessions.length !== 1 ? 'es' : ''}
                         </p>
                         <p className='text-muted-foreground text-sm'>
                           Entrenamientos programados
@@ -464,19 +495,20 @@ export function DashboardCalendar() {
                     </div>
 
                     <div className='space-y-3'>
-                      {selectedDayData.sessions.map((session, index) => (
+                      {selectedDaySessions.map((session) => (
                         <div
-                          key={index}
-                          className='bg-muted/50 space-y-3 rounded-xl border p-4'
+                          key={session.id}
+                          onClick={() => handleTrainingClick(session)}
+                          className='bg-muted/50 space-y-3 rounded-xl border p-4 cursor-pointer hover:bg-muted/70 transition-colors'
                         >
                           <div className='flex items-center justify-between'>
                             <div className='flex items-center gap-2'>
-                              <Clock className='text-muted-foreground h-4 w-4' />
+                              <Target className='text-muted-foreground h-4 w-4' />
                               <span className='text-foreground font-semibold'>
-                                {session.time}
+                                {session.mainSet}
                               </span>
                             </div>
-                            <Badge variant='secondary'>{session.type}</Badge>
+                            <Badge variant='secondary'>{session.sessionType}</Badge>
                           </div>
 
                           <div className='grid grid-cols-2 gap-3'>
@@ -487,20 +519,15 @@ export function DashboardCalendar() {
                               </span>
                             </div>
                             <div className='flex items-center gap-2 text-sm'>
-                              <Clock className='text-muted-foreground h-4 w-4' />
+                              <Target className='text-muted-foreground h-4 w-4' />
                               <span className='text-foreground'>
-                                {session.duration}min
+                                {session.stroke}
                               </span>
                             </div>
                           </div>
 
-                          <div className='flex items-center justify-between text-sm'>
-                            <span className='text-muted-foreground font-medium'>
-                              {session.stroke}
-                            </span>
-                            <Badge variant='outline' className='text-xs'>
-                              RPE {session.rpe}/10
-                            </Badge>
+                          <div className='text-sm text-muted-foreground'>
+                            <p className='truncate'>{session.mainSet}</p>
                           </div>
                         </div>
                       ))}
@@ -614,6 +641,14 @@ export function DashboardCalendar() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Modal de detalles del entrenamiento */}
+      <TrainingDetailModal
+        isOpen={isTrainingModalOpen}
+        onClose={handleCloseTrainingModal}
+        training={selectedTraining}
+        onEdit={handleEditTraining}
+      />
     </>
   );
 }

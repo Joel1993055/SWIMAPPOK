@@ -1,4 +1,6 @@
-﻿import Image from "next/image";
+﻿
+
+import Image from "next/image";
 
 export function HeroSection() {
   return (
@@ -24,7 +26,7 @@ export function HeroSection() {
             alt="DeckAPP Dashboard - Análisis de Natación"
             width={1200}
             height={800}
-            className="rounded-2xl shadow-2xl border border-gray-700/50 relative z-10"
+            className="rounded-2xl shadow-2xl border border-gray-700/50 relative z-50"
             priority
           />
         </div>

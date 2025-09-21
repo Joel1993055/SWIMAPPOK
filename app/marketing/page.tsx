@@ -3,6 +3,7 @@
 import { HomePageBackground } from '@/components/gradients/home-page-background';
 import { FeaturesSection } from '@/components/home/features/features-section';
 import { HoverFeaturesSection } from '@/components/home/features/hover-features-section';
+import { TabsFeaturesSection } from '@/components/home/features/tabs-features-section';
 import { WaterfallFeaturesSection } from '@/components/home/features/waterfall-features-section';
 import { Footer } from '@/components/home/footer/footer';
 import { LocalizationBanner } from '@/components/home/header/localization-banner';
@@ -22,6 +23,7 @@ export default function MarketingPage() {
             <MarketingNavbar user={null} />
             <HeroSection />
             <HoverFeaturesSection />
+            <TabsFeaturesSection />
             <WaterfallFeaturesSection />
             <FeaturesSection />
             <Footer />
