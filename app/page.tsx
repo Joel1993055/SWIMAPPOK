@@ -1,69 +1,34 @@
 'use client';
 
-import { LandingHeader } from '@/components/layout/landing-header';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import { HomePageBackground } from '@/components/gradients/home-page-background';
+import { SwimmingCTASection } from '@/components/home/cta-section/swimming-cta-section';
+import { FeaturesSection } from '@/components/home/features/features-section';
+import { HoverFeaturesSection } from '@/components/home/features/hover-features-section';
+import { TabsFeaturesSection } from '@/components/home/features/tabs-features-section';
+import { WaterfallFeaturesSection } from '@/components/home/features/waterfall-features-section';
+import { Footer } from '@/components/home/footer/footer';
+import { LocalizationBanner } from '@/components/home/header/localization-banner';
+import { MarketingNavbar } from '@/components/home/header/marketing-navbar';
+import { HeroSection } from '@/components/home/hero-section/hero-section';
 import { useState } from 'react';
-
-// Importar los componentes de marketing
-import CTA from './marketing/components/sections/cta/default';
-import Demo from './marketing/components/sections/demo/default';
-import FAQ from './marketing/components/sections/faq/default';
-import Features from './marketing/components/sections/features/default';
-import Footer from './marketing/components/sections/footer/default';
-import Hero from './marketing/components/sections/hero/default';
-import Items from './marketing/components/sections/items/default';
-import Logos from './marketing/components/sections/logos/default';
-import Navbar from './marketing/components/sections/navbar/default';
-import Pricing from './marketing/components/sections/pricing/default';
-import Stats from './marketing/components/sections/stats/default';
+import '../styles/home-page.css';
 
 export default function Home() {
-  const [showMarketing, setShowMarketing] = useState(false);
+  const [country, setCountry] = useState('US');
 
-  const handleLandingToggle = (showMarketing: boolean) => {
-    setShowMarketing(showMarketing);
-  };
-
-  if (showMarketing) {
-    return (
-      <main className='min-h-screen w-full overflow-hidden bg-background text-foreground'>
-        <Navbar />
-        <Hero />
-        <Logos />
-        <Items />
-        <Stats />
-        <Demo />
-        <Features />
-        <Pricing />
-        <FAQ />
-        <CTA />
-        <Footer />
-      </main>
-    );
-  }
   return (
-    <div className='min-h-screen bg-black text-white flex flex-col'>
-      {/* Header superior */}
-      <LandingHeader onLandingToggle={handleLandingToggle} />
-
-      {/* Contenido principal */}
-      <div className='flex-1 flex items-center justify-center'>
-        <div className='text-center space-y-12'>
-          {/* Título principal */}
-          <h1 className='text-5xl font-bold text-white'>Swim APP PRO</h1>
-
-          {/* Botones de navegación */}
-          <div className='flex flex-col sm:flex-row gap-6 justify-center'>
-            <Button
-              asChild
-              size='lg'
-              className='bg-white text-black hover:bg-gray-200'
-            >
-              <Link href='/dashboard'>Dashboard</Link>
-            </Button>
-          </div>
-        </div>
+    <div className="dark marketing-page">
+      <LocalizationBanner country={country} onCountryChange={setCountry} />
+      <div>
+        <HomePageBackground />
+            <MarketingNavbar user={null} />
+            <HeroSection />
+            <TabsFeaturesSection />
+            <HoverFeaturesSection />
+            <FeaturesSection />
+            <WaterfallFeaturesSection />
+            <SwimmingCTASection />
+            <Footer />
       </div>
     </div>
   );
