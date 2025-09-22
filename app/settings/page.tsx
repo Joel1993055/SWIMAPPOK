@@ -25,17 +25,20 @@ import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
+import { useClubsStore } from '@/lib/store/clubs-store';
 import { useTrainingStore } from '@/lib/store/unified';
 import { TrainingZones } from '@/lib/types/training';
 import {
     Activity,
     Bell,
+    Building2,
     Download,
     Eye,
     EyeOff,
     Globe,
     Lock,
     Palette,
+    Plus,
     RotateCcw,
     Save,
     Settings as SettingsIcon,
@@ -49,7 +52,9 @@ import React, { useState } from 'react';
 // NUEVO: Importar el store unificado
 
 function SettingsContent() {
-  const [activeTab, setActiveTab] = useState('profile');
+  // Obtener tab de la URL si existe
+  const [searchParams, setSearchParams] = useState(new URLSearchParams(window.location.search));
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'profile');
   const [showPassword, setShowPassword] = useState(false);
   const [notifications, setNotifications] = useState({
     email: true,
@@ -70,6 +75,9 @@ function SettingsContent() {
     updateZones,
   } = useTrainingStore();
 
+  // NUEVO: Store de clubes
+  const { clubs, teams, addClub, addTeam, deleteClub, deleteTeam } = useClubsStore();
+
   // OPTIMIZADO: Solo usar lo necesario del store
   const { phases: storePhases } = useTrainingStore();
 
@@ -89,6 +97,7 @@ function SettingsContent() {
     { id: 'privacy', label: 'Privacidad', icon: Shield },
     { id: 'appearance', label: 'Apariencia', icon: Palette },
     { id: 'training', label: 'Entrenamiento', icon: Activity },
+    { id: 'clubes', label: 'Clubes y Equipos', icon: Building2 },
     { id: 'account', label: 'Cuenta', icon: Lock },
   ];
 
@@ -759,6 +768,99 @@ function SettingsContent() {
                         </div>
                       </Button>
                     ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Clubes Tab */}
+          {activeTab === 'clubes' && (
+            <div className='space-y-6'>
+              {/* Clubes */}
+              <Card className='bg-muted/50'>
+                <CardHeader>
+                  <CardTitle className='flex items-center gap-2'>
+                    <Building2 className='h-5 w-5' />
+                    Clubes
+                  </CardTitle>
+                  <CardDescription>
+                    Gestiona los clubes de natación
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className='space-y-4'>
+                  <div className='flex justify-between items-center'>
+                    <h3 className='text-lg font-semibold'>Clubes Registrados</h3>
+                    <Button size='sm' className='gap-2'>
+                      <Plus className='h-4 w-4' />
+                      Nuevo Club
+                    </Button>
+                  </div>
+                  
+                  <div className='space-y-3'>
+                    {clubs.length === 0 ? (
+                      <div className='text-center py-8 text-muted-foreground'>
+                        <Building2 className='h-12 w-12 mx-auto mb-4 opacity-50' />
+                        <p>No hay clubes registrados</p>
+                        <p className='text-sm'>Crea tu primer club para comenzar</p>
+                      </div>
+                    ) : (
+                      clubs.map((club) => (
+                        <div key={club.id} className='flex items-center justify-between p-3 border rounded-lg'>
+                          <div>
+                            <h4 className='font-medium'>{club.name}</h4>
+                            <p className='text-sm text-muted-foreground'>{club.location}</p>
+                          </div>
+                          <Button variant='outline' size='sm'>
+                            <Trash2 className='h-4 w-4' />
+                          </Button>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Equipos */}
+              <Card className='bg-muted/50'>
+                <CardHeader>
+                  <CardTitle className='flex items-center gap-2'>
+                    <User className='h-5 w-5' />
+                    Equipos
+                  </CardTitle>
+                  <CardDescription>
+                    Gestiona los equipos de cada club
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className='space-y-4'>
+                  <div className='flex justify-between items-center'>
+                    <h3 className='text-lg font-semibold'>Equipos Registrados</h3>
+                    <Button size='sm' className='gap-2'>
+                      <Plus className='h-4 w-4' />
+                      Nuevo Equipo
+                    </Button>
+                  </div>
+                  
+                  <div className='space-y-3'>
+                    {teams.length === 0 ? (
+                      <div className='text-center py-8 text-muted-foreground'>
+                        <User className='h-12 w-12 mx-auto mb-4 opacity-50' />
+                        <p>No hay equipos registrados</p>
+                        <p className='text-sm'>Crea equipos para organizar a los nadadores</p>
+                      </div>
+                    ) : (
+                      teams.map((team) => (
+                        <div key={team.id} className='flex items-center justify-between p-3 border rounded-lg'>
+                          <div>
+                            <h4 className='font-medium'>{team.name}</h4>
+                            <p className='text-sm text-muted-foreground'>{team.category}</p>
+                          </div>
+                          <Button variant='outline' size='sm'>
+                            <Trash2 className='h-4 w-4' />
+                          </Button>
+                        </div>
+                      ))
+                    )}
                   </div>
                 </CardContent>
               </Card>

@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useSessionsStore, useTrainingStore } from '@/lib/store/unified';
+import { useCompetitionsStore, useSessionsStore, useTrainingStore } from '@/lib/store/unified';
 import { Activity, Target, Trophy, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -11,6 +11,7 @@ export function KPICards() {
   // OPTIMIZADO: Usar solo el store unificado
   const { sessions, setSessions } = useSessionsStore();
   const { getCurrentPhase } = useTrainingStore();
+  const { competitions, getMainCompetition } = useCompetitionsStore();
   const [isHydrated, setIsHydrated] = useState(false);
 
   // Estados para los períodos seleccionados
@@ -242,18 +243,38 @@ export function KPICards() {
 
   // Calcular días hasta la próxima competición
   const getDaysToChampionship = () => {
-    // Simular datos de competición
-    const nextChampionship = new Date();
-    nextChampionship.setDate(nextChampionship.getDate() + 45); // 45 días desde hoy
+    if (!isHydrated || !competitions || competitions.length === 0) {
+      return {
+        days: 0,
+        event: 'Sin competiciones',
+        location: 'No hay eventos programados',
+      };
+    }
+
+    // Obtener la competición principal (prioridad alta) o la más próxima
+    const mainCompetition = getMainCompetition();
+    const nextCompetition = mainCompetition || competitions
+      .filter(comp => comp.status === 'upcoming')
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())[0];
+
+    if (!nextCompetition) {
+      return {
+        days: 0,
+        event: 'Sin competiciones',
+        location: 'No hay eventos programados',
+      };
+    }
 
     const today = new Date();
-    const timeDiff = nextChampionship.getTime() - today.getTime();
+    const competitionDate = new Date(nextCompetition.date);
+    const timeDiff = competitionDate.getTime() - today.getTime();
     const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
     return {
-      days: daysDiff,
-      event: 'Campeonato Nacional 2025',
-      location: 'Madrid, España',
+      days: Math.max(0, daysDiff),
+      event: nextCompetition.name,
+      location: nextCompetition.location,
+      date: nextCompetition.date,
     };
   };
 
@@ -382,7 +403,7 @@ export function KPICards() {
         </CardHeader>
         <CardContent>
           <div className='text-2xl font-bold'>
-            -{championshipData.days} días
+            {championshipData.days === 0 ? 'Sin eventos' : `${championshipData.days} días`}
           </div>
           <p className='text-xs text-muted-foreground'>
             {championshipData.event}
@@ -390,6 +411,11 @@ export function KPICards() {
           <p className='text-xs text-muted-foreground mt-1'>
             {championshipData.location}
           </p>
+          {championshipData.date && (
+            <p className='text-xs text-muted-foreground mt-1'>
+              {new Date(championshipData.date).toLocaleDateString('es-ES')}
+            </p>
+          )}
         </CardContent>
       </Card>
     </div>

@@ -431,75 +431,11 @@ export default function CalendarioPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className='flex-1 flex flex-col'>
-                  {selectedDate && selectedDaySessions.length > 0 ? (
+                  {selectedDate ? (
                     <div className='space-y-4'>
-                      <div className='flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg'>
-                        <div className='p-2 bg-blue-500 rounded-full'>
-                          <Activity className='h-4 w-4 text-white' />
-                        </div>
-                        <div>
-                          <p className='font-semibold text-gray-900 dark:text-white'>
-                            {selectedDaySessions.length} sesión
-                            {selectedDaySessions.length !== 1 ? 'es' : ''}
-                          </p>
-                          <p className='text-sm text-gray-600 dark:text-gray-400'>
-                            Entrenamientos programados
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Entrenamientos */}
-                      <div className='space-y-3'>
-                        <h4 className='font-semibold text-gray-900 dark:text-white flex items-center gap-2'>
-                          <Activity className='h-4 w-4' />
-                          Entrenamientos ({selectedDaySessions.length})
-                        </h4>
-                        {selectedDaySessions.map((session) => (
-                          <div
-                            key={session.id}
-                            onClick={() => handleTrainingClick(session)}
-                            className='border border-gray-200 dark:border-gray-700 rounded-xl p-4 space-y-3 bg-gray-50 dark:bg-gray-800/50 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors'
-                          >
-                            <div className='flex items-center justify-between'>
-                              <div className='flex items-center gap-2'>
-                                <Target className='h-4 w-4 text-gray-500 dark:text-gray-400' />
-                                <span className='font-semibold text-gray-900 dark:text-white'>
-                                  {session.mainSet}
-                                </span>
-                              </div>
-                              <Badge
-                                variant='secondary'
-                                className='bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
-                              >
-                                {session.sessionType}
-                              </Badge>
-                            </div>
-
-                            <div className='grid grid-cols-2 gap-3'>
-                              <div className='flex items-center gap-2 text-sm'>
-                                <Target className='h-4 w-4 text-gray-500 dark:text-gray-400' />
-                                <span className='text-gray-700 dark:text-gray-300'>
-                                  {session.distance}m
-                                </span>
-                              </div>
-                              <div className='flex items-center gap-2 text-sm'>
-                                <Target className='h-4 w-4 text-gray-500 dark:text-gray-400' />
-                                <span className='text-gray-700 dark:text-gray-300'>
-                                  {session.stroke}
-                                </span>
-                              </div>
-                            </div>
-
-                            <div className='text-sm text-gray-600 dark:text-gray-400'>
-                              <p className='truncate'>{session.mainSet}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Competiciones */}
+                      {/* Competiciones - Mostrar siempre si existen */}
                       {selectedDayCompetitions.length > 0 && (
-                        <div className='space-y-3 mt-4'>
+                        <div className='space-y-3'>
                           <h4 className='font-semibold text-gray-900 dark:text-white flex items-center gap-2'>
                             <CalendarIcon className='h-4 w-4' />
                             Competiciones ({selectedDayCompetitions.length})
@@ -507,24 +443,39 @@ export default function CalendarioPage() {
                           {selectedDayCompetitions.map((comp, index) => (
                             <div
                               key={index}
-                              className='border border-gray-200 dark:border-gray-700 rounded-xl p-4 space-y-3 bg-gray-50 dark:bg-gray-800/50'
+                              className='border border-red-200 dark:border-red-800 rounded-lg p-3 bg-red-50 dark:bg-red-900/20'
                             >
                               <div className='flex items-center justify-between'>
-                                <div className='flex items-center gap-2'>
-                                  <div className={`h-3 w-3 rounded-full ${
+                                <div className='flex items-center gap-2 flex-1'>
+                                  <div className={`h-2 w-2 rounded-full flex-shrink-0 ${
                                     comp.priority === 'high'
                                       ? 'bg-red-500'
                                       : comp.priority === 'medium'
                                       ? 'bg-orange-500'
                                       : 'bg-green-500'
                                   }`}></div>
-                                  <span className='font-semibold text-gray-900 dark:text-white'>
-                                    {comp.name}
-                                  </span>
+                                  <div className='flex-1 min-w-0'>
+                                    <span className='font-medium text-gray-900 dark:text-white block truncate'>
+                                      {comp.name}
+                                    </span>
+                                    <div className='flex items-center gap-3 text-xs text-gray-600 dark:text-gray-400 mt-1'>
+                                      {comp.location && (
+                                        <span className='flex items-center gap-1'>
+                                          <Target className='h-3 w-3' />
+                                          {comp.location}
+                                        </span>
+                                      )}
+                                      {comp.type && (
+                                        <span className='capitalize'>
+                                          {comp.type}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
                                 </div>
                                 <Badge
                                   variant='secondary'
-                                  className={`${
+                                  className={`text-xs flex-shrink-0 ${
                                     comp.priority === 'high'
                                       ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
                                       : comp.priority === 'medium'
@@ -535,33 +486,67 @@ export default function CalendarioPage() {
                                   {comp.priority === 'high' ? 'Alta' : comp.priority === 'medium' ? 'Media' : 'Baja'}
                                 </Badge>
                               </div>
-                              {comp.location && (
-                                <div className='flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400'>
-                                  <Target className='h-4 w-4' />
-                                  <span>{comp.location}</span>
-                                </div>
-                              )}
-                              {comp.description && (
-                                <p className='text-sm text-gray-600 dark:text-gray-400'>
-                                  {comp.description}
-                                </p>
-                              )}
                             </div>
                           ))}
                         </div>
                       )}
-                    </div>
-                  ) : selectedDate ? (
-                    <div className='flex-1 flex flex-col items-center justify-center text-center'>
-                      <div className='p-4 bg-muted rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center'>
-                        <CalendarIcon className='h-8 w-8 text-muted-foreground' />
-                      </div>
-                      <p className='text-foreground font-medium'>
-                        No hay entrenamientos registrados
-                      </p>
-                      <p className='text-sm text-muted-foreground mt-1'>
-                        para este día
-                      </p>
+
+                      {/* Entrenamientos - Mostrar si existen */}
+                      {selectedDaySessions.length > 0 && (
+                        <div className='space-y-3'>
+                          <h4 className='font-semibold text-gray-900 dark:text-white flex items-center gap-2'>
+                            <Activity className='h-4 w-4' />
+                            Entrenamientos ({selectedDaySessions.length})
+                          </h4>
+                          {selectedDaySessions.map((session) => (
+                            <div
+                              key={session.id}
+                              onClick={() => handleTrainingClick(session)}
+                              className='border border-blue-200 dark:border-blue-800 rounded-lg p-3 bg-blue-50 dark:bg-blue-900/20 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-800/30 transition-colors'
+                            >
+                              <div className='flex items-center justify-between'>
+                                <div className='flex items-center gap-2 flex-1'>
+                                  <div className='h-2 w-2 rounded-full bg-blue-500 flex-shrink-0'></div>
+                                  <div className='flex-1 min-w-0'>
+                                    <span className='font-medium text-gray-900 dark:text-white block'>
+                                      {session.distance}m
+                                    </span>
+                                    <div className='flex items-center gap-3 text-xs text-gray-600 dark:text-gray-400 mt-1'>
+                                      {session.stroke && (
+                                        <span>{session.stroke}</span>
+                                      )}
+                                      {session.mainSet && (
+                                        <span className='truncate'>{session.mainSet}</span>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                                <Badge
+                                  variant='secondary'
+                                  className='bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 text-xs flex-shrink-0'
+                                >
+                                  {session.sessionType}
+                                </Badge>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Mensaje cuando no hay nada */}
+                      {selectedDaySessions.length === 0 && selectedDayCompetitions.length === 0 && (
+                        <div className='flex-1 flex flex-col items-center justify-center text-center'>
+                          <div className='p-4 bg-muted rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center'>
+                            <CalendarIcon className='h-8 w-8 text-muted-foreground' />
+                          </div>
+                          <p className='text-foreground font-medium'>
+                            No hay actividades registradas
+                          </p>
+                          <p className='text-sm text-muted-foreground mt-1'>
+                            para este día
+                          </p>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div className='flex-1 flex flex-col items-center justify-center text-center'>

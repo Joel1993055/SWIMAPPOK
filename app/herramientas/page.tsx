@@ -11,7 +11,7 @@ import { Calculator, Timer, Wrench } from 'lucide-react';
 export default function HerramientasPage() {
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar variant='inset' />
       <SidebarInset>
         <SiteHeader />
         <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>

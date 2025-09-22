@@ -3,45 +3,43 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { useCompetitionsStore, useTrainingStore } from '@/lib/store/unified';
 import {
-    Activity,
-    Calendar,
-    Clock,
-    Edit,
-    MapPin,
-    Plus,
-    Save,
-    Target,
-    Trash2,
-    TrendingUp,
-    Trophy,
-    X,
+  Activity,
+  Calendar,
+  Clock,
+  Edit,
+  MapPin,
+  Plus,
+  Save,
+  Trash2,
+  Trophy,
+  X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 // NUEVO: Importar el store unificado
@@ -59,6 +57,8 @@ interface TrainingPhase {
   startDate?: string; // Fecha de inicio (opcional)
   endDate?: string; // Fecha de fin (calculada automáticamente)
   order: number; // Orden de las fases
+  created_at?: string; // Fecha de creación
+  updated_at?: string; // Fecha de actualización
 }
 
 interface WeeklyPlan {
@@ -75,7 +75,7 @@ interface Competition {
   name: string;
   date: string;
   location: string;
-  type: 'nacional' | 'regional' | 'local' | 'internacional';
+  type: 'local' | 'regional' | 'nacional' | 'internacional';
   events: string[];
   objectives: string;
   results?: {
@@ -205,57 +205,13 @@ const weeklyPlan: WeeklyPlan[] = [
   },
 ];
 
-const competitions: Competition[] = [
-  {
-    id: 'comp-1',
-    name: 'Campeonato Nacional 2025',
-    date: '2025-06-15',
-    location: 'Madrid, España',
-    type: 'nacional',
-    events: ['100m Libre', '200m Libre', '4x100m Libre'],
-    objectives:
-      'Objetivo principal del año. Buscar clasificación para el Campeonato de Europa',
-    status: 'upcoming',
-    priority: 'high',
-  },
-  {
-    id: 'comp-2',
-    name: 'Copa Regional Primavera',
-    date: '2025-04-20',
-    location: 'Barcelona, España',
-    type: 'regional',
-    events: ['50m Libre', '100m Libre'],
-    objectives:
-      'Test de forma antes del Nacional. Objetivo: mejorar tiempos personales',
-    status: 'upcoming',
-    priority: 'medium',
-  },
-  {
-    id: 'comp-3',
-    name: 'Trofeo Ciudad de Valencia',
-    date: '2025-03-10',
-    location: 'Valencia, España',
-    type: 'local',
-    events: ['100m Libre', '200m Libre'],
-    objectives: 'Primera competición del año. Evaluar forma actual',
-    results: [
-      {
-        event: '100m Libre',
-        time: '52.45',
-        position: 3,
-        personalBest: true,
-      },
-      {
-        event: '200m Libre',
-        time: '1:58.32',
-        position: 5,
-        personalBest: false,
-      },
-    ],
-    status: 'completed',
-    priority: 'low',
-  },
-];
+// Datos hardcodeados eliminados - ahora se usan solo del store
+
+// Helper functions para manejo seguro de arrays
+const safeArray = (arr: any): any[] => Array.isArray(arr) ? arr : [];
+const safeMap = <T,>(arr: any, callback: (item: T, index: number) => React.ReactNode): React.ReactNode => {
+  return Array.isArray(arr) ? arr.map(callback) : null;
+};
 
 export function PlanificacionOverview() {
   const {
@@ -266,24 +222,17 @@ export function PlanificacionOverview() {
     deletePhase,
   } = useTrainingStore();
   const {
+    competitions,
     addCompetition,
     updateCompetition,
     deleteCompetition,
-    getMainCompetition,
   } = useCompetitionsStore();
 
   // OPTIMIZADO: Solo usar lo necesario del store
 
-  const [selectedPhase, setSelectedPhase] = useState<string>(
-    phases.length > 0 ? phases[0].id : ''
-  );
-  const [selectedCompetition, setSelectedCompetition] = useState<string>(
-    competitions.length > 0 ? competitions[0].id : ''
-  );
+  const [selectedPhase, setSelectedPhase] = useState<string>('');
+  const [selectedCompetition, setSelectedCompetition] = useState<string>('');
 
-  // Estado para la competición principal (prioridad alta)
-  const [mainCompetition, setMainCompetition] = useState<Competition | null>(null);
-  const [isHydrated, setIsHydrated] = useState(false);
 
   // Estados para edición
   const [editingPhase, setEditingPhase] = useState<string | null>(null);
@@ -313,30 +262,30 @@ export function PlanificacionOverview() {
     name: '',
     date: '',
     location: '',
-    type: 'local' as 'nacional' | 'regional' | 'local' | 'internacional',
+    type: 'local' as 'local' | 'regional' | 'nacional' | 'internacional',
     events: [] as string[],
     objectives: '',
     priority: 'medium' as 'high' | 'medium' | 'low',
     status: 'upcoming' as 'upcoming' | 'completed' | 'cancelled',
   });
 
-  const currentPhase = phases.find(phase => phase.id === selectedPhase);
-  const currentCompetition = competitions.find(
-    comp => comp.id === selectedCompetition
-  );
-
-  // Inicializar después de la hidratación para evitar errores de SSR
+  // Inicializar selecciones cuando los datos estén disponibles
   useEffect(() => {
-    setIsHydrated(true);
-    setMainCompetition(getMainCompetition());
-  }, [getMainCompetition]);
-
-  // Sincronizar la competición principal cuando cambien las competiciones
-  useEffect(() => {
-    if (isHydrated) {
-      setMainCompetition(getMainCompetition());
+    if (phases.length > 0 && !selectedPhase) {
+      setSelectedPhase(phases[0].id);
     }
-  }, [getMainCompetition, isHydrated]);
+  }, [phases, selectedPhase]);
+
+  useEffect(() => {
+    if (competitions.length > 0 && !selectedCompetition) {
+      setSelectedCompetition(competitions[0].id);
+    }
+  }, [competitions, selectedCompetition]);
+
+  // Validar que phases sea un array antes de usar find
+  const currentPhase = Array.isArray(phases) ? phases.find(phase => phase.id === selectedPhase) : null;
+  const currentCompetition = competitions.find(comp => comp.id === selectedCompetition) || null;
+
 
   // Reiniciar formulario cuando se abra el modal de agregar fase
   useEffect(() => {
@@ -619,18 +568,20 @@ export function PlanificacionOverview() {
   };
 
   const handleAddFocus = (focus: string) => {
-    if (!phaseForm.focus.includes(focus)) {
+    const currentFocus = Array.isArray(phaseForm.focus) ? phaseForm.focus : [];
+    if (!currentFocus.includes(focus)) {
       setPhaseForm(prev => ({
         ...prev,
-        focus: [...prev.focus, focus],
+        focus: [...currentFocus, focus],
       }));
     }
   };
 
   const handleRemoveFocus = (focus: string) => {
+    const currentFocus = Array.isArray(phaseForm.focus) ? phaseForm.focus : [];
     setPhaseForm(prev => ({
       ...prev,
-      focus: prev.focus.filter(f => f !== focus),
+      focus: currentFocus.filter(f => f !== focus),
     }));
   };
 
@@ -650,29 +601,51 @@ export function PlanificacionOverview() {
   };
 
   const handleSaveCompetition = () => {
+    // Validaciones
+    if (!competitionForm.name.trim()) {
+      alert('El nombre de la competición es requerido');
+      return;
+    }
+    if (!competitionForm.date) {
+      alert('La fecha de la competición es requerida');
+      return;
+    }
+    if (!competitionForm.location.trim()) {
+      alert('La ubicación de la competición es requerida');
+      return;
+    }
+    if (competitionForm.events.length === 0) {
+      alert('Debe seleccionar al menos un evento');
+      return;
+    }
+
     const competitionData: Competition = {
       id: editingCompetition || `comp-${Date.now()}`,
-      name: competitionForm.name,
+      name: competitionForm.name.trim(),
       date: competitionForm.date,
-      location: competitionForm.location,
+      location: competitionForm.location.trim(),
       type: competitionForm.type,
       events: competitionForm.events,
-      objectives: competitionForm.objectives,
+      objectives: competitionForm.objectives.trim(),
       priority: competitionForm.priority,
       status: competitionForm.status,
     };
 
-    if (isAddingCompetition) {
-      addCompetition(competitionData);
-    } else if (editingCompetition) {
-      updateCompetition(editingCompetition, competitionData);
+    try {
+      if (isAddingCompetition) {
+        addCompetition(competitionData);
+        console.log('Competición agregada:', competitionData);
+      } else if (editingCompetition) {
+        updateCompetition(editingCompetition, competitionData);
+        console.log('Competición actualizada:', competitionData);
+      }
+    } catch (error) {
+      console.error('Error al guardar competición:', error);
+      alert('Error al guardar la competición. Inténtalo de nuevo.');
+      return;
     }
 
-    // Si la competición tiene prioridad alta, actualizar la competición principal
-    if (competitionForm.priority === 'high') {
-      setMainCompetition(competitionData);
-    }
-
+    // Limpiar formulario y cerrar modal
     setEditingCompetition(null);
     setIsAddingCompetition(false);
     setCompetitionForm({
@@ -703,18 +676,20 @@ export function PlanificacionOverview() {
   };
 
   const handleAddEvent = (event: string) => {
-    if (!competitionForm.events.includes(event)) {
+    const currentEvents = Array.isArray(competitionForm.events) ? competitionForm.events : [];
+    if (!currentEvents.includes(event)) {
       setCompetitionForm(prev => ({
         ...prev,
-        events: [...prev.events, event],
+        events: [...currentEvents, event],
       }));
     }
   };
 
   const handleRemoveEvent = (event: string) => {
+    const currentEvents = Array.isArray(competitionForm.events) ? competitionForm.events : [];
     setCompetitionForm(prev => ({
       ...prev,
-      events: prev.events.filter(e => e !== event),
+      events: currentEvents.filter(e => e !== event),
     }));
   };
 
@@ -746,19 +721,6 @@ export function PlanificacionOverview() {
     }
   };
 
-  // Función para calcular días restantes hasta la competición principal
-  const getDaysToMainCompetition = () => {
-    if (!isHydrated || !mainCompetition) return null;
-
-    const today = new Date();
-    const competitionDate = new Date(mainCompetition.date);
-    const timeDiff = competitionDate.getTime() - today.getTime();
-    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-    return daysDiff;
-  };
-
-  const daysToCompetition = getDaysToMainCompetition();
 
   return (
     <div className='space-y-6'>
@@ -785,118 +747,6 @@ export function PlanificacionOverview() {
       )}
 
       {/* Header con objetivos principales */}
-      <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
-        <Card className='bg-muted/50 border-muted'>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>
-              Días al Campeonato
-            </CardTitle>
-            <Target className='h-4 w-4 text-muted-foreground' />
-          </CardHeader>
-          <CardContent>
-            {!isHydrated ? (
-              <>
-                <div className='text-2xl font-bold text-muted-foreground'>
-                  Cargando...
-                </div>
-                <p className='text-xs text-muted-foreground'>
-                  Calculando días restantes
-                </p>
-              </>
-            ) : mainCompetition ? (
-              <>
-                <div className='text-2xl font-bold'>
-                  {daysToCompetition !== null
-                    ? daysToCompetition > 0
-                      ? `${daysToCompetition} días`
-                      : daysToCompetition === 0
-                        ? '¡Hoy!'
-                        : `Hace ${Math.abs(daysToCompetition)} días`
-                    : 'N/A'}
-                </div>
-                <p className='text-xs text-muted-foreground'>
-                  {mainCompetition.name}
-                </p>
-                <p className='text-xs text-muted-foreground'>
-                  {new Date(mainCompetition.date).toLocaleDateString('es-ES')}
-                </p>
-                <Progress
-                  value={
-                    daysToCompetition !== null && daysToCompetition > 0
-                      ? Math.max(
-                          0,
-                          Math.min(100, ((365 - daysToCompetition) / 365) * 100)
-                        )
-                      : 100
-                  }
-                  className='h-2 mt-2'
-                />
-                <p className='text-xs text-muted-foreground mt-1'>
-                  {daysToCompetition !== null && daysToCompetition > 0
-                    ? `${Math.round(((365 - daysToCompetition) / 365) * 100)}% del año transcurrido`
-                    : 'Competición completada'}
-                </p>
-              </>
-            ) : (
-              <>
-                <div className='text-2xl font-bold text-muted-foreground'>
-                  Sin objetivo
-                </div>
-                <p className='text-xs text-muted-foreground'>
-                  Crea una competición con prioridad alta
-                </p>
-              </>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className='bg-muted/50 border-muted'>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>Fase Actual</CardTitle>
-            <Calendar className='h-4 w-4 text-muted-foreground' />
-          </CardHeader>
-          <CardContent>
-            <div className='text-2xl font-bold'>Construcción</div>
-            <p className='text-xs text-muted-foreground'>Semana 6 de 14</p>
-            <Progress value={43} className='h-2 mt-2' />
-            <p className='text-xs text-muted-foreground mt-1'>43% del ciclo</p>
-          </CardContent>
-        </Card>
-
-        <Card className='bg-muted/50 border-muted'>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>
-              Volumen Semanal
-            </CardTitle>
-            <TrendingUp className='h-4 w-4 text-muted-foreground' />
-          </CardHeader>
-          <CardContent>
-            <div className='text-2xl font-bold'>31,000m</div>
-            <p className='text-xs text-muted-foreground'>7 sesiones</p>
-            <Progress value={75} className='h-2 mt-2' />
-            <p className='text-xs text-muted-foreground mt-1'>
-              75% del objetivo
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className='bg-muted/50 border-muted'>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>
-              Intensidad Media
-            </CardTitle>
-            <Activity className='h-4 w-4 text-muted-foreground' />
-          </CardHeader>
-          <CardContent>
-            <div className='text-2xl font-bold'>6.5/10</div>
-            <p className='text-xs text-muted-foreground'>Umbral</p>
-            <Progress value={65} className='h-2 mt-2' />
-            <p className='text-xs text-muted-foreground mt-1'>
-              Intensidad objetivo
-            </p>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Tabs principales */}
       <Tabs defaultValue='fases' className='space-y-4'>
@@ -922,7 +772,7 @@ export function PlanificacionOverview() {
           </div>
 
           <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
-            {phases.map(phase => (
+            {safeMap(phases, (phase: TrainingPhase) => (
               <Card
                 key={phase.id}
                 className={`bg-muted/50 border-muted cursor-pointer transition-all hover:shadow-md ${
@@ -975,8 +825,8 @@ export function PlanificacionOverview() {
                         <span className='font-medium'>Período:</span>
                       </div>
                       <div>
-                        {new Date(phase.startDate).toLocaleDateString('es-ES')}{' '}
-                        - {new Date(phase.endDate).toLocaleDateString('es-ES')}
+                        {phase.startDate ? new Date(phase.startDate).toLocaleDateString('es-ES') : 'Sin fecha'}{' '}
+                        - {phase.endDate ? new Date(phase.endDate).toLocaleDateString('es-ES') : 'Sin fecha'}
                       </div>
                     </div>
                   )}
@@ -989,7 +839,7 @@ export function PlanificacionOverview() {
                     <div className='flex items-center justify-between text-sm'>
                       <span>Volumen:</span>
                       <Badge variant='outline'>
-                        {phase.volume.toLocaleString()}m
+                        {(phase.volume || 0).toLocaleString()}m
                       </Badge>
                     </div>
                   </div>
@@ -997,7 +847,7 @@ export function PlanificacionOverview() {
                   <div className='space-y-1'>
                     <p className='text-xs font-medium'>Enfoque:</p>
                     <div className='flex flex-wrap gap-1'>
-                      {phase.focus.map((focus, index) => (
+                      {Array.isArray(phase.focus) ? phase.focus.map((focus, index) => (
                         <Badge
                           key={index}
                           variant='secondary'
@@ -1005,7 +855,7 @@ export function PlanificacionOverview() {
                         >
                           {focus}
                         </Badge>
-                      ))}
+                      )) : null}
                     </div>
                   </div>
                 </CardContent>
@@ -1048,7 +898,7 @@ export function PlanificacionOverview() {
                   <div className='space-y-2'>
                     <h4 className='font-medium'>Volumen Semanal</h4>
                     <p className='text-2xl font-bold'>
-                      {currentPhase.volume.toLocaleString()}m
+                      {(currentPhase?.volume || 0).toLocaleString()}m
                     </p>
                   </div>
                 </div>
@@ -1056,11 +906,11 @@ export function PlanificacionOverview() {
                 <div className='space-y-2'>
                   <h4 className='font-medium'>Enfoques de Entrenamiento</h4>
                   <div className='flex flex-wrap gap-2'>
-                    {currentPhase.focus.map((focus, index) => (
+                    {Array.isArray(currentPhase?.focus) ? currentPhase.focus.map((focus, index) => (
                       <Badge key={index} variant='default' className='text-sm'>
                         {focus}
                       </Badge>
-                    ))}
+                    )) : null}
                   </div>
                 </div>
               </CardContent>
@@ -1213,7 +1063,7 @@ export function PlanificacionOverview() {
                 <div className='space-y-2'>
                   <Label>Enfoques de Entrenamiento</Label>
                   <div className='flex flex-wrap gap-2 mb-2'>
-                    {phaseForm.focus.map((focus, index) => (
+                    {Array.isArray(phaseForm.focus) ? phaseForm.focus.map((focus, index) => (
                       <Badge key={index} variant='secondary' className='gap-1'>
                         {focus}
                         <button
@@ -1223,7 +1073,7 @@ export function PlanificacionOverview() {
                           <X className='h-3 w-3' />
                         </button>
                       </Badge>
-                    ))}
+                    )) : null}
                   </div>
                   <div className='flex gap-2'>
                     {[
@@ -1278,7 +1128,7 @@ export function PlanificacionOverview() {
           </div>
 
           <div className='grid gap-4'>
-            {competitions.map(competition => (
+            {safeMap(competitions, (competition: Competition) => (
               <Card
                 key={competition.id}
                 className={`bg-muted/50 border-muted cursor-pointer transition-all hover:shadow-md ${
@@ -1324,9 +1174,7 @@ export function PlanificacionOverview() {
                         <div className='flex items-center gap-1'>
                           <Calendar className='w-4 h-4' />
                           <span>
-                            {new Date(competition.date).toLocaleDateString(
-                              'es-ES'
-                            )}
+                            {competition.date ? new Date(competition.date).toLocaleDateString('es-ES') : 'Sin fecha'}
                           </span>
                         </div>
                         <div className='flex items-center gap-1'>
@@ -1356,7 +1204,7 @@ export function PlanificacionOverview() {
                       <div className='space-y-1'>
                         <p className='text-xs font-medium'>Eventos:</p>
                         <div className='flex flex-wrap gap-1'>
-                          {competition.events.map((event, index) => (
+                          {Array.isArray(competition.events) ? competition.events.map((event, index) => (
                             <Badge
                               key={index}
                               variant='secondary'
@@ -1364,7 +1212,7 @@ export function PlanificacionOverview() {
                             >
                               {event}
                             </Badge>
-                          ))}
+                          )) : null}
                         </div>
                       </div>
 
@@ -1373,7 +1221,7 @@ export function PlanificacionOverview() {
                           <div className='space-y-1'>
                             <p className='text-xs font-medium'>Resultados:</p>
                             <div className='space-y-1'>
-                              {competition.results.map((result, index) => (
+                              {Array.isArray(competition.results) ? competition.results.map((result, index) => (
                                 <div
                                   key={index}
                                   className='flex items-center gap-2 text-sm'
@@ -1394,7 +1242,7 @@ export function PlanificacionOverview() {
                                     </Badge>
                                   )}
                                 </div>
-                              ))}
+                              )) : null}
                             </div>
                           </div>
                         )}
@@ -1431,7 +1279,7 @@ export function PlanificacionOverview() {
           </div>
 
           {/* Detalles de la competición seleccionada */}
-          {currentCompetition && (
+          {currentCompetition && currentCompetition !== null && (
             <Card className='bg-muted/50 border-muted'>
               <CardHeader>
                 <CardTitle className='flex items-center gap-2'>
@@ -1447,9 +1295,7 @@ export function PlanificacionOverview() {
                   <div className='space-y-2'>
                     <h4 className='font-medium'>Fecha</h4>
                     <p className='font-bold'>
-                      {new Date(currentCompetition.date).toLocaleDateString(
-                        'es-ES'
-                      )}
+                      {currentCompetition?.date ? new Date(currentCompetition.date).toLocaleDateString('es-ES') : 'Sin fecha'}
                     </p>
                   </div>
                   <div className='space-y-2'>
@@ -1476,11 +1322,11 @@ export function PlanificacionOverview() {
                 <div className='space-y-2'>
                   <h4 className='font-medium'>Eventos</h4>
                   <div className='flex flex-wrap gap-2'>
-                    {currentCompetition.events.map((event, index) => (
+                    {Array.isArray(currentCompetition?.events) ? currentCompetition.events.map((event, index) => (
                       <Badge key={index} variant='default' className='text-sm'>
                         {event}
                       </Badge>
-                    ))}
+                    )) : null}
                   </div>
                 </div>
 
@@ -1489,7 +1335,7 @@ export function PlanificacionOverview() {
                     <div className='space-y-2'>
                       <h4 className='font-medium'>Resultados</h4>
                       <div className='space-y-2'>
-                        {currentCompetition.results.map((result, index) => (
+                        {Array.isArray(currentCompetition?.results) ? currentCompetition.results.map((result, index) => (
                           <div
                             key={index}
                             className='flex items-center justify-between p-3 border rounded-lg'
@@ -1514,7 +1360,7 @@ export function PlanificacionOverview() {
                               )}
                             </div>
                           </div>
-                        ))}
+                        )) : null}
                       </div>
                     </div>
                   )}
@@ -1636,7 +1482,7 @@ export function PlanificacionOverview() {
                 <div className='space-y-2'>
                   <Label>Eventos</Label>
                   <div className='flex flex-wrap gap-2 mb-2'>
-                    {competitionForm.events.map((event, index) => (
+                    {Array.isArray(competitionForm.events) ? competitionForm.events.map((event, index) => (
                       <Badge key={index} variant='secondary' className='gap-1'>
                         {event}
                         <button
@@ -1646,7 +1492,7 @@ export function PlanificacionOverview() {
                           <X className='h-3 w-3' />
                         </button>
                       </Badge>
-                    ))}
+                    )) : null}
                   </div>
 
                   {/* Eventos organizados por categorías */}
@@ -1845,7 +1691,7 @@ export function PlanificacionOverview() {
             </CardHeader>
             <CardContent>
               <div className='space-y-4'>
-                {weeklyPlan.map(week => (
+                {safeMap(weeklyPlan, (week: WeeklyPlan) => (
                   <div
                     key={week.week}
                     className='border rounded-lg p-4 hover:bg-muted/30 transition-colors'
@@ -1870,7 +1716,7 @@ export function PlanificacionOverview() {
                             Distancia
                           </p>
                           <p className='font-bold'>
-                            {week.totalDistance.toLocaleString()}m
+                            {(week.totalDistance || 0).toLocaleString()}m
                           </p>
                         </div>
                         <div className='text-center'>
@@ -1917,7 +1763,7 @@ export function PlanificacionOverview() {
             </CardHeader>
             <CardContent>
               <div className='grid grid-cols-2 md:grid-cols-5 gap-4'>
-                {Object.entries(currentZones).map(([zone, zoneData]) => (
+                {currentZones && typeof currentZones === 'object' ? Object.entries(currentZones).map(([zone, zoneData]) => (
                   <div
                     key={zone}
                     className='text-center p-3 border rounded-lg bg-background/50'
@@ -1930,7 +1776,7 @@ export function PlanificacionOverview() {
                       {zoneData.min}%-{zoneData.max}%
                     </div>
                   </div>
-                ))}
+                )) : null}
               </div>
             </CardContent>
           </Card>
@@ -1945,14 +1791,14 @@ export function PlanificacionOverview() {
               </CardHeader>
               <CardContent>
                 <div className='space-y-3'>
-                  {weeklyPlan.map(week => (
+                  {safeMap(weeklyPlan, (week: WeeklyPlan) => (
                     <div key={week.week} className='flex items-center gap-3'>
                       <span className='text-sm font-medium w-12'>
                         S{week.week}
                       </span>
                       <div className='flex-1'>
                         <div className='flex items-center justify-between text-sm mb-1'>
-                          <span>{week.totalDistance.toLocaleString()}m</span>
+                          <span>{(week.totalDistance || 0).toLocaleString()}m</span>
                           <span className='text-muted-foreground'>
                             {week.phase}
                           </span>
@@ -1977,7 +1823,7 @@ export function PlanificacionOverview() {
               </CardHeader>
               <CardContent>
                 <div className='space-y-3'>
-                  {weeklyPlan.map(week => (
+                  {safeMap(weeklyPlan, (week: WeeklyPlan) => (
                     <div key={week.week} className='flex items-center gap-3'>
                       <span className='text-sm font-medium w-12'>
                         S{week.week}

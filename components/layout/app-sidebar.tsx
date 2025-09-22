@@ -9,9 +9,11 @@ import {
     ClipboardListIcon,
     HelpCircleIcon,
     LayoutDashboardIcon,
+    MessageCircle,
     Plus,
     SettingsIcon,
     Target,
+    Users,
     Wrench,
 } from 'lucide-react';
 import * as React from 'react';
@@ -40,11 +42,6 @@ const data = {
       icon: LayoutDashboardIcon,
     },
     {
-      title: 'Clubes y Equipos',
-      url: '/clubes',
-      icon: Building2,
-    },
-    {
       title: 'Calendario',
       url: '/calendario',
       icon: CalendarIcon,
@@ -69,6 +66,16 @@ const data = {
       url: '/herramientas',
       icon: Wrench,
     },
+    {
+      title: 'Chat con IA',
+      url: '/ai-chat',
+      icon: MessageCircle,
+    },
+    {
+      title: 'Recursos Entrenadores',
+      url: '/recursos-entrenadores',
+      icon: Users,
+    },
   ],
   navTools: [
     {
@@ -87,6 +94,11 @@ const data = {
       title: 'Settings',
       url: '/settings',
       icon: SettingsIcon,
+    },
+    {
+      title: 'Clubes y Equipos',
+      url: '/settings?tab=clubes',
+      icon: Building2,
     },
     {
       title: 'Ayuda',

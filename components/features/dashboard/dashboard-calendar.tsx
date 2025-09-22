@@ -24,8 +24,7 @@ import {
     Calendar as CalendarIcon,
     ChevronLeft,
     ChevronRight,
-    Clock,
-    Target,
+    Target
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 // NUEVO: Importar el store unificado
@@ -478,125 +477,95 @@ export function DashboardCalendar() {
               <>
                 {/* Entrenamientos */}
                 {selectedDaySessions.length > 0 && (
-                  <>
-                    <div className='bg-primary/10 flex items-center gap-3 rounded-lg p-3'>
-                      <div className='bg-primary rounded-full p-2'>
-                        <Activity className='text-primary-foreground h-4 w-4' />
-                      </div>
-                      <div>
-                        <p className='text-foreground font-semibold'>
-                          {selectedDaySessions.length} sesión
-                          {selectedDaySessions.length !== 1 ? 'es' : ''}
-                        </p>
-                        <p className='text-muted-foreground text-sm'>
-                          Entrenamientos programados
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className='space-y-3'>
-                      {selectedDaySessions.map((session) => (
-                        <div
-                          key={session.id}
-                          onClick={() => handleTrainingClick(session)}
-                          className='bg-muted/50 space-y-3 rounded-xl border p-4 cursor-pointer hover:bg-muted/70 transition-colors'
-                        >
-                          <div className='flex items-center justify-between'>
-                            <div className='flex items-center gap-2'>
-                              <Target className='text-muted-foreground h-4 w-4' />
-                              <span className='text-foreground font-semibold'>
-                                {session.mainSet}
-                              </span>
-                            </div>
-                            <Badge variant='secondary'>{session.sessionType}</Badge>
-                          </div>
-
-                          <div className='grid grid-cols-2 gap-3'>
-                            <div className='flex items-center gap-2 text-sm'>
-                              <Target className='text-muted-foreground h-4 w-4' />
-                              <span className='text-foreground'>
+                  <div className='space-y-3'>
+                    <h4 className='font-semibold text-foreground flex items-center gap-2'>
+                      <Activity className='h-4 w-4' />
+                      Entrenamientos ({selectedDaySessions.length})
+                    </h4>
+                    {selectedDaySessions.map((session) => (
+                      <div
+                        key={session.id}
+                        onClick={() => handleTrainingClick(session)}
+                        className='border border-blue-200 dark:border-blue-800 rounded-lg p-3 bg-blue-50 dark:bg-blue-900/20 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-800/30 transition-colors'
+                      >
+                        <div className='flex items-center justify-between'>
+                          <div className='flex items-center gap-2 flex-1'>
+                            <div className='h-2 w-2 rounded-full bg-blue-500 flex-shrink-0'></div>
+                            <div className='flex-1 min-w-0'>
+                              <span className='font-medium text-foreground block'>
                                 {session.distance}m
                               </span>
-                            </div>
-                            <div className='flex items-center gap-2 text-sm'>
-                              <Target className='text-muted-foreground h-4 w-4' />
-                              <span className='text-foreground'>
-                                {session.stroke}
-                              </span>
+                              <div className='flex items-center gap-3 text-xs text-muted-foreground mt-1'>
+                                {session.mainSet && (
+                                  <span className='truncate'>{session.mainSet}</span>
+                                )}
+                              </div>
                             </div>
                           </div>
-
-                          <div className='text-sm text-muted-foreground'>
-                            <p className='truncate'>{session.mainSet}</p>
-                          </div>
+                          <Badge
+                            variant='secondary'
+                            className='bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 text-xs flex-shrink-0'
+                          >
+                            {session.sessionType}
+                          </Badge>
                         </div>
-                      ))}
-                    </div>
-                  </>
+                      </div>
+                    ))}
+                  </div>
                 )}
 
                 {/* Competiciones */}
                 {selectedDayCompetitions.length > 0 && (
-                  <>
-                    <div className='flex items-center gap-3 rounded-lg bg-orange-100 p-3 dark:bg-orange-900/20'>
-                      <div className='rounded-full bg-orange-500 p-2'>
-                        <CalendarIcon className='h-4 w-4 text-white' />
-                      </div>
-                      <div>
-                        <p className='text-foreground font-semibold'>
-                          {selectedDayCompetitions.length} competición
-                          {selectedDayCompetitions.length !== 1 ? 'es' : ''}
-                        </p>
-                        <p className='text-muted-foreground text-sm'>
-                          Eventos programados
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className='space-y-3'>
+                  <div className='space-y-3'>
+                    <h4 className='font-semibold text-foreground flex items-center gap-2'>
+                      <CalendarIcon className='h-4 w-4' />
+                      Competiciones ({selectedDayCompetitions.length})
+                    </h4>
                       {selectedDayCompetitions.map((competition, index) => (
                         <div
                           key={index}
-                          className='bg-muted/50 space-y-3 rounded-xl border p-4'
+                          className='border border-red-200 dark:border-red-800 rounded-lg p-3 bg-red-50 dark:bg-red-900/20'
                         >
                           <div className='flex items-center justify-between'>
-                            <div className='flex items-center gap-2'>
-                              <CalendarIcon className='text-muted-foreground h-4 w-4' />
-                              <span className='text-foreground font-semibold'>
-                                {competition.name}
-                              </span>
+                            <div className='flex items-center gap-2 flex-1'>
+                              <div className={`h-2 w-2 rounded-full flex-shrink-0 ${
+                                competition.priority === 'high'
+                                  ? 'bg-red-500'
+                                  : competition.priority === 'medium'
+                                  ? 'bg-orange-500'
+                                  : 'bg-green-500'
+                              }`}></div>
+                              <div className='flex-1 min-w-0'>
+                                <span className='font-medium text-foreground block truncate'>
+                                  {competition.name}
+                                </span>
+                                <div className='flex items-center gap-3 text-xs text-muted-foreground mt-1'>
+                                  {competition.location && (
+                                    <span className='flex items-center gap-1'>
+                                      <Target className='h-3 w-3' />
+                                      {competition.location}
+                                    </span>
+                                  )}
+                                  {competition.type && (
+                                    <span className='capitalize'>
+                                      {competition.type}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
                             </div>
                             <Badge
-                              variant='outline'
-                              className={`${
+                              variant='secondary'
+                              className={`text-xs flex-shrink-0 ${
                                 competition.priority === 'high'
-                                  ? 'bg-red-500 text-white'
+                                  ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
                                   : competition.priority === 'medium'
-                                  ? 'bg-orange-500 text-white'
-                                  : 'bg-green-500 text-white'
+                                  ? 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300'
+                                  : 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
                               }`}
                             >
-                              {competition.priority === 'high'
-                                ? 'Alta'
-                                : competition.priority === 'medium'
-                                ? 'Media'
-                                : 'Baja'}
+                              {competition.priority === 'high' ? 'Alta' : competition.priority === 'medium' ? 'Media' : 'Baja'}
                             </Badge>
-                          </div>
-
-                          <div className='space-y-2'>
-                            <div className='flex items-center gap-2 text-sm'>
-                              <Target className='text-muted-foreground h-4 w-4' />
-                              <span className='text-foreground'>
-                                {competition.location}
-                              </span>
-                            </div>
-                            <div className='flex items-center gap-2 text-sm'>
-                              <Clock className='text-muted-foreground h-4 w-4' />
-                              <span className='text-foreground'>
-                                {competition.type}
-                              </span>
-                            </div>
                           </div>
 
                           <div className='space-y-1'>
@@ -620,9 +589,8 @@ export function DashboardCalendar() {
                             {competition.objectives}
                           </p>
                         </div>
-                      ))}
-                    </div>
-                  </>
+                    ))}
+                  </div>
                 )}
               </>
             ) : selectedDate ? (
