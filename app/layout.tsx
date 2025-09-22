@@ -30,9 +30,9 @@ export default function RootLayout({
         <ErrorBoundary>
           <ThemeProvider
             attribute='class'
-            defaultTheme='system'
-            enableSystem
-            disableTransitionOnChange
+            defaultTheme='light'
+            enableSystem={true}
+            disableTransitionOnChange={false}
           >
             <main className='min-h-screen'>{children}</main>
           </ThemeProvider>
