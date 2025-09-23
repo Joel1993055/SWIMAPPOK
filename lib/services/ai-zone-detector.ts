@@ -21,18 +21,27 @@ export interface ZoneDetectionRequest {
 }
 
 export class AIZoneDetector {
-  private client: OpenAI;
+  private client: OpenAI | null;
 
   constructor() {
-    this.client = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
+    // Solo inicializar si la API key está disponible
+    if (process.env.OPENAI_API_KEY) {
+      this.client = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+      });
+    } else {
+      this.client = null;
+    }
   }
 
   /**
    * Detecta automáticamente las zonas de entrenamiento usando OpenAI
    */
   async detectZones(request: ZoneDetectionRequest): Promise<ZoneDetectionResult> {
+    if (!this.client) {
+      throw new Error('OpenAI client not initialized. Please set OPENAI_API_KEY environment variable.');
+    }
+    
     try {
       const prompt = this.buildPrompt(request);
       
