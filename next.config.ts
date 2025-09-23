@@ -11,14 +11,6 @@ const nextConfig = {
   // OPTIMIZACIONES DE RENDIMIENTO
   experimental: {
     optimizePackageImports: ['recharts', 'lucide-react', '@radix-ui/react-icons'],
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
-      },
-    },
   },
   
   // Configuración optimizada de imágenes
