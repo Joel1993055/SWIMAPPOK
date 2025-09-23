@@ -20,8 +20,8 @@ const STATIC_ASSETS = [
 const IMPORTANT_ROUTES = [
   '/',
   '/dashboard',
-  '/entrenamientos',
-  '/calendario',
+  '/training',
+  '/calendar',
   '/signin',
 ];
 

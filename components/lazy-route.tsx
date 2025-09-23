@@ -11,12 +11,12 @@ interface LazyRouteProps {
 // Lazy load components
 const LazyComponents: Record<string, ComponentType> = {
   dashboard: lazy(() => import('@/app/dashboard/page')),
-  entrenamientos: lazy(() => import('@/app/entrenamientos/page')),
-  planificacion: lazy(() => import('@/app/planificacion/page')),
-  analisis: lazy(() => import('@/app/analisis/page')),
+  training: lazy(() => import('@/app/training/page')),
+  planning: lazy(() => import('@/app/planning/page')),
+  analysis: lazy(() => import('@/app/analysis/page')),
   equipo: lazy(() => import('@/app/equipo/page')),
   reports: lazy(() => import('@/app/reports/page')),
-  herramientas: lazy(() => import('@/app/herramientas/page')),
+  tools: lazy(() => import('@/app/tools/page')),
   settings: lazy(() => import('@/app/settings/page')),
 };
 

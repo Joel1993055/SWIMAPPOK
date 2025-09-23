@@ -43,27 +43,27 @@ const data = {
     },
     {
       title: 'Calendario',
-      url: '/calendario',
+      url: '/calendar',
       icon: CalendarIcon,
     },
     {
       title: 'Planificación',
-      url: '/planificacion',
+      url: '/planning',
       icon: Target,
     },
     {
       title: 'Análisis',
-      url: '/analisis',
+      url: '/analysis',
       icon: BarChartIcon,
     },
     {
       title: 'Entrenamientos',
-      url: '/entrenamientos',
+      url: '/training',
       icon: Plus,
     },
     {
       title: 'Herramientas',
-      url: '/herramientas',
+      url: '/tools',
       icon: Wrench,
     },
     {
@@ -73,7 +73,7 @@ const data = {
     },
     {
       title: 'Recursos Entrenadores',
-      url: '/recursos-entrenadores',
+      url: '/coach-resources',
       icon: Users,
     },
   ],

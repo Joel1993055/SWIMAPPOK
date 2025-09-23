@@ -1,4 +1,4 @@
-import { PlanificacionOverview } from '@/components/features/planificacion/planificacion-overview';
+import { PlanificacionOverview } from '@/components/features/planning/planning-overview';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { SiteHeader } from '@/components/layout/site-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';

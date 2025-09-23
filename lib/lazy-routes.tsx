@@ -201,12 +201,12 @@ export const ResetPasswordPage = createLazyComponent(
 
 // Feature Pages
 export const SessionsPage = createLazyComponent(
-  () => import('@/app/entrenamientos/page'),
+  () => import('@/app/training/page'),
   { chunkName: 'sessions', fallback: RouteFallback }
 );
 
 export const CalendarPage = createLazyComponent(
-  () => import('@/app/calendario/page'),
+  () => import('@/app/calendar/page'),
   { chunkName: 'calendar', fallback: RouteFallback }
 );
 
@@ -216,7 +216,7 @@ export const TeamPage = createLazyComponent(() => import('@/app/equipo/page'), {
 });
 
 export const ToolsPage = createLazyComponent(
-  () => import('@/app/herramientas/page'),
+  () => import('@/app/tools/page'),
   { chunkName: 'tools', fallback: RouteFallback }
 );
 
@@ -226,7 +226,7 @@ export const LogPage = createLazyComponent(() => import('@/app/log/page'), {
 });
 
 export const PlanningPage = createLazyComponent(
-  () => import('@/app/planificacion/page'),
+  () => import('@/app/planning/page'),
   { chunkName: 'planning', fallback: RouteFallback }
 );
 
@@ -246,7 +246,7 @@ export const AICoachPage = createLazyComponent(
 );
 
 export const AnalysisPage = createLazyComponent(
-  () => import('@/app/analisis/page'),
+  () => import('@/app/analysis/page'),
   { chunkName: 'analysis', fallback: RouteFallback }
 );
 
