@@ -52,9 +52,17 @@ import React, { useState } from 'react';
 // NUEVO: Importar el store unificado
 
 function SettingsContent() {
-  // Obtener tab de la URL si existe
-  const [searchParams, setSearchParams] = useState(new URLSearchParams(window.location.search));
-  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'profile');
+  // Obtener tab de la URL si existe - Solo en el cliente
+  const [activeTab, setActiveTab] = useState('profile');
+  
+  // Usar useEffect para acceder a window solo en el cliente
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      const tab = searchParams.get('tab') || 'profile';
+      setActiveTab(tab);
+    }
+  }, []);
   const [showPassword, setShowPassword] = useState(false);
   const [notifications, setNotifications] = useState({
     email: true,
