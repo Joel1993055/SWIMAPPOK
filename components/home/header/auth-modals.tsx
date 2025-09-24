@@ -36,7 +36,7 @@ export function AuthModals({ user }: AuthModalsProps) {
             Sign In
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md !bg-white dark:!bg-slate-900 border border-gray-200 dark:border-gray-700 shadow-2xl opacity-100">
           <DialogHeader>
             <DialogTitle className="text-2xl font-medium">Sign in</DialogTitle>
             <p className="text-sm text-muted-foreground">
@@ -95,7 +95,7 @@ export function AuthModals({ user }: AuthModalsProps) {
             Sign Up
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md !bg-white dark:!bg-slate-900 border border-gray-200 dark:border-gray-700 shadow-2xl opacity-100">
           <DialogHeader>
             <DialogTitle className="text-2xl font-medium">Sign up</DialogTitle>
             <p className="text-sm text-muted-foreground">

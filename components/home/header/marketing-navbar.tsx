@@ -1,10 +1,13 @@
 'use client';
 
 import { Button } from "@/components/ui/button";
+import { createClient } from "@/utils/supabase/client";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { AuthModals } from "./auth-modals";
+
+const supabase = createClient();
 
 interface Props {
   user: any;
@@ -64,16 +67,61 @@ export function MarketingNavbar({ user }: Props) {
         <div className={'small-blur background-base'} />
       </div>
       
-      <div className="mx-auto max-w-7xl relative px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
+      <div className="mx-auto max-w-7xl relative px-4 sm:px-6 lg:px-8 py-2 sm:py-3">
+        {/* Mobile Layout */}
+        <div className="md:hidden flex items-center justify-between">
+          {/* Logo - Left on mobile */}
           <div className="flex items-center">
             <Link className="flex items-center" href={"/"}>
               <Image 
-                className="w-auto block h-20 sm:h-22 md:h-24 lg:h-28 xl:h-32" 
+                className="w-auto block h-20 sm:h-24" 
                 src="/DECKapp-removebg-preview (1).png" 
-                width={300} 
-                height={90} 
+                width={400} 
+                height={120} 
+                alt="DeckAPP" 
+                priority
+              />
+            </Link>
+          </div>
+
+          {/* Right side - Demo button + Menu */}
+          <div className="flex items-center gap-3">
+            {/* Demo Button */}
+            <Button
+              variant="secondary"
+              size="sm"
+              className="bg-white text-black hover:bg-gray-100 rounded-full px-4 py-2 text-sm font-medium"
+            >
+              Get a Demo
+            </Button>
+            
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="text-white hover:text-gray-300 transition-colors duration-200 p-2"
+              aria-label="Menú"
+            >
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                {isMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Desktop Layout */}
+        <div className="hidden md:flex items-center justify-between">
+          {/* Logo - Left on desktop */}
+          <div className="flex items-center">
+            <Link className="flex items-center" href={"/"}>
+              <Image 
+                className="w-auto block h-24 lg:h-48 xl:h-52" 
+                src="/DECKapp-removebg-preview (1).png" 
+                width={450} 
+                height={135} 
                 alt="DeckAPP" 
                 priority
               />
@@ -81,7 +129,7 @@ export function MarketingNavbar({ user }: Props) {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="flex items-center space-x-8">
             {navigation.map((item) => (
               <div
                 key={item.name}
@@ -202,67 +250,103 @@ export function MarketingNavbar({ user }: Props) {
             )}
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-300 hover:text-white transition-colors duration-200"
-              aria-label="Toggle menu"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {isMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
-          </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation - Full Screen Menu */}
         {isMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 border-t border-gray-800/50">
-            <div className="flex flex-col space-y-1 pt-4">
-              {navigation.map((item) => (
-                <div key={item.name}>
-                  <Link
-                    href={item.href}
-                    className="text-gray-300 hover:text-white transition-colors duration-200 font-medium px-3 py-3 block text-base"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                  {item.dropdown && (
-                    <div className="ml-4 mt-2 space-y-1">
-                      {item.dropdown.map((dropdownItem, index) => (
-                        <Link
-                          key={index}
-                          href={dropdownItem.href}
-                          className="flex items-center gap-2 text-gray-400 hover:text-gray-200 transition-colors duration-200 px-2 py-1 text-sm"
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          <span>{dropdownItem.icon}</span>
-                          <span>{dropdownItem.name}</span>
-                        </Link>
-                      ))}
-                    </div>
-                  )}
+          <div className="md:hidden">
+            {/* Full Screen Overlay */}
+            <div className="fixed inset-0 bg-black z-[9998]" />
+            
+            {/* Menu Content */}
+            <div className="fixed inset-0 z-[9999] flex flex-col">
+              {/* Header */}
+              <div className="flex items-center justify-between px-6 py-3 border-b border-gray-800">
+                <div className="flex items-center">
+                  <Image 
+                    className="w-auto h-56" 
+                    src="/DECKapp-removebg-preview (1).png" 
+                    width={1000} 
+                    height={300} 
+                    alt="DeckAPP" 
+                    priority
+                  />
                 </div>
-              ))}
-              <div className="pt-4 border-t border-gray-800/50">
-                {user?.id ? (
-                  <Button 
-                    variant="secondary" 
-                    asChild 
-                    size="lg" 
-                    className="w-full rounded-full bg-gray-800/80 text-white hover:bg-gray-700/80 backdrop-blur-sm border border-gray-600/50 font-medium px-6 py-2.5 transition-all duration-200"
-                  >
-                    <Link href="/dashboard">Dashboard</Link>
-                  </Button>
+                <button
+                  onClick={() => setIsMenuOpen(false)}
+                  className="text-white hover:text-gray-300 transition-colors duration-200 p-2"
+                >
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Navigation Links */}
+              <div className="flex-1 overflow-y-auto py-8">
+                <div className="px-6 space-y-1">
+                  {navigation.map((item) => (
+                    <div key={item.name}>
+                      <Link
+                        href={item.href}
+                        className="flex items-center justify-between text-white hover:text-gray-300 transition-colors duration-200 font-medium px-4 py-4 text-lg group"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <span>{item.name}</span>
+                        {item.dropdown && (
+                          <svg className="h-5 w-5 text-gray-400 group-hover:text-gray-300 transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        )}
+                      </Link>
+                      {item.dropdown && (
+                        <div className="ml-4 space-y-1">
+                          {item.dropdown.map((dropdownItem, index) => (
+                            <Link
+                              key={index}
+                              href={dropdownItem.href}
+                              className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors duration-200 px-4 py-3 text-base"
+                              onClick={() => setIsMenuOpen(false)}
+                            >
+                              <span className="text-lg">{dropdownItem.icon}</span>
+                              <span>{dropdownItem.name}</span>
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Auth Section */}
+              <div className="border-t border-gray-800 p-6">
+                {user ? (
+                  <div className="space-y-4">
+                    <div className="text-white text-center">
+                      <div className="text-sm text-gray-400 mb-1">Hola,</div>
+                      <div className="font-medium truncate">{user.email}</div>
+                    </div>
+                    <Button
+                      onClick={() => {
+                        supabase.auth.signOut();
+                        setIsMenuOpen(false);
+                      }}
+                      variant="outline"
+                      size="lg"
+                      className="w-full border-gray-600 text-white hover:bg-gray-800 hover:text-white hover:border-gray-500 transition-all duration-200 py-3"
+                    >
+                      Cerrar Sesión
+                    </Button>
+                  </div>
                 ) : (
-                  <div className="flex flex-col space-y-2">
-                    <AuthModals user={user} />
+                  <div className="space-y-4">
+                    <div className="text-center">
+                      <div className="text-white text-lg font-medium mb-2">Acceso</div>
+                    </div>
+                    <div className="space-y-3 flex flex-col items-center">
+                      <AuthModals user={user} />
+                    </div>
                   </div>
                 )}
               </div>
