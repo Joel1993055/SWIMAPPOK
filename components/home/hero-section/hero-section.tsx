@@ -30,8 +30,17 @@ export function HeroSection() {
   }, []);
 
   return (
-    <section id="hero" className={"mx-auto max-w-7xl px-[32px] relative mt-48 mb-12"}>
-      <div className={"text-center w-full mb-16"}>
+    <section id="hero" className={"mx-auto max-w-7xl px-[32px] relative pt-48 pb-12"}>
+      {/* Fondo especial del hero con grid, verde y glow */}
+      <div className="absolute inset-0 -z-10">
+        <div className={'grain-blur background-base'} />
+        <div className={'grain-background background-base'} />
+        <div className={'grid-bg background-base'} />
+        <div className={'large-blur background-base'} />
+        <div className={'small-blur background-base'} />
+      </div>
+      
+      <div className={"text-center w-full mb-16 relative z-50"}>
         <h1 className={"text-[48px] leading-[48px] md:text-[80px] md:leading-[80px] tracking-[-1.6px] font-medium text-white"}>
           Descubre el poder de la
           <br />
@@ -53,7 +62,7 @@ export function HeroSection() {
       </div>
       
       {/* Dashboard Image */}
-      <div className="flex justify-center">
+      <div className="flex justify-center relative z-50">
         <div className="relative max-w-6xl w-full">
           <Image
             src="/dashboard-dark.png"

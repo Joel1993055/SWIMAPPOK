@@ -55,13 +55,13 @@ export function MarketingNavbar({ user }: Props) {
 
   return (
     <nav className="absolute top-0 left-0 right-0 z-50">
-      {/* Fondo con malla/grid igual que el resto de la página */}
+      {/* Fondo especial del navbar con grid, verde y glow */}
       <div className="absolute inset-0 -z-10">
-        <div className="grain-blur background-base" />
-        <div className="grain-background background-base" />
-        <div className="grid-bg background-base" />
-        <div className="large-blur background-base" />
-        <div className="small-blur background-base" />
+        <div className={'grain-blur background-base'} />
+        <div className={'grain-background background-base'} />
+        <div className={'grid-bg background-base'} />
+        <div className={'large-blur background-base'} />
+        <div className={'small-blur background-base'} />
       </div>
       
       <div className="mx-auto max-w-7xl relative px-[32px] py-6">
