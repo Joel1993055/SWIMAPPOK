@@ -30,7 +30,7 @@ export default function RootLayout({
         <ErrorBoundary>
           <ThemeProvider
             attribute='class'
-            defaultTheme='light'
+            defaultTheme='dark'
             enableSystem={true}
             disableTransitionOnChange={false}
           >

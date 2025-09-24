@@ -70,11 +70,12 @@ export function MarketingNavbar({ user }: Props) {
           <div className="flex items-center">
             <Link className="flex items-center" href={"/"}>
               <Image 
-                className="w-auto block h-8 sm:h-10 md:h-12 lg:h-14" 
+                className="w-auto block h-20 sm:h-22 md:h-24 lg:h-28 xl:h-32" 
                 src="/DECKapp-removebg-preview (1).png" 
-                width={180} 
-                height={54} 
+                width={300} 
+                height={90} 
                 alt="DeckAPP" 
+                priority
               />
             </Link>
           </div>

@@ -1,7 +1,6 @@
 'use client';
 
 import {
-    ArrowUpCircleIcon,
     BarChartIcon,
     BookOpenIcon,
     Building2,
@@ -14,8 +13,9 @@ import {
     SettingsIcon,
     Target,
     Users,
-    Wrench,
+    Wrench
 } from 'lucide-react';
+import Image from 'next/image';
 import * as React from 'react';
 
 import { NavDocuments } from '@/components/navigation/nav-documents';
@@ -132,8 +132,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className='data-[slot=sidebar-menu-button]:!p-1.5'
             >
               <a href='#'>
-                <ArrowUpCircleIcon className='h-5 w-5' />
-                <span className='text-base font-semibold'>Swim:APP</span>
+                 <Image 
+                   className="w-auto h-32" 
+                   src="/DECKapp-removebg-preview (1).png" 
+                   width={400} 
+                   height={120} 
+                   alt="DeckAPP" 
+                   priority
+                 />
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
