@@ -64,13 +64,13 @@ export function MarketingNavbar({ user }: Props) {
         <div className={'small-blur background-base'} />
       </div>
       
-      <div className="mx-auto max-w-7xl relative px-[32px] py-6">
+      <div className="mx-auto max-w-7xl relative px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
             <Link className="flex items-center" href={"/"}>
               <Image 
-                className="w-auto block" 
+                className="w-auto block h-8 sm:h-10 md:h-12 lg:h-14" 
                 src="/DECKapp-removebg-preview (1).png" 
                 width={180} 
                 height={54} 
@@ -222,12 +222,12 @@ export function MarketingNavbar({ user }: Props) {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="md:hidden mt-4 pb-4 border-t border-gray-800/50">
-            <div className="flex flex-col space-y-2 pt-4">
+            <div className="flex flex-col space-y-1 pt-4">
               {navigation.map((item) => (
                 <div key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-gray-300 hover:text-white transition-colors duration-200 font-medium px-2 py-1 block"
+                    className="text-gray-300 hover:text-white transition-colors duration-200 font-medium px-3 py-3 block text-base"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {item.name}
