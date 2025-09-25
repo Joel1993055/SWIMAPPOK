@@ -1,147 +1,116 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import { signInAction } from '@/app/actions';
+import { FormMessage, Message } from '@/components/forms/form-message';
+import { SubmitButton } from '@/components/forms/submit-button';
+import { SocialLogin } from '@/components/home/header/social-login';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { signInAction } from '@/lib/actions/auth';
-import { ArrowLeft, LogIn } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
 export default function SignInPage() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState<{
-    type: 'success' | 'error';
-    text: string;
-  } | null>(null);
-
-  const handleSubmit = async (formData: FormData) => {
-    setIsLoading(true);
-    setMessage(null);
-
-    try {
-      const result = await signInAction(formData);
-
-      if (result.error) {
-        setMessage({ type: 'error', text: result.error });
-      }
-      // Si no hay error, la función redirect() se encarga de redirigir
-    } catch {
-      setMessage({
-        type: 'error',
-        text: 'Error inesperado. Inténtalo de nuevo.',
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [message, setMessage] = useState<Message | null>(null);
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4'>
-      <div className='w-full max-w-md'>
-        {/* Header */}
-        <div className='text-center mb-8'>
-          <Link
-            href='/'
-            className='inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4'
-          >
-            <ArrowLeft className='h-4 w-4' />
-            Volver al inicio
+    <div className="min-h-screen bg-black flex items-center justify-center px-4">
+      <div className="max-w-md w-full">
+        {/* Logo */}
+        <div className="text-center mb-4">
+          <Link href="/" className="inline-block">
+            <Image 
+              className="w-auto h-48 mx-auto mb-2" 
+              src="/DECKapp.svg" 
+              width={600} 
+              height={192} 
+              alt="DeckAPP" 
+              priority
+            />
           </Link>
-          <h1 className='text-3xl font-bold text-foreground'>Iniciar Sesión</h1>
-          <p className='text-muted-foreground mt-2'>
-            Accede a tu cuenta de entrenamiento
-          </p>
         </div>
 
-        {/* Formulario */}
-        <Card>
-          <CardHeader>
-            <CardTitle className='flex items-center gap-2'>
-              <LogIn className='h-5 w-5' />
-              Iniciar Sesión
-            </CardTitle>
-            <CardDescription>
-              Ingresa tus credenciales para acceder a tu cuenta
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form action={handleSubmit} className='space-y-4'>
-              <div className='space-y-2'>
-                <Label htmlFor='email'>Email</Label>
-                <Input
-                  id='email'
-                  name='email'
-                  type='email'
-                  placeholder='tu@email.com'
-                  required
-                />
-              </div>
+        {/* Sign In Form */}
+        <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl border border-gray-800 p-8">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-semibold text-white mb-2">Welcome back</h2>
+            <p className="text-gray-400">Sign in to your account</p>
+          </div>
 
-              <div className='space-y-2'>
-                <Label htmlFor='password'>Contraseña</Label>
-                <Input
-                  id='password'
-                  name='password'
-                  type='password'
-                  placeholder='Tu contraseña'
-                  required
-                />
-              </div>
+          <form className="space-y-4">
+            <div>
+              <Label htmlFor="email" className="text-gray-300">Email</Label>
+              <Input 
+                id="email"
+                name="email" 
+                type="email"
+                placeholder="you@example.com" 
+                required 
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:border-gray-600"
+              />
+            </div>
 
-              {/* Mensajes */}
-              {message && (
-                <div
-                  className={`p-3 rounded-md text-sm ${
-                    message.type === 'success'
-                      ? 'bg-green-50 text-green-700 border border-green-200'
-                      : 'bg-red-50 text-red-700 border border-red-200'
-                  }`}
-                >
-                  {message.text}
-                </div>
-              )}
-
-              <Button type='submit' className='w-full' disabled={isLoading}>
-                {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
-              </Button>
-            </form>
-
-            <div className='mt-6 text-center'>
-              <p className='text-sm text-muted-foreground'>
-                ¿No tienes cuenta?{' '}
+            <div>
+              <div className="flex justify-between items-center mb-2">
+                <Label htmlFor="password" className="text-gray-300">Password</Label>
                 <Link
-                  href='/auth/signup'
-                  className='text-primary hover:underline'
+                  href="/auth/forgot-password"
+                  className="text-sm text-gray-400 hover:text-gray-300 transition-colors"
                 >
-                  Crear cuenta
+                  Forgot password?
                 </Link>
-              </p>
+              </div>
+              <Input
+                id="password"
+                type="password"
+                name="password"
+                placeholder="Your password"
+                required
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:border-gray-600"
+              />
             </div>
 
-            <div className='mt-4 text-center'>
-              <Link
-                href='/auth/forgot-password'
-                className='text-sm text-primary hover:underline'
+            <SubmitButton 
+              pendingText="Signing in..." 
+              formAction={signInAction}
+              className="w-full bg-white text-black hover:bg-gray-100 font-medium py-3 rounded-lg transition-colors"
+            >
+              Sign in
+            </SubmitButton>
+
+            {message && <FormMessage message={message} />}
+          </form>
+
+          {/* Social Login */}
+          <div className="mt-6">
+            <SocialLogin 
+              onSuccess={() => window.location.href = '/dashboard'}
+              onError={(error) => setMessage({ type: 'error', message: error })}
+            />
+          </div>
+
+          {/* Sign Up Link */}
+          <div className="text-center mt-6">
+            <p className="text-gray-400">
+              Don't have an account?{' '}
+              <Link 
+                href="/auth/signup" 
+                className="text-white hover:text-gray-300 font-medium transition-colors"
               >
-                ¿Olvidaste tu contraseña?
+                Sign up
               </Link>
-            </div>
-          </CardContent>
-        </Card>
+            </p>
+          </div>
+        </div>
 
-        {/* Footer */}
-        <div className='text-center mt-8'>
-          <p className='text-xs text-muted-foreground'>
-            Plataforma de entrenamiento de natación
-          </p>
+        {/* Back to Home */}
+        <div className="text-center mt-6">
+          <Link 
+            href="/" 
+            className="text-gray-500 hover:text-gray-400 text-sm transition-colors"
+          >
+            ← Back to home
+          </Link>
         </div>
       </div>
     </div>

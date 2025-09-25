@@ -40,7 +40,7 @@ export function TabsSection({
   const setActiveTab = onTabChange || setInternalActiveTab;
 
   return (
-    <section className={cn("py-20 px-4 sm:px-6 lg:px-8", className)}>
+    <section className={cn("py-20 px-4 sm:px-6 lg:px-8 relative z-[100]", className)}>
       <div className="max-w-7xl mx-auto">
         {/* Title */}
         <div className="text-center mb-12">
@@ -54,32 +54,32 @@ export function TabsSection({
 
         {/* Tabs */}
         <div className="flex justify-center mb-8">
-          <div className="flex bg-gray-900/30 rounded-lg p-1 backdrop-blur-sm border border-gray-800/30">
+          <div className="flex flex-wrap justify-center bg-gray-900/30 rounded-lg p-1 backdrop-blur-sm border border-gray-800/30 w-full max-w-md sm:max-w-none">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium transition-all duration-200",
+                  "px-4 py-3 rounded-md text-sm font-medium transition-all duration-200 flex-1 sm:flex-none sm:px-4 min-w-0 touch-manipulation relative z-10",
                   activeTab === tab.id
                     ? "bg-gray-800/60 text-white border border-gray-700/50"
-                    : "text-gray-400 hover:text-gray-200 hover:bg-gray-800/30"
+                    : "text-gray-400 hover:text-gray-200 hover:bg-gray-800/30 active:bg-gray-800/50"
                 )}
               >
-                {tab.label}
+                <span className="truncate">{tab.label}</span>
               </button>
             ))}
           </div>
         </div>
 
         {/* Features */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
+        <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-8 sm:mb-12 px-4">
           {features.map((feature, index) => (
-            <div key={index} className="flex items-center gap-2 text-gray-400">
-              <div className="text-green-400/80">
+            <div key={index} className="flex items-center gap-1 sm:gap-2 text-gray-400 px-2 py-1">
+              <div className="text-green-400/80 text-sm sm:text-base">
                 {feature.icon}
               </div>
-              <span className="text-sm">{feature.text}</span>
+              <span className="text-xs sm:text-sm whitespace-nowrap">{feature.text}</span>
             </div>
           ))}
         </div>

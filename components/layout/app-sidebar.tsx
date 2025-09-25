@@ -134,7 +134,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <a href='#'>
                  <Image 
                    className="w-auto h-32" 
-                   src="/DECKapp-removebg-preview (1).png" 
+                   src="/DECKapp.svg" 
                    width={400} 
                    height={120} 
                    alt="DeckAPP" 

@@ -67,22 +67,22 @@ export function MarketingNavbar({ user }: Props) {
         <div className={'small-blur background-base'} />
       </div>
       
-      <div className="mx-auto max-w-7xl relative px-4 sm:px-6 lg:px-8 py-2 sm:py-3">
+      <div className="mx-auto max-w-7xl relative px-4 sm:px-6 lg:px-8 py-0 sm:py-1">
         {/* Mobile Layout */}
         <div className="md:hidden flex items-center justify-between">
-          {/* Logo - Left on mobile */}
-          <div className="flex items-center">
-            <Link className="flex items-center" href={"/"}>
-              <Image 
-                className="w-auto block h-20 sm:h-24" 
-                src="/DECKapp-removebg-preview (1).png" 
-                width={400} 
-                height={120} 
-                alt="DeckAPP" 
-                priority
-              />
-            </Link>
-          </div>
+              {/* Logo - Left on mobile */}
+              <div className="flex items-center">
+                <Link className="flex items-center" href={"/"}>
+                  <Image 
+                    className="w-auto block h-40 sm:h-48" 
+                    src="/DECKapp.svg" 
+                    width={800} 
+                    height={240} 
+                    alt="DeckAPP" 
+                    priority
+                  />
+                </Link>
+              </div>
 
           {/* Right side - Demo button + Menu */}
           <div className="flex items-center gap-3">
@@ -119,7 +119,7 @@ export function MarketingNavbar({ user }: Props) {
             <Link className="flex items-center" href={"/"}>
               <Image 
                 className="w-auto block h-24 lg:h-48 xl:h-52" 
-                src="/DECKapp-removebg-preview (1).png" 
+                src="/DECKapp.svg" 
                 width={450} 
                 height={135} 
                 alt="DeckAPP" 
@@ -252,29 +252,19 @@ export function MarketingNavbar({ user }: Props) {
 
         </div>
 
-        {/* Mobile Navigation - Full Screen Menu */}
+        {/* Mobile Navigation - Minimal Menu */}
         {isMenuOpen && (
           <div className="md:hidden">
-            {/* Full Screen Overlay */}
-            <div className="fixed inset-0 bg-black z-[9998]" />
+            {/* Minimal Overlay */}
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9998]" />
             
             {/* Menu Content */}
             <div className="fixed inset-0 z-[9999] flex flex-col">
               {/* Header */}
-              <div className="flex items-center justify-between px-6 py-3 border-b border-gray-800">
-                <div className="flex items-center">
-                  <Image 
-                    className="w-auto h-56" 
-                    src="/DECKapp-removebg-preview (1).png" 
-                    width={1000} 
-                    height={300} 
-                    alt="DeckAPP" 
-                    priority
-                  />
-                </div>
+              <div className="flex items-center justify-end px-6 py-4">
                 <button
                   onClick={() => setIsMenuOpen(false)}
-                  className="text-white hover:text-gray-300 transition-colors duration-200 p-2"
+                  className="text-white hover:text-gray-300 transition-colors duration-200"
                 >
                   <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -283,18 +273,18 @@ export function MarketingNavbar({ user }: Props) {
               </div>
 
               {/* Navigation Links */}
-              <div className="flex-1 overflow-y-auto py-8">
-                <div className="px-6 space-y-1">
+              <div className="flex-1 overflow-y-auto py-6">
+                <div className="px-6 space-y-2">
                   {navigation.map((item) => (
                     <div key={item.name}>
                       <Link
                         href={item.href}
-                        className="flex items-center justify-between text-white hover:text-gray-300 transition-colors duration-200 font-medium px-4 py-4 text-lg group"
+                        className="flex items-center justify-between text-white hover:text-gray-300 transition-colors duration-200 font-medium py-3 text-lg group"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         <span>{item.name}</span>
                         {item.dropdown && (
-                          <svg className="h-5 w-5 text-gray-400 group-hover:text-gray-300 transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg className="h-4 w-4 text-gray-400 group-hover:text-gray-300 transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                           </svg>
                         )}
@@ -305,10 +295,10 @@ export function MarketingNavbar({ user }: Props) {
                             <Link
                               key={index}
                               href={dropdownItem.href}
-                              className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors duration-200 px-4 py-3 text-base"
+                              className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors duration-200 py-2 text-base"
                               onClick={() => setIsMenuOpen(false)}
                             >
-                              <span className="text-lg">{dropdownItem.icon}</span>
+                              <span className="text-sm">{dropdownItem.icon}</span>
                               <span>{dropdownItem.name}</span>
                             </Link>
                           ))}
@@ -320,7 +310,7 @@ export function MarketingNavbar({ user }: Props) {
               </div>
               
               {/* Auth Section */}
-              <div className="border-t border-gray-800 p-6">
+              <div className="p-6">
                 {user ? (
                   <div className="space-y-4">
                     <div className="text-white text-center">
@@ -341,11 +331,22 @@ export function MarketingNavbar({ user }: Props) {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    <div className="text-center">
-                      <div className="text-white text-lg font-medium mb-2">Acceso</div>
-                    </div>
-                    <div className="space-y-3 flex flex-col items-center">
-                      <AuthModals user={user} />
+                    <div className="space-y-3">
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        className="w-full border-gray-600 text-white hover:bg-gray-800 hover:text-white hover:border-gray-500 transition-all duration-200 py-3"
+                        asChild
+                      >
+                        <Link href="/auth/signin">Log in</Link>
+                      </Button>
+                      <Button
+                        size="lg"
+                        className="w-full bg-white text-black hover:bg-gray-100 transition-all duration-200 py-3 font-medium"
+                        asChild
+                      >
+                        <Link href="/auth/signup">Get a Demo</Link>
+                      </Button>
                     </div>
                   </div>
                 )}

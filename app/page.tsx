@@ -15,7 +15,9 @@ export default function Home() {
     <div className="dark marketing-page bg-slate-900 min-h-screen">
       <MarketingNavbar user={null} />
       <HeroSection />
-      <TabsFeaturesSection />
+      <div className="py-8 sm:py-12 md:py-16">
+        <TabsFeaturesSection />
+      </div>
       <HoverFeaturesSection />
       <FeaturesSection />
       <WaterfallFeaturesSection />

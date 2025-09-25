@@ -30,7 +30,7 @@ export function HeroSection() {
   }, []);
 
   return (
-    <section id="hero" className={"mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative pt-48 sm:pt-56 md:pt-64 pb-8 sm:pb-12"}>
+    <section id="hero" className={"mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative pt-64 sm:pt-56 md:pt-64 pb-12 sm:pb-16"}>
       {/* Fondo especial del hero con grid, verde y glow */}
       <div className="absolute inset-0 -z-10">
         <div className={'grain-blur background-base'} />

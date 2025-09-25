@@ -21,7 +21,7 @@ export default function Header({ user }: Props) {
       <div className="mx-auto max-w-7xl relative px-[32px] py-6 flex items-center justify-between">
         <div className="flex flex-1 items-center justify-start">
           <Link className="flex items-center" href={"/"}>
-            <Image className="w-auto block" src="/DECKapp-removebg-preview (1).png" width={180} height={54} alt="DeckAPP" />
+            <Image className="w-auto block" src="/DECKapp.svg" width={180} height={54} alt="DeckAPP" />
           </Link>
         </div>
         <div className="flex flex-1 items-center justify-end">

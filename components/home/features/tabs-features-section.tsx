@@ -1,10 +1,5 @@
 'use client';
 
-import { ChartsSection } from '@/components/features/dashboard/charts-section';
-import { DashboardCalendar } from '@/components/features/dashboard/dashboard-calendar';
-import { KPICards } from '@/components/features/dashboard/kpi-cards';
-import { VisitorsChart } from '@/components/features/dashboard/visitors-chart';
-import { WeeklyTrainingSchedule } from '@/components/features/dashboard/weekly-training-schedule';
 import { TabsSection } from '@/components/ui/tabs-section';
 import { useState } from 'react';
 import { DemoDataProvider } from './demo-data-provider';
@@ -71,49 +66,44 @@ export function TabsFeaturesSection() {
         activeTab={activeTab}
         onTabChange={setActiveTab}
       >
-        <div className="p-4">
+        <div className="p-2 sm:p-4">
           {/* Dashboard content based on active tab */}
-          <div className="bg-gray-800/30 rounded-lg border border-gray-700/30 p-3 w-full">
+          <div className="bg-gray-800/30 rounded-lg border border-gray-700/30 p-2 sm:p-3 w-full">
             {activeTab === 'overview' && (
               <div className="space-y-4">
-                {/* KPIs Cards reales */}
-                <KPICards />
-                
-                {/* Charts Section - Gráfico de visitantes y calendario */}
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                  <VisitorsChart />
-                  <DashboardCalendar />
+                {/* Overview Placeholder */}
+                <div className="flex items-center justify-center h-64 sm:h-96 bg-gray-700/30 rounded-lg border border-gray-600/30 p-4">
+                  <div className="text-center text-gray-400">
+                    <div className="text-4xl sm:text-6xl mb-2 sm:mb-4">📊</div>
+                    <h3 className="text-lg sm:text-xl font-semibold mb-1 sm:mb-2">Overview Dashboard</h3>
+                    <p className="text-xs sm:text-sm">Analytics overview coming soon...</p>
+                  </div>
                 </div>
-                
-                {/* Weekly Training Schedule */}
-                <WeeklyTrainingSchedule />
               </div>
             )}
 
             {activeTab === 'training' && (
               <div className="space-y-4">
-                {/* KPIs Cards reales */}
-                <KPICards />
-                
-                {/* Weekly Training Schedule */}
-                <WeeklyTrainingSchedule />
-                
-                {/* Charts Section */}
-                <ChartsSection />
+                {/* Training Placeholder */}
+                <div className="flex items-center justify-center h-64 sm:h-96 bg-gray-700/30 rounded-lg border border-gray-600/30 p-4">
+                  <div className="text-center text-gray-400">
+                    <div className="text-4xl sm:text-6xl mb-2 sm:mb-4">🏊‍♂️</div>
+                    <h3 className="text-lg sm:text-xl font-semibold mb-1 sm:mb-2">Training Management</h3>
+                    <p className="text-xs sm:text-sm">Training tools coming soon...</p>
+                  </div>
+                </div>
               </div>
             )}
 
             {activeTab === 'analytics' && (
               <div className="space-y-4">
-                {/* Charts Section - Los dos gráficos debajo uno del otro */}
-                <div className="space-y-4">
-                  <ChartsSection />
-                </div>
-                
-                {/* Gráfico de visitantes y calendario */}
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                  <VisitorsChart />
-                  <DashboardCalendar />
+                {/* Analytics Placeholder */}
+                <div className="flex items-center justify-center h-64 sm:h-96 bg-gray-700/30 rounded-lg border border-gray-600/30 p-4">
+                  <div className="text-center text-gray-400">
+                    <div className="text-4xl sm:text-6xl mb-2 sm:mb-4">📈</div>
+                    <h3 className="text-lg sm:text-xl font-semibold mb-1 sm:mb-2">Advanced Analytics</h3>
+                    <p className="text-xs sm:text-sm">Detailed analytics coming soon...</p>
+                  </div>
                 </div>
               </div>
             )}

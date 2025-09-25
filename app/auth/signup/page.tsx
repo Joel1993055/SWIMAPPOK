@@ -1,154 +1,110 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import { signUpAction } from '@/app/actions';
+import { FormMessage, Message } from '@/components/forms/form-message';
+import { SubmitButton } from '@/components/forms/submit-button';
+import { SocialLogin } from '@/components/home/header/social-login';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { signUpAction } from '@/lib/actions/auth';
-import { ArrowLeft, UserPlus } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
 export default function SignUpPage() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState<{
-    type: 'success' | 'error';
-    text: string;
-  } | null>(null);
-
-  const handleSubmit = async (formData: FormData) => {
-    setIsLoading(true);
-    setMessage(null);
-
-    try {
-      const result = await signUpAction(formData);
-
-      if (result.error) {
-        setMessage({ type: 'error', text: result.error });
-      } else {
-        setMessage({
-          type: 'success',
-          text: result.success || 'Usuario registrado correctamente',
-        });
-      }
-    } catch {
-      setMessage({
-        type: 'error',
-        text: 'Error inesperado. Inténtalo de nuevo.',
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [message, setMessage] = useState<Message | null>(null);
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4'>
-      <div className='w-full max-w-md'>
-        {/* Header */}
-        <div className='text-center mb-8'>
-          <Link
-            href='/'
-            className='inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4'
-          >
-            <ArrowLeft className='h-4 w-4' />
-            Volver al inicio
+    <div className="min-h-screen bg-black flex items-center justify-center px-4">
+      <div className="max-w-md w-full">
+        {/* Logo */}
+        <div className="text-center mb-4">
+          <Link href="/" className="inline-block">
+            <Image 
+              className="w-auto h-48 mx-auto mb-2" 
+              src="/DECKapp.svg" 
+              width={600} 
+              height={192} 
+              alt="DeckAPP" 
+              priority
+            />
           </Link>
-          <h1 className='text-3xl font-bold text-foreground'>Crear Cuenta</h1>
-          <p className='text-muted-foreground mt-2'>
-            Únete a nuestra plataforma de entrenamiento de natación
-          </p>
         </div>
 
-        {/* Formulario */}
-        <Card>
-          <CardHeader>
-            <CardTitle className='flex items-center gap-2'>
-              <UserPlus className='h-5 w-5' />
-              Registro
-            </CardTitle>
-            <CardDescription>
-              Crea tu cuenta para comenzar a gestionar tus entrenamientos
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form action={handleSubmit} className='space-y-4'>
-              <div className='space-y-2'>
-                <Label htmlFor='email'>Email</Label>
-                <Input
-                  id='email'
-                  name='email'
-                  type='email'
-                  placeholder='tu@email.com'
-                  required
-                />
-              </div>
+        {/* Sign Up Form */}
+        <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl border border-gray-800 p-8">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-semibold text-white mb-2">Create account</h2>
+            <p className="text-gray-400">Start analyzing swimming performance</p>
+          </div>
 
-              <div className='space-y-2'>
-                <Label htmlFor='password'>Contraseña</Label>
-                <Input
-                  id='password'
-                  name='password'
-                  type='password'
-                  placeholder='Mínimo 6 caracteres'
-                  required
-                />
-              </div>
-
-              <div className='space-y-2'>
-                <Label htmlFor='confirmPassword'>Confirmar Contraseña</Label>
-                <Input
-                  id='confirmPassword'
-                  name='confirmPassword'
-                  type='password'
-                  placeholder='Repite tu contraseña'
-                  required
-                />
-              </div>
-
-              {/* Mensajes */}
-              {message && (
-                <div
-                  className={`p-3 rounded-md text-sm ${
-                    message.type === 'success'
-                      ? 'bg-green-50 text-green-700 border border-green-200'
-                      : 'bg-red-50 text-red-700 border border-red-200'
-                  }`}
-                >
-                  {message.text}
-                </div>
-              )}
-
-              <Button type='submit' className='w-full' disabled={isLoading}>
-                {isLoading ? 'Creando cuenta...' : 'Crear Cuenta'}
-              </Button>
-            </form>
-
-            <div className='mt-6 text-center'>
-              <p className='text-sm text-muted-foreground'>
-                ¿Ya tienes cuenta?{' '}
-                <Link
-                  href='/auth/signin'
-                  className='text-primary hover:underline'
-                >
-                  Inicia sesión
-                </Link>
-              </p>
+          <form className="space-y-4">
+            <div>
+              <Label htmlFor="email" className="text-gray-300">Email</Label>
+              <Input 
+                id="email"
+                name="email" 
+                type="email"
+                placeholder="you@example.com" 
+                required 
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:border-gray-600"
+              />
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Footer */}
-        <div className='text-center mt-8'>
-          <p className='text-xs text-muted-foreground'>
-            Al crear una cuenta, aceptas nuestros términos de servicio y
-            política de privacidad
-          </p>
+            <div>
+              <Label htmlFor="password" className="text-gray-300">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                name="password"
+                placeholder="Create a password"
+                minLength={6}
+                required
+                className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:border-gray-600"
+              />
+              <p className="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
+            </div>
+
+            <SubmitButton 
+              formAction={signUpAction} 
+              pendingText="Creating account..."
+              className="w-full bg-white text-black hover:bg-gray-100 font-medium py-3 rounded-lg transition-colors"
+            >
+              Create account
+            </SubmitButton>
+
+            {message && <FormMessage message={message} />}
+          </form>
+
+          {/* Social Login */}
+          <div className="mt-6">
+            <SocialLogin 
+              onSuccess={() => window.location.href = '/dashboard'}
+              onError={(error) => setMessage({ type: 'error', message: error })}
+            />
+          </div>
+
+          {/* Sign In Link */}
+          <div className="text-center mt-6">
+            <p className="text-gray-400">
+              Already have an account?{' '}
+              <Link 
+                href="/auth/signin" 
+                className="text-white hover:text-gray-300 font-medium transition-colors"
+              >
+                Sign in
+              </Link>
+            </p>
+          </div>
+        </div>
+
+        {/* Back to Home */}
+        <div className="text-center mt-6">
+          <Link 
+            href="/" 
+            className="text-gray-500 hover:text-gray-400 text-sm transition-colors"
+          >
+            ← Back to home
+          </Link>
         </div>
       </div>
     </div>
