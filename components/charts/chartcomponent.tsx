@@ -497,18 +497,18 @@ export default function ChartComponent() {
         <div className='grid flex-1 gap-1 text-center sm:text-left'>
           <CardTitle>
             {timeRange === '7days'
-              ? 'Volumen 7 Días'
+              ? '7 Days Volume'
               : timeRange === '30days'
-                ? 'Volumen 30 Días'
-                : 'Volumen Anual'}{' '}
+                ? '30 Days Volume'
+                : 'Annual Volume'}{' '}
             - Distribución por Zonas
           </CardTitle>
           <CardDescription>
             {timeRange === 'year'
-              ? 'Mostrando todo el año'
+              ? 'Showing the whole year'
               : timeRange === '30days'
-                ? 'Mostrando los últimos 30 días'
-                : 'Mostrando los últimos 7 días'}
+                ? 'Showing the last 30 days'
+                : 'Showing the last 7 days'}
           </CardDescription>
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>

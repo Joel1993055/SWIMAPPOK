@@ -256,7 +256,7 @@ export function VisitorsChart() {
                   {chartType === 'bar' ? (
                     <>
                       <BarChart3 className='h-3.5 w-3.5' />
-                      <span>Barras</span>
+                      <span>Bars</span>
                     </>
                   ) : (
                     <>
@@ -271,7 +271,7 @@ export function VisitorsChart() {
               <SelectItem value='bar'>
                 <div className='flex items-center gap-1.5'>
                   <BarChart3 className='h-3.5 w-3.5' />
-                  <span>Gráfico de Barras</span>
+                  <span>Bar Chart</span>
                 </div>
               </SelectItem>
               <SelectItem value='area'>
@@ -286,7 +286,7 @@ export function VisitorsChart() {
       </CardHeader>
       <CardContent>
         <div className='space-y-4'>
-          {/* Gráfico de Barras */}
+          {/* Bar Chart */}
           {chartType === 'bar' && (
             <Suspense fallback={
               <div className='h-[300px] flex items-center justify-center'>

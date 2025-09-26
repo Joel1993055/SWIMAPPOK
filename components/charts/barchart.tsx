@@ -299,9 +299,9 @@ export default function VolumeBarchart() {
         description: 'Zona 5 - VO2 Max',
       },
       all: {
-        label: 'Todas',
+        label: 'All',
         zones: ['Z1', 'Z2', 'Z3', 'Z4', 'Z5'],
-        description: 'Todas las zonas de entrenamiento',
+        description: 'All training zones',
       },
     }),
     []
@@ -369,12 +369,12 @@ export default function VolumeBarchart() {
             <div>
               <CardTitle>
                 {selectedPeriod === 'month'
-                  ? 'Volumen 30 Días'
+                  ? '30 Days Volume'
                   : selectedPeriod === '3months'
-                    ? 'Volumen 3 Meses'
+                    ? '3 Months Volume'
                     : selectedPeriod === '6months'
-                      ? 'Volumen 6 Meses'
-                      : 'Volumen Anual'}{' '}
+                      ? '6 Months Volume'
+                      : 'Annual Volume'}{' '}
                 - KM
               </CardTitle>
               <CardDescription>{currentView.description}</CardDescription>

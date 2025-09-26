@@ -143,19 +143,19 @@ export function DashboardCalendar() {
     const month = months[currentMonth];
     const days = [];
 
-    // Obtener el primer día del mes y qué día de la semana es
+    // Get first day of month and what day of week it is
     const firstDay = new Date(currentYear, currentMonth, 1);
     const startDay = firstDay.getDay(); // 0 = domingo, 1 = lunes, etc.
 
     // Ajustar para que lunes sea 0
     const adjustedStartDay = startDay === 0 ? 6 : startDay - 1;
 
-    // Agregar días vacíos al inicio
+    // Add empty days at the beginning
     for (let i = 0; i < adjustedStartDay; i++) {
       days.push(null);
     }
 
-    // Generar días del mes
+    // Generate days of the month
     for (let day = 1; day <= month.days; day++) {
       days.push(day);
     }
@@ -276,7 +276,7 @@ export function DashboardCalendar() {
               <CardDescription>Monthly view of your sessions</CardDescription>
             </div>
 
-            {/* Navegación del mes */}
+            {/* Month navigation */}
             <div className='flex items-center gap-2'>
               <Button
                 variant='ghost'
@@ -317,10 +317,10 @@ export function DashboardCalendar() {
             ))}
           </div>
 
-          {/* Días del mes */}
+          {/* Days of the month */}
           <div className='grid flex-1 grid-cols-7 gap-2'>
             {generateCalendarDays().map((day, index) => {
-              // Obtener el número de entrenamientos en este día
+              // Get number of training sessions on this day
               const trainingCount =
                 day !== null
                   ? (() => {

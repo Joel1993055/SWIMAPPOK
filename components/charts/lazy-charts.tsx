@@ -73,8 +73,8 @@ export function WeeklyTrendsChart({ data }: WeeklyTrendsChartProps) {
   return (
     <Card className='bg-muted/50'>
       <CardHeader>
-        <CardTitle>Tendencias Semanales</CardTitle>
-        <CardDescription>Evolución semanal de distancia y RPE</CardDescription>
+        <CardTitle>Weekly Trends</CardTitle>
+        <CardDescription>Weekly evolution of distance and RPE</CardDescription>
       </CardHeader>
       <CardContent>
         <div className='h-80'>

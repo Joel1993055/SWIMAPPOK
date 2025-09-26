@@ -138,13 +138,13 @@ export function KPICards() {
         return {
           total: periodSessionsCount,
           label: 'Total this month',
-          subtitle: 'Sesiones del mes actual',
+          subtitle: 'Sessions this month',
         };
       case 'week':
         return {
           total: periodSessionsCount,
           label: 'Total this week',
-          subtitle: 'Sesiones de esta semana',
+          subtitle: 'Sessions this week',
         };
       default:
         return {
@@ -155,7 +155,7 @@ export function KPICards() {
     }
   };
 
-  // Calcular estado del ciclo de entrenamiento usando las fases reales
+  // Calculate training cycle status using real phases
   const getTrainingCycleStatus = () => {
     if (!isHydrated) {
       return {
@@ -173,9 +173,9 @@ export function KPICards() {
 
     if (!currentPhase) {
       return {
-        phase: 'Sin fase activa',
+        phase: 'No active phase',
         progress: 0,
-        description: 'No hay fase de entrenamiento activa',
+        description: 'No active training phase',
         additionalInfo: '',
         color: 'bg-gray-500',
         status: 'inactive',
@@ -191,7 +191,7 @@ export function KPICards() {
       ? new Date(currentPhase.endDate)
       : now;
     
-    // Determinar el estado de la fase
+    // Determine phase status
     let status: 'upcoming' | 'active' | 'completed' = 'upcoming';
     if (phaseStart <= now && phaseEnd >= now) {
       status = 'active';
@@ -199,7 +199,7 @@ export function KPICards() {
       status = 'completed';
     }
 
-    // Calcular progreso de la fase actual
+    // Calculate current phase progress
     const totalPhaseDays = Math.ceil(
       (phaseEnd.getTime() - phaseStart.getTime()) / (1000 * 60 * 60 * 24)
     );
@@ -219,15 +219,15 @@ export function KPICards() {
     let additionalInfo = '';
     
     if (status === 'upcoming') {
-      description = `Inicia en ${Math.max(0, daysRemaining)} días`;
-      additionalInfo = `Duración: ${currentPhase.duration} semanas`;
+      description = `Starts in ${Math.max(0, daysRemaining)} days`;
+      additionalInfo = `Duration: ${currentPhase.duration} weeks`;
     } else if (status === 'active') {
       const daysInPhase = Math.ceil((now.getTime() - phaseStart.getTime()) / (1000 * 60 * 60 * 24));
-      description = `${Math.max(0, daysRemaining)} días restantes`;
-      additionalInfo = `${Math.max(0, daysInPhase)} días en la fase`;
+      description = `${Math.max(0, daysRemaining)} days remaining`;
+      additionalInfo = `${Math.max(0, daysInPhase)} days in phase`;
     } else if (status === 'completed') {
-      description = `Completada hace ${Math.abs(daysRemaining)} días`;
-      additionalInfo = `Duración: ${currentPhase.duration} semanas`;
+      description = `Completed ${Math.abs(daysRemaining)} days ago`;
+      additionalInfo = `Duration: ${currentPhase.duration} weeks`;
     }
 
     return {
@@ -297,7 +297,7 @@ export function KPICards() {
             {distanceData.subtitle}
           </p>
 
-          {/* Tabs sutiles para seleccionar período de distancia */}
+          {/* Subtle tabs to select distance period */}
           <div className='mt-3'>
             <Tabs
               value={selectedDistancePeriod}
@@ -308,13 +308,13 @@ export function KPICards() {
             >
               <TabsList className='grid w-full grid-cols-3 bg-muted/50 h-7'>
                 <TabsTrigger value='year' className='text-xs px-2 py-1'>
-                  Año
+                  Year
                 </TabsTrigger>
                 <TabsTrigger value='month' className='text-xs px-2 py-1'>
-                  Mes
+                  Month
                 </TabsTrigger>
                 <TabsTrigger value='week' className='text-xs px-2 py-1'>
-                  Semana
+                  Week
                 </TabsTrigger>
               </TabsList>
             </Tabs>
@@ -345,13 +345,13 @@ export function KPICards() {
             >
               <TabsList className='grid w-full grid-cols-3 bg-muted/50 h-7'>
                 <TabsTrigger value='year' className='text-xs px-2 py-1'>
-                  Año
+                  Year
                 </TabsTrigger>
                 <TabsTrigger value='month' className='text-xs px-2 py-1'>
-                  Mes
+                  Month
                 </TabsTrigger>
                 <TabsTrigger value='week' className='text-xs px-2 py-1'>
-                  Semana
+                  Week
                 </TabsTrigger>
               </TabsList>
             </Tabs>
