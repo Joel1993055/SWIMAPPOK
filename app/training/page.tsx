@@ -19,15 +19,15 @@ import type { Session } from '@/lib/types/session';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import {
-    Calendar as CalendarIcon,
-    Edit,
-    FileText,
-    MapPin,
-    Plus,
-    Save,
-    Target,
-    Trash2,
-    Users
+  Calendar as CalendarIcon,
+  Edit,
+  FileText,
+  MapPin,
+  Plus,
+  Save,
+  Target,
+  Trash2,
+  Users
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -65,48 +65,48 @@ interface ClubsData {
 }
 
 // =====================================================
-// CONSTANTES
+// CONSTANTS
 // =====================================================
 const CLUBS_DATA: ClubsData = {
     'club-1': {
-      name: 'Club Natación Madrid',
+      name: 'Madrid Swimming Club',
       groups: [
-        { id: 'group-1-1', name: 'Grupo A - Competición' },
-        { id: 'group-1-2', name: 'Grupo B - Desarrollo' },
-        { id: 'group-1-3', name: 'Grupo C - Iniciación' },
+        { id: 'group-1-1', name: 'Group A - Competition' },
+        { id: 'group-1-2', name: 'Group B - Development' },
+        { id: 'group-1-3', name: 'Group C - Beginners' },
       ],
     },
     'club-2': {
-      name: 'Club Acuático Barcelona',
+      name: 'Barcelona Aquatic Club',
       groups: [
         { id: 'group-2-1', name: 'Elite' },
-        { id: 'group-2-2', name: 'Promesas' },
+        { id: 'group-2-2', name: 'Promises' },
         { id: 'group-2-3', name: 'Base' },
       ],
     },
     'club-3': {
-      name: 'Centro Deportivo Valencia',
+      name: 'Valencia Sports Center',
       groups: [
         { id: 'group-3-1', name: 'Senior' },
         { id: 'group-3-2', name: 'Junior' },
-        { id: 'group-3-3', name: 'Infantil' },
+        { id: 'group-3-3', name: 'Youth' },
       ],
     },
 } as const;
 
 const OBJECTIVE_OPTIONS = [
-  { value: 'resistencia', label: 'Resistencia' },
-  { value: 'velocidad', label: 'Velocidad' },
-  { value: 'tecnica', label: 'Técnica' },
-  { value: 'fuerza', label: 'Fuerza' },
-  { value: 'recuperacion', label: 'Recuperación' },
-  { value: 'competicion', label: 'Competición' },
+  { value: 'endurance', label: 'Endurance' },
+  { value: 'speed', label: 'Speed' },
+  { value: 'technique', label: 'Technique' },
+  { value: 'strength', label: 'Strength' },
+  { value: 'recovery', label: 'Recovery' },
+  { value: 'competition', label: 'Competition' },
   { value: 'test', label: 'Test' },
-  { value: 'otro', label: 'Otro' },
+  { value: 'other', label: 'Other' },
 ] as const;
 
 // =====================================================
-// UTILIDADES
+// UTILITIES
 // =====================================================
 const mapSupabaseToSession = (supabaseSession: SupabaseSession): Session => ({
   id: supabaseSession.id,
@@ -157,7 +157,7 @@ const createEmptyZoneVolumes = (): ZoneVolumeRow[] =>
   }));
 
 // =====================================================
-// COMPONENTE PRINCIPAL
+// MAIN COMPONENT
 // =====================================================
 export default function TrainingPage() {
   return (
@@ -172,21 +172,21 @@ export default function TrainingPage() {
 }
 
 // =====================================================
-// COMPONENTE DE CONTENIDO PRINCIPAL
+// MAIN CONTENT COMPONENT
 // =====================================================
 function TrainingPageContent() {
-  // Estados principales
+  // Main states
   const [isHydrated, setIsHydrated] = useState(false);
   const [activeTab, setActiveTab] = useState<'create' | 'saved'>('create');
   const [editingTraining, setEditingTraining] = useState<Session | null>(null);
 
-  // Estados de UI
+  // UI states
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  // Hook de datos
+  // Data hook
   const { sessions, isLoading: dataLoading, loadSessions } = useSessionsData();
 
   // =====================================================
@@ -223,7 +223,7 @@ function TrainingPageContent() {
 
   const handleDeleteTraining = useCallback(
     async (id: string) => {
-    if (!confirm('¿Estás seguro de que quieres eliminar este entrenamiento?')) {
+    if (!confirm('Are you sure you want to delete this training?')) {
       return;
     }
 
@@ -231,7 +231,7 @@ function TrainingPageContent() {
       setIsLoading(true);
       await deleteSession(id);
         
-        // Recargar las sesiones para mostrar los cambios
+        // Reload sessions to show changes
         setIsRefreshing(true);
         try {
           await loadSessions(true);
@@ -239,10 +239,10 @@ function TrainingPageContent() {
           setIsRefreshing(false);
         }
         
-        handleSaveSuccess('Entrenamiento eliminado correctamente');
+        handleSaveSuccess('Training deleted successfully');
     } catch (error) {
-      console.error('Error eliminando entrenamiento:', error);
-        handleSaveError('Error al eliminar el entrenamiento');
+      console.error('Error deleting training:', error);
+        handleSaveError('Error deleting training');
     } finally {
       setIsLoading(false);
     }
@@ -265,13 +265,13 @@ function TrainingPageContent() {
           <div className="p-2 bg-primary/10 rounded-lg">
             <Plus className="h-6 w-6 text-primary" />
           </div>
-          <h1 className="text-3xl font-bold text-foreground">Entrenamientos</h1>
+          <h1 className="text-3xl font-bold text-foreground">Training</h1>
         </div>
         <p className="text-muted-foreground">
-          Crea y gestiona tus entrenamientos personalizados
+          Create and manage your personalized training sessions
         </p>
 
-        {/* Mensajes de estado */}
+        {/* Status messages */}
         {error && (
           <div className="mt-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
             {error}
@@ -284,7 +284,7 @@ function TrainingPageContent() {
           </div>
         )}
 
-        {/* Navegación de tabs */}
+        {/* Tab navigation */}
         <div className="flex gap-2 mt-6">
           <Button
             variant={activeTab === 'create' ? 'default' : 'outline'}
@@ -292,7 +292,7 @@ function TrainingPageContent() {
             className="gap-2"
           >
             <Plus className="h-4 w-4" />
-            {editingTraining ? 'Editando' : 'Crear Entrenamiento'}
+            {editingTraining ? 'Editing' : 'Create Training'}
           </Button>
           <Button
             variant={activeTab === 'saved' ? 'default' : 'outline'}
@@ -300,12 +300,12 @@ function TrainingPageContent() {
             className="gap-2"
           >
             <FileText className="h-4 w-4" />
-            Entrenamientos Guardados ({sessions.length})
+            Saved Training ({sessions.length})
           </Button>
         </div>
       </div>
 
-      {/* Contenido principal */}
+      {/* Main content */}
       {activeTab === 'create' ? (
         <TrainingForm
           editingTraining={editingTraining}
@@ -336,7 +336,7 @@ function TrainingPageContent() {
 }
 
 // =====================================================
-// COMPONENTE DE FORMULARIO DE ENTRENAMIENTO
+// TRAINING FORM COMPONENT
 // =====================================================
 interface TrainingFormProps {
   editingTraining: Session | null;
@@ -344,7 +344,7 @@ interface TrainingFormProps {
   onSaveError: (message: string) => void;
   onCancelEdit: () => void;
   clubsData: ClubsData;
-  objectiveOptions: readonly Array<{ value: string; label: string }>;
+  objectiveOptions: Array<{ value: string; label: string }>;
   onRefresh: () => Promise<void>;
 }
 
@@ -357,7 +357,7 @@ function TrainingForm({
   objectiveOptions,
   onRefresh,
 }: TrainingFormProps) {
-  // Estados del formulario
+  // Form states
   const [formData, setFormData] = useState<TrainingFormData>(() => ({
     title: '',
     date: new Date(),
@@ -437,9 +437,9 @@ function TrainingForm({
     }));
   }, []);
 
-  // Función para aplicar zonas detectadas por IA
+  // Function to apply AI-detected zones
   const setZoneTotals = useCallback((zones: { z1: number; z2: number; z3: number; z4: number; z5: number }) => {
-    // Crear una nueva matriz de volúmenes con las zonas detectadas en la primera fila
+    // Create a new volume matrix with zones detected in the first row
     const newZoneVolumes = [...formData.zoneVolumes];
     newZoneVolumes[0] = {
       z1: zones.z1,
@@ -457,7 +457,7 @@ function TrainingForm({
 
   const handleSave = useCallback(async () => {
     if (!formData.title || !formData.content) {
-      onSaveError('Por favor, completa el título y el contenido del entrenamiento');
+      onSaveError('Please complete the title and content of the training');
       return;
     }
 
@@ -467,7 +467,7 @@ function TrainingForm({
       const selectedClubData = clubsData[formData.club];
       const selectedGroupData = selectedClubData?.groups.find(g => g.id === formData.group);
 
-      // Calcular totales de metros por zona
+      // Calculate total meters by zone
       const zoneTotals = {
         z1: formData.zoneVolumes.reduce((sum, row) => sum + row.z1, 0),
         z2: formData.zoneVolumes.reduce((sum, row) => sum + row.z2, 0),
@@ -478,31 +478,31 @@ function TrainingForm({
 
       const totalMeters = Object.values(zoneTotals).reduce((sum, volume) => sum + volume, 0);
 
-      // Crear FormData con todos los datos
+      // Create FormData with all data
       const formDataToSend = new FormData();
       formDataToSend.append('title', formData.title);
       formDataToSend.append('date', formData.date.toISOString().split('T')[0]);
-      formDataToSend.append('type', 'Personalizado');
+      formDataToSend.append('type', 'Custom');
       formDataToSend.append('duration', '90');
       formDataToSend.append('distance', totalMeters.toString());
-      formDataToSend.append('stroke', 'Libre');
+      formDataToSend.append('stroke', 'Freestyle');
       formDataToSend.append('rpe', '5');
-      formDataToSend.append('location', formData.location || 'No especificado');
-      formDataToSend.append('coach', formData.coach || 'No especificado');
-      formDataToSend.append('club', selectedClubData?.name || 'No especificado');
-      formDataToSend.append('group_name', selectedGroupData?.name || 'No especificado');
-      formDataToSend.append('objective', formData.objective || 'otro');
+      formDataToSend.append('location', formData.location || 'Not specified');
+      formDataToSend.append('coach', formData.coach || 'Not specified');
+      formDataToSend.append('club', selectedClubData?.name || 'Not specified');
+      formDataToSend.append('group_name', selectedGroupData?.name || 'Not specified');
+      formDataToSend.append('objective', formData.objective || 'other');
       formDataToSend.append('time_slot', formData.timeSlot);
       formDataToSend.append('content', formData.content);
 
-      // Agregar volúmenes por zona (esto es lo que se guarda en la base de datos)
+      // Add volumes by zone (this is what gets saved to the database)
       formDataToSend.append('z1', zoneTotals.z1.toString());
       formDataToSend.append('z2', zoneTotals.z2.toString());
       formDataToSend.append('z3', zoneTotals.z3.toString());
       formDataToSend.append('z4', zoneTotals.z4.toString());
       formDataToSend.append('z5', zoneTotals.z5.toString());
 
-      console.log('Guardando entrenamiento con datos:', {
+      console.log('Saving training with data:', {
         title: formData.title,
         totalMeters,
         zoneTotals,
@@ -512,19 +512,19 @@ function TrainingForm({
 
       if (editingTraining) {
         await updateSession(editingTraining.id, formDataToSend);
-        onSaveSuccess('Entrenamiento actualizado correctamente');
+        onSaveSuccess('Training updated successfully');
       } else {
         await createSession(formDataToSend);
-        onSaveSuccess('Entrenamiento guardado correctamente');
+        onSaveSuccess('Training saved successfully');
       }
 
-      // Recargar las sesiones para mostrar los cambios
-      console.log('Recargando sesiones después de guardar...');
+      // Reload sessions to show changes
+      console.log('Reloading sessions after saving...');
       await onRefresh();
-      console.log('Sesiones recargadas correctamente');
+      console.log('Sessions reloaded successfully');
 
 
-      // Reset form solo si no estamos editando
+      // Reset form only if we're not editing
       if (!editingTraining) {
         setFormData({
           title: '',
@@ -541,15 +541,15 @@ function TrainingForm({
       }
 
     } catch (error) {
-      console.error('Error guardando entrenamiento:', error);
-      onSaveError(`Error al guardar el entrenamiento: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+      console.error('Error saving training:', error);
+      onSaveError(`Error saving training: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsLoading(false);
     }
   }, [formData, editingTraining, clubsData, onSaveSuccess, onSaveError, onRefresh]);
 
   // =====================================================
-  // CÁLCULOS DERIVADOS
+  // DERIVED CALCULATIONS
   // =====================================================
   const totalMeters = useMemo(() => {
     return formData.zoneVolumes.reduce((total, row) => {
@@ -566,34 +566,34 @@ function TrainingForm({
   // =====================================================
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Editor Principal */}
+          {/* Main Editor */}
       <div className="lg:col-span-2">
         <Card className="bg-muted/50">
               <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Plus className="h-5 w-5" />
-              {editingTraining ? 'Editar Entrenamiento' : 'Crear Nuevo Entrenamiento'}
+              {editingTraining ? 'Edit Training' : 'Create New Training'}
                 </CardTitle>
                 <CardDescription>
                   {editingTraining
-                    ? 'Modifica los detalles de tu entrenamiento'
-                    : 'Escribe tu entrenamiento con todos los detalles'}
+                    ? 'Modify your training details'
+                    : 'Write your training with all the details'}
                 </CardDescription>
               </CardHeader>
           <CardContent className="space-y-6">
-                {/* Información básica */}
+                {/* Basic information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="training-title">Título del entrenamiento</Label>
+                <Label htmlFor="training-title">Training Title</Label>
                     <Input
                   id="training-title"
-                  placeholder="Ej: Entrenamiento de resistencia"
+                  placeholder="Ex: Endurance training"
                   value={formData.title}
                   onChange={e => handleInputChange('title', e.target.value)}
                     />
                   </div>
               <div className="space-y-2">
-                <Label htmlFor="training-date">Fecha</Label>
+                <Label htmlFor="training-date">Date</Label>
                 <div className="flex gap-2">
                       <Input
                     type="date"
@@ -611,27 +611,27 @@ function TrainingForm({
                     variant="outline"
                     onClick={() => handleInputChange('date', new Date())}
                       >
-                        Hoy
+                        Today
                       </Button>
                     </div>
                 <div className="text-sm text-muted-foreground">
-                  Fecha seleccionada: {format(formData.date, 'dd/MM/yyyy', { locale: es })}
+                  Selected date: {format(formData.date, 'dd/MM/yyyy', { locale: es })}
                     </div>
                   </div>
               <div className="space-y-2">
-                <Label htmlFor="training-location">Ubicación</Label>
+                <Label htmlFor="training-location">Location</Label>
                     <Input
                   id="training-location"
-                  placeholder="Ej: Piscina Municipal"
+                  placeholder="Ex: Municipal Pool"
                   value={formData.location}
                   onChange={e => handleInputChange('location', e.target.value)}
                     />
                   </div>
               <div className="space-y-2">
-                <Label htmlFor="training-coach">Entrenador</Label>
+                <Label htmlFor="training-coach">Coach</Label>
                     <Input
                   id="training-coach"
-                  placeholder="Ej: María García"
+                  placeholder="Ex: Maria Garcia"
                   value={formData.coach}
                   onChange={e => handleInputChange('coach', e.target.value)}
                     />
@@ -640,7 +640,7 @@ function TrainingForm({
                 <Label htmlFor="training-club">Club</Label>
                 <Select value={formData.club} onValueChange={handleClubChange}>
                       <SelectTrigger>
-                    <SelectValue placeholder="Selecciona el club" />
+                    <SelectValue placeholder="Select club" />
                       </SelectTrigger>
                       <SelectContent>
                         {Object.entries(clubsData).map(([clubId, club]) => (
@@ -652,13 +652,13 @@ function TrainingForm({
                     </Select>
                   </div>
               <div className="space-y-2">
-                <Label htmlFor="training-group">Grupo</Label>
+                <Label htmlFor="training-group">Group</Label>
                     <Select
                   value={formData.group}
                   onValueChange={value => handleInputChange('group', value)}
                     >
                       <SelectTrigger>
-                    <SelectValue placeholder="Selecciona el grupo" />
+                    <SelectValue placeholder="Select group" />
                       </SelectTrigger>
                       <SelectContent>
                     {selectedClubGroups.map(group => (
@@ -670,13 +670,13 @@ function TrainingForm({
                     </Select>
                   </div>
               <div className="space-y-2">
-                <Label htmlFor="training-objective">Objetivo del Entrenamiento</Label>
+                <Label htmlFor="training-objective">Training Objective</Label>
                     <Select
                   value={formData.objective}
                   onValueChange={value => handleInputChange('objective', value)}
                     >
                       <SelectTrigger>
-                    <SelectValue placeholder="Selecciona el objetivo" />
+                    <SelectValue placeholder="Select objective" />
                       </SelectTrigger>
                       <SelectContent>
                     {objectiveOptions.map(option => (
@@ -688,17 +688,17 @@ function TrainingForm({
                     </Select>
                   </div>
               <div className="space-y-2">
-                <Label htmlFor="training-time-slot">Horario</Label>
+                <Label htmlFor="training-time-slot">Schedule</Label>
                     <Select
                   value={formData.timeSlot}
                   onValueChange={value => handleInputChange('timeSlot', value as 'AM' | 'PM')}
                     >
                       <SelectTrigger>
-                    <SelectValue placeholder="Selecciona el horario" />
+                    <SelectValue placeholder="Select schedule" />
                       </SelectTrigger>
                       <SelectContent>
-                    <SelectItem value="AM">AM (Mañana)</SelectItem>
-                    <SelectItem value="PM">PM (Tarde/Noche)</SelectItem>
+                    <SelectItem value="AM">AM (Morning)</SelectItem>
+                    <SelectItem value="PM">PM (Afternoon/Evening)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -706,35 +706,35 @@ function TrainingForm({
 
                 <Separator />
 
-            {/* Editor de contenido */}
+            {/* Content editor */}
             <div className="space-y-2">
-              <Label htmlFor="training-content">Contenido del entrenamiento</Label>
+              <Label htmlFor="training-content">Training Content</Label>
               <Textarea
                 id="training-content"
-                placeholder="Escribe tu entrenamiento aquí... Ejemplo:&#10;&#10;Calentamiento: 200m libre Z1&#10;Serie principal: 8x100m libre Z3 con 20s descanso&#10;Vuelta a la calma: 200m espalda Z1&#10;&#10;Puedes incluir:&#10;- Distancias (200m, 1.5km)&#10;- Tiempos (45min, 1h 30min)&#10;- Zonas (Z1, Z2, Z3, Z4, Z5)&#10;- Estilos (libre, espalda, pecho, mariposa)"
+                placeholder="Write your training here... Example:&#10;&#10;Warm-up: 200m freestyle Z1&#10;Main set: 8x100m freestyle Z3 with 20s rest&#10;Cool-down: 200m backstroke Z1&#10;&#10;You can include:&#10;- Distances (200m, 1.5km)&#10;- Times (45min, 1h 30min)&#10;- Zones (Z1, Z2, Z3, Z4, Z5)&#10;- Styles (freestyle, backstroke, breaststroke, butterfly)"
                 value={formData.content}
                 onChange={e => handleInputChange('content', e.target.value)}
                 className="min-h-[300px] resize-none"
               />
             </div>
 
-            {/* Volúmenes por zona - Debajo del contenido */}
+            {/* Volumes by zone - Below content */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label className="text-base font-medium">Volúmenes por Zona</Label>
+                <Label className="text-base font-medium">Volumes by Zone</Label>
                 <div className="text-sm text-muted-foreground">
                   Total: <span className="font-semibold text-foreground">{totalMeters.toLocaleString()}m</span>
                 </div>
               </div>
 
-              {/* Una sola fila con 5 celdas para las zonas */}
+              {/* Single row with 5 cells for zones */}
               <div className="grid grid-cols-5 gap-3">
                 {[
-                  { zone: 'Z1', color: 'bg-green-100 dark:bg-green-900/20', name: 'Recuperación', key: 'z1' },
-                  { zone: 'Z2', color: 'bg-blue-100 dark:bg-blue-900/20', name: 'Aeróbico Base', key: 'z2' },
-                  { zone: 'Z3', color: 'bg-yellow-100 dark:bg-yellow-900/20', name: 'Aeróbico Umbral', key: 'z3' },
-                  { zone: 'Z4', color: 'bg-orange-100 dark:bg-orange-900/20', name: 'Anaeróbico Láctico', key: 'z4' },
-                  { zone: 'Z5', color: 'bg-red-100 dark:bg-red-900/20', name: 'Anaeróbico Aláctico', key: 'z5' },
+                  { zone: 'Z1', color: 'bg-green-100 dark:bg-green-900/20', name: 'Recovery', key: 'z1' },
+                  { zone: 'Z2', color: 'bg-blue-100 dark:bg-blue-900/20', name: 'Aerobic Base', key: 'z2' },
+                  { zone: 'Z3', color: 'bg-yellow-100 dark:bg-yellow-900/20', name: 'Aerobic Threshold', key: 'z3' },
+                  { zone: 'Z4', color: 'bg-orange-100 dark:bg-orange-900/20', name: 'Anaerobic Lactic', key: 'z4' },
+                  { zone: 'Z5', color: 'bg-red-100 dark:bg-red-900/20', name: 'Anaerobic Alactic', key: 'z5' },
                 ].map(({ zone, color, name, key }) => {
                   const total = formData.zoneVolumes.reduce(
                     (sum, row) => sum + row[key as keyof ZoneVolumeRow],
@@ -772,7 +772,7 @@ function TrainingForm({
                 })}
               </div>
 
-              {/* Botones de utilidad */}
+              {/* Utility buttons */}
               <div className="flex gap-2 justify-center">
                 <Button
                   type="button"
@@ -786,14 +786,14 @@ function TrainingForm({
                   }}
                   className="text-xs"
                 >
-                  Limpiar Zonas
+                  Clear Zones
                 </Button>
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
                   onClick={() => {
-                    // Llenar con datos de ejemplo
+                    // Fill with example data
                     setFormData(prev => ({
                       ...prev,
                       zoneVolumes: [
@@ -812,23 +812,23 @@ function TrainingForm({
                   }}
                   className="text-xs"
                 >
-                  Ejemplo
+                  Example
                 </Button>
               </div>
 
               <div className="text-xs text-muted-foreground space-y-1 text-center">
-                <div>💡 <strong>Consejo:</strong> Introduce los metros que nadaste en cada zona de intensidad.</div>
-                <div>📊 <strong>Total calculado:</strong> {totalMeters.toLocaleString()} metros</div>
+                <div>💡 <strong>Tip:</strong> Enter the meters you swam in each intensity zone.</div>
+                <div>📊 <strong>Calculated total:</strong> {totalMeters.toLocaleString()} meters</div>
               </div>
             </div>
 
-                {/* Botones de acción */}
+                {/* Action buttons */}
             <div className="flex justify-between">
                   <div>
                     {editingTraining && (
                   <Button variant="outline" onClick={onCancelEdit} className="gap-2">
                     <Trash2 className="h-4 w-4" />
-                        Cancelar Edición
+                        Cancel Edit
                       </Button>
                     )}
                   </div>
@@ -837,18 +837,18 @@ function TrainingForm({
                   variant="outline"
                   onClick={() => handleInputChange('content', '')}
                     >
-                      Limpiar
+                      Clear
                     </Button>
                 <Button onClick={handleSave} disabled={isLoading} className="gap-2">
                       {isLoading ? (
                         <>
                       <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                          Guardando...
+                          Saving...
                         </>
                       ) : (
                         <>
                       <Save className="h-4 w-4" />
-                      {editingTraining ? 'Actualizar' : 'Guardar'} Entrenamiento
+                      {editingTraining ? 'Update' : 'Save'} Training
                         </>
                       )}
                     </Button>
@@ -858,9 +858,9 @@ function TrainingForm({
             </Card>
           </div>
 
-      {/* Panel lateral */}
+      {/* Side panel */}
       <div className="lg:col-span-1 space-y-6">
-            {/* Detección Automática de IA */}
+            {/* Automatic AI Detection */}
             <AIZoneDetection
               content={formData.content}
               objective={formData.objective}
@@ -871,39 +871,39 @@ function TrainingForm({
               disabled={isLoading}
             />
 
-            {/* Panel de Ayuda */}
+            {/* Help Panel */}
         <Card className="bg-muted/50">
               <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FileText className="h-5 w-5" />
-                  Consejos para Escribir
+                  Writing Tips
                 </CardTitle>
-            <CardDescription>Mejores prácticas para crear entrenamientos</CardDescription>
+            <CardDescription>Best practices for creating training sessions</CardDescription>
               </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-4">
                   <div>
-                <h4 className="font-medium mb-2">Estructura recomendada:</h4>
+                <h4 className="font-medium mb-2">Recommended structure:</h4>
                 <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>• <strong>Calentamiento:</strong> 200-400m Z1</li>
-                  <li>• <strong>Serie principal:</strong> Ejercicios específicos</li>
-                  <li>• <strong>Vuelta a la calma:</strong> 200-300m Z1</li>
+                  <li>• <strong>Warm-up:</strong> 200-400m Z1</li>
+                  <li>• <strong>Main set:</strong> Specific exercises</li>
+                  <li>• <strong>Cool-down:</strong> 200-300m Z1</li>
                     </ul>
                   </div>
 
                   <Separator />
 
                   <div>
-                <h4 className="font-medium mb-2">Formato de distancias:</h4>
+                <h4 className="font-medium mb-2">Distance format:</h4>
                 <ul className="text-sm text-muted-foreground space-y-1">
                       <li>• 200m, 400m, 800m</li>
                       <li>• 1km, 1.5km, 2km</li>
-                      <li>• 2000 metros</li>
+                      <li>• 2000 meters</li>
                     </ul>
                   </div>
 
                   <div>
-                <h4 className="font-medium mb-2">Zonas de intensidad:</h4>
+                <h4 className="font-medium mb-2">Intensity zones:</h4>
                 <div className="space-y-2">
                   <div className="flex flex-wrap gap-1">
                     {['Z1', 'Z2', 'Z3', 'Z4', 'Z5'].map(zone => (
@@ -911,19 +911,19 @@ function TrainingForm({
                     ))}
                       </div>
                   <div className="text-xs text-muted-foreground">
-                    <div>• <strong>Z1:</strong> Recuperación activa</div>
-                    <div>• <strong>Z2:</strong> Aeróbico base</div>
-                    <div>• <strong>Z3:</strong> Aeróbico umbral</div>
-                    <div>• <strong>Z4:</strong> Anaeróbico láctico</div>
-                    <div>• <strong>Z5:</strong> Anaeróbico aláctico</div>
+                    <div>• <strong>Z1:</strong> Active recovery</div>
+                    <div>• <strong>Z2:</strong> Aerobic base</div>
+                    <div>• <strong>Z3:</strong> Aerobic threshold</div>
+                    <div>• <strong>Z4:</strong> Anaerobic lactic</div>
+                    <div>• <strong>Z5:</strong> Anaerobic alactic</div>
                         </div>
                     </div>
                   </div>
 
                   <div>
-                <h4 className="font-medium mb-2">Estilos de natación:</h4>
+                <h4 className="font-medium mb-2">Swimming styles:</h4>
                 <div className="flex flex-wrap gap-1">
-                  {['Libre', 'Espalda', 'Pecho', 'Mariposa'].map(style => (
+                  {['Freestyle', 'Backstroke', 'Breaststroke', 'Butterfly'].map(style => (
                     <Badge key={style} variant="secondary">{style}</Badge>
                   ))}
                     </div>
@@ -937,7 +937,7 @@ function TrainingForm({
 }
 
 // =====================================================
-// COMPONENTE DE LISTA DE ENTRENAMIENTOS
+// TRAINING LIST COMPONENT
 // =====================================================
 interface TrainingListProps {
   sessions: Session[];
@@ -954,7 +954,7 @@ function TrainingList({ sessions, isLoading, onEdit, onDelete }: TrainingListPro
       <Card className="bg-muted/50">
         <CardContent className="text-center py-8">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-muted-foreground border-t-transparent mx-auto mb-4" />
-          <p>Actualizando entrenamientos...</p>
+          <p>Updating training...</p>
         </CardContent>
       </Card>
     );
@@ -965,9 +965,9 @@ function TrainingList({ sessions, isLoading, onEdit, onDelete }: TrainingListPro
       <Card className="bg-muted/50">
         <CardContent className="text-center py-8">
           <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <p className="text-muted-foreground">No tienes entrenamientos guardados</p>
+          <p className="text-muted-foreground">You have no saved training sessions</p>
           <p className="text-sm text-muted-foreground">
-            Crea tu primer entrenamiento en la pestaña "Crear Entrenamiento"
+            Create your first training session in the "Create Training" tab
           </p>
         </CardContent>
       </Card>
@@ -977,8 +977,8 @@ function TrainingList({ sessions, isLoading, onEdit, onDelete }: TrainingListPro
   return (
     <Card className="bg-muted/50">
             <CardHeader>
-              <CardTitle>Entrenamientos Guardados</CardTitle>
-              <CardDescription>{sessions.length} entrenamientos guardados</CardDescription>
+              <CardTitle>Saved Training Sessions</CardTitle>
+              <CardDescription>{sessions.length} saved training sessions</CardDescription>
             </CardHeader>
             <CardContent>
         <div className="space-y-4">
@@ -1031,7 +1031,7 @@ function TrainingList({ sessions, isLoading, onEdit, onDelete }: TrainingListPro
                     className="gap-2"
                   >
                     <Edit className="h-4 w-4" />
-                            Editar
+                            Edit
                           </Button>
                           <Button
                     variant="outline"
@@ -1040,7 +1040,7 @@ function TrainingList({ sessions, isLoading, onEdit, onDelete }: TrainingListPro
                     className="gap-2 text-destructive hover:text-destructive"
                   >
                     <Trash2 className="h-4 w-4" />
-                            Eliminar
+                            Delete
                           </Button>
                         </div>
                       </div>
@@ -1053,7 +1053,7 @@ function TrainingList({ sessions, isLoading, onEdit, onDelete }: TrainingListPro
 }
 
 // =====================================================
-// COMPONENTE DE CARGA
+// LOADING COMPONENT
 // =====================================================
 function TrainingPageSkeleton() {
   return (
@@ -1063,13 +1063,13 @@ function TrainingPageSkeleton() {
           <div className="p-2 bg-primary/10 rounded-lg">
             <Plus className="h-6 w-6 text-primary" />
           </div>
-          <h1 className="text-3xl font-bold text-foreground">Entrenamientos</h1>
+          <h1 className="text-3xl font-bold text-foreground">Training</h1>
         </div>
-        <p className="text-muted-foreground">Cargando...</p>
+        <p className="text-muted-foreground">Loading...</p>
       </div>
       <div className="h-[400px] flex items-center justify-center">
         <div className="animate-pulse text-muted-foreground">
-          Inicializando formulario...
+          Initializing form...
         </div>
       </div>
     </div>

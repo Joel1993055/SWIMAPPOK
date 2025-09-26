@@ -1,4 +1,4 @@
-// Sistema unificado de detección de zonas de entrenamiento
+// Unified training zone detection system
 
 export type ZoneType = 'Z1' | 'Z2' | 'Z3' | 'Z4' | 'Z5';
 
@@ -10,7 +10,7 @@ export interface ZoneData {
   Z5: number;
 }
 
-// Función para detectar zona basada en RPE (sistema principal)
+// Function to detect zone based on RPE (main system)
 export function detectZoneFromSession(session: {
   rpe?: number;
   type?: string;
@@ -18,18 +18,18 @@ export function detectZoneFromSession(session: {
 }): ZoneType {
   const rpe = session.rpe || 0;
 
-  // Detección basada en RPE (escala 1-10) - Sistema principal
+  // RPE-based detection (scale 1-10) - Main system
   if (rpe <= 3) return 'Z1';
   if (rpe >= 4 && rpe <= 5) return 'Z2';
   if (rpe >= 6 && rpe <= 7) return 'Z3';
   if (rpe >= 8 && rpe <= 9) return 'Z4';
   if (rpe >= 10) return 'Z5';
 
-  // Si no hay RPE, usar Z2 como default (zona aeróbica base)
+  // If no RPE, use Z2 as default (aerobic base zone)
   return 'Z2';
 }
 
-// Función para calcular volúmenes por zona desde sesiones
+// Function to calculate zone volumes from sessions
 export function calculateZoneVolumes(
   sessions: Array<{ 
     rpe?: number; 
@@ -53,7 +53,7 @@ export function calculateZoneVolumes(
   };
 
   sessions.forEach(session => {
-    // Si hay datos de zone_volumes guardados, usarlos directamente
+    // If there's saved zone_volumes data, use it directly
     if (session.zone_volumes) {
       zones.Z1 += session.zone_volumes.z1 || 0;
       zones.Z2 += session.zone_volumes.z2 || 0;
@@ -71,25 +71,25 @@ export function calculateZoneVolumes(
   return zones;
 }
 
-// Función para convertir metros a kilómetros
+// Function to convert meters to kilometers
 export function metersToKm(meters: number): number {
   return Math.round((meters / 1000) * 10) / 10; // 1 decimal
 }
 
-// Configuración estándar de colores para zonas
+// Standard color configuration for zones
 export const zoneColors = {
-  Z1: 'hsl(var(--chart-1))', // Verde claro
-  Z2: 'hsl(var(--chart-2))', // Azul
-  Z3: 'hsl(var(--chart-3))', // Amarillo
-  Z4: 'hsl(var(--chart-4))', // Naranja
-  Z5: 'hsl(var(--chart-5))', // Rojo
+  Z1: 'hsl(var(--chart-1))', // Light green
+  Z2: 'hsl(var(--chart-2))', // Blue
+  Z3: 'hsl(var(--chart-3))', // Yellow
+  Z4: 'hsl(var(--chart-4))', // Orange
+  Z5: 'hsl(var(--chart-5))', // Red
 };
 
-// Configuración estándar de etiquetas para zonas
+// Standard label configuration for zones
 export const zoneLabels = {
-  Z1: 'Z1 - Recuperación',
-  Z2: 'Z2 - Aeróbico',
+  Z1: 'Z1 - Recovery',
+  Z2: 'Z2 - Aerobic',
   Z3: 'Z3 - Tempo',
-  Z4: 'Z4 - Velocidad',
+  Z4: 'Z4 - Speed',
   Z5: 'Z5 - VO2 Max',
 };

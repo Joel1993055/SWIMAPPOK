@@ -18,47 +18,47 @@ export function MarketingNavbar({ user }: Props) {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   const navigation = [
-    { name: "Inicio", href: "#hero" },
+    { name: "Home", href: "#hero" },
     { 
-      name: "Producto", 
+      name: "Product", 
       href: "#", 
       dropdown: [
-        { name: "Análisis", href: "#", icon: "📊" },
-        { name: "Reportes", href: "#", icon: "📈" },
-        { name: "Entrenamientos", href: "#", icon: "🏊" },
-        { name: "Métricas", href: "#", icon: "📋" },
-        { name: "Comparaciones", href: "#", icon: "⚖️" }
+        { name: "Analysis", href: "#", icon: "📊" },
+        { name: "Reports", href: "#", icon: "📈" },
+        { name: "Training", href: "#", icon: "🏊" },
+        { name: "Metrics", href: "#", icon: "📋" },
+        { name: "Comparisons", href: "#", icon: "⚖️" }
       ]
     },
     { 
-      name: "Desarrolladores", 
+      name: "Developers", 
       href: "#", 
       dropdown: [
-        { name: "Documentación", href: "#", icon: "📚" },
+        { name: "Documentation", href: "#", icon: "📚" },
         { name: "API", href: "#", icon: "🔌" },
         { name: "SDK", href: "#", icon: "🛠️" },
-        { name: "Ejemplos", href: "#", icon: "💡" },
-        { name: "Soporte", href: "#", icon: "🎯" }
+        { name: "Examples", href: "#", icon: "💡" },
+        { name: "Support", href: "#", icon: "🎯" }
       ]
     },
     { 
-      name: "Recursos", 
+      name: "Resources", 
       href: "#", 
       dropdown: [
         { name: "Blog", href: "#", icon: "📝" },
-        { name: "Tutoriales", href: "#", icon: "🎓" },
-        { name: "Casos de Uso", href: "#", icon: "📖" },
-        { name: "Comunidad", href: "#", icon: "👥" },
-        { name: "Eventos", href: "#", icon: "📅" }
+        { name: "Tutorials", href: "#", icon: "🎓" },
+        { name: "Use Cases", href: "#", icon: "📖" },
+        { name: "Community", href: "#", icon: "👥" },
+        { name: "Events", href: "#", icon: "📅" }
       ]
     },
-    { name: "Precios", href: "#pricing" },
-    { name: "Contacto", href: "#contact" },
+    { name: "Pricing", href: "#pricing" },
+    { name: "Contact", href: "#contact" },
   ];
 
   return (
     <nav className="absolute top-0 left-0 right-0 z-50">
-      {/* Fondo especial del navbar con grid, verde y glow */}
+      {/* Special navbar background with grid, green and glow */}
       <div className="absolute inset-0 -z-10">
         <div className={'grain-blur background-base'} />
         <div className={'grain-background background-base'} />
@@ -99,7 +99,7 @@ export function MarketingNavbar({ user }: Props) {
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="text-white hover:text-gray-300 transition-colors duration-200 p-2"
-              aria-label="Menú"
+              aria-label="Menu"
             >
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 {isMenuOpen ? (
@@ -154,7 +154,7 @@ export function MarketingNavbar({ user }: Props) {
                   <div className="absolute top-full left-0 mt-2 w-[600px] bg-black/90 backdrop-blur-sm rounded-xl border border-gray-800/30 shadow-2xl z-50">
                     <div className="p-6">
                       <div className="grid grid-cols-3 gap-8">
-                        {/* Columna 1 */}
+                        {/* Column 1 */}
                         <div>
                           <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
                             {item.name.toUpperCase()}
@@ -173,36 +173,36 @@ export function MarketingNavbar({ user }: Props) {
                           </div>
                         </div>
                         
-                        {/* Columna 2 */}
+                        {/* Column 2 */}
                         <div>
                           <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
-                            RECURSOS
+                            RESOURCES
                           </div>
                           <div className="space-y-3">
                             <Link href="#" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800/50 transition-colors duration-200 group">
                               <span className="text-lg group-hover:scale-110 transition-transform duration-200">📚</span>
-                              <span className="text-sm font-medium">Documentación</span>
+                              <span className="text-sm font-medium">Documentation</span>
                             </Link>
                             <Link href="#" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800/50 transition-colors duration-200 group">
                               <span className="text-lg group-hover:scale-110 transition-transform duration-200">🎓</span>
-                              <span className="text-sm font-medium">Tutoriales</span>
+                              <span className="text-sm font-medium">Tutorials</span>
                             </Link>
                             <Link href="#" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800/50 transition-colors duration-200 group">
                               <span className="text-lg group-hover:scale-110 transition-transform duration-200">👥</span>
-                              <span className="text-sm font-medium">Comunidad</span>
+                              <span className="text-sm font-medium">Community</span>
                             </Link>
                             <Link href="#" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800/50 transition-colors duration-200 group">
                               <span className="text-lg group-hover:scale-110 transition-transform duration-200">🎯</span>
-                              <span className="text-sm font-medium">Soporte</span>
+                              <span className="text-sm font-medium">Support</span>
                             </Link>
                             <Link href="#" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800/50 transition-colors duration-200 group">
                               <span className="text-lg group-hover:scale-110 transition-transform duration-200">📅</span>
-                              <span className="text-sm font-medium">Eventos</span>
+                              <span className="text-sm font-medium">Events</span>
                             </Link>
                           </div>
                         </div>
                         
-                        {/* Columna 3 - Blog */}
+                        {/* Column 3 - Blog */}
                         <div>
                           <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
                             BLOG
@@ -210,18 +210,18 @@ export function MarketingNavbar({ user }: Props) {
                           <div className="space-y-4">
                             <Link href="#" className="block group">
                               <div className="text-sm font-medium text-white group-hover:text-green-400 transition-colors duration-200 mb-1">
-                                Análisis avanzado de rendimiento en natación
+                                Advanced swimming performance analysis
                               </div>
                               <div className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors duration-200">
-                                Descubre las últimas técnicas de análisis de datos para optimizar el rendimiento de tus nadadores...
+                                Discover the latest data analysis techniques to optimize your swimmers' performance...
                               </div>
                             </Link>
                             <Link href="#" className="block group">
                               <div className="text-sm font-medium text-white group-hover:text-green-400 transition-colors duration-200 mb-1">
-                                Métricas clave para entrenadores
+                                Key metrics for coaches
                               </div>
                               <div className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors duration-200">
-                                Aprende qué métricas son esenciales para el seguimiento del progreso de tus atletas...
+                                Learn which metrics are essential for tracking your athletes' progress...
                               </div>
                             </Link>
                           </div>
@@ -314,7 +314,7 @@ export function MarketingNavbar({ user }: Props) {
                 {user ? (
                   <div className="space-y-4">
                     <div className="text-white text-center">
-                      <div className="text-sm text-gray-400 mb-1">Hola,</div>
+                      <div className="text-sm text-gray-400 mb-1">Hello,</div>
                       <div className="font-medium truncate">{user.email}</div>
                     </div>
                     <Button
@@ -326,7 +326,7 @@ export function MarketingNavbar({ user }: Props) {
                       size="lg"
                       className="w-full border-gray-600 text-white hover:bg-gray-800 hover:text-white hover:border-gray-500 transition-all duration-200 py-3"
                     >
-                      Cerrar Sesión
+                      Sign Out
                     </Button>
                   </div>
                 ) : (

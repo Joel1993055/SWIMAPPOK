@@ -8,9 +8,9 @@ export function TabsFeaturesSection() {
   const [activeTab, setActiveTab] = useState('analytics');
   
   const tabs = [
-    { id: 'overview', label: 'Resumen' },
-    { id: 'training', label: 'Entrenamientos' },
-    { id: 'analytics', label: 'Análisis', active: true }
+    { id: 'overview', label: 'Overview' },
+    { id: 'training', label: 'Training' },
+    { id: 'analytics', label: 'Analytics', active: true }
   ];
 
   const features = [
@@ -20,7 +20,7 @@ export function TabsFeaturesSection() {
           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
         </svg>
       ),
-      text: "Análisis de Zonas de Entrenamiento"
+      text: "Training Zone Analysis"
     },
     {
       icon: (
@@ -28,7 +28,7 @@ export function TabsFeaturesSection() {
           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
         </svg>
       ),
-      text: "Seguimiento de Técnica"
+      text: "Technique Tracking"
     },
     {
       icon: (
@@ -36,7 +36,7 @@ export function TabsFeaturesSection() {
           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
         </svg>
       ),
-      text: "Reportes de Rendimiento"
+      text: "Performance Reports"
     },
     {
       icon: (
@@ -44,7 +44,7 @@ export function TabsFeaturesSection() {
           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
         </svg>
       ),
-      text: "Comparación de Nadadores"
+      text: "Swimmer Comparison"
     },
     {
       icon: (
@@ -52,15 +52,15 @@ export function TabsFeaturesSection() {
           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
         </svg>
       ),
-      text: "Exportación de Métricas"
+      text: "Metrics Export"
     }
   ];
 
   return (
     <DemoDataProvider>
       <TabsSection
-        title="Optimiza el rendimiento de tus nadadores"
-        subtitle="con análisis profesional en tiempo real"
+        title="Optimize your swimmers' performance"
+        subtitle="with professional real-time analysis"
         tabs={tabs}
         features={features}
         activeTab={activeTab}

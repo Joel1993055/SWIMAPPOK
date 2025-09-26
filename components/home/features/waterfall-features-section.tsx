@@ -5,21 +5,21 @@ import { WaterfallCardsSection } from '@/components/ui/waterfall-cards';
 export function WaterfallFeaturesSection() {
   const features = [
     {
-      label: "Análisis",
-      title: "Reportes Avanzados de Natación",
-      description: "Obtén insights detallados sobre el rendimiento de tus nadadores con análisis predictivo y métricas en tiempo real.",
+      label: "Analysis",
+      title: "Advanced Swimming Reports",
+      description: "Get detailed insights into your swimmers' performance with predictive analysis and real-time metrics.",
       image: "/card-01.png"
     },
     {
-      label: "Seguridad",
-      title: "Datos Completamente Protegidos",
-      description: "Tus datos de entrenamiento están seguros con encriptación de nivel empresarial y cumplimiento GDPR.",
+      label: "Security",
+      title: "Fully Protected Data",
+      description: "Your training data is secure with enterprise-level encryption and GDPR compliance.",
       image: "/card-02.png"
     },
     {
-      label: "Innovación",
-      title: "Tecnología de Vanguardia",
-      description: "Utilizamos las últimas tecnologías en análisis deportivo para optimizar el rendimiento de tus atletas.",
+      label: "Innovation",
+      title: "Cutting-Edge Technology",
+      description: "We use the latest technologies in sports analysis to optimize your athletes' performance.",
       image: "/card-03.png"
     }
   ];
@@ -30,12 +30,12 @@ export function WaterfallFeaturesSection() {
         {/* Title */}
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-bold text-white leading-tight">
-            Descubre las características
+            Discover the features
             <br />
-            que <span className="text-green-400">marcan la diferencia</span>
+            that <span className="text-green-400">make the difference</span>
           </h2>
           <p className="text-xl text-slate-400 mt-6 max-w-3xl mx-auto">
-            Explora las funcionalidades avanzadas que hacen de nuestra plataforma la herramienta perfecta para entrenadores de natación
+            Explore the advanced functionalities that make our platform the perfect tool for swimming coaches
           </p>
         </div>
 

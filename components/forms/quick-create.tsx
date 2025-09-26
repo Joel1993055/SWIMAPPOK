@@ -26,7 +26,7 @@ import { createSession } from '@/lib/actions/sessions';
 import { Calendar, Plus, Save, X, Zap } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-// Tipos de datos
+// Data types
 interface QuickSession {
   date: string;
   objective: string;
@@ -41,14 +41,14 @@ interface QuickSession {
   };
 }
 
-// Opciones predefinidas
+// Predefined options
 const OBJECTIVE_OPTIONS = [
-  { value: 'Resistencia', label: 'Resistencia', color: 'bg-blue-500' },
-  { value: 'Velocidad', label: 'Velocidad', color: 'bg-red-500' },
-  { value: 'Técnica', label: 'Técnica', color: 'bg-purple-500' },
-  { value: 'Fuerza', label: 'Fuerza', color: 'bg-orange-500' },
-  { value: 'Recuperación', label: 'Recuperación', color: 'bg-green-500' },
-  { value: 'Competición', label: 'Competición', color: 'bg-yellow-500' },
+  { value: 'Endurance', label: 'Endurance', color: 'bg-blue-500' },
+  { value: 'Speed', label: 'Speed', color: 'bg-red-500' },
+  { value: 'Technique', label: 'Technique', color: 'bg-purple-500' },
+  { value: 'Strength', label: 'Strength', color: 'bg-orange-500' },
+  { value: 'Recovery', label: 'Recovery', color: 'bg-green-500' },
+  { value: 'Competition', label: 'Competition', color: 'bg-yellow-500' },
 ];
 
 interface QuickCreateProps {
@@ -72,7 +72,7 @@ export function QuickCreate({
     zone_volumes: { z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 },
   });
 
-  // Actualizar la sesión cuando cambien las props
+  // Update session when props change
   useEffect(() => {
     setSession(prev => ({
       ...prev,
@@ -109,14 +109,14 @@ export function QuickCreate({
     try {
       const formData = new FormData();
       formData.append('date', session.date);
-      formData.append('distance', totalMeters.toString()); // Usar distancia total calculada
-      formData.append('stroke', 'Libre'); // Default stroke
+      formData.append('distance', totalMeters.toString()); // Use calculated total distance
+      formData.append('stroke', 'Freestyle'); // Default stroke
       formData.append('rpe', '5'); // Default RPE
       formData.append('objective', session.objective);
       formData.append('time_slot', session.time_slot);
       formData.append('content', session.content);
 
-      // Agregar volúmenes por zona
+      // Add volumes by zone
       formData.append('z1', session.zone_volumes.z1.toString());
       formData.append('z2', session.zone_volumes.z2.toString());
       formData.append('z3', session.zone_volumes.z3.toString());
@@ -136,12 +136,12 @@ export function QuickCreate({
       });
       setIsOpen(false);
 
-      // Recargar la página para mostrar el nuevo entrenamiento
+      // Reload page to show new training
       window.location.reload();
     } catch (error) {
-      console.error('Error guardando entrenamiento:', error);
+      console.error('Error saving training:', error);
       alert(
-        'Error al guardar el entrenamiento. Por favor, inténtalo de nuevo.'
+        'Error saving training. Please try again.'
       );
     } finally {
       setIsLoading(false);
@@ -171,32 +171,32 @@ export function QuickCreate({
         <DialogHeader>
           <DialogTitle className='flex items-center gap-2'>
             <Zap className='w-5 h-5 text-primary' />
-            Crear Entrenamiento Rápido
+            Quick Create Training
           </DialogTitle>
           <DialogDescription>
-            Añade una nueva sesión de entrenamiento de forma rápida y eficiente
+            Add a new training session quickly and efficiently
           </DialogDescription>
         </DialogHeader>
 
         <div className='space-y-6'>
-          {/* Formulario principal */}
+          {/* Main form */}
           <div className='space-y-4'>
             <div>
               <h3 className='text-lg font-semibold mb-3'>
-                Detalles del Entrenamiento
+                Training Details
               </h3>
               <p className='text-sm text-muted-foreground mb-4'>
-                Información básica de la sesión
+                Basic session information
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className='space-y-4'>
-              {/* Fecha, Horario y Objetivo */}
+              {/* Date, Schedule and Objective */}
               <div className='grid grid-cols-3 gap-4'>
                 <div className='space-y-2'>
                   <Label htmlFor='date' className='flex items-center gap-2'>
                     <Calendar className='w-4 h-4' />
-                    Fecha
+                    Date
                   </Label>
                   <Input
                     id='date'
@@ -209,7 +209,7 @@ export function QuickCreate({
                   />
                 </div>
                 <div className='space-y-2'>
-                  <Label htmlFor='time-slot'>Horario</Label>
+                  <Label htmlFor='time-slot'>Schedule</Label>
                   <Select
                     value={session.time_slot}
                     onValueChange={value =>
@@ -220,16 +220,16 @@ export function QuickCreate({
                     }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder='Selecciona el horario' />
+                      <SelectValue placeholder='Select schedule' />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value='AM'>AM (Mañana)</SelectItem>
-                      <SelectItem value='PM'>PM (Tarde/Noche)</SelectItem>
+                      <SelectItem value='AM'>AM (Morning)</SelectItem>
+                      <SelectItem value='PM'>PM (Afternoon/Evening)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className='space-y-2'>
-                  <Label>Objetivo del Entrenamiento</Label>
+                  <Label>Training Objective</Label>
                   <Select
                     value={session.objective}
                     onValueChange={value =>
@@ -237,7 +237,7 @@ export function QuickCreate({
                     }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder='Seleccionar objetivo' />
+                      <SelectValue placeholder='Select objective' />
                     </SelectTrigger>
                     <SelectContent>
                       {OBJECTIVE_OPTIONS.map(option => (
@@ -255,10 +255,10 @@ export function QuickCreate({
                 </div>
               </div>
 
-              {/* Contenido del entrenamiento - MÁS GRANDE */}
+              {/* Training content - LARGER */}
               <div className='space-y-2'>
                 <Label htmlFor='content' className='text-base font-medium'>
-                  Contenido del entrenamiento
+                  Training Content
                 </Label>
                 <Textarea
                   id='content'
@@ -266,7 +266,7 @@ export function QuickCreate({
                   onChange={e =>
                     setSession({ ...session, content: e.target.value })
                   }
-                  placeholder='Escribe tu entrenamiento aquí... Ejemplo:&#10;&#10;Calentamiento: 200m libre Z1&#10;Serie principal: 8x100m libre Z3 con 20s descanso&#10;Vuelta a la calma: 200m espalda Z1&#10;&#10;Puedes incluir:&#10;- Distancias (200m, 1.5km)&#10;- Tiempos (45min, 1h 30min)&#10;- Zonas (Z1, Z2, Z3, Z4, Z5)&#10;- Estilos (libre, espalda, pecho, mariposa)'
+                  placeholder='Write your training here... Example:&#10;&#10;Warm-up: 200m freestyle Z1&#10;Main set: 8x100m freestyle Z3 with 20s rest&#10;Cool-down: 200m backstroke Z1&#10;&#10;You can include:&#10;- Distances (200m, 1.5km)&#10;- Times (45min, 1h 30min)&#10;- Zones (Z1, Z2, Z3, Z4, Z5)&#10;- Styles (freestyle, backstroke, breaststroke, butterfly)'
                   rows={8}
                   className='min-h-[200px] resize-none'
                 />
@@ -274,7 +274,7 @@ export function QuickCreate({
             </form>
           </div>
 
-          {/* Detección automática de IA */}
+          {/* Automatic AI detection */}
           <AIZoneDetection
             content={session.content}
             objective={session.objective}
@@ -288,11 +288,11 @@ export function QuickCreate({
             disabled={isLoading}
           />
 
-          {/* Volúmenes por zona - Minimalista */}
+          {/* Volumes by zone - Minimalist */}
           <div className='space-y-3'>
             <div className='flex items-center justify-between'>
               <Label className='text-sm font-medium text-muted-foreground'>
-                Volúmenes por Zona
+                Volumes by Zone
               </Label>
               <div className='text-xs text-muted-foreground'>
                 Total:{' '}
@@ -302,7 +302,7 @@ export function QuickCreate({
               </div>
             </div>
 
-            {/* Grid compacto de zonas */}
+            {/* Compact zones grid */}
             <div className='grid grid-cols-5 gap-2'>
               {[
                 {
@@ -365,23 +365,23 @@ export function QuickCreate({
           </div>
         </div>
 
-        {/* Resumen visual */}
+        {/* Visual summary */}
         {(session.distance > 0 || session.objective) && (
           <Card className='bg-muted/50 border-muted mt-6'>
             <CardHeader className='pb-3'>
               <CardTitle className='text-base'>
-                Resumen del Entrenamiento
+                Training Summary
               </CardTitle>
             </CardHeader>
             <CardContent className='space-y-2'>
               <div className='grid grid-cols-2 gap-4 text-sm'>
                 <div className='flex items-center justify-between'>
-                  <span>Distancia Total:</span>
+                  <span>Total Distance:</span>
                   <Badge variant='outline'>{totalMeters}m</Badge>
                 </div>
                 {selectedObjective && (
                   <div className='flex items-center justify-between'>
-                    <span>Objetivo:</span>
+                    <span>Objective:</span>
                     <Badge
                       variant='outline'
                       className={`${selectedObjective.color} text-white`}
@@ -391,11 +391,11 @@ export function QuickCreate({
                   </div>
                 )}
                 <div className='flex items-center justify-between'>
-                  <span>Horario:</span>
+                  <span>Schedule:</span>
                   <Badge variant='outline'>{session.time_slot}</Badge>
                 </div>
                 <div className='flex items-center justify-between'>
-                  <span>Total Zonas:</span>
+                  <span>Total Zones:</span>
                   <Badge variant='outline'>
                     {totalMeters.toLocaleString()}m
                   </Badge>
@@ -405,7 +405,7 @@ export function QuickCreate({
           </Card>
         )}
 
-        {/* Botones */}
+        {/* Buttons */}
         <div className='flex justify-end gap-2 pt-4'>
           <Button
             type='button'
@@ -413,11 +413,11 @@ export function QuickCreate({
             onClick={() => setIsOpen(false)}
           >
             <X className='w-4 h-4 mr-2' />
-            Cancelar
+            Cancel
           </Button>
           <Button type='submit' onClick={handleSubmit} disabled={isLoading}>
             <Save className='w-4 h-4 mr-2' />
-            {isLoading ? 'Guardando...' : 'Guardar Entrenamiento'}
+            {isLoading ? 'Saving...' : 'Save Training'}
           </Button>
         </div>
       </DialogContent>

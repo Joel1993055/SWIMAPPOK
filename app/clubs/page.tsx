@@ -1,6 +1,6 @@
 /**
- * Página principal de gestión de clubes y equipos
- * @fileoverview Interfaz principal para administrar clubes y equipos con mejor UX
+ * Main clubs and teams management page
+ * @fileoverview Main interface for managing clubs and teams with better UX
  */
 
 'use client';
@@ -11,13 +11,13 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -26,42 +26,42 @@ import { Textarea } from '@/components/ui/textarea';
 import { useClubsStore } from '@/lib/store/clubs-store';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-    Building2,
-    ChevronRight,
-    MapPin,
-    Plus,
-    Search,
-    Target
+  Building2,
+  ChevronRight,
+  MapPin,
+  Plus,
+  Search,
+  Target
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 // =====================================================
-// ESQUEMAS DE VALIDACIÓN
+// VALIDATION SCHEMAS
 // =====================================================
 
 const createClubSchema = z.object({
-  name: z.string().min(1, 'El nombre es requerido').max(255, 'El nombre es muy largo'),
-  location: z.string().min(1, 'La ubicación es requerida').max(255, 'La ubicación es muy larga'),
+  name: z.string().min(1, 'Name is required').max(255, 'Name is too long'),
+  location: z.string().min(1, 'Location is required').max(255, 'Location is too long'),
   description: z.string().optional(),
 });
 
 const createTeamSchema = z.object({
-  name: z.string().min(1, 'El nombre es requerido').max(255, 'El nombre es muy largo'),
-  club_id: z.string().min(1, 'Debes seleccionar un club'),
+  name: z.string().min(1, 'Name is required').max(255, 'Name is too long'),
+  club_id: z.string().min(1, 'You must select a club'),
   description: z.string().optional(),
-  level: z.enum(['Principiante', 'Intermedio', 'Avanzado', 'Elite', 'Mixto']).default('Mixto'),
+  level: z.enum(['Beginner', 'Intermediate', 'Advanced', 'Elite', 'Mixed']).default('Mixed'),
 });
 
 type CreateClubFormData = z.infer<typeof createClubSchema>;
 type CreateTeamFormData = z.infer<typeof createTeamSchema>;
 
 // =====================================================
-// COMPONENTE PRINCIPAL
+// MAIN COMPONENT
 // =====================================================
 
-export default function ClubesPage() {
+export default function ClubsPage() {
   const {
     clubs,
     teams,
@@ -82,19 +82,19 @@ export default function ClubesPage() {
   const [isCreateTeamOpen, setIsCreateTeamOpen] = useState(false);
   const [selectedClubForTeam, setSelectedClubForTeam] = useState<string>('');
 
-  // Cargar datos al montar
+  // Load data on mount
   useEffect(() => {
     loadClubs();
   }, [loadClubs]);
 
-  // Cargar equipos cuando se selecciona un club
+  // Load teams when a club is selected
   useEffect(() => {
     if (selectedClub) {
       loadTeamsByClub(selectedClub.id);
     }
   }, [selectedClub, loadTeamsByClub]);
 
-  // Filtrar clubes
+  // Filter clubs
   const filteredClubs = clubs.filter(club =>
     club.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     club.location.toLowerCase().includes(searchTerm.toLowerCase())
@@ -123,7 +123,7 @@ export default function ClubesPage() {
       name: '',
       club_id: '',
       description: '',
-      level: 'Mixto',
+      level: 'Mixed',
     },
   });
 
@@ -166,11 +166,11 @@ export default function ClubesPage() {
                   <Building2 className="h-6 w-6 text-primary" />
                 </div>
                 <h1 className="text-3xl font-bold text-foreground">
-                  Clubes y Equipos
+                  Clubs and Teams
                 </h1>
               </div>
               <p className="text-muted-foreground">
-                Gestiona tus clubes, equipos y miembros de manera eficiente
+                Manage your clubs, teams and members efficiently
               </p>
             </div>
             
@@ -180,23 +180,23 @@ export default function ClubesPage() {
                 <DialogTrigger asChild>
                   <Button className="gap-2">
                     <Plus className="h-4 w-4" />
-                    Nuevo Club
+                    New Club
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Crear Nuevo Club</DialogTitle>
+                    <DialogTitle>Create New Club</DialogTitle>
                     <DialogDescription>
-                      Completa la información básica del club
+                      Complete the basic club information
                     </DialogDescription>
                   </DialogHeader>
                   <form onSubmit={createClubForm.handleSubmit(handleCreateClub)} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="name">Nombre del Club</Label>
+                      <Label htmlFor="name">Club Name</Label>
                       <Input
                         id="name"
                         {...createClubForm.register('name')}
-                        placeholder="Ej: Club Natación Madrid"
+                        placeholder="Ex: Madrid Swimming Club"
                       />
                       {createClubForm.formState.errors.name && (
                         <p className="text-sm text-destructive">
@@ -205,11 +205,11 @@ export default function ClubesPage() {
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="location">Ubicación</Label>
+                      <Label htmlFor="location">Location</Label>
                       <Input
                         id="location"
                         {...createClubForm.register('location')}
-                        placeholder="Ej: Madrid, España"
+                        placeholder="Ex: Madrid, Spain"
                       />
                       {createClubForm.formState.errors.location && (
                         <p className="text-sm text-destructive">
@@ -218,11 +218,11 @@ export default function ClubesPage() {
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="description">Descripción (opcional)</Label>
+                      <Label htmlFor="description">Description (optional)</Label>
                       <Textarea
                         id="description"
                         {...createClubForm.register('description')}
-                        placeholder="Descripción del club..."
+                        placeholder="Club description..."
                         rows={3}
                       />
                     </div>
@@ -246,7 +246,7 @@ export default function ClubesPage() {
                   <DialogHeader>
                     <DialogTitle>Crear Nuevo Equipo</DialogTitle>
                     <DialogDescription>
-                      Crea un nuevo equipo en uno de tus clubes
+                      Create a new team in one of your clubs
                     </DialogDescription>
                   </DialogHeader>
                   <form onSubmit={createTeamForm.handleSubmit(handleCreateTeam)} className="space-y-4">
@@ -260,7 +260,7 @@ export default function ClubesPage() {
                           setSelectedClubForTeam(e.target.value);
                         }}
                       >
-                        <option value="">Seleccionar club...</option>
+                        <option value="">Select club...</option>
                         {clubs.map((club) => (
                           <option key={club.id} value={club.id}>
                             {club.name} - {club.location}
@@ -274,11 +274,11 @@ export default function ClubesPage() {
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="name">Nombre del Equipo</Label>
+                      <Label htmlFor="name">Team Name</Label>
                       <Input
                         id="name"
                         {...createTeamForm.register('name')}
-                        placeholder="Ej: Equipo A - Competición"
+                        placeholder="Ex: Team A - Competition"
                       />
                       {createTeamForm.formState.errors.name && (
                         <p className="text-sm text-destructive">
@@ -287,24 +287,24 @@ export default function ClubesPage() {
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="level">Nivel</Label>
+                      <Label htmlFor="level">Level</Label>
                       <select
                         {...createTeamForm.register('level')}
                         className="w-full p-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                       >
-                        <option value="Principiante">Principiante</option>
-                        <option value="Intermedio">Intermedio</option>
-                        <option value="Avanzado">Avanzado</option>
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
                         <option value="Elite">Elite</option>
-                        <option value="Mixto">Mixto</option>
+                        <option value="Mixed">Mixed</option>
                       </select>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="description">Descripción (opcional)</Label>
+                      <Label htmlFor="description">Description (optional)</Label>
                       <Textarea
                         id="description"
                         {...createTeamForm.register('description')}
-                        placeholder="Descripción del equipo..."
+                        placeholder="Team description..."
                         rows={3}
                       />
                     </div>
@@ -323,7 +323,7 @@ export default function ClubesPage() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Buscar clubes y equipos..."
+              placeholder="Search clubs and teams..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -332,16 +332,16 @@ export default function ClubesPage() {
 
           {/* Contenido principal */}
           <div className="grid gap-6 lg:grid-cols-2">
-            {/* Clubes */}
+            {/* Clubs */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Building2 className="h-5 w-5" />
-                  Mis Clubes
+                  My Clubs
                   <Badge variant="secondary">{filteredClubs.length}</Badge>
                 </CardTitle>
                 <CardDescription>
-                  Gestiona tus clubes de natación
+                  Manage your swimming clubs
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -354,7 +354,7 @@ export default function ClubesPage() {
                 ) : filteredClubs.length === 0 ? (
                   <div className="text-center py-8 text-muted-foreground">
                     <Building2 className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>No tienes clubes creados</p>
+                    <p>You have no clubs created</p>
                     <p className="text-sm">Crea tu primer club para comenzar</p>
                   </div>
                 ) : (
@@ -401,7 +401,7 @@ export default function ClubesPage() {
                   <Badge variant="secondary">{filteredTeams.length}</Badge>
                 </CardTitle>
                 <CardDescription>
-                  Gestiona los equipos de tus clubes
+                  Manage your clubs' teams
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -438,9 +438,9 @@ export default function ClubesPage() {
                               variant="outline" 
                               className={`text-xs ${
                                 team.level === 'Elite' ? 'border-yellow-500 text-yellow-600' :
-                                team.level === 'Avanzado' ? 'border-blue-500 text-blue-600' :
-                                team.level === 'Intermedio' ? 'border-green-500 text-green-600' :
-                                team.level === 'Principiante' ? 'border-orange-500 text-orange-600' :
+                                team.level === 'Advanced' ? 'border-blue-500 text-blue-600' :
+                                team.level === 'Intermediate' ? 'border-green-500 text-green-600' :
+                                team.level === 'Beginner' ? 'border-orange-500 text-orange-600' :
                                 'border-gray-500 text-gray-600'
                               }`}
                             >
@@ -475,7 +475,7 @@ export default function ClubesPage() {
                       <Building2 className="h-4 w-4 text-primary" />
                     </div>
                     <span className="font-medium text-primary">
-                      {selectedClub ? selectedClub.name : 'Sin club seleccionado'}
+                      {selectedClub ? selectedClub.name : 'No club selected'}
                     </span>
                   </div>
                   {selectedTeam && (

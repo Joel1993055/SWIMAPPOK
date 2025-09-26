@@ -3,7 +3,7 @@
 import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
 
-// Tipos de datos
+// Data types
 export interface SessionData {
   title: string;
   date: string;
@@ -41,16 +41,16 @@ export interface Session extends SessionData {
 export async function createSession(formData: FormData) {
   const supabase = await createClient();
 
-  // Verificar autenticación
+  // Verify authentication
   const {
     data: { user },
     error: authError,
   } = await supabase.auth.getUser();
   if (authError || !user) {
-    throw new Error('Usuario no autenticado');
+    throw new Error('User not authenticated');
   }
 
-  // Extraer datos del formulario
+  // Extract form data
   const sessionData: SessionData = {
     title: formData.get('title') as string,
     date: formData.get('date') as string,
@@ -59,11 +59,11 @@ export async function createSession(formData: FormData) {
     distance: parseInt(formData.get('distance') as string) || 0,
     stroke: (formData.get('stroke') as string) || 'Libre',
     rpe: parseInt(formData.get('rpe') as string) || 5,
-    location: (formData.get('location') as string) || 'No especificado',
-    coach: (formData.get('coach') as string) || 'No especificado',
-    club: (formData.get('club') as string) || 'No especificado',
-    group_name: (formData.get('group_name') as string) || 'No especificado',
-    objective: (formData.get('objective') as string) || 'otro',
+    location: (formData.get('location') as string) || 'Not specified',
+    coach: (formData.get('coach') as string) || 'Not specified',
+    club: (formData.get('club') as string) || 'Not specified',
+    group_name: (formData.get('group_name') as string) || 'Not specified',
+    objective: (formData.get('objective') as string) || 'other',
     time_slot: (formData.get('time_slot') as string) || 'AM',
     content: formData.get('content') as string,
     zone_volumes: {
@@ -77,10 +77,10 @@ export async function createSession(formData: FormData) {
 
   // Validaciones básicas
   if (!sessionData.title || !sessionData.content) {
-    throw new Error('Título y contenido son obligatorios');
+    throw new Error('Title and content are required');
   }
 
-  // Insertar en la base de datos
+  // Insert into database
   const { data, error } = await supabase
     .from('sessions')
     .insert({
@@ -97,7 +97,7 @@ export async function createSession(formData: FormData) {
 
   // Revalidar páginas
   revalidatePath('/dashboard');
-  revalidatePath('/entrenamientos');
+  revalidatePath('/training');
 
   return data;
 }
@@ -113,7 +113,7 @@ export async function getSessions() {
     error: authError,
   } = await supabase.auth.getUser();
   if (authError || !user) {
-    throw new Error('Usuario no autenticado');
+    throw new Error('User not authenticated');
   }
 
   const { data, error } = await supabase
@@ -141,7 +141,7 @@ export async function getSessionById(id: string) {
     error: authError,
   } = await supabase.auth.getUser();
   if (authError || !user) {
-    throw new Error('Usuario no autenticado');
+    throw new Error('User not authenticated');
   }
 
   const { data, error } = await supabase
@@ -170,10 +170,10 @@ export async function updateSession(id: string, formData: FormData) {
     error: authError,
   } = await supabase.auth.getUser();
   if (authError || !user) {
-    throw new Error('Usuario no autenticado');
+    throw new Error('User not authenticated');
   }
 
-  // Extraer datos del formulario
+  // Extract form data
   const sessionData: Partial<SessionData> = {
     title: formData.get('title') as string,
     date: formData.get('date') as string,
@@ -182,11 +182,11 @@ export async function updateSession(id: string, formData: FormData) {
     distance: parseInt(formData.get('distance') as string) || 0,
     stroke: (formData.get('stroke') as string) || 'Libre',
     rpe: parseInt(formData.get('rpe') as string) || 5,
-    location: (formData.get('location') as string) || 'No especificado',
-    coach: (formData.get('coach') as string) || 'No especificado',
-    club: (formData.get('club') as string) || 'No especificado',
-    group_name: (formData.get('group_name') as string) || 'No especificado',
-    objective: (formData.get('objective') as string) || 'otro',
+    location: (formData.get('location') as string) || 'Not specified',
+    coach: (formData.get('coach') as string) || 'Not specified',
+    club: (formData.get('club') as string) || 'Not specified',
+    group_name: (formData.get('group_name') as string) || 'Not specified',
+    objective: (formData.get('objective') as string) || 'other',
     time_slot: (formData.get('time_slot') as string) || 'AM',
     content: formData.get('content') as string,
     zone_volumes: {
@@ -200,10 +200,10 @@ export async function updateSession(id: string, formData: FormData) {
 
   // Validaciones básicas
   if (!sessionData.title || !sessionData.content) {
-    throw new Error('Título y contenido son obligatorios');
+    throw new Error('Title and content are required');
   }
 
-  // Actualizar en la base de datos
+  // Update in database
   const { data, error } = await supabase
     .from('sessions')
     .update(sessionData)
@@ -213,13 +213,13 @@ export async function updateSession(id: string, formData: FormData) {
     .single();
 
   if (error) {
-    console.error('Error actualizando sesión:', error);
-    throw new Error('Error al actualizar la sesión');
+    console.error('Error updating session:', error);
+    throw new Error('Error updating session');
   }
 
   // Revalidar páginas
   revalidatePath('/dashboard');
-  revalidatePath('/entrenamientos');
+  revalidatePath('/training');
 
   return data;
 }
@@ -235,7 +235,7 @@ export async function deleteSession(id: string) {
     error: authError,
   } = await supabase.auth.getUser();
   if (authError || !user) {
-    throw new Error('Usuario no autenticado');
+    throw new Error('User not authenticated');
   }
 
   const { error } = await supabase
@@ -251,7 +251,7 @@ export async function deleteSession(id: string) {
 
   // Revalidar páginas
   revalidatePath('/dashboard');
-  revalidatePath('/entrenamientos');
+  revalidatePath('/training');
 }
 
 // =====================================================
@@ -268,7 +268,7 @@ export async function getSessionsByDateRange(
     error: authError,
   } = await supabase.auth.getUser();
   if (authError || !user) {
-    throw new Error('Usuario no autenticado');
+    throw new Error('User not authenticated');
   }
 
   const { data, error } = await supabase
@@ -298,7 +298,7 @@ export async function getSessionStats() {
     error: authError,
   } = await supabase.auth.getUser();
   if (authError || !user) {
-    throw new Error('Usuario no autenticado');
+    throw new Error('User not authenticated');
   }
 
   // Obtener todas las sesiones del usuario
@@ -308,11 +308,11 @@ export async function getSessionStats() {
     .eq('user_id', user.id);
 
   if (error) {
-    console.error('Error obteniendo estadísticas:', error);
-    throw new Error('Error al obtener las estadísticas');
+    console.error('Error getting statistics:', error);
+    throw new Error('Error getting statistics');
   }
 
-  // Calcular estadísticas
+  // Calculate statistics
   const totalSessions = sessions.length;
   const totalDistance = sessions.reduce(
     (sum, session) => sum + session.distance,
@@ -328,7 +328,7 @@ export async function getSessionStats() {
         sessions.length
       : 0;
 
-  // Calcular volúmenes por zona
+  // Calculate zone volumes
   const zoneStats = {
     z1: sessions.reduce(
       (sum, session) => sum + (session.zone_volumes?.z1 || 0),

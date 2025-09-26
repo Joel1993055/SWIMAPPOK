@@ -21,14 +21,14 @@ export default function ProfilePage() {
   const [profileData, setProfileData] = useState({
     name: 'Joel Subirana',
     email: 'joel.subirana@gmail.com',
-    joinDate: 'Enero 2024',
-    level: 'Nadador Avanzado',
-    club: 'Club Natación Madrid',
-    group: 'Grupo A - Competición',
+    joinDate: 'January 2024',
+    level: 'Advanced Swimmer',
+    club: 'Madrid Swimming Club',
+    group: 'Group A - Competition',
   });
 
   const handleSave = () => {
-    // Aquí se implementaría la lógica para guardar los datos
+    // Here the logic to save the data would be implemented
     setIsEditing(false);
   };
 
@@ -47,25 +47,25 @@ export default function ProfilePage() {
               <h1 className='text-3xl font-bold text-foreground'>Perfil</h1>
             </div>
             <p className='text-muted-foreground'>
-              Gestiona tu información personal y preferencias
+              Manage your personal information and preferences
             </p>
           </div>
 
           <div className='grid gap-6 md:grid-cols-2'>
-            {/* Información Personal */}
+            {/* Personal Information */}
             <Card>
               <CardHeader>
                 <CardTitle className='flex items-center gap-2'>
                   <User className='h-5 w-5' />
-                  Información Personal
+                  Personal Information
                 </CardTitle>
                 <CardDescription>
-                  Actualiza tu información personal
+                  Update your personal information
                 </CardDescription>
               </CardHeader>
               <CardContent className='space-y-4'>
                 <div className='space-y-2'>
-                  <Label htmlFor='name'>Nombre completo</Label>
+                  <Label htmlFor='name'>Full name</Label>
                   <Input
                     id='name'
                     value={profileData.name}
@@ -99,7 +99,7 @@ export default function ProfilePage() {
                   />
                 </div>
                 <div className='space-y-2'>
-                  <Label htmlFor='group'>Grupo</Label>
+                  <Label htmlFor='group'>Group</Label>
                   <Input
                     id='group'
                     value={profileData.group}
@@ -112,22 +112,22 @@ export default function ProfilePage() {
               </CardContent>
             </Card>
 
-            {/* Información de Cuenta */}
+            {/* Account Information */}
             <Card>
               <CardHeader>
                 <CardTitle className='flex items-center gap-2'>
                   <Award className='h-5 w-5' />
-                  Información de Cuenta
+                  Account Information
                 </CardTitle>
                 <CardDescription>
-                  Detalles de tu cuenta y membresía
+                  Account and membership details
                 </CardDescription>
               </CardHeader>
               <CardContent className='space-y-4'>
                 <div className='flex items-center gap-3 p-3 bg-muted/50 rounded-lg'>
                   <Mail className='h-4 w-4 text-muted-foreground' />
                   <div>
-                    <p className='text-sm font-medium'>Email verificado</p>
+                    <p className='text-sm font-medium'>Email verified</p>
                     <p className='text-xs text-muted-foreground'>
                       {profileData.email}
                     </p>
@@ -136,7 +136,7 @@ export default function ProfilePage() {
                 <div className='flex items-center gap-3 p-3 bg-muted/50 rounded-lg'>
                   <Calendar className='h-4 w-4 text-muted-foreground' />
                   <div>
-                    <p className='text-sm font-medium'>Miembro desde</p>
+                    <p className='text-sm font-medium'>Member since</p>
                     <p className='text-xs text-muted-foreground'>
                       {profileData.joinDate}
                     </p>
@@ -145,7 +145,7 @@ export default function ProfilePage() {
                 <div className='flex items-center gap-3 p-3 bg-muted/50 rounded-lg'>
                   <Award className='h-4 w-4 text-muted-foreground' />
                   <div>
-                    <p className='text-sm font-medium'>Nivel</p>
+                    <p className='text-sm font-medium'>Level</p>
                     <p className='text-xs text-muted-foreground'>
                       {profileData.level}
                     </p>
@@ -163,15 +163,15 @@ export default function ProfilePage() {
                   variant='outline'
                   onClick={() => setIsEditing(false)}
                 >
-                  Cancelar
+                  Cancel
                 </Button>
                 <Button onClick={handleSave}>
-                  Guardar cambios
+                  Save changes
                 </Button>
               </>
             ) : (
               <Button onClick={() => setIsEditing(true)}>
-                Editar perfil
+                Edit profile
               </Button>
             )}
           </div>

@@ -1,6 +1,6 @@
 /**
- * Componente de gestión de clubes
- * @fileoverview Interfaz para crear, editar y gestionar clubes
+ * Club management component
+ * @fileoverview Interface for creating, editing and managing clubs
  */
 
 'use client';
@@ -42,22 +42,22 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 // =====================================================
-// ESQUEMAS DE VALIDACIÓN
+// VALIDATION SCHEMAS
 // =====================================================
 
 const createClubSchema = z.object({
-  name: z.string().min(1, 'El nombre es requerido').max(255, 'El nombre es muy largo'),
+  name: z.string().min(1, 'Name is required').max(255, 'Name is too long'),
 });
 
 const updateClubSchema = createClubSchema.extend({
-  id: z.string().min(1, 'ID es requerido'),
+  id: z.string().min(1, 'ID is required'),
 });
 
 type CreateClubFormData = z.infer<typeof createClubSchema>;
 type UpdateClubFormData = z.infer<typeof updateClubSchema>;
 
 // =====================================================
-// COMPONENTE PRINCIPAL
+// MAIN COMPONENT
 // =====================================================
 
 export function ClubManagement() {
@@ -79,12 +79,12 @@ export function ClubManagement() {
   const [editingClub, setEditingClub] = useState<ClubWithStats | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Cargar clubes al montar el componente
+  // Load clubs when component mounts
   useState(() => {
     loadClubs();
   });
 
-  // Filtrar clubes por término de búsqueda
+  // Filter clubs by search term
   const filteredClubs = clubs.filter(club =>
     club.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     club.location.toLowerCase().includes(searchTerm.toLowerCase())

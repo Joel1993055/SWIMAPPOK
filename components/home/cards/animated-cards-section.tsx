@@ -5,23 +5,23 @@ import Image from "next/image";
 export function AnimatedCardsSection() {
   const cards = [
     {
-      label: "Análisis",
-      title: "Reportes Diarios",
-      description: "Análisis detallado de cada sesión de entrenamiento con métricas de rendimiento y progreso.",
+      label: "Analysis",
+      title: "Daily Reports",
+      description: "Detailed analysis of each training session with performance and progress metrics.",
       image: "/dashboard-dark.png",
       hoverImage: "/app-dark.png"
     },
     {
-      label: "Seguridad",
-      title: "Datos Protegidos",
-      description: "Tus datos de entrenamiento están completamente seguros con encriptación de nivel empresarial.",
+      label: "Security",
+      title: "Protected Data",
+      description: "Your training data is completely secure with enterprise-level encryption.",
       image: "/app-light.png",
       hoverImage: "/dashboard-light.png"
     },
     {
       label: "Analytics",
-      title: "Análisis Avanzado",
-      description: "Herramientas de análisis predictivo para optimizar el rendimiento de tus nadadores.",
+      title: "Advanced Analysis",
+      description: "Predictive analysis tools to optimize your swimmers' performance.",
       image: "/dashboard-dark.png",
       hoverImage: "/app-dark.png"
     }

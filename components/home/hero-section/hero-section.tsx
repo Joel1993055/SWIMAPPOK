@@ -9,11 +9,11 @@ export function HeroSection() {
   const [isAnimating, setIsAnimating] = useState(false);
   
   const words = [
-    "tecnología",
+    "technology",
     "data",
-    "análisis",
-    "inteligencia",
-    "innovación"
+    "analysis",
+    "intelligence",
+    "innovation"
   ];
 
   useEffect(() => {
@@ -23,15 +23,15 @@ export function HeroSection() {
       setTimeout(() => {
         setCurrentWord((prev) => (prev + 1) % words.length);
         setIsAnimating(false);
-      }, 1000); // Duración de la animación de salida más larga
-    }, 5000); // Cambia cada 5 segundos
+      }, 1000); // Longer exit animation duration
+    }, 5000); // Changes every 5 seconds
 
     return () => clearInterval(interval);
   }, []);
 
   return (
     <section id="hero" className={"mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative pt-64 sm:pt-56 md:pt-64 pb-12 sm:pb-16"}>
-      {/* Fondo especial del hero con grid, verde y glow */}
+      {/* Special hero background with grid, green and glow */}
       <div className="absolute inset-0 -z-10">
         <div className={'grain-blur background-base'} />
         <div className={'grain-background background-base'} />
@@ -42,7 +42,7 @@ export function HeroSection() {
       
       <div className={"text-center w-full mb-8 sm:mb-12 md:mb-16 relative z-10"}>
         <h1 className={"text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[90px] leading-tight sm:leading-tight md:leading-tight lg:leading-tight xl:leading-[90px] tracking-[-0.5px] sm:tracking-[-0.8px] md:tracking-[-1.2px] lg:tracking-[-1.6px] font-medium text-white px-4"}>
-          Descubre el poder de la
+          Discover the power of
           <br />
           <span className="text-gray-200">
             <span 
@@ -53,11 +53,11 @@ export function HeroSection() {
               }`}
             >
               {words[currentWord]}
-            </span> en natación
+            </span> in swimming
           </span>
         </h1>
         <p className={"mt-6 sm:mt-8 text-lg sm:text-xl md:text-2xl lg:text-3xl leading-relaxed sm:leading-relaxed md:leading-relaxed lg:leading-relaxed text-gray-300 max-w-sm sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto px-4"}>
-          Experimenta la revolución en el análisis de natación con nuestras herramientas más avanzadas
+          Experience the revolution in swimming analysis with our most advanced tools
         </p>
       </div>
       
@@ -66,7 +66,7 @@ export function HeroSection() {
         <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-2xl lg:max-w-4xl xl:max-w-6xl">
           <Image
             src="/dashboard-dark.png"
-            alt="DeckAPP Dashboard - Análisis de Natación"
+            alt="DeckAPP Dashboard - Swimming Analysis"
             width={1200}
             height={800}
             className="w-full h-auto rounded-lg sm:rounded-xl md:rounded-2xl shadow-xl sm:shadow-2xl border border-gray-700/50 relative z-10"

@@ -6,7 +6,7 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Top Section - Built with */}
         <div className="text-center mb-8">
-          <p className="text-gray-400 text-sm mb-6">Desarrollado con</p>
+          <p className="text-gray-400 text-sm mb-6">Built with</p>
           <div className="flex flex-wrap justify-center items-center gap-8">
             {/* Paddle */}
             <div className="flex items-center gap-2 text-gray-300">
@@ -58,24 +58,24 @@ export function Footer() {
 
         {/* Bottom Section - Copyright and Links */}
         <div className="text-center">
-          <p className="text-gray-400 text-sm mb-4">Swim:APP - Análisis profesional para entrenadores de natación</p>
+          <p className="text-gray-400 text-sm mb-4">DeckAPP - Professional analysis for swimming coaches</p>
           <div className="flex flex-wrap justify-center items-center gap-6 text-sm">
             <a href="#" className="text-gray-400 hover:text-gray-300 transition-colors flex items-center gap-1">
-              Explorar funciones
+              Explore features
               <svg className="w-3 h-3" viewBox="0 0 16 16" fill="currentColor">
                 <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
                 <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
               </svg>
             </a>
             <a href="#" className="text-gray-400 hover:text-gray-300 transition-colors flex items-center gap-1">
-              Términos de uso
+              Terms of use
               <svg className="w-3 h-3" viewBox="0 0 16 16" fill="currentColor">
                 <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
                 <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
               </svg>
             </a>
             <a href="#" className="text-gray-400 hover:text-gray-300 transition-colors flex items-center gap-1">
-              Privacidad
+              Privacy
               <svg className="w-3 h-3" viewBox="0 0 16 16" fill="currentColor">
                 <path d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
                 <path d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>

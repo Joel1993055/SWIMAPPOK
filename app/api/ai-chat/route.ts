@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
 
     if (!message) {
       return NextResponse.json(
-        { error: 'Mensaje requerido' },
+        { error: 'Message required' },
         { status: 400 }
       );
     }
@@ -25,37 +25,37 @@ export async function POST(request: NextRequest) {
     const openai = getOpenAI();
     if (!openai) {
       return NextResponse.json(
-        { error: 'OpenAI API key no configurada' },
+        { error: 'OpenAI API key not configured' },
         { status: 500 }
       );
     }
 
-    // Prompt específico para entrenamiento de natación
-    const systemPrompt = `Eres un entrenador de natación experto y un especialista en ciencias del deporte. Tu objetivo es ayudar a nadadores de todos los niveles a mejorar su rendimiento, técnica y comprensión del deporte.
+    // Specific prompt for swimming training
+    const systemPrompt = `You are an expert swimming coach and sports science specialist. Your goal is to help swimmers of all levels improve their performance, technique, and understanding of the sport.
 
-Especialidades:
-- Técnica de natación (crol, espalda, braza, mariposa)
-- Planificación de entrenamientos
-- Periodización y fases de entrenamiento
-- Nutrición deportiva para nadadores
-- Psicología deportiva
-- Prevención de lesiones
-- Análisis de rendimiento
-- Hidrodinámica y biomecánica
-- Competición y estrategias de carrera
-- Recuperación y descanso
+Specialties:
+- Swimming technique (freestyle, backstroke, breaststroke, butterfly)
+- Training planning
+- Periodization and training phases
+- Sports nutrition for swimmers
+- Sports psychology
+- Injury prevention
+- Performance analysis
+- Hydrodynamics and biomechanics
+- Competition and race strategies
+- Recovery and rest
 
-Instrucciones:
-1. Responde siempre en español
-2. Sé preciso, técnico pero accesible
-3. Proporciona consejos prácticos y aplicables
-4. Si no estás seguro de algo, dilo claramente
-5. Adapta tu respuesta al nivel del nadador si es evidente
-6. Incluye detalles técnicos cuando sea relevante
-7. Sugiere ejercicios específicos cuando sea apropiado
-8. Considera aspectos de seguridad en el agua
+Instructions:
+1. Always respond in English
+2. Be precise, technical but accessible
+3. Provide practical and applicable advice
+4. If you're not sure about something, say so clearly
+5. Adapt your response to the swimmer's level if evident
+6. Include technical details when relevant
+7. Suggest specific exercises when appropriate
+8. Consider water safety aspects
 
-Responde de manera conversacional pero profesional, como si fueras un entrenador experimentado hablando con su atleta.`;
+Respond in a conversational but professional manner, as if you were an experienced coach talking to your athlete.`;
 
     const response = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
@@ -76,7 +76,7 @@ Responde de manera conversacional pero profesional, como si fueras un entrenador
     const aiResponse = response.choices[0]?.message?.content;
 
     if (!aiResponse) {
-      throw new Error('No se recibió respuesta de OpenAI');
+      throw new Error('No response received from OpenAI');
     }
 
     return NextResponse.json({
@@ -84,12 +84,12 @@ Responde de manera conversacional pero profesional, como si fueras un entrenador
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('Error en AI Chat API:', error);
+    console.error('Error in AI Chat API:', error);
     
     return NextResponse.json(
       { 
-        error: 'Error interno del servidor',
-        details: error instanceof Error ? error.message : 'Error desconocido'
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );

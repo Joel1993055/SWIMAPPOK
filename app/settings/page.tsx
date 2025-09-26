@@ -49,13 +49,13 @@ import {
     User,
 } from 'lucide-react';
 import React, { useState } from 'react';
-// NUEVO: Importar el store unificado
+// NEW: Import unified store
 
 function SettingsContent() {
-  // Obtener tab de la URL si existe - Solo en el cliente
+  // Get tab from URL if it exists - Only on client
   const [activeTab, setActiveTab] = useState('profile');
   
-  // Usar useEffect para acceder a window solo en el cliente
+  // Use useEffect to access window only on client
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
       const searchParams = new URLSearchParams(window.location.search);
@@ -74,7 +74,7 @@ function SettingsContent() {
     reminders: true,
   });
 
-  // MANTENER: Context existente
+  // MAINTAIN: Existing context
   const {
     selectedMethodology,
     zones: currentZones,
@@ -83,30 +83,30 @@ function SettingsContent() {
     updateZones,
   } = useTrainingStore();
 
-  // NUEVO: Store de clubes
+  // NEW: Clubs store
   const { clubs, teams, addClub, addTeam, deleteClub, deleteTeam } = useClubsStore();
 
-  // OPTIMIZADO: Solo usar lo necesario del store
+  // OPTIMIZED: Only use what's needed from the store
   const { phases: storePhases } = useTrainingStore();
 
-  // NUEVO: Sincronizar datos del context al store
+  // NEW: Sync context data to store
   React.useEffect(() => {
     if (storePhases.length === 0) {
-      // Si el store está vacío, no hacer nada por ahora
-      // La sincronización se maneja en el componente padre
+      // If store is empty, do nothing for now
+      // Synchronization is handled in the parent component
     }
   }, [storePhases]);
 
   const [trainingZones, setTrainingZones] = useState(currentZones);
 
   const tabs = [
-    { id: 'profile', label: 'Perfil', icon: User },
-    { id: 'notifications', label: 'Notificaciones', icon: Bell },
-    { id: 'privacy', label: 'Privacidad', icon: Shield },
-    { id: 'appearance', label: 'Apariencia', icon: Palette },
-    { id: 'training', label: 'Entrenamiento', icon: Activity },
-    { id: 'clubes', label: 'Clubes y Equipos', icon: Building2 },
-    { id: 'account', label: 'Cuenta', icon: Lock },
+    { id: 'profile', label: 'Profile', icon: User },
+    { id: 'notifications', label: 'Notifications', icon: Bell },
+    { id: 'privacy', label: 'Privacy', icon: Shield },
+    { id: 'appearance', label: 'Appearance', icon: Palette },
+    { id: 'training', label: 'Training', icon: Activity },
+    { id: 'clubes', label: 'Clubs and Teams', icon: Building2 },
+    { id: 'account', label: 'Account', icon: Lock },
   ];
 
   const handleNotificationChange = (key: string, value: boolean) => {
@@ -143,10 +143,10 @@ function SettingsContent() {
           <div className='p-2 bg-primary/10 rounded-lg'>
             <SettingsIcon className='h-6 w-6 text-primary' />
           </div>
-          <h1 className='text-3xl font-bold text-foreground'>Configuración</h1>
+          <h1 className='text-3xl font-bold text-foreground'>Settings</h1>
         </div>
         <p className='text-muted-foreground'>
-          Gestiona tu cuenta, preferencias y configuraciones de la aplicación
+          Manage your account, preferences and application settings
         </p>
       </div>
 
@@ -187,10 +187,10 @@ function SettingsContent() {
                 <CardHeader>
                   <CardTitle className='flex items-center gap-2'>
                     <User className='h-5 w-5' />
-                    Información Personal
+                    Personal Information
                   </CardTitle>
                   <CardDescription>
-                    Actualiza tu información personal y foto de perfil
+                    Update your personal information and profile picture
                   </CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-6'>
@@ -203,10 +203,10 @@ function SettingsContent() {
                     <div className='space-y-2'>
                       <Button variant='outline' size='sm' className='gap-2'>
                         <Upload className='h-4 w-4' />
-                        Cambiar foto
+                        Change photo
                       </Button>
                       <p className='text-xs text-muted-foreground'>
-                        JPG, PNG o GIF. Máximo 2MB
+                        JPG, PNG or GIF. Maximum 2MB
                       </p>
                     </div>
                   </div>
@@ -216,11 +216,11 @@ function SettingsContent() {
                   {/* Personal Information */}
                   <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                     <div className='space-y-2'>
-                      <Label htmlFor='firstName'>Nombre</Label>
+                      <Label htmlFor='firstName'>First Name</Label>
                       <Input id='firstName' defaultValue='Joel' />
                     </div>
                     <div className='space-y-2'>
-                      <Label htmlFor='lastName'>Apellido</Label>
+                      <Label htmlFor='lastName'>Last Name</Label>
                       <Input id='lastName' defaultValue='Díaz' />
                     </div>
                     <div className='space-y-2'>
@@ -232,7 +232,7 @@ function SettingsContent() {
                       />
                     </div>
                     <div className='space-y-2'>
-                      <Label htmlFor='phone'>Teléfono</Label>
+                      <Label htmlFor='phone'>Phone</Label>
                       <Input
                         id='phone'
                         type='tel'
@@ -242,11 +242,11 @@ function SettingsContent() {
                   </div>
 
                   <div className='space-y-2'>
-                    <Label htmlFor='bio'>Biografía</Label>
+                    <Label htmlFor='bio'>Biography</Label>
                     <Textarea
                       id='bio'
-                      placeholder='Cuéntanos sobre ti...'
-                      defaultValue='Nadador profesional con más de 10 años de experiencia. Especializado en estilo libre y mariposa.'
+                      placeholder='Tell us about yourself...'
+                      defaultValue='Professional swimmer with over 10 years of experience. Specialized in freestyle and butterfly.'
                       className='min-h-[100px]'
                     />
                   </div>
@@ -254,7 +254,7 @@ function SettingsContent() {
                   <div className='flex justify-end'>
                     <Button className='gap-2'>
                       <Save className='h-4 w-4' />
-                      Guardar cambios
+                      Save changes
                     </Button>
                   </div>
                 </CardContent>
@@ -269,26 +269,26 @@ function SettingsContent() {
                 <CardHeader>
                   <CardTitle className='flex items-center gap-2'>
                     <Bell className='h-5 w-5' />
-                    Preferencias de Notificaciones
+                    Notification Preferences
                   </CardTitle>
                   <CardDescription>
-                    Configura cómo y cuándo recibir notificaciones
+                    Configure how and when to receive notifications
                   </CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-6'>
                   {/* Communication Channels */}
                   <div className='space-y-4'>
                     <h4 className='font-medium text-foreground'>
-                      Canales de Comunicación
+                      Communication Channels
                     </h4>
                     <div className='space-y-3'>
                       <div className='flex items-center justify-between'>
                         <div className='space-y-0.5'>
                           <Label htmlFor='email-notifications'>
-                            Notificaciones por email
+                            Email notifications
                           </Label>
                           <p className='text-sm text-muted-foreground'>
-                            Recibe actualizaciones importantes por correo
+                            Receive important updates by email
                           </p>
                         </div>
                         <Switch
@@ -302,10 +302,10 @@ function SettingsContent() {
                       <div className='flex items-center justify-between'>
                         <div className='space-y-0.5'>
                           <Label htmlFor='push-notifications'>
-                            Notificaciones push
+                            Push notifications
                           </Label>
                           <p className='text-sm text-muted-foreground'>
-                            Recibe notificaciones en tiempo real
+                            Receive real-time notifications
                           </p>
                         </div>
                         <Switch
@@ -319,10 +319,10 @@ function SettingsContent() {
                       <div className='flex items-center justify-between'>
                         <div className='space-y-0.5'>
                           <Label htmlFor='sms-notifications'>
-                            Notificaciones SMS
+                            SMS notifications
                           </Label>
                           <p className='text-sm text-muted-foreground'>
-                            Recibe recordatorios importantes por SMS
+                            Receive important reminders by SMS
                           </p>
                         </div>
                         <Switch
@@ -341,12 +341,12 @@ function SettingsContent() {
                   {/* Activity Notifications */}
                   <div className='space-y-4'>
                     <h4 className='font-medium text-foreground'>
-                      Actividad y Logros
+                      Activity and Achievements
                     </h4>
                     <div className='space-y-3'>
                       <div className='flex items-center justify-between'>
                         <div className='space-y-0.5'>
-                          <Label htmlFor='achievements'>Logros y récords</Label>
+                          <Label htmlFor='achievements'>Achievements and records</Label>
                           <p className='text-sm text-muted-foreground'>
                             Notificaciones cuando alcances nuevos logros
                           </p>
@@ -362,7 +362,7 @@ function SettingsContent() {
                       <div className='flex items-center justify-between'>
                         <div className='space-y-0.5'>
                           <Label htmlFor='reminders'>
-                            Recordatorios de entrenamiento
+                            Training reminders
                           </Label>
                           <p className='text-sm text-muted-foreground'>
                             Recuerdos para tus sesiones programadas
@@ -407,10 +407,10 @@ function SettingsContent() {
                       <div className='flex items-center justify-between'>
                         <div className='space-y-0.5'>
                           <Label htmlFor='monthly-reports'>
-                            Reportes mensuales
+                            Monthly reports
                           </Label>
                           <p className='text-sm text-muted-foreground'>
-                            Análisis detallado de tu progreso mensual
+                            Detailed analysis of your monthly progress
                           </p>
                         </div>
                         <Switch
@@ -460,7 +460,7 @@ function SettingsContent() {
                           Compartir actividad
                         </Label>
                         <p className='text-sm text-muted-foreground'>
-                          Comparte tus entrenamientos con la comunidad
+                          Share your workouts with the community
                         </p>
                       </div>
                       <Switch id='activity-sharing' defaultChecked />
@@ -468,10 +468,10 @@ function SettingsContent() {
                     <div className='flex items-center justify-between'>
                       <div className='space-y-0.5'>
                         <Label htmlFor='data-analytics'>
-                          Análisis de datos
+                          Data analysis
                         </Label>
                         <p className='text-sm text-muted-foreground'>
-                          Permite el uso de tus datos para mejorar la app
+                          Allow use of your data to improve the app
                         </p>
                       </div>
                       <Switch id='data-analytics' defaultChecked />
@@ -482,7 +482,7 @@ function SettingsContent() {
 
                   <div className='space-y-4'>
                     <h4 className='font-medium text-foreground'>
-                      Datos Personales
+                      Personal Data
                     </h4>
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                       <Button variant='outline' className='gap-2'>

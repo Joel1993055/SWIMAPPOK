@@ -1,15 +1,15 @@
 -- =====================================================
--- ESQUEMA FINAL DE CLUBES Y EQUIPOS
+-- FINAL CLUBS AND TEAMS SCHEMA
 -- =====================================================
 
 -- =====================================================
--- TABLA DE CLUBES
+-- CLUBS TABLE
 -- =====================================================
 CREATE TABLE IF NOT EXISTS clubs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(255) NOT NULL,
     description TEXT,
-    location VARCHAR(255) NOT NULL DEFAULT 'Sin ubicación',
+    location VARCHAR(255) NOT NULL DEFAULT 'No location',
     address TEXT,
     phone VARCHAR(50),
     email VARCHAR(255),
@@ -27,14 +27,14 @@ CREATE TABLE IF NOT EXISTS clubs (
 );
 
 -- =====================================================
--- TABLA DE EQUIPOS
+-- TEAMS TABLE
 -- =====================================================
 CREATE TABLE IF NOT EXISTS teams (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     club_id UUID NOT NULL REFERENCES clubs(id) ON DELETE CASCADE,
     name VARCHAR(255) NOT NULL,
     description TEXT,
-    level VARCHAR(50) NOT NULL DEFAULT 'Mixto',
+    level VARCHAR(50) NOT NULL DEFAULT 'Mixed',
     age_range VARCHAR(50),
     max_members INTEGER DEFAULT 20,
     coach_name VARCHAR(255),
@@ -49,54 +49,54 @@ CREATE TABLE IF NOT EXISTS teams (
     
     -- Constraints
     CONSTRAINT teams_name_not_empty CHECK (LENGTH(TRIM(name)) > 0),
-    CONSTRAINT teams_level_valid CHECK (level IN ('Principiante', 'Intermedio', 'Avanzado', 'Elite', 'Mixto')),
+    CONSTRAINT teams_level_valid CHECK (level IN ('Beginner', 'Intermediate', 'Advanced', 'Elite', 'Mixed')),
     CONSTRAINT teams_max_members_positive CHECK (max_members > 0),
     CONSTRAINT teams_coach_email_valid CHECK (coach_email IS NULL OR coach_email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$')
 );
 
 -- =====================================================
--- TABLA DE MIEMBROS DE EQUIPOS
+-- TEAM MEMBERS TABLE
 -- =====================================================
 CREATE TABLE IF NOT EXISTS team_members (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     team_id UUID NOT NULL REFERENCES teams(id) ON DELETE CASCADE,
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-    role VARCHAR(50) NOT NULL DEFAULT 'Miembro',
-    level VARCHAR(50) NOT NULL DEFAULT 'Intermedio',
+    role VARCHAR(50) NOT NULL DEFAULT 'Member',
+    level VARCHAR(50) NOT NULL DEFAULT 'Intermediate',
     join_date DATE DEFAULT CURRENT_DATE,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     
     -- Constraints
-    CONSTRAINT team_members_role_valid CHECK (role IN ('Capitán', 'Vice-Capitán', 'Miembro', 'Entrenador')),
-    CONSTRAINT team_members_level_valid CHECK (level IN ('Principiante', 'Intermedio', 'Avanzado', 'Elite')),
+    CONSTRAINT team_members_role_valid CHECK (role IN ('Captain', 'Vice-Captain', 'Member', 'Coach')),
+    CONSTRAINT team_members_level_valid CHECK (level IN ('Beginner', 'Intermediate', 'Advanced', 'Elite')),
     CONSTRAINT team_members_unique_user_team UNIQUE (team_id, user_id)
 );
 
 -- =====================================================
--- ÍNDICES PARA RENDIMIENTO
+-- INDEXES FOR PERFORMANCE
 -- =====================================================
 
--- Índices para clubs
+-- Indexes for clubs
 CREATE INDEX IF NOT EXISTS idx_clubs_created_by ON clubs(created_by);
 CREATE INDEX IF NOT EXISTS idx_clubs_is_active ON clubs(is_active);
 
--- Índices para teams
+-- Indexes for teams
 CREATE INDEX IF NOT EXISTS idx_teams_club_id ON teams(club_id);
 CREATE INDEX IF NOT EXISTS idx_teams_created_by ON teams(created_by);
 CREATE INDEX IF NOT EXISTS idx_teams_is_active ON teams(is_active);
 
--- Índices para team_members
+-- Indexes for team_members
 CREATE INDEX IF NOT EXISTS idx_team_members_team_id ON team_members(team_id);
 CREATE INDEX IF NOT EXISTS idx_team_members_user_id ON team_members(user_id);
 CREATE INDEX IF NOT EXISTS idx_team_members_is_active ON team_members(is_active);
 
 -- =====================================================
--- TRIGGERS PARA UPDATED_AT
+-- TRIGGERS FOR UPDATED_AT
 -- =====================================================
 
--- Trigger para clubs
+-- Trigger for clubs
 CREATE OR REPLACE FUNCTION update_clubs_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -110,7 +110,7 @@ CREATE TRIGGER trigger_update_clubs_updated_at
     FOR EACH ROW
     EXECUTE FUNCTION update_clubs_updated_at();
 
--- Trigger para teams
+-- Trigger for teams
 CREATE OR REPLACE FUNCTION update_teams_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -124,7 +124,7 @@ CREATE TRIGGER trigger_update_teams_updated_at
     FOR EACH ROW
     EXECUTE FUNCTION update_teams_updated_at();
 
--- Trigger para team_members
+-- Trigger for team_members
 CREATE OR REPLACE FUNCTION update_team_members_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -142,12 +142,12 @@ CREATE TRIGGER trigger_update_team_members_updated_at
 -- RLS (ROW LEVEL SECURITY) POLICIES
 -- =====================================================
 
--- Habilitar RLS
+-- Enable RLS
 ALTER TABLE clubs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE teams ENABLE ROW LEVEL SECURITY;
 ALTER TABLE team_members ENABLE ROW LEVEL SECURITY;
 
--- Políticas simplificadas para clubs
+-- Simplified policies for clubs
 CREATE POLICY "Users can view all active clubs" ON clubs
     FOR SELECT USING (is_active = true);
 
@@ -160,7 +160,7 @@ CREATE POLICY "Club creators can update their clubs" ON clubs
 CREATE POLICY "Club creators can delete their clubs" ON clubs
     FOR DELETE USING (created_by = auth.uid());
 
--- Políticas simplificadas para teams
+-- Simplified policies for teams
 CREATE POLICY "Users can view all active teams" ON teams
     FOR SELECT USING (is_active = true);
 
@@ -173,7 +173,7 @@ CREATE POLICY "Team creators can update their teams" ON teams
 CREATE POLICY "Team creators can delete their teams" ON teams
     FOR DELETE USING (created_by = auth.uid());
 
--- Políticas simplificadas para team_members
+-- Simplified policies for team_members
 CREATE POLICY "Users can view all active team members" ON team_members
     FOR SELECT USING (is_active = true);
 
@@ -181,10 +181,10 @@ CREATE POLICY "Authenticated users can manage team members" ON team_members
     FOR ALL USING (auth.uid() IS NOT NULL);
 
 -- =====================================================
--- VISTAS ÚTILES
+-- USEFUL VIEWS
 -- =====================================================
 
--- Vista para clubes con información de equipos
+-- View for clubs with team information
 CREATE OR REPLACE VIEW clubs_with_teams AS
 SELECT 
     c.*,
@@ -196,7 +196,7 @@ LEFT JOIN team_members tm ON t.id = tm.team_id AND tm.is_active = true
 WHERE c.is_active = true
 GROUP BY c.id;
 
--- Vista para equipos con información del club
+-- View for teams with club information
 CREATE OR REPLACE VIEW teams_with_club AS
 SELECT 
     t.*,
