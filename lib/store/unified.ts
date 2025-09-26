@@ -336,7 +336,86 @@ const zoneMethodologies = {
 export const useTrainingStore = create<TrainingStore>()(
   persist(
     (set, get) => ({
-      // default phases and zones initialization here …
+      phases: [],
+      zones: {
+        Z1: { min: 0, max: 0.6, name: 'Recovery', color: 'bg-green-500' },
+        Z2: { min: 0.6, max: 0.7, name: 'Aerobic Base', color: 'bg-blue-500' },
+        Z3: { min: 0.7, max: 0.8, name: 'Aerobic Threshold', color: 'bg-yellow-500' },
+        Z4: { min: 0.8, max: 0.9, name: 'VO2 Max', color: 'bg-orange-500' },
+        Z5: { min: 0.9, max: 1.0, name: 'Neuromuscular', color: 'bg-red-500' },
+      },
+      selectedMethodology: 'standard',
+      methodologies: zoneMethodologies,
+      isLoading: false,
+      error: null,
+
+      setPhases: phases => set({ phases, error: null }),
+      addPhase: phase => {
+        set(state => ({
+          phases: [...state.phases, phase],
+          error: null,
+        }));
+      },
+      updatePhase: (id, updates) => {
+        set(state => ({
+          phases: state.phases.map(phase =>
+            phase.id === id ? { ...phase, ...updates } : phase
+          ),
+          error: null,
+        }));
+      },
+      deletePhase: id => {
+        set(state => ({
+          phases: state.phases.filter(phase => phase.id !== id),
+          error: null,
+        }));
+      },
+      setZones: zones => set({ zones, error: null }),
+      setMethodology: methodology => set({ selectedMethodology: methodology }),
+      updateZones: zoneUpdates => {
+        set(state => ({
+          zones: { ...state.zones, ...zoneUpdates },
+          error: null,
+        }));
+      },
+      setLoading: isLoading => set({ isLoading }),
+      setError: error => set({ error }),
+
+      getCurrentPhase: () => {
+        const { phases } = get();
+        const now = new Date().toISOString().split('T')[0];
+        
+        // Find the current active phase
+        const currentPhase = phases.find(phase => 
+          phase.startDate <= now && 
+          phase.endDate >= now && 
+          phase.isActive
+        );
+
+        if (currentPhase) return currentPhase;
+
+        // If no active phase, return the most recent phase
+        return phases
+          .filter(phase => phase.endDate <= now)
+          .sort((a, b) => b.endDate.localeCompare(a.endDate))[0] || null;
+      },
+      getPhaseById: id => {
+        const { phases } = get();
+        return phases.find(phase => phase.id === id) || null;
+      },
+      getPhaseProgress: () => {
+        const currentPhase = get().getCurrentPhase();
+        if (!currentPhase) return 0;
+
+        const now = new Date();
+        const startDate = new Date(currentPhase.startDate);
+        const endDate = new Date(currentPhase.endDate);
+        
+        const totalDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+        const daysPassed = Math.ceil((now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+        
+        return Math.min(Math.max((daysPassed / totalDays) * 100, 0), 100);
+      },
     }),
     {
       name: 'training-storage',
