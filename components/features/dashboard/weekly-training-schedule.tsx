@@ -41,7 +41,7 @@ export function WeeklyTrainingSchedule({
 }: WeeklyTrainingScheduleProps) {
   const [sessions, setSessions] = useState<Session[]>([]);
 
-  const startWeek = startOfWeek(weekStart, { weekStartsOn: 1 }); // Lunes
+  const startWeek = startOfWeek(weekStart, { weekStartsOn: 1 }); // Monday
   const days = Array.from({ length: 7 }, (_, i) => addDays(startWeek, i));
 
   const dayNames = [
@@ -289,10 +289,10 @@ export function WeeklyTrainingSchedule({
       <CardContent>
         {/* Vista Desktop/Tablet - Grid 2x7 */}
         <div className='hidden lg:block'>
-          {/* Headers de días */}
+          {/* Day headers */}
           <div className='grid grid-cols-8 gap-3 mb-4'>
             <div className='text-center text-sm font-medium text-muted-foreground py-3'>
-              {/* Espacio vacío para alinear con las filas */}
+              {/* Empty space to align with rows */}
             </div>
             {dayNames.map((dayName, index) => {
               const day = days[index];
@@ -446,7 +446,7 @@ export function WeeklyTrainingSchedule({
           </div>
         </div>
 
-        {/* Vista Móvil - Lista vertical */}
+        {/* Mobile View - Vertical list */}
         <div className='lg:hidden space-y-4'>
           {days.map((day, index) => {
             const dayName = dayNames[index];

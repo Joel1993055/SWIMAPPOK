@@ -1,10 +1,10 @@
 'use client';
 
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
 } from '@/components/ui/select';
 import { Building2, Check, ChevronDown, Users } from 'lucide-react';
 import * as React from 'react';

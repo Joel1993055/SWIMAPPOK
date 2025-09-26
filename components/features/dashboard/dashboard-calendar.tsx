@@ -305,7 +305,7 @@ export function DashboardCalendar() {
           </div>
         </CardHeader>
         <CardContent className='flex flex-1 flex-col'>
-          {/* Días de la semana */}
+          {/* Days of the week */}
           <div className='mb-3 grid grid-cols-7 gap-2'>
             {weekDays.map(day => (
               <div

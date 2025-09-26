@@ -78,25 +78,25 @@ export function KPICards() {
         return {
           distance: periodDistanceKm.toFixed(1),
           label: 'Total accumulated this year',
-          subtitle: `${periodDistance.toLocaleString()} metros`,
+          subtitle: `${periodDistance.toLocaleString()} meters`,
         };
       case 'month':
         return {
           distance: periodDistanceKm.toFixed(1),
           label: 'Total this month',
-          subtitle: `${periodDistance.toLocaleString()} metros`,
+          subtitle: `${periodDistance.toLocaleString()} meters`,
         };
       case 'week':
         return {
           distance: periodDistanceKm.toFixed(1),
           label: 'Total this week',
-          subtitle: `${periodDistance.toLocaleString()} metros`,
+          subtitle: `${periodDistance.toLocaleString()} meters`,
         };
       default:
         return {
           distance: periodDistanceKm.toFixed(1),
           label: 'Total accumulated',
-          subtitle: `${periodDistance.toLocaleString()} metros`,
+          subtitle: `${periodDistance.toLocaleString()} meters`,
         };
     }
   };
@@ -132,7 +132,7 @@ export function KPICards() {
         return {
           total: periodSessionsCount,
           label: 'Total accumulated this year',
-          subtitle: 'Sesiones registradas',
+          subtitle: 'Registered sessions',
         };
       case 'month':
         return {
@@ -150,7 +150,7 @@ export function KPICards() {
         return {
           total: periodSessionsCount,
           label: 'Total accumulated',
-          subtitle: 'Sesiones registradas',
+          subtitle: 'Registered sessions',
         };
     }
   };
@@ -159,9 +159,9 @@ export function KPICards() {
   const getTrainingCycleStatus = () => {
     if (!isHydrated) {
       return {
-        phase: 'Cargando...',
+        phase: 'Loading...',
         progress: 0,
-        description: 'Calculando progreso',
+        description: 'Calculating progress',
         additionalInfo: '',
         color: 'bg-gray-500',
         status: 'inactive',
@@ -214,7 +214,7 @@ export function KPICards() {
       ? Math.min(Math.max((daysPassed / totalPhaseDays) * 100, 0), 100)
       : status === 'completed' ? 100 : 0;
 
-    // Generar descripción basada en el estado
+    // Generate description based on status
     let description = currentPhase.description;
     let additionalInfo = '';
     
@@ -241,7 +241,7 @@ export function KPICards() {
     };
   };
 
-  // Calcular días hasta la próxima competición
+  // Calculate days until next competition
   const getDaysToChampionship = () => {
     if (!isHydrated || !competitions || competitions.length === 0) {
       return {
@@ -403,7 +403,7 @@ export function KPICards() {
         </CardHeader>
         <CardContent>
           <div className='text-2xl font-bold'>
-            {championshipData.days === 0 ? 'Sin eventos' : `${championshipData.days} días`}
+            {championshipData.days === 0 ? 'No events' : `${championshipData.days} days`}
           </div>
           <p className='text-xs text-muted-foreground'>
             {championshipData.event}

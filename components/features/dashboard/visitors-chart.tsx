@@ -55,9 +55,9 @@ const zoneLabels = {
 const generateWeeklyData = (sessions: any[]) => {
   const today = new Date();
   const startOfWeek = new Date(today);
-  // Calcular el lunes de la semana actual
-  const dayOfWeek = today.getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
-  const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Si es domingo, retroceder 6 días; si no, retroceder (día - 1)
+  // Calculate Monday of current week
+  const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // If Sunday, go back 6 days; if not, go back (day - 1)
   startOfWeek.setDate(today.getDate() - daysToMonday);
   startOfWeek.setHours(0, 0, 0, 0);
 
@@ -149,15 +149,15 @@ export function VisitorsChart() {
 
   // Debug para verificar conexión (solo en desarrollo)
   if (process.env.NODE_ENV === 'development') {
-    console.log("=== DEBUG PROGRESO SEMANAL ===");
-    console.log("Número de sesiones:", sessions.length);
+    console.log("=== DEBUG WEEKLY PROGRESS ===");
+    console.log("Number of sessions:", sessions.length);
     
-    // Verificar que las sesiones tienen zone_volumes
+    // Verify that sessions have zone_volumes
     const sessionsWithZones = sessions.filter(session => session.zone_volumes);
-    console.log("Sesiones con zonas:", sessionsWithZones.length);
+    console.log("Sessions with zones:", sessionsWithZones.length);
     
     if (sessionsWithZones.length > 0) {
-      console.log("Primera sesión con zonas:", {
+      console.log("First session with zones:", {
         title: sessionsWithZones[0].title,
         date: sessionsWithZones[0].date,
         zone_volumes: sessionsWithZones[0].zone_volumes
