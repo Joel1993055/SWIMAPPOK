@@ -39,9 +39,31 @@ export const updateSession = async (request: NextRequest) => {
     // https://supabase.com/docs/guides/auth/server-side/nextjs
     const user = await supabase.auth.getUser();
 
-    // protected routes
-    if (request.nextUrl.pathname.startsWith('/protected') && user.error) {
-      return NextResponse.redirect(new URL('/sign-in', request.url));
+    // protected routes - protect all dashboard and app routes
+    const protectedPaths = [
+      '/dashboard',
+      '/protected',
+      '/admin',
+      '/settings',
+      '/profile',
+      '/training',
+      '/calendar',
+      '/reports',
+      '/planning',
+      '/clubs',
+      '/tools',
+      '/log',
+      '/ai-coach',
+      '/analysis',
+      '/notifications'
+    ];
+    
+    const isProtectedRoute = protectedPaths.some(path => 
+      request.nextUrl.pathname.startsWith(path)
+    );
+    
+    if (isProtectedRoute && user.error) {
+      return NextResponse.redirect(new URL('/auth/signin', request.url));
     }
 
     if (request.nextUrl.pathname === '/' && !user.error) {

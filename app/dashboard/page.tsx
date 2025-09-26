@@ -2,8 +2,16 @@ import { DashboardOverview } from '@/components/features/dashboard/dashboard-ove
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { SiteHeader } from '@/components/layout/site-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { createClient } from '@/utils/supabase/server';
+import { redirect } from 'next/navigation';
 
-export default function Page() {
+export default async function Page() {
+  const supabase = await createClient();
+  const { data: { user }, error } = await supabase.auth.getUser();
+
+  if (error || !user) {
+    redirect('/auth/signin');
+  }
   return (
     <SidebarProvider>
       <AppSidebar variant='inset' />
