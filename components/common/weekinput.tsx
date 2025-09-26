@@ -1,6 +1,5 @@
 'use client';
 
-import * as React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import * as React from 'react';
 
 export default function WeekInput() {
   const [week, setWeek] = React.useState('1');
@@ -20,49 +20,49 @@ export default function WeekInput() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>🏃‍♂️ Plan de Kilómetros</CardTitle>
+        <CardTitle>🏃‍♂️ Kilometers Plan</CardTitle>
       </CardHeader>
       <CardContent className='space-y-4'>
-        {/* Selección de Semana */}
+        {/* Week Selection */}
         <div className='space-y-2'>
-          <Label htmlFor='week'>Selecciona la semana</Label>
+          <Label htmlFor='week'>Select week</Label>
           <Select value={week} onValueChange={setWeek}>
             <SelectTrigger className='w-full'>
-              <SelectValue placeholder='Semana' />
+              <SelectValue placeholder='Week' />
             </SelectTrigger>
             <SelectContent>
               {Array.from({ length: 52 }, (_, i) => (
                 <SelectItem key={i + 1} value={(i + 1).toString()}>
-                  Semana {i + 1}
+                  Week {i + 1}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
 
-        {/* Tipo de Entrenamiento */}
+        {/* Training Type */}
         <div className='space-y-2'>
-          <Label htmlFor='trainingType'>Tipo de entrenamiento</Label>
+          <Label htmlFor='trainingType'>Training type</Label>
           <Select value={trainingType} onValueChange={setTrainingType}>
             <SelectTrigger className='w-full'>
-              <SelectValue placeholder='Selecciona el tipo' />
+              <SelectValue placeholder='Select type' />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value='general'>General</SelectItem>
-              <SelectItem value='especifico'>Específico</SelectItem>
-              <SelectItem value='competitivo'>Competitivo</SelectItem>
+              <SelectItem value='specific'>Specific</SelectItem>
+              <SelectItem value='competitive'>Competitive</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        {/* Entrada de Kilómetros */}
+        {/* Kilometers Input */}
         <div className='space-y-2'>
-          <Label htmlFor='kilometers'>Kilómetros</Label>
+          <Label htmlFor='kilometers'>Kilometers</Label>
           <Input
             id='kilometers'
             type='number'
             min='0'
-            placeholder='Introduce los kilómetros'
+            placeholder='Enter kilometers'
             value={kilometers}
             onChange={e => setKilometers(e.target.value)}
           />

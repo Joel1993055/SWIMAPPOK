@@ -1,15 +1,15 @@
 // =====================================================
-// TIPOS DE ENTRENAMIENTO
+// TRAINING TYPES
 // =====================================================
 
 export interface TrainingPhase {
   id: string;
   name: string;
-  duration: number; // en semanas
+  duration: number; // in weeks
   description: string;
   focus: string[];
   intensity: number; // 1-10
-  volume: number; // metros por semana
+  volume: number; // meters per week
   color: string;
   startDate?: string;
   endDate?: string;

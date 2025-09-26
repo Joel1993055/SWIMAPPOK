@@ -6,20 +6,20 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
@@ -29,33 +29,29 @@ import { useClubsStore } from '@/lib/store/clubs-store';
 import { useTrainingStore } from '@/lib/store/unified';
 import { TrainingZones } from '@/lib/types/training';
 import {
-    Activity,
-    Bell,
-    Building2,
-    Download,
-    Eye,
-    EyeOff,
-    Globe,
-    Lock,
-    Palette,
-    Plus,
-    RotateCcw,
-    Save,
-    Settings as SettingsIcon,
-    Shield,
-    Smartphone,
-    Trash2,
-    Upload,
-    User,
+  Activity,
+  Bell,
+  Building2,
+  Download,
+  Eye,
+  EyeOff,
+  Globe,
+  Lock,
+  Palette,
+  Plus,
+  RotateCcw,
+  Save,
+  Settings as SettingsIcon,
+  Shield,
+  Smartphone,
+  Trash2,
+  Upload,
+  User,
 } from 'lucide-react';
 import React, { useState } from 'react';
-// NEW: Import unified store
 
 function SettingsContent() {
-  // Get tab from URL if it exists - Only on client
   const [activeTab, setActiveTab] = useState('profile');
-  
-  // Use useEffect to access window only on client
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
       const searchParams = new URLSearchParams(window.location.search);
@@ -74,7 +70,6 @@ function SettingsContent() {
     reminders: true,
   });
 
-  // MAINTAIN: Existing context
   const {
     selectedMethodology,
     zones: currentZones,
@@ -83,17 +78,12 @@ function SettingsContent() {
     updateZones,
   } = useTrainingStore();
 
-  // NEW: Clubs store
-  const { clubs, teams, addClub, addTeam, deleteClub, deleteTeam } = useClubsStore();
-
-  // OPTIMIZED: Only use what's needed from the store
+  const { clubs, teams } = useClubsStore();
   const { phases: storePhases } = useTrainingStore();
 
-  // NEW: Sync context data to store
   React.useEffect(() => {
     if (storePhases.length === 0) {
-      // If store is empty, do nothing for now
-      // Synchronization is handled in the parent component
+      // Sync handled by parent
     }
   }, [storePhases]);
 
@@ -105,7 +95,7 @@ function SettingsContent() {
     { id: 'privacy', label: 'Privacy', icon: Shield },
     { id: 'appearance', label: 'Appearance', icon: Palette },
     { id: 'training', label: 'Training', icon: Activity },
-    { id: 'clubes', label: 'Clubs and Teams', icon: Building2 },
+    { id: 'clubs', label: 'Clubs and Teams', icon: Building2 },
     { id: 'account', label: 'Account', icon: Lock },
   ];
 
@@ -213,7 +203,7 @@ function SettingsContent() {
 
                   <Separator />
 
-                  {/* Personal Information */}
+                  {/* Personal Info */}
                   <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                     <div className='space-y-2'>
                       <Label htmlFor='firstName'>First Name</Label>
@@ -221,7 +211,7 @@ function SettingsContent() {
                     </div>
                     <div className='space-y-2'>
                       <Label htmlFor='lastName'>Last Name</Label>
-                      <Input id='lastName' defaultValue='Díaz' />
+                      <Input id='lastName' defaultValue='Diaz' />
                     </div>
                     <div className='space-y-2'>
                       <Label htmlFor='email'>Email</Label>
@@ -276,12 +266,13 @@ function SettingsContent() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-6'>
-                  {/* Communication Channels */}
+                  {/* Channels */}
                   <div className='space-y-4'>
                     <h4 className='font-medium text-foreground'>
                       Communication Channels
                     </h4>
                     <div className='space-y-3'>
+                      {/* Email */}
                       <div className='flex items-center justify-between'>
                         <div className='space-y-0.5'>
                           <Label htmlFor='email-notifications'>
@@ -299,6 +290,7 @@ function SettingsContent() {
                           }
                         />
                       </div>
+                      {/* Push */}
                       <div className='flex items-center justify-between'>
                         <div className='space-y-0.5'>
                           <Label htmlFor='push-notifications'>
@@ -316,6 +308,7 @@ function SettingsContent() {
                           }
                         />
                       </div>
+                      {/* SMS */}
                       <div className='flex items-center justify-between'>
                         <div className='space-y-0.5'>
                           <Label htmlFor='sms-notifications'>
@@ -338,7 +331,7 @@ function SettingsContent() {
 
                   <Separator />
 
-                  {/* Activity Notifications */}
+                  {/* Activity */}
                   <div className='space-y-4'>
                     <h4 className='font-medium text-foreground'>
                       Activity and Achievements
@@ -346,7 +339,9 @@ function SettingsContent() {
                     <div className='space-y-3'>
                       <div className='flex items-center justify-between'>
                         <div className='space-y-0.5'>
-                          <Label htmlFor='achievements'>Achievements and records</Label>
+                          <Label htmlFor='achievements'>
+                            Achievements and records
+                          </Label>
                           <p className='text-sm text-muted-foreground'>
                             Notifications when you reach new achievements
                           </p>
@@ -361,11 +356,9 @@ function SettingsContent() {
                       </div>
                       <div className='flex items-center justify-between'>
                         <div className='space-y-0.5'>
-                          <Label htmlFor='reminders'>
-                            Training reminders
-                          </Label>
+                          <Label htmlFor='reminders'>Training reminders</Label>
                           <p className='text-sm text-muted-foreground'>
-                            Recuerdos para tus sesiones programadas
+                            Reminders for your scheduled sessions
                           </p>
                         </div>
                         <Switch
@@ -389,9 +382,7 @@ function SettingsContent() {
                     <div className='space-y-3'>
                       <div className='flex items-center justify-between'>
                         <div className='space-y-0.5'>
-                          <Label htmlFor='weekly-reports'>
-                            Weekly reports
-                          </Label>
+                          <Label htmlFor='weekly-reports'>Weekly reports</Label>
                           <p className='text-sm text-muted-foreground'>
                             Weekly activity summary
                           </p>
@@ -435,10 +426,10 @@ function SettingsContent() {
                 <CardHeader>
                   <CardTitle className='flex items-center gap-2'>
                     <Shield className='h-5 w-5' />
-                    Privacidad y Seguridad
+                    Privacy and Security
                   </CardTitle>
                   <CardDescription>
-                    Controla quién puede ver tu información y actividad
+                    Control who can see your information and activity
                   </CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-6'>
@@ -449,7 +440,7 @@ function SettingsContent() {
                           Public profile
                         </Label>
                         <p className='text-sm text-muted-foreground'>
-                          Permite que otros usuarios vean tu perfil
+                          Allow other users to view your profile
                         </p>
                       </div>
                       <Switch id='profile-visibility' defaultChecked />
@@ -481,9 +472,7 @@ function SettingsContent() {
                   <Separator />
 
                   <div className='space-y-4'>
-                    <h4 className='font-medium text-foreground'>
-                      Personal Data
-                    </h4>
+                    <h4 className='font-medium text-foreground'>Personal Data</h4>
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                       <Button variant='outline' className='gap-2'>
                         <Download className='h-4 w-4' />
@@ -510,7 +499,7 @@ function SettingsContent() {
                 <CardHeader>
                   <CardTitle className='flex items-center gap-2'>
                     <Palette className='h-5 w-5' />
-                    Apariencia
+                    Appearance
                   </CardTitle>
                   <CardDescription>
                     Customize the application appearance
@@ -519,29 +508,29 @@ function SettingsContent() {
                 <CardContent className='space-y-6'>
                   <div className='space-y-4'>
                     <div className='space-y-2'>
-                      <Label htmlFor='theme'>Tema</Label>
+                      <Label htmlFor='theme'>Theme</Label>
                       <Select defaultValue='system'>
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value='light'>Claro</SelectItem>
-                          <SelectItem value='dark'>Oscuro</SelectItem>
-                          <SelectItem value='system'>Sistema</SelectItem>
+                          <SelectItem value='light'>Light</SelectItem>
+                          <SelectItem value='dark'>Dark</SelectItem>
+                          <SelectItem value='system'>System</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div className='space-y-2'>
-                      <Label htmlFor='language'>Idioma</Label>
-                      <Select defaultValue='es'>
+                      <Label htmlFor='language'>Language</Label>
+                      <Select defaultValue='en'>
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value='es'>Spanish</SelectItem>
                           <SelectItem value='en'>English</SelectItem>
-                          <SelectItem value='fr'>Français</SelectItem>
-                          <SelectItem value='de'>Deutsch</SelectItem>
+                          <SelectItem value='fr'>French</SelectItem>
+                          <SelectItem value='de'>German</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -572,9 +561,7 @@ function SettingsContent() {
                   <Separator />
 
                   <div className='space-y-4'>
-                    <h4 className='font-medium text-foreground'>
-                      Unidades de Medida
-                    </h4>
+                    <h4 className='font-medium text-foreground'>Units</h4>
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                       <div className='space-y-2'>
                         <Label htmlFor='distance-unit'>Distance</Label>
@@ -583,22 +570,20 @@ function SettingsContent() {
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value='meters'>Metros</SelectItem>
-                            <SelectItem value='yards'>Yardas</SelectItem>
+                            <SelectItem value='meters'>Meters</SelectItem>
+                            <SelectItem value='yards'>Yards</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                       <div className='space-y-2'>
-                        <Label htmlFor='temperature-unit'>Temperatura</Label>
+                        <Label htmlFor='temperature-unit'>Temperature</Label>
                         <Select defaultValue='celsius'>
                           <SelectTrigger>
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value='celsius'>Celsius</SelectItem>
-                            <SelectItem value='fahrenheit'>
-                              Fahrenheit
-                            </SelectItem>
+                            <SelectItem value='fahrenheit'>Fahrenheit</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -619,11 +604,11 @@ function SettingsContent() {
                     Training Configuration
                   </CardTitle>
                   <CardDescription>
-                    Personaliza los nombres de las zonas de entrenamiento según
-                    tu metodología
+                    Customize training zone names according to your methodology
                   </CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-6'>
+                  {/* Zones */}
                   <div className='space-y-4'>
                     <div className='flex items-center justify-between'>
                       <div>
@@ -696,10 +681,9 @@ function SettingsContent() {
 
                   <Separator />
 
+                  {/* Preview */}
                   <div className='space-y-4'>
-                    <h4 className='font-medium text-foreground'>
-                      Preview
-                    </h4>
+                    <h4 className='font-medium text-foreground'>Preview</h4>
                     <div className='p-4 bg-muted/30 rounded-lg'>
                       <div className='space-y-2'>
                         <div className='flex items-center justify-between text-sm'>
@@ -780,42 +764,45 @@ function SettingsContent() {
             </div>
           )}
 
-          {/* Clubes Tab */}
-          {activeTab === 'clubes' && (
+          {/* Clubs Tab */}
+          {activeTab === 'clubs' && (
             <div className='space-y-6'>
-              {/* Clubes */}
+              {/* Clubs */}
               <Card className='bg-muted/50'>
                 <CardHeader>
                   <CardTitle className='flex items-center gap-2'>
                     <Building2 className='h-5 w-5' />
-                    Clubes
+                    Clubs
                   </CardTitle>
-                  <CardDescription>
-                    Gestiona los clubes de natación
-                  </CardDescription>
+                  <CardDescription>Manage swimming clubs</CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-4'>
                   <div className='flex justify-between items-center'>
-                    <h3 className='text-lg font-semibold'>Clubes Registrados</h3>
+                    <h3 className='text-lg font-semibold'>Registered Clubs</h3>
                     <Button size='sm' className='gap-2'>
                       <Plus className='h-4 w-4' />
-                      Nuevo Club
+                      New Club
                     </Button>
                   </div>
-                  
+
                   <div className='space-y-3'>
                     {clubs.length === 0 ? (
                       <div className='text-center py-8 text-muted-foreground'>
                         <Building2 className='h-12 w-12 mx-auto mb-4 opacity-50' />
-                        <p>No hay clubes registrados</p>
-                        <p className='text-sm'>Crea tu primer club para comenzar</p>
+                        <p>No clubs registered</p>
+                        <p className='text-sm'>Create your first club to start</p>
                       </div>
                     ) : (
-                      clubs.map((club) => (
-                        <div key={club.id} className='flex items-center justify-between p-3 border rounded-lg'>
+                      clubs.map(club => (
+                        <div
+                          key={club.id}
+                          className='flex items-center justify-between p-3 border rounded-lg'
+                        >
                           <div>
                             <h4 className='font-medium'>{club.name}</h4>
-                            <p className='text-sm text-muted-foreground'>{club.location}</p>
+                            <p className='text-sm text-muted-foreground'>
+                              {club.location}
+                            </p>
                           </div>
                           <Button variant='outline' size='sm'>
                             <Trash2 className='h-4 w-4' />
@@ -827,39 +814,44 @@ function SettingsContent() {
                 </CardContent>
               </Card>
 
-              {/* Equipos */}
+              {/* Teams */}
               <Card className='bg-muted/50'>
                 <CardHeader>
                   <CardTitle className='flex items-center gap-2'>
                     <User className='h-5 w-5' />
-                    Equipos
+                    Teams
                   </CardTitle>
-                  <CardDescription>
-                    Gestiona los equipos de cada club
-                  </CardDescription>
+                  <CardDescription>Manage teams for each club</CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-4'>
                   <div className='flex justify-between items-center'>
-                    <h3 className='text-lg font-semibold'>Equipos Registrados</h3>
+                    <h3 className='text-lg font-semibold'>Registered Teams</h3>
                     <Button size='sm' className='gap-2'>
                       <Plus className='h-4 w-4' />
-                      Nuevo Equipo
+                      New Team
                     </Button>
                   </div>
-                  
+
                   <div className='space-y-3'>
                     {teams.length === 0 ? (
                       <div className='text-center py-8 text-muted-foreground'>
                         <User className='h-12 w-12 mx-auto mb-4 opacity-50' />
                         <p>No teams registered</p>
-                        <p className='text-sm'>Create teams to organize swimmers</p>
+                        <p className='text-sm'>
+                          Create teams to organize swimmers
+                        </p>
                       </div>
                     ) : (
-                      teams.map((team) => (
-                        <div key={team.id} className='flex items-center justify-between p-3 border rounded-lg'>
+                      teams.map(team => (
+                        <div
+                          key={team.id}
+                          className='flex items-center justify-between p-3 border rounded-lg'
+                        >
                           <div>
                             <h4 className='font-medium'>{team.name}</h4>
-                            <p className='text-sm text-muted-foreground'>{team.category}</p>
+                            <p className='text-sm text-muted-foreground'>
+                              {team.category}
+                            </p>
                           </div>
                           <Button variant='outline' size='sm'>
                             <Trash2 className='h-4 w-4' />
@@ -880,23 +872,21 @@ function SettingsContent() {
                 <CardHeader>
                   <CardTitle className='flex items-center gap-2'>
                     <Lock className='h-5 w-5' />
-                    Seguridad de la Cuenta
+                    Account Security
                   </CardTitle>
                   <CardDescription>
-                    Gestiona la seguridad de tu cuenta y contraseña
+                    Manage your account security and password
                   </CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-6'>
                   <div className='space-y-4'>
                     <div className='space-y-2'>
-                      <Label htmlFor='current-password'>
-                        Contraseña actual
-                      </Label>
+                      <Label htmlFor='current-password'>Current password</Label>
                       <div className='relative'>
                         <Input
                           id='current-password'
                           type={showPassword ? 'text' : 'password'}
-                          placeholder='Ingresa tu contraseña actual'
+                          placeholder='Enter your current password'
                         />
                         <Button
                           type='button'
@@ -922,9 +912,7 @@ function SettingsContent() {
                       />
                     </div>
                     <div className='space-y-2'>
-                      <Label htmlFor='confirm-password'>
-                        Confirm password
-                      </Label>
+                      <Label htmlFor='confirm-password'>Confirm password</Label>
                       <Input
                         id='confirm-password'
                         type='password'

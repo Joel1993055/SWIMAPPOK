@@ -42,19 +42,20 @@ import {
   X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-// NUEVO: Importar el store unificado
 
-// Tipos de datos
+// ==============================
+// Data Types
+// ==============================
 interface TrainingPhase {
   id: string;
   name: string;
-  duration: number; // en semanas
+  duration: number; // in weeks
   description: string;
   focus: string[];
   intensity: number; // 1-10
-  volume: number; // metros por semana
+  volume: number; // meters per week
   color: string;
-  startDate?: string; // Fecha de inicio (opcional)
+  startDate?: string; // Start date (optional)
   endDate?: string; // End date (automatically calculated)
   order: number; // Phase order
   created_at?: string; // Creation date
@@ -88,131 +89,36 @@ interface Competition {
   priority: 'high' | 'medium' | 'low';
 }
 
-// Sample data is now in context
-
+// ==============================
+// Weekly example plan (sample data)
+// ==============================
 const weeklyPlan: WeeklyPlan[] = [
-  {
-    week: 1,
-    phase: 'Base',
-    totalDistance: 25000,
-    sessions: 6,
-    focus: 'Aerobic',
-    intensity: 4,
-  },
-  {
-    week: 2,
-    phase: 'Base',
-    totalDistance: 26000,
-    sessions: 6,
-    focus: 'Aerobic',
-    intensity: 4,
-  },
-  {
-    week: 3,
-    phase: 'Base',
-    totalDistance: 27000,
-    sessions: 6,
-    focus: 'Technique',
-    intensity: 4,
-  },
-  {
-    week: 4,
-    phase: 'Base',
-    totalDistance: 28000,
-    sessions: 6,
-    focus: 'Aerobic',
-    intensity: 5,
-  },
-  {
-    week: 5,
-    phase: 'Construction',
-    totalDistance: 30000,
-    sessions: 7,
-    focus: 'Threshold',
-    intensity: 6,
-  },
-  {
-    week: 6,
-    phase: 'Construction',
-    totalDistance: 31000,
-    sessions: 7,
-    focus: 'Threshold',
-    intensity: 6,
-  },
-  {
-    week: 7,
-    phase: 'Construction',
-    totalDistance: 32000,
-    sessions: 7,
-    focus: 'Aerobic',
-    intensity: 6,
-  },
-  {
-    week: 8,
-    phase: 'Construction',
-    totalDistance: 33000,
-    sessions: 7,
-    focus: 'Threshold',
-    intensity: 7,
-  },
-  {
-    week: 9,
-    phase: 'Specific',
-    totalDistance: 28000,
-    sessions: 8,
-    focus: 'VO2 Max',
-    intensity: 8,
-  },
-  {
-    week: 10,
-    phase: 'Specific',
-    totalDistance: 29000,
-    sessions: 8,
-    focus: 'Speed',
-    intensity: 8,
-  },
-  {
-    week: 11,
-    phase: 'Specific',
-    totalDistance: 30000,
-    sessions: 8,
-    focus: 'VO2 Max',
-    intensity: 8,
-  },
-  {
-    week: 12,
-    phase: 'Specific',
-    totalDistance: 31000,
-    sessions: 8,
-    focus: 'Speed',
-    intensity: 9,
-  },
-  {
-    week: 13,
-    phase: 'Peak',
-    totalDistance: 20000,
-    sessions: 6,
-    focus: 'Speed',
-    intensity: 9,
-  },
-  {
-    week: 14,
-    phase: 'Peak',
-    totalDistance: 15000,
-    sessions: 4,
-    focus: 'Recovery',
-    intensity: 5,
-  },
+  { week: 1, phase: 'Base', totalDistance: 25000, sessions: 6, focus: 'Aerobic', intensity: 4 },
+  { week: 2, phase: 'Base', totalDistance: 26000, sessions: 6, focus: 'Aerobic', intensity: 4 },
+  { week: 3, phase: 'Base', totalDistance: 27000, sessions: 6, focus: 'Technique', intensity: 4 },
+  { week: 4, phase: 'Base', totalDistance: 28000, sessions: 6, focus: 'Aerobic', intensity: 5 },
+  { week: 5, phase: 'Construction', totalDistance: 30000, sessions: 7, focus: 'Threshold', intensity: 6 },
+  { week: 6, phase: 'Construction', totalDistance: 31000, sessions: 7, focus: 'Threshold', intensity: 6 },
+  { week: 7, phase: 'Construction', totalDistance: 32000, sessions: 7, focus: 'Aerobic', intensity: 6 },
+  { week: 8, phase: 'Construction', totalDistance: 33000, sessions: 7, focus: 'Threshold', intensity: 7 },
+  { week: 9, phase: 'Specific', totalDistance: 28000, sessions: 8, focus: 'VO2 Max', intensity: 8 },
+  { week: 10, phase: 'Specific', totalDistance: 29000, sessions: 8, focus: 'Speed', intensity: 8 },
+  { week: 11, phase: 'Specific', totalDistance: 30000, sessions: 8, focus: 'VO2 Max', intensity: 8 },
+  { week: 12, phase: 'Specific', totalDistance: 31000, sessions: 8, focus: 'Speed', intensity: 9 },
+  { week: 13, phase: 'Peak', totalDistance: 20000, sessions: 6, focus: 'Speed', intensity: 9 },
+  { week: 14, phase: 'Peak', totalDistance: 15000, sessions: 4, focus: 'Recovery', intensity: 5 },
 ];
 
-// Datos hardcodeados eliminados - ahora se usan solo del store
+// ==============================
+// Safe helpers for arrays
+// ==============================
+const safeArray = (arr: any): any[] => (Array.isArray(arr) ? arr : []);
+const safeMap = <T,>(arr: any, callback: (item: T, index: number) => React.ReactNode): React.ReactNode =>
+  Array.isArray(arr) ? arr.map(callback) : null;
 
-// Helper functions para manejo seguro de arrays
-const safeArray = (arr: any): any[] => Array.isArray(arr) ? arr : [];
-const safeMap = <T,>(arr: any, callback: (item: T, index: number) => React.ReactNode): React.ReactNode => {
-  return Array.isArray(arr) ? arr.map(callback) : null;
-};
-
+// ==============================
+// Main component (kept same name to avoid breaking imports)
+// ==============================
 export function PlanificacionOverview() {
   const {
     zones: currentZones,
@@ -228,17 +134,12 @@ export function PlanificacionOverview() {
     deleteCompetition,
   } = useCompetitionsStore();
 
-  // OPTIMIZADO: Solo usar lo necesario del store
-
   const [selectedPhase, setSelectedPhase] = useState<string>('');
   const [selectedCompetition, setSelectedCompetition] = useState<string>('');
 
-
-  // States for editing
+  // Editing states
   const [editingPhase, setEditingPhase] = useState<string | null>(null);
-  const [editingCompetition, setEditingCompetition] = useState<string | null>(
-    null
-  );
+  const [editingCompetition, setEditingCompetition] = useState<string | null>(null);
   const [isAddingPhase, setIsAddingPhase] = useState(false);
   const [isAddingCompetition, setIsAddingCompetition] = useState(false);
   const [phaseScheduleInfo, setPhaseScheduleInfo] = useState<{
@@ -246,7 +147,7 @@ export function PlanificacionOverview() {
     type: 'info' | 'success' | 'warning';
   } | null>(null);
 
-  // Estados para formularios
+  // Forms
   const [phaseForm, setPhaseForm] = useState({
     name: '',
     duration: 0,
@@ -282,12 +183,11 @@ export function PlanificacionOverview() {
     }
   }, [competitions, selectedCompetition]);
 
-  // Validar que phases sea un array antes de usar find
+  // Current selections
   const currentPhase = Array.isArray(phases) ? phases.find(phase => phase.id === selectedPhase) : null;
   const currentCompetition = competitions.find(comp => comp.id === selectedCompetition) || null;
 
-
-  // Reiniciar formulario cuando se abra el modal de agregar fase
+  // Reset phase form when opening add modal
   useEffect(() => {
     if (isAddingPhase && !editingPhase) {
       setPhaseForm({
@@ -298,7 +198,7 @@ export function PlanificacionOverview() {
         intensity: 5,
         volume: 0,
         startDate: '',
-        order: phases.length + 1, // Automatic order based on number of existing phases
+        order: phases.length + 1,
       });
     }
   }, [isAddingPhase, editingPhase, phases.length]);
@@ -316,9 +216,35 @@ export function PlanificacionOverview() {
     }
   };
 
-  // Las fases ya vienen con fechas calculadas del contexto
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'internacional':
+        return 'bg-purple-500';
+      case 'nacional':
+        return 'bg-red-500';
+      case 'regional':
+        return 'bg-orange-500';
+      case 'local':
+        return 'bg-green-500';
+      default:
+        return 'bg-gray-500';
+    }
+  };
 
-  // Functions to handle phase editing
+  const getCompetitionStatusColor = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return 'text-green-600';
+      case 'upcoming':
+        return 'text-blue-600';
+      case 'cancelled':
+        return 'text-red-600';
+      default:
+        return 'text-gray-600';
+    }
+  };
+
+  // ===== Phase editing handlers =====
   const handleEditPhase = (phase: TrainingPhase) => {
     setPhaseForm({
       name: phase.name,
@@ -333,87 +259,77 @@ export function PlanificacionOverview() {
     setEditingPhase(phase.id);
   };
 
-  // Function to calculate next phase start date
+  // Next phase start date (sequential if needed)
   const getNextPhaseStartDate = (): string | undefined => {
     if (!phaseForm.startDate) return undefined;
-    
-    // Get all phases sorted by start date
+
     const phasesWithDates = phases
       .filter(phase => phase.startDate)
       .sort((a, b) => new Date(a.startDate!).getTime() - new Date(b.startDate!).getTime());
-    
-    // Si no hay fases con fechas, usar la fecha del formulario
+
     if (phasesWithDates.length === 0) {
       return phaseForm.startDate;
     }
-    
-    // Find the last phase by end date
+
     const lastPhase = phasesWithDates.reduce((latest, phase) => {
       if (!phase.endDate) return latest;
       const phaseEnd = new Date(phase.endDate);
       const latestEnd = latest ? new Date(latest.endDate!) : new Date(0);
       return phaseEnd > latestEnd ? phase : latest;
     }, null as TrainingPhase | null);
-    
-    // If there is a last phase with end date, next phase starts the day after
+
     if (lastPhase?.endDate) {
       const nextStart = new Date(lastPhase.endDate);
       nextStart.setDate(nextStart.getDate() + 1);
       return nextStart.toISOString().split('T')[0];
     }
-    
-    // Si no hay fases con fechas de fin, usar la fecha del formulario
+
     return phaseForm.startDate;
   };
 
-  // Function to recalculate all phase dates after editing
+  // Recalculate all phase dates after editing one
   const recalculateAllPhaseDates = (updatedPhase: TrainingPhase) => {
     const calculateEndDate = (startDate: string, durationWeeks: number): string => {
       const start = new Date(startDate);
       const end = new Date(start);
-      end.setDate(start.getDate() + (durationWeeks * 7));
+      end.setDate(start.getDate() + durationWeeks * 7);
       return end.toISOString().split('T')[0];
     };
 
-    // Get all phases except the one being edited, sorted by order
     const otherPhases = phases
       .filter(phase => phase.id !== updatedPhase.id)
       .sort((a, b) => a.order - b.order);
 
-    // Recalcular fechas secuencialmente
     let currentDate = new Date(updatedPhase.startDate!);
     const updatedPhases: TrainingPhase[] = [];
 
-    // Add the updated phase
+    // Add updated phase
     updatedPhases.push({
       ...updatedPhase,
       endDate: calculateEndDate(updatedPhase.startDate!, updatedPhase.duration),
     });
 
-    // Recalcular las siguientes fases
+    // Recalculate subsequent phases
     for (const phase of otherPhases) {
       if (phase.order > updatedPhase.order) {
-        // Later phase: starts the day after the previous one
         currentDate.setDate(currentDate.getDate() + 1);
         const newStartDate = currentDate.toISOString().split('T')[0];
         const newEndDate = calculateEndDate(newStartDate, phase.duration);
-        
+
         updatedPhases.push({
           ...phase,
           startDate: newStartDate,
           endDate: newEndDate,
           updated_at: new Date().toISOString(),
         });
-        
-        // Actualizar currentDate para la siguiente fase
+
         currentDate = new Date(newEndDate);
       } else {
-        // Fase anterior: mantener fechas originales
         updatedPhases.push(phase);
       }
     }
 
-    // Actualizar todas las fases en el store
+    // Persist recalculated dates
     updatedPhases.forEach(phase => {
       if (phase.id !== updatedPhase.id) {
         updatePhase(phase.id, {
@@ -426,9 +342,8 @@ export function PlanificacionOverview() {
   };
 
   const handleSavePhase = () => {
-    // Validate that all required fields are filled
     if (!phaseForm.name.trim()) {
-      console.warn('Por favor, ingresa el nombre de la fase');
+      console.warn('Please enter the phase name');
       return;
     }
     if (phaseForm.duration <= 0) {
@@ -441,22 +356,17 @@ export function PlanificacionOverview() {
     }
 
     try {
-      // Calculate end date based on duration
       const calculateEndDate = (startDate: string, durationWeeks: number): string => {
         const start = new Date(startDate);
         const end = new Date(start);
-        end.setDate(start.getDate() + (durationWeeks * 7));
+        end.setDate(start.getDate() + durationWeeks * 7);
         return end.toISOString().split('T')[0];
       };
 
-      // Obtener la fecha de inicio correcta (secuencial si es necesario)
       const actualStartDate = getNextPhaseStartDate() || phaseForm.startDate;
 
       if (isAddingPhase) {
-        // Crear nueva fase con fechas calculadas secuencialmente
-        const endDate = actualStartDate 
-          ? calculateEndDate(actualStartDate, phaseForm.duration)
-          : undefined;
+        const endDate = actualStartDate ? calculateEndDate(actualStartDate, phaseForm.duration) : undefined;
 
         const newPhase: TrainingPhase = {
           id: `phase-${Date.now()}`,
@@ -466,34 +376,29 @@ export function PlanificacionOverview() {
           focus: phaseForm.focus,
           intensity: phaseForm.intensity,
           volume: phaseForm.volume,
-          color: 'bg-purple-500', // Color por defecto
+          color: 'bg-purple-500',
           startDate: actualStartDate,
-          endDate: endDate,
+          endDate,
           order: phaseForm.order,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         };
+
         addPhase(newPhase);
-        console.log('Fase agregada:', newPhase);
-        
-        // Show information about calculated dates
         if (actualStartDate !== phaseForm.startDate) {
-          console.log(`Fase programada secuencialmente: ${actualStartDate} - ${endDate}`);
           setPhaseScheduleInfo({
-            message: `Fase programada secuencialmente: ${new Date(actualStartDate).toLocaleDateString('es-ES')} - ${new Date(endDate!).toLocaleDateString('es-ES')}`,
-            type: 'info'
+            message: `Phase scheduled sequentially: ${new Date(actualStartDate).toLocaleDateString('en-US')} - ${endDate ? new Date(endDate).toLocaleDateString('en-US') : ''}`,
+            type: 'info',
           });
-          // Clear message after 5 seconds
           setTimeout(() => setPhaseScheduleInfo(null), 5000);
         } else {
           setPhaseScheduleInfo({
-            message: `Fase creada: ${new Date(actualStartDate).toLocaleDateString('es-ES')} - ${new Date(endDate!).toLocaleDateString('es-ES')}`,
-            type: 'success'
+            message: `Phase created: ${new Date(actualStartDate).toLocaleDateString('en-US')} - ${endDate ? new Date(endDate).toLocaleDateString('en-US') : ''}`,
+            type: 'success',
           });
           setTimeout(() => setPhaseScheduleInfo(null), 3000);
         }
       } else if (editingPhase) {
-        // Crear la fase actualizada
         const updatedPhase: TrainingPhase = {
           id: editingPhase,
           name: phaseForm.name,
@@ -504,15 +409,12 @@ export function PlanificacionOverview() {
           volume: phaseForm.volume,
           color: phases.find(p => p.id === editingPhase)?.color || 'bg-purple-500',
           startDate: phaseForm.startDate,
-          endDate: phaseForm.startDate 
-            ? calculateEndDate(phaseForm.startDate, phaseForm.duration)
-            : undefined,
+          endDate: phaseForm.startDate ? calculateEndDate(phaseForm.startDate, phaseForm.duration) : undefined,
           order: phaseForm.order,
           created_at: phases.find(p => p.id === editingPhase)?.created_at || new Date().toISOString(),
           updated_at: new Date().toISOString(),
         };
 
-        // Actualizar la fase en el store
         updatePhase(editingPhase, {
           name: phaseForm.name,
           duration: phaseForm.duration,
@@ -521,36 +423,27 @@ export function PlanificacionOverview() {
           intensity: phaseForm.intensity,
           volume: phaseForm.volume,
           startDate: phaseForm.startDate,
-          endDate: phaseForm.startDate 
-            ? calculateEndDate(phaseForm.startDate, phaseForm.duration)
-            : undefined,
+          endDate: phaseForm.startDate ? calculateEndDate(phaseForm.startDate, phaseForm.duration) : undefined,
           order: phaseForm.order,
           updated_at: new Date().toISOString(),
         });
 
-        // Recalculate dates of all phases if start date changed
         if (phaseForm.startDate) {
           recalculateAllPhaseDates(updatedPhase);
         }
-
-        console.log('Fase actualizada:', editingPhase);
       }
 
-      // Cerrar el modal pero NO reiniciar el formulario inmediatamente
       setEditingPhase(null);
       setIsAddingPhase(false);
-
-      // Show success message (without alert)
       console.log('Phase saved successfully');
     } catch (error) {
-      console.error('Error guardando fase:', error);
+      console.error('Error saving phase:', error);
     }
   };
 
   const handleCancelPhase = () => {
     setEditingPhase(null);
     setIsAddingPhase(false);
-    // Solo reiniciar el formulario cuando se cancele, no cuando se guarde
     setPhaseForm({
       name: '',
       duration: 0,
@@ -585,7 +478,7 @@ export function PlanificacionOverview() {
     }));
   };
 
-  // Functions to handle competition editing
+  // ===== Competition editing handlers =====
   const handleEditCompetition = (competition: Competition) => {
     setCompetitionForm({
       name: competition.name,
@@ -601,7 +494,6 @@ export function PlanificacionOverview() {
   };
 
   const handleSaveCompetition = () => {
-    // Validaciones
     if (!competitionForm.name.trim()) {
       alert('Competition name is required');
       return;
@@ -615,7 +507,7 @@ export function PlanificacionOverview() {
       return;
     }
     if (competitionForm.events.length === 0) {
-      alert('Debe seleccionar al menos un evento');
+      alert('You must select at least one event');
       return;
     }
 
@@ -634,10 +526,8 @@ export function PlanificacionOverview() {
     try {
       if (isAddingCompetition) {
         addCompetition(competitionData);
-        console.log('Competition added:', competitionData);
       } else if (editingCompetition) {
         updateCompetition(editingCompetition, competitionData);
-        console.log('Competition updated:', competitionData);
       }
     } catch (error) {
       console.error('Error saving competition:', error);
@@ -645,7 +535,6 @@ export function PlanificacionOverview() {
       return;
     }
 
-    // Limpiar formulario y cerrar modal
     setEditingCompetition(null);
     setIsAddingCompetition(false);
     setCompetitionForm({
@@ -693,86 +582,59 @@ export function PlanificacionOverview() {
     }));
   };
 
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case 'internacional':
-        return 'bg-purple-500';
-      case 'nacional':
-        return 'bg-red-500';
-      case 'regional':
-        return 'bg-orange-500';
-      case 'local':
-        return 'bg-green-500';
-      default:
-        return 'bg-gray-500';
-    }
-  };
-
-  const getCompetitionStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'text-green-600';
-      case 'upcoming':
-        return 'text-blue-600';
-      case 'cancelled':
-        return 'text-red-600';
-      default:
-        return 'text-gray-600';
-    }
-  };
-
-
   return (
-    <div className='space-y-6'>
-      {/* Informative message about phase scheduling */}
+    <div className="space-y-6">
+      {/* Informational message about phase scheduling */}
       {phaseScheduleInfo && (
-        <div className={`p-4 rounded-lg border ${
-          phaseScheduleInfo.type === 'info' 
-            ? 'bg-blue-50 border-blue-200 text-blue-800'
-            : phaseScheduleInfo.type === 'success'
-            ? 'bg-green-50 border-green-200 text-green-800'
-            : 'bg-yellow-50 border-yellow-200 text-yellow-800'
-        }`}>
-          <div className='flex items-center gap-2'>
-            <div className={`w-2 h-2 rounded-full ${
-              phaseScheduleInfo.type === 'info' 
-                ? 'bg-blue-500'
-                : phaseScheduleInfo.type === 'success'
-                ? 'bg-green-500'
-                : 'bg-yellow-500'
-            }`}></div>
-            <span className='text-sm font-medium'>{phaseScheduleInfo.message}</span>
+        <div
+          className={`p-4 rounded-lg border ${
+            phaseScheduleInfo.type === 'info'
+              ? 'bg-blue-50 border-blue-200 text-blue-800'
+              : phaseScheduleInfo.type === 'success'
+              ? 'bg-green-50 border-green-200 text-green-800'
+              : 'bg-yellow-50 border-yellow-200 text-yellow-800'
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            <div
+              className={`w-2 h-2 rounded-full ${
+                phaseScheduleInfo.type === 'info'
+                  ? 'bg-blue-500'
+                  : phaseScheduleInfo.type === 'success'
+                  ? 'bg-green-500'
+                  : 'bg-yellow-500'
+              }`}
+            />
+            <span className="text-sm font-medium">{phaseScheduleInfo.message}</span>
           </div>
         </div>
       )}
 
-      {/* Header con objetivos principales */}
-
-      {/* Tabs principales */}
-      <Tabs defaultValue='fases' className='space-y-4'>
-        <TabsList className='grid w-full grid-cols-4'>
-          <TabsTrigger value='fases'>Cycle Phases</TabsTrigger>
-          <TabsTrigger value='competiciones'>Competitions</TabsTrigger>
-          <TabsTrigger value='planificacion'>Weekly Planning</TabsTrigger>
-          <TabsTrigger value='carga'>Training Load</TabsTrigger>
+      {/* Main Tabs (values kept to match original keys) */}
+      <Tabs defaultValue="fases" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="fases">Cycle Phases</TabsTrigger>
+          <TabsTrigger value="competiciones">Competitions</TabsTrigger>
+          <TabsTrigger value="planificacion">Weekly Planning</TabsTrigger>
+          <TabsTrigger value="carga">Training Load</TabsTrigger>
         </TabsList>
 
         {/* Tab: Cycle Phases */}
-        <TabsContent value='fases' className='space-y-4'>
-          <div className='flex justify-between items-center'>
-            <h3 className='text-lg font-semibold'>Training Phases</h3>
+        <TabsContent value="fases" className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Training Phases</h3>
             <Button
               onClick={() => setIsAddingPhase(true)}
-              className='gap-2'
-              size='sm'
+              className="gap-2"
+              size="sm"
             >
-              <Plus className='h-4 w-4' />
+              <Plus className="h-4 w-4" />
               Add Phase
             </Button>
           </div>
 
-          <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
-            {safeMap(phases, (phase: TrainingPhase) => (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {safeMap<TrainingPhase>(phases, (phase: TrainingPhase) => (
               <Card
                 key={phase.id}
                 className={`bg-muted/50 border-muted cursor-pointer transition-all hover:shadow-md ${
@@ -780,82 +642,83 @@ export function PlanificacionOverview() {
                 }`}
                 onClick={() => setSelectedPhase(phase.id)}
               >
-                <CardHeader className='pb-3'>
-                  <div className='flex items-center justify-between'>
-                    <CardTitle className='text-lg'>{phase.name}</CardTitle>
-                    <div className='flex items-center gap-2'>
-                      <div
-                        className={`w-3 h-3 rounded-full ${phase.color}`}
-                      ></div>
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">{phase.name}</CardTitle>
+                    <div className="flex items-center gap-2">
+                      <div className={`w-3 h-3 rounded-full ${phase.color}`} />
                       <Button
-                        variant='ghost'
-                        size='sm'
+                        variant="ghost"
+                        size="sm"
                         onClick={e => {
                           e.stopPropagation();
                           handleEditPhase(phase);
                         }}
-                        className='h-6 w-6 p-0'
+                        className="h-6 w-6 p-0"
                       >
-                        <Edit className='h-3 w-3' />
+                        <Edit className="h-3 w-3" />
                       </Button>
                       <Button
-                        variant='ghost'
-                        size='sm'
+                        variant="ghost"
+                        size="sm"
                         onClick={e => {
                           e.stopPropagation();
                           handleDeletePhase(phase.id);
                         }}
-                        className='h-6 w-6 p-0 text-red-500 hover:text-red-700'
+                        className="h-6 w-6 p-0 text-red-500 hover:text-red-700"
                       >
-                        <Trash2 className='h-3 w-3' />
+                        <Trash2 className="h-3 w-3" />
                       </Button>
                     </div>
                   </div>
-                  <CardDescription>{phase.duration} semanas</CardDescription>
+                  <CardDescription>{phase.duration} weeks</CardDescription>
                 </CardHeader>
-                <CardContent className='space-y-3'>
-                  <p className='text-sm text-muted-foreground'>
+                <CardContent className="space-y-3">
+                  <p className="text-sm text-muted-foreground">
                     {phase.description}
                   </p>
 
                   {phase.startDate && phase.endDate && (
-                    <div className='text-xs text-muted-foreground bg-muted/30 rounded p-2'>
-                      <div className='flex items-center gap-1 mb-1'>
-                        <Calendar className='h-3 w-3' />
-                        <span className='font-medium'>Period:</span>
+                    <div className="text-xs text-muted-foreground bg-muted/30 rounded p-2">
+                      <div className="flex items-center gap-1 mb-1">
+                        <Calendar className="h-3 w-3" />
+                        <span className="font-medium">Period:</span>
                       </div>
                       <div>
-                        {phase.startDate ? new Date(phase.startDate).toLocaleDateString('es-ES') : 'Sin fecha'}{' '}
-                        - {phase.endDate ? new Date(phase.endDate).toLocaleDateString('es-ES') : 'Sin fecha'}
+                        {phase.startDate
+                          ? new Date(phase.startDate).toLocaleDateString('en-US')
+                          : 'No date'}{' '}
+                        -{' '}
+                        {phase.endDate
+                          ? new Date(phase.endDate).toLocaleDateString('en-US')
+                          : 'No date'}
                       </div>
                     </div>
                   )}
 
-                  <div className='space-y-2'>
-                    <div className='flex items-center justify-between text-sm'>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
                       <span>Intensity:</span>
-                      <Badge variant='outline'>{phase.intensity}/10</Badge>
+                      <Badge variant="outline">{phase.intensity}/10</Badge>
                     </div>
-                    <div className='flex items-center justify-between text-sm'>
+                    <div className="flex items-center justify-between text-sm">
                       <span>Volume:</span>
-                      <Badge variant='outline'>
+                      <Badge variant="outline">
                         {(phase.volume || 0).toLocaleString()}m
                       </Badge>
                     </div>
                   </div>
 
-                  <div className='space-y-1'>
-                    <p className='text-xs font-medium'>Enfoque:</p>
-                    <div className='flex flex-wrap gap-1'>
-                      {Array.isArray(phase.focus) ? phase.focus.map((focus, index) => (
-                        <Badge
-                          key={index}
-                          variant='secondary'
-                          className='text-xs'
-                        >
-                          {focus}
-                        </Badge>
-                      )) : null}
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium">Focus:</p>
+                    <div className="flex flex-wrap gap-1">
+                      {Array.isArray(phase.focus)
+                        ? phase.focus.map((focus, index) => (
+                            <Badge key={index} variant="secondary" className="text-xs">
+                              {focus}
+                            </Badge>
+                          ))
+                        : null}
                     </div>
                   </div>
                 </CardContent>
@@ -863,54 +726,49 @@ export function PlanificacionOverview() {
             ))}
           </div>
 
-          {/* Detalles de la fase seleccionada */}
+          {/* Selected phase details */}
           {currentPhase && (
-            <Card className='bg-muted/50 border-muted'>
+            <Card className="bg-muted/50 border-muted">
               <CardHeader>
-                <CardTitle className='flex items-center gap-2'>
-                  <div
-                    className={`w-4 h-4 rounded-full ${currentPhase.color}`}
-                  ></div>
-                  {currentPhase.name} - Detalles
+                <CardTitle className="flex items-center gap-2">
+                  <div className={`w-4 h-4 rounded-full ${currentPhase.color}`} />
+                  {currentPhase.name} - Details
                 </CardTitle>
                 <CardDescription>{currentPhase.description}</CardDescription>
               </CardHeader>
-              <CardContent className='space-y-4'>
-                <div className='grid gap-4 md:grid-cols-3'>
-                  <div className='space-y-2'>
-                    <h4 className='font-medium'>Duration</h4>
-                    <p className='text-2xl font-bold'>
-                      {currentPhase.duration} semanas
+              <CardContent className="space-y-4">
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="space-y-2">
+                    <h4 className="font-medium">Duration</h4>
+                    <p className="text-2xl font-bold">
+                      {currentPhase.duration} weeks
                     </p>
                   </div>
-                  <div className='space-y-2'>
-                    <h4 className='font-medium'>Target Intensity</h4>
-                    <div className='flex items-center gap-2'>
-                      <Progress
-                        value={currentPhase.intensity * 10}
-                        className='flex-1'
-                      />
-                      <span className='font-bold'>
-                        {currentPhase.intensity}/10
-                      </span>
+                  <div className="space-y-2">
+                    <h4 className="font-medium">Target Intensity</h4>
+                    <div className="flex items-center gap-2">
+                      <Progress value={currentPhase.intensity * 10} className="flex-1" />
+                      <span className="font-bold">{currentPhase.intensity}/10</span>
                     </div>
                   </div>
-                  <div className='space-y-2'>
-                    <h4 className='font-medium'>Weekly Volume</h4>
-                    <p className='text-2xl font-bold'>
+                  <div className="space-y-2">
+                    <h4 className="font-medium">Weekly Volume</h4>
+                    <p className="text-2xl font-bold">
                       {(currentPhase?.volume || 0).toLocaleString()}m
                     </p>
                   </div>
                 </div>
 
-                <div className='space-y-2'>
-                  <h4 className='font-medium'>Enfoques de Entrenamiento</h4>
-                  <div className='flex flex-wrap gap-2'>
-                    {Array.isArray(currentPhase?.focus) ? currentPhase.focus.map((focus, index) => (
-                      <Badge key={index} variant='default' className='text-sm'>
-                        {focus}
-                      </Badge>
-                    )) : null}
+                <div className="space-y-2">
+                  <h4 className="font-medium">Training Focus</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {Array.isArray(currentPhase?.focus)
+                      ? currentPhase.focus.map((focus, index) => (
+                          <Badge key={index} variant="default" className="text-sm">
+                            {focus}
+                          </Badge>
+                        ))
+                      : null}
                   </div>
                 </div>
               </CardContent>
@@ -918,193 +776,151 @@ export function PlanificacionOverview() {
           )}
 
           {/* Phase Editing Modal */}
-          <Dialog
-            open={editingPhase !== null || isAddingPhase}
-            onOpenChange={handleCancelPhase}
-          >
-            <DialogContent className='max-w-2xl'>
+          <Dialog open={editingPhase !== null || isAddingPhase} onOpenChange={handleCancelPhase}>
+            <DialogContent className="max-w-2xl">
               <DialogHeader>
-                <DialogTitle>
-                  {isAddingPhase ? 'Add New Phase' : 'Edit Phase'}
-                </DialogTitle>
+                <DialogTitle>{isAddingPhase ? 'Add New Phase' : 'Edit Phase'}</DialogTitle>
                 <DialogDescription>
-                  {isAddingPhase
-                    ? 'Crea una nueva fase de entrenamiento'
-                    : 'Modifica los detalles de la fase de entrenamiento'}
+                  {isAddingPhase ? 'Create a new training phase' : 'Modify the training phase details'}
                 </DialogDescription>
               </DialogHeader>
 
-              <div className='space-y-4'>
-                <div className='grid grid-cols-2 gap-4'>
-                  <div className='space-y-2'>
-                    <Label htmlFor='phase-name'>Phase Name</Label>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="phase-name">Phase Name</Label>
                     <Input
-                      id='phase-name'
+                      id="phase-name"
                       value={phaseForm.name}
-                      onChange={e =>
-                        setPhaseForm(prev => ({
-                          ...prev,
-                          name: e.target.value,
-                        }))
-                      }
-                      placeholder='Ex: Base, Construction, Peak'
+                      onChange={e => setPhaseForm(prev => ({ ...prev, name: e.target.value }))}
+                      placeholder="e.g., Base, Construction, Peak"
                     />
                   </div>
-                  <div className='space-y-2'>
-                    <Label htmlFor='phase-duration'>Duration (weeks)</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="phase-duration">Duration (weeks)</Label>
                     <Input
-                      id='phase-duration'
-                      type='number'
+                      id="phase-duration"
+                      type="number"
                       value={phaseForm.duration}
                       onChange={e =>
-                        setPhaseForm(prev => ({
-                          ...prev,
-                          duration: parseInt(e.target.value) || 0,
-                        }))
+                        setPhaseForm(prev => ({ ...prev, duration: parseInt(e.target.value) || 0 }))
                       }
-                      placeholder='8'
+                      placeholder="8"
                     />
                   </div>
                 </div>
 
-                <div className='space-y-2'>
-                  <Label htmlFor='phase-description'>Description</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="phase-description">Description</Label>
                   <Textarea
-                    id='phase-description'
+                    id="phase-description"
                     value={phaseForm.description}
-                    onChange={e =>
-                      setPhaseForm(prev => ({
-                        ...prev,
-                        description: e.target.value,
-                      }))
-                    }
-                    placeholder='Describe el objetivo de esta fase...'
-                    className='min-h-[80px]'
+                    onChange={e => setPhaseForm(prev => ({ ...prev, description: e.target.value }))}
+                    placeholder="Describe the objective of this phase..."
+                    className="min-h-[80px]"
                   />
                 </div>
 
-                <div className='grid grid-cols-2 gap-4'>
-                  <div className='space-y-2'>
-                    <Label htmlFor='phase-intensity'>Intensity (1-10)</Label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="phase-intensity">Intensity (1-10)</Label>
                     <Input
-                      id='phase-intensity'
-                      type='number'
-                      min='1'
-                      max='10'
+                      id="phase-intensity"
+                      type="number"
+                      min="1"
+                      max="10"
                       value={phaseForm.intensity}
                       onChange={e =>
-                        setPhaseForm(prev => ({
-                          ...prev,
-                          intensity: parseInt(e.target.value) || 5,
-                        }))
+                        setPhaseForm(prev => ({ ...prev, intensity: parseInt(e.target.value) || 5 }))
                       }
                     />
                   </div>
-                  <div className='space-y-2'>
-                    <Label htmlFor='phase-volume'>
-                      Weekly Volume (meters)
-                    </Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="phase-volume">Weekly Volume (meters)</Label>
                     <Input
-                      id='phase-volume'
-                      type='number'
+                      id="phase-volume"
+                      type="number"
                       value={phaseForm.volume}
                       onChange={e =>
-                        setPhaseForm(prev => ({
-                          ...prev,
-                          volume: parseInt(e.target.value) || 0,
-                        }))
+                        setPhaseForm(prev => ({ ...prev, volume: parseInt(e.target.value) || 0 }))
                       }
-                      placeholder='25000'
+                      placeholder="25000"
                     />
                   </div>
                 </div>
 
-                <div className='grid grid-cols-2 gap-4'>
-                  <div className='space-y-2'>
-                    <Label htmlFor='phase-start-date'>
-                      Fecha de Inicio (solo primera fase)
-                    </Label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="phase-start-date">Start Date (first phase only)</Label>
                     <Input
-                      id='phase-start-date'
-                      type='date'
+                      id="phase-start-date"
+                      type="date"
                       value={phaseForm.startDate}
-                      onChange={e =>
-                        setPhaseForm(prev => ({
-                          ...prev,
-                          startDate: e.target.value,
-                        }))
-                      }
+                      onChange={e => setPhaseForm(prev => ({ ...prev, startDate: e.target.value }))}
                       disabled={phaseForm.order > 1}
                     />
                     {phaseForm.order > 1 && (
-                      <p className='text-xs text-muted-foreground'>
+                      <p className="text-xs text-muted-foreground">
                         Later phases are calculated automatically
                       </p>
                     )}
                   </div>
-                  <div className='space-y-2'>
-                    <Label htmlFor='phase-order'>Phase Order</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="phase-order">Phase Order</Label>
                     <Input
-                      id='phase-order'
-                      type='number'
-                      min='1'
+                      id="phase-order"
+                      type="number"
+                      min="1"
                       value={phaseForm.order}
                       onChange={e =>
-                        setPhaseForm(prev => ({
-                          ...prev,
-                          order: parseInt(e.target.value) || 1,
-                        }))
+                        setPhaseForm(prev => ({ ...prev, order: parseInt(e.target.value) || 1 }))
                       }
-                      placeholder='1'
+                      placeholder="1"
                     />
                   </div>
                 </div>
 
-                <div className='space-y-2'>
-                  <Label>Enfoques de Entrenamiento</Label>
-                  <div className='flex flex-wrap gap-2 mb-2'>
-                    {Array.isArray(phaseForm.focus) ? phaseForm.focus.map((focus, index) => (
-                      <Badge key={index} variant='secondary' className='gap-1'>
-                        {focus}
-                        <button
-                          onClick={() => handleRemoveFocus(focus)}
-                          className='ml-1 hover:text-destructive'
-                        >
-                          <X className='h-3 w-3' />
-                        </button>
-                      </Badge>
-                    )) : null}
+                <div className="space-y-2">
+                  <Label>Training Focus</Label>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {Array.isArray(phaseForm.focus)
+                      ? phaseForm.focus.map((focus, index) => (
+                          <Badge key={index} variant="secondary" className="gap-1">
+                            {focus}
+                            <button
+                              onClick={() => handleRemoveFocus(focus)}
+                              className="ml-1 hover:text-destructive"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </Badge>
+                        ))
+                      : null}
                   </div>
-                  <div className='flex gap-2'>
-                    {[
-                      'Aerobic',
-                      'Technique',
-                      'Strength',
-                      'Threshold',
-                      'VO2 Max',
-                      'Speed',
-                      'Recovery',
-                    ].map(focus => (
-                      <Button
-                        key={focus}
-                        variant='outline'
-                        size='sm'
-                        onClick={() => handleAddFocus(focus)}
-                        disabled={phaseForm.focus.includes(focus)}
-                        className='text-xs'
-                      >
-                        {focus}
-                      </Button>
-                    ))}
+                  <div className="flex gap-2">
+                    {['Aerobic', 'Technique', 'Strength', 'Threshold', 'VO2 Max', 'Speed', 'Recovery'].map(
+                      focus => (
+                        <Button
+                          key={focus}
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleAddFocus(focus)}
+                          disabled={phaseForm.focus.includes(focus)}
+                          className="text-xs"
+                        >
+                          {focus}
+                        </Button>
+                      )
+                    )}
                   </div>
                 </div>
 
-                <div className='flex justify-end gap-2 pt-4'>
-                  <Button variant='outline' onClick={handleCancelPhase}>
+                <div className="flex justify-end gap-2 pt-4">
+                  <Button variant="outline" onClick={handleCancelPhase}>
                     Cancel
                   </Button>
-                  <Button onClick={handleSavePhase} className='gap-2'>
-                    <Save className='h-4 w-4' />
+                  <Button onClick={handleSavePhase} className="gap-2">
+                    <Save className="h-4 w-4" />
                     {isAddingPhase ? 'Add' : 'Save'}
                   </Button>
                 </div>
@@ -1113,163 +929,146 @@ export function PlanificacionOverview() {
           </Dialog>
         </TabsContent>
 
-        {/* Tab: Competiciones */}
-        <TabsContent value='competiciones' className='space-y-4'>
-          <div className='flex justify-between items-center'>
-            <h3 className='text-lg font-semibold'>Competiciones</h3>
+        {/* Tab: Competitions */}
+        <TabsContent value="competiciones" className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Competitions</h3>
             <Button
               onClick={() => setIsAddingCompetition(true)}
-              className='gap-2'
-              size='sm'
+              className="gap-2"
+              size="sm"
             >
-              <Plus className='h-4 w-4' />
+              <Plus className="h-4 w-4" />
               Add Competition
             </Button>
           </div>
 
-          <div className='grid gap-4'>
-            {safeMap(competitions, (competition: Competition) => (
+          <div className="grid gap-4">
+            {safeMap<Competition>(competitions, (competition: Competition) => (
               <Card
                 key={competition.id}
                 className={`bg-muted/50 border-muted cursor-pointer transition-all hover:shadow-md ${
-                  selectedCompetition === competition.id
-                    ? 'ring-2 ring-primary'
-                    : ''
+                  selectedCompetition === competition.id ? 'ring-2 ring-primary' : ''
                 }`}
                 onClick={() => setSelectedCompetition(competition.id)}
               >
-                <CardContent className='p-6'>
-                  <div className='flex items-start justify-between'>
-                    <div className='space-y-2 flex-1'>
-                      <div className='flex items-center gap-2'>
-                        <Trophy className='h-5 w-5 text-yellow-500' />
-                        <h3 className='text-lg font-semibold'>
-                          {competition.name}
-                        </h3>
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2 flex-1">
+                      <div className="flex items-center gap-2">
+                        <Trophy className="h-5 w-5 text-yellow-500" />
+                        <h3 className="text-lg font-semibold">{competition.name}</h3>
                         <Badge
-                          variant='outline'
+                          variant="outline"
                           className={`${getTypeColor(competition.type)} text-white`}
                         >
                           {competition.type === 'internacional'
-                            ? 'Internacional'
+                            ? 'International'
                             : competition.type === 'nacional'
-                              ? 'Nacional'
-                              : competition.type === 'regional'
-                                ? 'Regional'
-                                : 'Local'}
+                            ? 'National'
+                            : competition.type === 'regional'
+                            ? 'Regional'
+                            : 'Local'}
                         </Badge>
                         <Badge
-                          variant='outline'
+                          variant="outline"
                           className={`${getPriorityColor(competition.priority)} text-white`}
                         >
                           {competition.priority === 'high'
-                            ? 'Alta'
+                            ? 'High'
                             : competition.priority === 'medium'
-                              ? 'Media'
-                              : 'Baja'}
+                            ? 'Medium'
+                            : 'Low'}
                         </Badge>
                       </div>
 
-                      <div className='flex items-center gap-4 text-sm text-muted-foreground'>
-                        <div className='flex items-center gap-1'>
-                          <Calendar className='w-4 h-4' />
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <Calendar className="w-4 h-4" />
                           <span>
-                            {competition.date ? new Date(competition.date).toLocaleDateString('es-ES') : 'Sin fecha'}
+                            {competition.date
+                              ? new Date(competition.date).toLocaleDateString('en-US')
+                              : 'No date'}
                           </span>
                         </div>
-                        <div className='flex items-center gap-1'>
-                          <MapPin className='w-4 h-4' />
+                        <div className="flex items-center gap-1">
+                          <MapPin className="w-4 h-4" />
                           <span>{competition.location}</span>
                         </div>
-                        <div className='flex items-center gap-1'>
-                          <Clock className='w-4 h-4' />
-                          <span
-                            className={getCompetitionStatusColor(
-                              competition.status
-                            )}
-                          >
+                        <div className="flex items-center gap-1">
+                          <Clock className="w-4 h-4" />
+                          <span className={getCompetitionStatusColor(competition.status)}>
                             {competition.status === 'completed'
-                              ? 'Completada'
+                              ? 'Completed'
                               : competition.status === 'upcoming'
-                                ? 'Upcoming'
-                                : 'Cancelled'}
+                              ? 'Upcoming'
+                              : 'Cancelled'}
                           </span>
                         </div>
                       </div>
 
-                      <p className='text-muted-foreground'>
-                        {competition.objectives}
-                      </p>
+                      <p className="text-muted-foreground">{competition.objectives}</p>
 
-                      <div className='space-y-1'>
-                        <p className='text-xs font-medium'>Eventos:</p>
-                        <div className='flex flex-wrap gap-1'>
-                          {Array.isArray(competition.events) ? competition.events.map((event, index) => (
-                            <Badge
-                              key={index}
-                              variant='secondary'
-                              className='text-xs'
-                            >
-                              {event}
-                            </Badge>
-                          )) : null}
+                      <div className="space-y-1">
+                        <p className="text-xs font-medium">Events:</p>
+                        <div className="flex flex-wrap gap-1">
+                          {Array.isArray(competition.events)
+                            ? competition.events.map((event, index) => (
+                                <Badge key={index} variant="secondary" className="text-xs">
+                                  {event}
+                                </Badge>
+                              ))
+                            : null}
                         </div>
                       </div>
 
-                      {competition.results &&
-                        competition.results.length > 0 && (
-                          <div className='space-y-1'>
-                            <p className='text-xs font-medium'>Resultados:</p>
-                            <div className='space-y-1'>
-                              {Array.isArray(competition.results) ? competition.results.map((result, index) => (
-                                <div
-                                  key={index}
-                                  className='flex items-center gap-2 text-sm'
-                                >
-                                  <span className='font-medium'>
-                                    {result.event}:
-                                  </span>
-                                  <span>{result.time}</span>
-                                  <Badge variant='outline' className='text-xs'>
-                                    {result.position}º
-                                  </Badge>
-                                  {result.personalBest && (
-                                    <Badge
-                                      variant='default'
-                                      className='text-xs bg-green-500'
-                                    >
-                                      PB
+                      {competition.results && competition.results.length > 0 && (
+                        <div className="space-y-1">
+                          <p className="text-xs font-medium">Results:</p>
+                          <div className="space-y-1">
+                            {Array.isArray(competition.results)
+                              ? competition.results.map((result, index) => (
+                                  <div key={index} className="flex items-center gap-2 text-sm">
+                                    <span className="font-medium">{result.event}:</span>
+                                    <span>{result.time}</span>
+                                    <Badge variant="outline" className="text-xs">
+                                      {result.position}º
                                     </Badge>
-                                  )}
-                                </div>
-                              )) : null}
-                            </div>
+                                    {result.personalBest && (
+                                      <Badge variant="default" className="text-xs bg-green-500">
+                                        PB
+                                      </Badge>
+                                    )}
+                                  </div>
+                                ))
+                              : null}
                           </div>
-                        )}
+                        </div>
+                      )}
                     </div>
 
-                    <div className='flex items-center gap-2'>
+                    <div className="flex items-center gap-2">
                       <Button
-                        variant='ghost'
-                        size='sm'
+                        variant="ghost"
+                        size="sm"
                         onClick={e => {
                           e.stopPropagation();
                           handleEditCompetition(competition);
                         }}
-                        className='h-8 w-8 p-0'
+                        className="h-8 w-8 p-0"
                       >
-                        <Edit className='h-4 w-4' />
+                        <Edit className="h-4 w-4" />
                       </Button>
                       <Button
-                        variant='ghost'
-                        size='sm'
+                        variant="ghost"
+                        size="sm"
                         onClick={e => {
                           e.stopPropagation();
                           deleteCompetition(competition.id);
                         }}
-                        className='h-8 w-8 p-0 text-destructive hover:text-destructive'
+                        className="h-8 w-8 p-0 text-destructive hover:text-destructive"
                       >
-                        <Trash2 className='h-4 w-4' />
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>
@@ -1280,171 +1079,135 @@ export function PlanificacionOverview() {
 
           {/* Selected competition details */}
           {currentCompetition && currentCompetition !== null && (
-            <Card className='bg-muted/50 border-muted'>
+            <Card className="bg-muted/50 border-muted">
               <CardHeader>
-                <CardTitle className='flex items-center gap-2'>
-                  <Trophy className='h-5 w-5 text-yellow-500' />
-                  {currentCompetition.name} - Detalles
+                <CardTitle className="flex items-center gap-2">
+                  <Trophy className="h-5 w-5 text-yellow-500" />
+                  {currentCompetition.name} - Details
                 </CardTitle>
-                <CardDescription>
-                  {currentCompetition.objectives}
-                </CardDescription>
+                <CardDescription>{currentCompetition.objectives}</CardDescription>
               </CardHeader>
-              <CardContent className='space-y-4'>
-                <div className='grid gap-4 md:grid-cols-3'>
-                  <div className='space-y-2'>
-                    <h4 className='font-medium'>Fecha</h4>
-                    <p className='font-bold'>
-                      {currentCompetition?.date ? new Date(currentCompetition.date).toLocaleDateString('es-ES') : 'Sin fecha'}
+              <CardContent className="space-y-4">
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="space-y-2">
+                    <h4 className="font-medium">Date</h4>
+                    <p className="font-bold">
+                      {currentCompetition?.date
+                        ? new Date(currentCompetition.date).toLocaleDateString('en-US')
+                        : 'No date'}
                     </p>
                   </div>
-                  <div className='space-y-2'>
-                    <h4 className='font-medium'>Location</h4>
-                    <p className='font-bold'>{currentCompetition.location}</p>
+                  <div className="space-y-2">
+                    <h4 className="font-medium">Location</h4>
+                    <p className="font-bold">{currentCompetition.location}</p>
                   </div>
-                  <div className='space-y-2'>
-                    <h4 className='font-medium'>Tipo</h4>
+                  <div className="space-y-2">
+                    <h4 className="font-medium">Type</h4>
                     <Badge
-                      variant='outline'
+                      variant="outline"
                       className={`${getTypeColor(currentCompetition.type)} text-white`}
                     >
                       {currentCompetition.type === 'internacional'
-                        ? 'Internacional'
+                        ? 'International'
                         : currentCompetition.type === 'nacional'
-                          ? 'Nacional'
-                          : currentCompetition.type === 'regional'
-                            ? 'Regional'
-                            : 'Local'}
+                        ? 'National'
+                        : currentCompetition.type === 'regional'
+                        ? 'Regional'
+                        : 'Local'}
                     </Badge>
                   </div>
                 </div>
 
-                <div className='space-y-2'>
-                  <h4 className='font-medium'>Eventos</h4>
-                  <div className='flex flex-wrap gap-2'>
-                    {Array.isArray(currentCompetition?.events) ? currentCompetition.events.map((event, index) => (
-                      <Badge key={index} variant='default' className='text-sm'>
-                        {event}
-                      </Badge>
-                    )) : null}
+                <div className="space-y-2">
+                  <h4 className="font-medium">Events</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {Array.isArray(currentCompetition?.events)
+                      ? currentCompetition.events.map((event, index) => (
+                          <Badge key={index} variant="default" className="text-sm">
+                            {event}
+                          </Badge>
+                        ))
+                      : null}
                   </div>
                 </div>
 
-                {currentCompetition.results &&
-                  currentCompetition.results.length > 0 && (
-                    <div className='space-y-2'>
-                      <h4 className='font-medium'>Resultados</h4>
-                      <div className='space-y-2'>
-                        {Array.isArray(currentCompetition?.results) ? currentCompetition.results.map((result, index) => (
-                          <div
-                            key={index}
-                            className='flex items-center justify-between p-3 border rounded-lg'
-                          >
-                            <div className='flex items-center gap-3'>
-                              <span className='font-medium'>
-                                {result.event}
-                              </span>
-                              <span className='text-lg font-bold'>
-                                {result.time}
-                              </span>
-                              <Badge variant='outline'>
-                                {result.position}º puesto
-                              </Badge>
-                              {result.personalBest && (
-                                <Badge
-                                  variant='default'
-                                  className='bg-green-500'
-                                >
-                                  Personal Record
-                                </Badge>
-                              )}
+                {currentCompetition.results && currentCompetition.results.length > 0 && (
+                  <div className="space-y-2">
+                    <h4 className="font-medium">Results</h4>
+                    <div className="space-y-2">
+                      {Array.isArray(currentCompetition?.results)
+                        ? currentCompetition.results.map((result, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center justify-between p-3 border rounded-lg"
+                            >
+                              <div className="flex items-center gap-3">
+                                <span className="font-medium">{result.event}</span>
+                                <span className="text-lg font-bold">{result.time}</span>
+                                <Badge variant="outline">{result.position}º place</Badge>
+                                {result.personalBest && (
+                                  <Badge variant="default" className="bg-green-500">
+                                    Personal Record
+                                  </Badge>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        )) : null}
-                      </div>
+                          ))
+                        : null}
                     </div>
-                  )}
+                  </div>
+                )}
               </CardContent>
             </Card>
           )}
 
           {/* Competition Editing Modal */}
-          <Dialog
-            open={editingCompetition !== null || isAddingCompetition}
-            onOpenChange={handleCancelCompetition}
-          >
-            <DialogContent className='max-w-4xl max-h-[90vh] overflow-y-auto'>
+          <Dialog open={editingCompetition !== null || isAddingCompetition} onOpenChange={handleCancelCompetition}>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>
-                  {isAddingCompetition
-                    ? 'Add New Competition'
-                    : 'Edit Competition'}
-                </DialogTitle>
+                <DialogTitle>{isAddingCompetition ? 'Add New Competition' : 'Edit Competition'}</DialogTitle>
                 <DialogDescription>
-                  {isAddingCompetition
-                    ? 'Create a new competition'
-                    : 'Modify competition details'}
+                  {isAddingCompetition ? 'Create a new competition' : 'Modify competition details'}
                 </DialogDescription>
               </DialogHeader>
 
-              <div className='space-y-4'>
-                <div className='grid grid-cols-2 gap-4'>
-                  <div className='space-y-2'>
-                    <Label htmlFor='comp-name'>Competition Name</Label>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="comp-name">Competition Name</Label>
                     <Input
-                      id='comp-name'
+                      id="comp-name"
                       value={competitionForm.name}
-                      onChange={e =>
-                        setCompetitionForm(prev => ({
-                          ...prev,
-                          name: e.target.value,
-                        }))
-                      }
-                      placeholder='Ej: Campeonato Nacional 2025'
+                      onChange={e => setCompetitionForm(prev => ({ ...prev, name: e.target.value }))}
+                      placeholder="e.g., National Championships 2025"
                     />
                   </div>
-                  <div className='space-y-2'>
-                    <Label htmlFor='comp-date'>Fecha</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="comp-date">Date</Label>
                     <Input
-                      id='comp-date'
-                      type='date'
+                      id="comp-date"
+                      type="date"
                       value={competitionForm.date}
-                      onChange={e =>
-                        setCompetitionForm(prev => ({
-                          ...prev,
-                          date: e.target.value,
-                        }))
-                      }
+                      onChange={e => setCompetitionForm(prev => ({ ...prev, date: e.target.value }))}
                     />
                   </div>
                 </div>
 
-                <div className='grid grid-cols-2 gap-4'>
-                  <div className='space-y-2'>
-                    <Label htmlFor='comp-location'>Location</Label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="comp-location">Location</Label>
                     <Input
-                      id='comp-location'
+                      id="comp-location"
                       value={competitionForm.location}
-                      onChange={e =>
-                        setCompetitionForm(prev => ({
-                          ...prev,
-                          location: e.target.value,
-                        }))
-                      }
-                      placeholder='Ex: Madrid, Spain'
+                      onChange={e => setCompetitionForm(prev => ({ ...prev, location: e.target.value }))}
+                      placeholder="e.g., Madrid, Spain"
                     />
                   </div>
-                  <div className='space-y-2'>
-                    <Label htmlFor='comp-type'>Tipo</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="comp-type">Type</Label>
                     <Select
                       value={competitionForm.type}
-                      onValueChange={(
-                        value:
-                          | 'nacional'
-                          | 'regional'
-                          | 'local'
-                          | 'internacional'
-                      ) =>
+                      onValueChange={(value: 'nacional' | 'regional' | 'local' | 'internacional') =>
                         setCompetitionForm(prev => ({ ...prev, type: value }))
                       }
                     >
@@ -1452,69 +1215,77 @@ export function PlanificacionOverview() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value='local'>Local</SelectItem>
-                        <SelectItem value='regional'>Regional</SelectItem>
-                        <SelectItem value='nacional'>Nacional</SelectItem>
-                        <SelectItem value='internacional'>
-                          Internacional
-                        </SelectItem>
+                        <SelectItem value="local">Local</SelectItem>
+                        <SelectItem value="regional">Regional</SelectItem>
+                        <SelectItem value="nacional">National</SelectItem>
+                        <SelectItem value="internacional">International</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
 
-                <div className='space-y-2'>
-                  <Label htmlFor='comp-objectives'>Objetivos</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="comp-objectives">Objectives</Label>
                   <Textarea
-                    id='comp-objectives'
+                    id="comp-objectives"
                     value={competitionForm.objectives}
-                    onChange={e =>
-                      setCompetitionForm(prev => ({
-                        ...prev,
-                        objectives: e.target.value,
-                      }))
-                    }
-                    placeholder='Describe the objectives for this competition...'
-                    className='min-h-[80px]'
+                    onChange={e => setCompetitionForm(prev => ({ ...prev, objectives: e.target.value }))}
+                    placeholder="Describe the objectives for this competition..."
+                    className="min-h-[80px]"
                   />
                 </div>
 
-                <div className='space-y-2'>
-                  <Label>Eventos</Label>
-                  <div className='flex flex-wrap gap-2 mb-2'>
-                    {Array.isArray(competitionForm.events) ? competitionForm.events.map((event, index) => (
-                      <Badge key={index} variant='secondary' className='gap-1'>
-                        {event}
-                        <button
-                          onClick={() => handleRemoveEvent(event)}
-                          className='ml-1 hover:text-destructive'
-                        >
-                          <X className='h-3 w-3' />
-                        </button>
-                      </Badge>
-                    )) : null}
+                <div className="space-y-2">
+                  <Label>Events</Label>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {Array.isArray(competitionForm.events)
+                      ? competitionForm.events.map((event, index) => (
+                          <Badge key={index} variant="secondary" className="gap-1">
+                            {event}
+                            <button
+                              onClick={() => handleRemoveEvent(event)}
+                              className="ml-1 hover:text-destructive"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </Badge>
+                        ))
+                      : null}
                   </div>
 
                   {/* Events organized by categories */}
-                  <div className='space-y-3'>
+                  <div className="space-y-3">
                     <div>
-                      <h4 className='text-sm font-medium mb-2'>Estilo Libre</h4>
-                      <div className='flex flex-wrap gap-1'>
-                        {[
-                          '50m Libre',
-                          '100m Libre',
-                          '200m Libre',
-                          '400m Libre',
-                          '800m Libre',
-                          '1500m Libre',
-                        ].map(event => (
+                      <h4 className="text-sm font-medium mb-2">Freestyle</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {['50m Freestyle', '100m Freestyle', '200m Freestyle', '400m Freestyle', '800m Freestyle', '1500m Freestyle'].map(
+                          event => (
+                            <Button
+                              key={event}
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleAddEvent(event)}
+                              disabled={competitionForm.events.includes(event)}
+                              className="text-xs h-7"
+                            >
+                              {event}
+                            </Button>
+                          )
+                        )}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="text-sm font-medium mb-2">Backstroke</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {['50m Backstroke', '100m Backstroke', '200m Backstroke'].map(event => (
                           <Button
                             key={event}
-                            variant='outline'
-                            size='sm'
+                            variant="outline"
+                            size="sm"
                             onClick={() => handleAddEvent(event)}
                             disabled={competitionForm.events.includes(event)}
-                            className='text-xs h-7'
+                            className="text-xs h-7"
                           >
                             {event}
                           </Button>
@@ -1523,76 +1294,16 @@ export function PlanificacionOverview() {
                     </div>
 
                     <div>
-                      <h4 className='text-sm font-medium mb-2'>Espalda</h4>
-                      <div className='flex flex-wrap gap-1'>
-                        {['50m Espalda', '100m Espalda', '200m Espalda'].map(
-                          event => (
-                            <Button
-                              key={event}
-                              variant='outline'
-                              size='sm'
-                              onClick={() => handleAddEvent(event)}
-                              disabled={competitionForm.events.includes(event)}
-                              className='text-xs h-7'
-                            >
-                              {event}
-                            </Button>
-                          )
-                        )}
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className='text-sm font-medium mb-2'>Braza</h4>
-                      <div className='flex flex-wrap gap-1'>
-                        {['50m Braza', '100m Braza', '200m Braza'].map(
-                          event => (
-                            <Button
-                              key={event}
-                              variant='outline'
-                              size='sm'
-                              onClick={() => handleAddEvent(event)}
-                              disabled={competitionForm.events.includes(event)}
-                              className='text-xs h-7'
-                            >
-                              {event}
-                            </Button>
-                          )
-                        )}
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className='text-sm font-medium mb-2'>Mariposa</h4>
-                      <div className='flex flex-wrap gap-1'>
-                        {['50m Mariposa', '100m Mariposa', '200m Mariposa'].map(
-                          event => (
-                            <Button
-                              key={event}
-                              variant='outline'
-                              size='sm'
-                              onClick={() => handleAddEvent(event)}
-                              disabled={competitionForm.events.includes(event)}
-                              className='text-xs h-7'
-                            >
-                              {event}
-                            </Button>
-                          )
-                        )}
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className='text-sm font-medium mb-2'>Estilos</h4>
-                      <div className='flex flex-wrap gap-1'>
-                        {['200m Estilos', '400m Estilos'].map(event => (
+                      <h4 className="text-sm font-medium mb-2">Breaststroke</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {['50m Breaststroke', '100m Breaststroke', '200m Breaststroke'].map(event => (
                           <Button
                             key={event}
-                            variant='outline'
-                            size='sm'
+                            variant="outline"
+                            size="sm"
                             onClick={() => handleAddEvent(event)}
                             disabled={competitionForm.events.includes(event)}
-                            className='text-xs h-7'
+                            className="text-xs h-7"
                           >
                             {event}
                           </Button>
@@ -1601,56 +1312,85 @@ export function PlanificacionOverview() {
                     </div>
 
                     <div>
-                      <h4 className='text-sm font-medium mb-2'>Relevos</h4>
-                      <div className='flex flex-wrap gap-1'>
-                        {['4x100m Libre', '4x200m Libre', '4x100m Estilos'].map(
-                          event => (
-                            <Button
-                              key={event}
-                              variant='outline'
-                              size='sm'
-                              onClick={() => handleAddEvent(event)}
-                              disabled={competitionForm.events.includes(event)}
-                              className='text-xs h-7'
-                            >
-                              {event}
-                            </Button>
-                          )
-                        )}
+                      <h4 className="text-sm font-medium mb-2">Butterfly</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {['50m Butterfly', '100m Butterfly', '200m Butterfly'].map(event => (
+                          <Button
+                            key={event}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAddEvent(event)}
+                            disabled={competitionForm.events.includes(event)}
+                            className="text-xs h-7"
+                          >
+                            {event}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="text-sm font-medium mb-2">Individual Medley</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {['200m IM', '400m IM'].map(event => (
+                          <Button
+                            key={event}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAddEvent(event)}
+                            disabled={competitionForm.events.includes(event)}
+                            className="text-xs h-7"
+                          >
+                            {event}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="text-sm font-medium mb-2">Relays</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {['4x100m Freestyle', '4x200m Freestyle', '4x100m Medley'].map(event => (
+                          <Button
+                            key={event}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAddEvent(event)}
+                            disabled={competitionForm.events.includes(event)}
+                            className="text-xs h-7"
+                          >
+                            {event}
+                          </Button>
+                        ))}
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className='grid grid-cols-2 gap-4'>
-                  <div className='space-y-2'>
-                    <Label htmlFor='comp-priority'>Prioridad</Label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="comp-priority">Priority</Label>
                     <Select
                       value={competitionForm.priority}
                       onValueChange={(value: 'high' | 'medium' | 'low') =>
-                        setCompetitionForm(prev => ({
-                          ...prev,
-                          priority: value,
-                        }))
+                        setCompetitionForm(prev => ({ ...prev, priority: value }))
                       }
                     >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value='high'>Alta</SelectItem>
-                        <SelectItem value='medium'>Media</SelectItem>
-                        <SelectItem value='low'>Baja</SelectItem>
+                        <SelectItem value="high">High</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="low">Low</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className='space-y-2'>
-                    <Label htmlFor='comp-status'>Estado</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="comp-status">Status</Label>
                     <Select
                       value={competitionForm.status}
-                      onValueChange={(
-                        value: 'upcoming' | 'completed' | 'cancelled'
-                      ) =>
+                      onValueChange={(value: 'upcoming' | 'completed' | 'cancelled') =>
                         setCompetitionForm(prev => ({ ...prev, status: value }))
                       }
                     >
@@ -1658,21 +1398,21 @@ export function PlanificacionOverview() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value='upcoming'>Upcoming</SelectItem>
-                        <SelectItem value='completed'>Completed</SelectItem>
-                        <SelectItem value='cancelled'>Cancelada</SelectItem>
+                        <SelectItem value="upcoming">Upcoming</SelectItem>
+                        <SelectItem value="completed">Completed</SelectItem>
+                        <SelectItem value="cancelled">Cancelled</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
 
-                <div className='flex justify-end gap-2 pt-4'>
-                  <Button variant='outline' onClick={handleCancelCompetition}>
+                <div className="flex justify-end gap-2 pt-4">
+                  <Button variant="outline" onClick={handleCancelCompetition}>
                     Cancel
                   </Button>
-                  <Button onClick={handleSaveCompetition} className='gap-2'>
-                    <Save className='h-4 w-4' />
-                    {isAddingCompetition ? 'Agregar' : 'Guardar'}
+                  <Button onClick={handleSaveCompetition} className="gap-2">
+                    <Save className="h-4 w-4" />
+                    {isAddingCompetition ? 'Add' : 'Save'}
                   </Button>
                 </div>
               </div>
@@ -1681,62 +1421,49 @@ export function PlanificacionOverview() {
         </TabsContent>
 
         {/* Tab: Weekly Planning */}
-        <TabsContent value='planificacion' className='space-y-4'>
-          <Card className='bg-muted/50 border-muted'>
+        <TabsContent value="planificacion" className="space-y-4">
+          <Card className="bg-muted/50 border-muted">
             <CardHeader>
               <CardTitle>Weekly Cycle Planning</CardTitle>
-              <CardDescription>
-                Load distribution and approaches per week
-              </CardDescription>
+              <CardDescription>Load distribution and focus per week</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className='space-y-4'>
-                {safeMap(weeklyPlan, (week: WeeklyPlan) => (
+              <div className="space-y-4">
+                {safeMap<WeeklyPlan>(weeklyPlan, (week: WeeklyPlan) => (
                   <div
                     key={week.week}
-                    className='border rounded-lg p-4 hover:bg-muted/30 transition-colors'
+                    className="border rounded-lg p-4 hover:bg-muted/30 transition-colors"
                   >
-                    <div className='flex items-center justify-between'>
-                      <div className='flex items-center gap-4'>
-                        <div className='text-center'>
-                          <p className='text-sm font-medium'>Semana</p>
-                          <p className='text-2xl font-bold'>{week.week}</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="text-center">
+                          <p className="text-sm font-medium">Week</p>
+                          <p className="text-2xl font-bold">{week.week}</p>
                         </div>
-                        <div className='space-y-1'>
-                          <Badge variant='outline'>{week.phase}</Badge>
-                          <p className='text-sm text-muted-foreground'>
-                            Enfoque: {week.focus}
+                        <div className="space-y-1">
+                          <Badge variant="outline">{week.phase}</Badge>
+                          <p className="text-sm text-muted-foreground">
+                            Focus: {week.focus}
                           </p>
                         </div>
                       </div>
 
-                      <div className='flex items-center gap-6'>
-                        <div className='text-center'>
-                          <p className='text-sm text-muted-foreground'>
-                            Distancia
-                          </p>
-                          <p className='font-bold'>
+                      <div className="flex items-center gap-6">
+                        <div className="text-center">
+                          <p className="text-sm text-muted-foreground">Distance</p>
+                          <p className="font-bold">
                             {(week.totalDistance || 0).toLocaleString()}m
                           </p>
                         </div>
-                        <div className='text-center'>
-                          <p className='text-sm text-muted-foreground'>
-                            Sesiones
-                          </p>
-                          <p className='font-bold'>{week.sessions}</p>
+                        <div className="text-center">
+                          <p className="text-sm text-muted-foreground">Sessions</p>
+                          <p className="font-bold">{week.sessions}</p>
                         </div>
-                        <div className='text-center'>
-                          <p className='text-sm text-muted-foreground'>
-                            Intensidad
-                          </p>
-                          <div className='flex items-center gap-2'>
-                            <Progress
-                              value={week.intensity * 10}
-                              className='w-16 h-2'
-                            />
-                            <span className='font-bold'>
-                              {week.intensity}/10
-                            </span>
+                        <div className="text-center">
+                          <p className="text-sm text-muted-foreground">Intensity</p>
+                          <div className="flex items-center gap-2">
+                            <Progress value={week.intensity * 10} className="w-16 h-2" />
+                            <span className="font-bold">{week.intensity}/10</span>
                           </div>
                         </div>
                       </div>
@@ -1748,65 +1475,53 @@ export function PlanificacionOverview() {
           </Card>
         </TabsContent>
 
-        {/* Tab: Carga de Entrenamiento */}
-        <TabsContent value='carga' className='space-y-4'>
-          {/* Zonas de Entrenamiento Actuales */}
-          <Card className='bg-muted/50 border-muted'>
+        {/* Tab: Training Load */}
+        <TabsContent value="carga" className="space-y-4">
+          {/* Current Training Zones */}
+          <Card className="bg-muted/50 border-muted">
             <CardHeader>
-              <CardTitle className='flex items-center gap-2'>
-                <Activity className='h-5 w-5' />
-                Zonas de Entrenamiento
+              <CardTitle className="flex items-center gap-2">
+                <Activity className="h-5 w-5" />
+                Training Zones
               </CardTitle>
               <CardDescription>
-                Current methodology applied throughout the application
+                Current methodology applied across the application
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className='grid grid-cols-2 md:grid-cols-5 gap-4'>
-                {currentZones && typeof currentZones === 'object' ? Object.entries(currentZones).map(([zone, zoneData]) => (
-                  <div
-                    key={zone}
-                    className='text-center p-3 border rounded-lg bg-background/50'
-                  >
-                    <div className='text-lg font-bold text-primary'>{zone}</div>
-                    <div className='text-sm text-muted-foreground'>
-                      {zoneData.name}
-                    </div>
-                    <div className='text-xs text-muted-foreground mt-1'>
-                      {zoneData.min}%-{zoneData.max}%
-                    </div>
-                  </div>
-                )) : null}
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                {currentZones && typeof currentZones === 'object'
+                  ? Object.entries(currentZones).map(([zone, zoneData]) => (
+                      <div key={zone} className="text-center p-3 border rounded-lg bg-background/50">
+                        <div className="text-lg font-bold text-primary">{zone}</div>
+                        <div className="text-sm text-muted-foreground">{zoneData.name}</div>
+                        <div className="text-xs text-muted-foreground mt-1">
+                          {zoneData.min}%-{zoneData.max}%
+                        </div>
+                      </div>
+                    ))
+                  : null}
               </div>
             </CardContent>
           </Card>
 
-          <div className='grid gap-4 md:grid-cols-2'>
-            <Card className='bg-muted/50 border-muted'>
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card className="bg-muted/50 border-muted">
               <CardHeader>
                 <CardTitle>Volume Evolution</CardTitle>
-                <CardDescription>
-                  Metros por semana a lo largo del ciclo
-                </CardDescription>
+                <CardDescription>Meters per week throughout the cycle</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className='space-y-3'>
-                  {safeMap(weeklyPlan, (week: WeeklyPlan) => (
-                    <div key={week.week} className='flex items-center gap-3'>
-                      <span className='text-sm font-medium w-12'>
-                        S{week.week}
-                      </span>
-                      <div className='flex-1'>
-                        <div className='flex items-center justify-between text-sm mb-1'>
+                <div className="space-y-3">
+                  {safeMap<WeeklyPlan>(weeklyPlan, (week: WeeklyPlan) => (
+                    <div key={week.week} className="flex items-center gap-3">
+                      <span className="text-sm font-medium w-12">W{week.week}</span>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between text-sm mb-1">
                           <span>{(week.totalDistance || 0).toLocaleString()}m</span>
-                          <span className='text-muted-foreground'>
-                            {week.phase}
-                          </span>
+                          <span className="text-muted-foreground">{week.phase}</span>
                         </div>
-                        <Progress
-                          value={(week.totalDistance / 35000) * 100}
-                          className='h-2'
-                        />
+                        <Progress value={(week.totalDistance / 35000) * 100} className="h-2" />
                       </div>
                     </div>
                   ))}
@@ -1814,28 +1529,22 @@ export function PlanificacionOverview() {
               </CardContent>
             </Card>
 
-            <Card className='bg-muted/50 border-muted'>
+            <Card className="bg-muted/50 border-muted">
               <CardHeader>
                 <CardTitle>Intensity Evolution</CardTitle>
-                <CardDescription>
-                  Nivel de intensidad por semana
-                </CardDescription>
+                <CardDescription>Intensity level per week</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className='space-y-3'>
-                  {safeMap(weeklyPlan, (week: WeeklyPlan) => (
-                    <div key={week.week} className='flex items-center gap-3'>
-                      <span className='text-sm font-medium w-12'>
-                        S{week.week}
-                      </span>
-                      <div className='flex-1'>
-                        <div className='flex items-center justify-between text-sm mb-1'>
+                <div className="space-y-3">
+                  {safeMap<WeeklyPlan>(weeklyPlan, (week: WeeklyPlan) => (
+                    <div key={week.week} className="flex items-center gap-3">
+                      <span className="text-sm font-medium w-12">W{week.week}</span>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between text-sm mb-1">
                           <span>{week.intensity}/10</span>
-                          <span className='text-muted-foreground'>
-                            {week.focus}
-                          </span>
+                          <span className="text-muted-foreground">{week.focus}</span>
                         </div>
-                        <Progress value={week.intensity * 10} className='h-2' />
+                        <Progress value={week.intensity * 10} className="h-2" />
                       </div>
                     </div>
                   ))}

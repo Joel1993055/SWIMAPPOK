@@ -1,30 +1,32 @@
 'use client';
 
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
 import {
-    ChartConfig,
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
 } from '@/components/ui/chart';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { useSessionsData } from '@/lib/hooks/use-sessions-data';
 import { AreaChartIcon, BarChart3 } from 'lucide-react';
 import { lazy, Suspense, useState } from 'react';
 
-// OPTIMIZACIÓN: Lazy loading de Recharts
+// =====================================================
+// OPTIMIZATION: Lazy loading for Recharts
+// =====================================================
 const Area = lazy(() => import('recharts').then(module => ({ default: module.Area })));
 const AreaChart = lazy(() => import('recharts').then(module => ({ default: module.AreaChart })));
 const Bar = lazy(() => import('recharts').then(module => ({ default: module.Bar })));
@@ -33,56 +35,49 @@ const CartesianGrid = lazy(() => import('recharts').then(module => ({ default: m
 const XAxis = lazy(() => import('recharts').then(module => ({ default: module.XAxis })));
 const YAxis = lazy(() => import('recharts').then(module => ({ default: module.YAxis })));
 
-// Colors for intensity zones
+// =====================================================
+// ZONE COLORS & LABELS
+// =====================================================
 const zoneColors = {
-  Z1: '#3b82f6', // Azul
-  Z2: '#10b981', // Verde
-  Z3: '#f59e0b', // Amarillo
-  Z4: '#ef4444', // Rojo
-  Z5: '#8b5cf6', // Púrpura
+  Z1: '#3b82f6', // Blue
+  Z2: '#10b981', // Green
+  Z3: '#f59e0b', // Yellow
+  Z4: '#ef4444', // Red
+  Z5: '#8b5cf6', // Purple
 };
 
-// Labels for zones
 const zoneLabels = {
   Z1: 'Z1 - Recovery',
   Z2: 'Z2 - Aerobic Base',
   Z3: 'Z3 - Aerobic Threshold',
-  Z4: 'Z4 - Anaeróbico Láctico',
-  Z5: 'Z5 - Anaeróbico Aláctico',
+  Z4: 'Z4 - Anaerobic Lactic',
+  Z5: 'Z5 - Anaerobic Alactic',
 };
 
-// Función para generar datos de la semana actual
+// =====================================================
+// HELPER: Generate current week data
+// =====================================================
 const generateWeeklyData = (sessions: any[]) => {
   const today = new Date();
   const startOfWeek = new Date(today);
-  // Calculate Monday of current week
-  const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-  const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // If Sunday, go back 6 days; if not, go back (day - 1)
+  const dayOfWeek = today.getDay(); // 0 = Sunday
+  const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
   startOfWeek.setDate(today.getDate() - daysToMonday);
   startOfWeek.setHours(0, 0, 0, 0);
 
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-  const weeklyData = Array.from({ length: 7 }, (_, index) => {
+  return Array.from({ length: 7 }, (_, index) => {
     const currentDay = new Date(startOfWeek);
     currentDay.setDate(startOfWeek.getDate() + index);
 
     const dayName = daysOfWeek[index];
-
-    // Filter sessions for current day
     const daySessions = sessions.filter(session => {
       const sessionDate = new Date(session.date);
       return sessionDate.toDateString() === currentDay.toDateString();
     });
 
-    // Calcular metros por zona para el día
-    const dayZones = {
-      Z1: 0,
-      Z2: 0,
-      Z3: 0,
-      Z4: 0,
-      Z5: 0,
-    };
+    const dayZones = { Z1: 0, Z2: 0, Z3: 0, Z4: 0, Z5: 0 };
 
     daySessions.forEach(session => {
       if (session.zone_volumes) {
@@ -94,13 +89,9 @@ const generateWeeklyData = (sessions: any[]) => {
       }
     });
 
-    // Convertir metros a kilómetros
-    const totalDayMeters = Object.values(dayZones).reduce(
-      (sum, meters) => sum + meters,
-      0
-    );
+    const totalDayMeters = Object.values(dayZones).reduce((sum, m) => sum + m, 0);
 
-    const dayData = {
+    return {
       day: dayName,
       ...Object.fromEntries(
         Object.entries(dayZones).map(([zone, meters]) => [
@@ -110,65 +101,22 @@ const generateWeeklyData = (sessions: any[]) => {
       ),
       totalMeters: totalDayMeters,
     };
-
-    return dayData;
   });
-
-  return weeklyData;
 };
 
 const chartConfig: ChartConfig = {
-  Z1: {
-    label: zoneLabels.Z1,
-    color: zoneColors.Z1,
-  },
-  Z2: {
-    label: zoneLabels.Z2,
-    color: zoneColors.Z2,
-  },
-  Z3: {
-    label: zoneLabels.Z3,
-    color: zoneColors.Z3,
-  },
-  Z4: {
-    label: zoneLabels.Z4,
-    color: zoneColors.Z4,
-  },
-  Z5: {
-    label: zoneLabels.Z5,
-    color: zoneColors.Z5,
-  },
+  Z1: { label: zoneLabels.Z1, color: zoneColors.Z1 },
+  Z2: { label: zoneLabels.Z2, color: zoneColors.Z2 },
+  Z3: { label: zoneLabels.Z3, color: zoneColors.Z3 },
+  Z4: { label: zoneLabels.Z4, color: zoneColors.Z4 },
+  Z5: { label: zoneLabels.Z5, color: zoneColors.Z5 },
 };
-
-// Usar la misma configuración que el gráfico de barras
-const areaChartConfig = chartConfig;
 
 export function VisitorsChart() {
   const { sessions, isLoading } = useSessionsData();
   const [chartType, setChartType] = useState<'bar' | 'area'>('bar');
 
-  // Debug para verificar conexión (solo en desarrollo)
-  if (process.env.NODE_ENV === 'development') {
-    console.log("=== DEBUG WEEKLY PROGRESS ===");
-    console.log("Number of sessions:", sessions.length);
-    
-    // Verify that sessions have zone_volumes
-    const sessionsWithZones = sessions.filter(session => session.zone_volumes);
-    console.log("Sessions with zones:", sessionsWithZones.length);
-    
-    if (sessionsWithZones.length > 0) {
-      console.log("First session with zones:", {
-        title: sessionsWithZones[0].title,
-        date: sessionsWithZones[0].date,
-        zone_volumes: sessionsWithZones[0].zone_volumes
-      });
-    }
-  }
-
-  // Generar datos de la semana actual
   const chartData = generateWeeklyData(sessions);
-
-  // Generar datos para el área chart (con todas las zonas)
   const areaChartData = chartData.map(day => ({
     day: day.day,
     Z1: (day as any).Z1 || 0,
@@ -179,21 +127,18 @@ export function VisitorsChart() {
     totalMeters: day.totalMeters,
   }));
 
-  // Debug solo en desarrollo
-  if (process.env.NODE_ENV === 'development') {
-    console.log("Datos del gráfico generados:", chartData);
-    console.log("Weekly total calculated:", chartData.reduce((total, day) => total + day.totalMeters, 0));
-  }
-
-  // Calcular total semanal
-  const totalWeekly = chartData.reduce((total, day) => {
-    return total + ((day as any).Z1 || 0) + ((day as any).Z2 || 0) + ((day as any).Z3 || 0) + ((day as any).Z4 || 0) + ((day as any).Z5 || 0);
-  }, 0);
-
-  // Calcular promedio diario
+  const totalWeekly = chartData.reduce(
+    (total, day) =>
+      total +
+      ((day as any).Z1 || 0) +
+      ((day as any).Z2 || 0) +
+      ((day as any).Z3 || 0) +
+      ((day as any).Z4 || 0) +
+      ((day as any).Z5 || 0),
+    0
+  );
   const dailyAverage = Math.round(totalWeekly / 7);
 
-  // Mostrar estado de carga
   if (isLoading) {
     return (
       <Card className='col-span-4 bg-muted/50 border-muted'>
@@ -214,7 +159,6 @@ export function VisitorsChart() {
     );
   }
 
-  // Mostrar mensaje si no hay datos
   if (sessions.length === 0) {
     return (
       <Card className='col-span-4 bg-muted/50 border-muted'>
@@ -227,8 +171,10 @@ export function VisitorsChart() {
         <CardContent>
           <div className='h-[300px] flex items-center justify-center'>
             <div className='text-center text-muted-foreground'>
-              <div className='text-lg font-medium mb-2'>No hay entrenamientos</div>
-              <div className='text-sm'>Crea tu primer entrenamiento para ver el progreso semanal</div>
+              <div className='text-lg font-medium mb-2'>No trainings</div>
+              <div className='text-sm'>
+                Create your first training session to see weekly progress
+              </div>
             </div>
           </div>
         </CardContent>
@@ -256,12 +202,12 @@ export function VisitorsChart() {
                   {chartType === 'bar' ? (
                     <>
                       <BarChart3 className='h-3.5 w-3.5' />
-                      <span>Bars</span>
+                      <span>Bar Chart</span>
                     </>
                   ) : (
                     <>
                       <AreaChartIcon className='h-3.5 w-3.5' />
-                      <span>Área</span>
+                      <span>Area Chart</span>
                     </>
                   )}
                 </div>
@@ -277,7 +223,7 @@ export function VisitorsChart() {
               <SelectItem value='area'>
                 <div className='flex items-center gap-1.5'>
                   <AreaChartIcon className='h-3.5 w-3.5' />
-                  <span>Gráfico de Área</span>
+                  <span>Area Chart</span>
                 </div>
               </SelectItem>
             </SelectContent>
@@ -286,137 +232,81 @@ export function VisitorsChart() {
       </CardHeader>
       <CardContent>
         <div className='space-y-4'>
-          {/* Bar Chart */}
+          {/* BAR CHART */}
           {chartType === 'bar' && (
-            <Suspense fallback={
-              <div className='h-[300px] flex items-center justify-center'>
-                <div className='animate-pulse text-muted-foreground'>
-                  Cargando gráfico...
+            <Suspense
+              fallback={
+                <div className='h-[300px] flex items-center justify-center'>
+                  <div className='animate-pulse text-muted-foreground'>
+                    Loading chart...
+                  </div>
                 </div>
-              </div>
-            }>
+              }
+            >
               <ChartContainer config={chartConfig}>
                 <BarChart accessibilityLayer data={chartData}>
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey='day'
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                  tickFormatter={value => {
-                    return value;
-                  }}
-                />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={10}
-                  tickFormatter={value => `${value}km`}
-                />
-                <ChartTooltip
-                  content={
-                    <ChartTooltipContent
-                      formatter={(value, name) => [
-                        `${value}km`,
-                        chartConfig[name as keyof typeof chartConfig]?.label ||
-                          name,
-                      ]}
-                      labelFormatter={label => `Día: ${label}`}
-                    />
-                  }
-                />
-                <Bar dataKey='Z1' stackId='a' fill={zoneColors.Z1} />
-                <Bar dataKey='Z2' stackId='a' fill={zoneColors.Z2} />
-                <Bar dataKey='Z3' stackId='a' fill={zoneColors.Z3} />
-                <Bar dataKey='Z4' stackId='a' fill={zoneColors.Z4} />
-                <Bar dataKey='Z5' stackId='a' fill={zoneColors.Z5} />
-              </BarChart>
-            </ChartContainer>
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey='day' tickLine={false} tickMargin={10} axisLine={false} />
+                  <YAxis tickLine={false} axisLine={false} tickMargin={10} tickFormatter={v => `${v}km`} />
+                  <ChartTooltip
+                    content={
+                      <ChartTooltipContent
+                        formatter={(value, name) => [
+                          `${value}km`,
+                          chartConfig[name as keyof typeof chartConfig]?.label || name,
+                        ]}
+                        labelFormatter={label => `Day: ${label}`}
+                      />
+                    }
+                  />
+                  <Bar dataKey='Z1' stackId='a' fill={zoneColors.Z1} />
+                  <Bar dataKey='Z2' stackId='a' fill={zoneColors.Z2} />
+                  <Bar dataKey='Z3' stackId='a' fill={zoneColors.Z3} />
+                  <Bar dataKey='Z4' stackId='a' fill={zoneColors.Z4} />
+                  <Bar dataKey='Z5' stackId='a' fill={zoneColors.Z5} />
+                </BarChart>
+              </ChartContainer>
             </Suspense>
           )}
 
-          {/* Gráfico de Área */}
+          {/* AREA CHART */}
           {chartType === 'area' && (
-            <Suspense fallback={
-              <div className='h-[300px] flex items-center justify-center'>
-                <div className='animate-pulse text-muted-foreground'>
-                  Cargando gráfico...
+            <Suspense
+              fallback={
+                <div className='h-[300px] flex items-center justify-center'>
+                  <div className='animate-pulse text-muted-foreground'>
+                    Loading chart...
+                  </div>
                 </div>
-              </div>
-            }>
+              }
+            >
               <ChartContainer config={chartConfig}>
                 <AreaChart accessibilityLayer data={areaChartData}>
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey='day'
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={10}
-                  tickFormatter={value => `${value}km`}
-                />
-                <ChartTooltip
-                  content={
-                    <ChartTooltipContent
-                      formatter={(value, name) => [
-                        `${value}km`,
-                        areaChartConfig[name as keyof typeof areaChartConfig]
-                          ?.label || name,
-                      ]}
-                      labelFormatter={label => `Día: ${label}`}
-                    />
-                  }
-                />
-                <Area
-                  type='monotone'
-                  dataKey='Z1'
-                  stackId='1'
-                  stroke={zoneColors.Z1}
-                  fill={zoneColors.Z1}
-                  fillOpacity={0.6}
-                />
-                <Area
-                  type='monotone'
-                  dataKey='Z2'
-                  stackId='1'
-                  stroke={zoneColors.Z2}
-                  fill={zoneColors.Z2}
-                  fillOpacity={0.6}
-                />
-                <Area
-                  type='monotone'
-                  dataKey='Z3'
-                  stackId='1'
-                  stroke={zoneColors.Z3}
-                  fill={zoneColors.Z3}
-                  fillOpacity={0.6}
-                />
-                <Area
-                  type='monotone'
-                  dataKey='Z4'
-                  stackId='1'
-                  stroke={zoneColors.Z4}
-                  fill={zoneColors.Z4}
-                  fillOpacity={0.6}
-                />
-                <Area
-                  type='monotone'
-                  dataKey='Z5'
-                  stackId='1'
-                  stroke={zoneColors.Z5}
-                  fill={zoneColors.Z5}
-                  fillOpacity={0.6}
-                />
-              </AreaChart>
-            </ChartContainer>
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey='day' tickLine={false} tickMargin={10} axisLine={false} />
+                  <YAxis tickLine={false} axisLine={false} tickMargin={10} tickFormatter={v => `${v}km`} />
+                  <ChartTooltip
+                    content={
+                      <ChartTooltipContent
+                        formatter={(value, name) => [
+                          `${value}km`,
+                          chartConfig[name as keyof typeof chartConfig]?.label || name,
+                        ]}
+                        labelFormatter={label => `Day: ${label}`}
+                      />
+                    }
+                  />
+                  <Area type='monotone' dataKey='Z1' stackId='1' stroke={zoneColors.Z1} fill={zoneColors.Z1} fillOpacity={0.6} />
+                  <Area type='monotone' dataKey='Z2' stackId='1' stroke={zoneColors.Z2} fill={zoneColors.Z2} fillOpacity={0.6} />
+                  <Area type='monotone' dataKey='Z3' stackId='1' stroke={zoneColors.Z3} fill={zoneColors.Z3} fillOpacity={0.6} />
+                  <Area type='monotone' dataKey='Z4' stackId='1' stroke={zoneColors.Z4} fill={zoneColors.Z4} fillOpacity={0.6} />
+                  <Area type='monotone' dataKey='Z5' stackId='1' stroke={zoneColors.Z5} fill={zoneColors.Z5} fillOpacity={0.6} />
+                </AreaChart>
+              </ChartContainer>
             </Suspense>
           )}
 
-          {/* Estadísticas */}
+          {/* STATS */}
           <div className='grid grid-cols-2 gap-4 pt-4 border-t'>
             <div className='text-center'>
               <div className='text-2xl font-bold text-primary'>
@@ -428,9 +318,7 @@ export function VisitorsChart() {
               <div className='text-2xl font-bold text-primary'>
                 {dailyAverage.toFixed(1)}km
               </div>
-              <div className='text-sm text-muted-foreground'>
-                Daily Average
-              </div>
+              <div className='text-sm text-muted-foreground'>Daily Average</div>
             </div>
           </div>
         </div>

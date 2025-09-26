@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 interface ZoneDetection {
   detectedZones: string[];
@@ -17,94 +17,88 @@ interface TrainingMetrics {
   detectedIntensities: string[];
 }
 
-// Palabras clave para detección de zonas
+// Zone detection keywords
 const zoneKeywords = {
   Z1: [
-    'calentamiento',
-    'calma',
-    'recuperación',
-    'regenerativo',
-    'suave',
-    'fácil',
-    'relajado',
-    'tranquilo',
-    'lento',
     'warm-up',
     'cool-down',
-    'vuelta a la calma',
+    'recovery',
+    'regenerative',
+    'easy',
+    'light',
+    'relaxed',
+    'calm',
+    'slow',
     'z1',
-    'zona 1',
-    'recuperación',
-    'regenerativo',
+    'zone 1',
   ],
   Z2: [
-    'aeróbico',
+    'aerobic',
     'base',
-    'resistencia',
-    'continuo',
-    'moderado',
-    'confortable',
+    'endurance',
+    'steady',
+    'moderate',
+    'comfortable',
     'z2',
-    'zona 2',
-    'aeróbico base',
-    'resistencia base',
+    'zone 2',
+    'aerobic base',
+    'base endurance',
   ],
   Z3: [
-    'umbral',
+    'threshold',
     'tempo',
-    'ritmo',
-    'intenso',
-    'fuerte',
-    'desafiante',
-    'esfuerzo',
+    'pace',
+    'intense',
+    'hard',
+    'challenging',
+    'effort',
     'z3',
-    'zona 3',
-    'aeróbico umbral',
-    'umbral aeróbico',
+    'zone 3',
+    'aerobic threshold',
   ],
   Z4: [
     'vo2',
-    'máximo',
-    'muy intenso',
+    'max',
+    'very intense',
     'sprint',
-    'velocidad',
-    'potencia',
+    'speed',
+    'power',
     'z4',
-    'zona 4',
+    'zone 4',
     'vo2 max',
-    'máximo consumo',
+    'lactate',
+    'anaerobic',
   ],
   Z5: [
     'neuromuscular',
-    'explosivo',
-    'máxima velocidad',
-    'sprint máximo',
+    'explosive',
+    'max speed',
+    'all-out sprint',
     'z5',
-    'zona 5',
-    'neuromuscular',
-    'velocidad máxima',
+    'zone 5',
+    'maximum speed',
+    'strength',
+    'explosion',
   ],
 };
 
-// Palabras clave para detección de estilos
+// Stroke detection keywords
 const strokeKeywords = {
-  Libre: ['libre', 'crawl', 'crol', 'freestyle'],
-  Espalda: ['espalda', 'backstroke', 'dorso'],
-  Pecho: ['pecho', 'braza', 'breaststroke', 'brazada'],
-  Mariposa: ['mariposa', 'butterfly', 'mariposa'],
+  Freestyle: ['freestyle', 'free', 'crawl', 'front crawl'],
+  Backstroke: ['backstroke', 'back', 'dorsal'],
+  Breaststroke: ['breaststroke', 'breast', 'br'],
+  Butterfly: ['butterfly', 'fly'],
 };
 
-// Palabras clave para detección de intensidad
+// Intensity detection keywords
 const intensityKeywords = {
-  Baja: ['fácil', 'suave', 'relajado', 'tranquilo', 'lento'],
-  Media: ['moderado', 'confortable', 'medio', 'normal'],
-  Alta: ['intenso', 'fuerte', 'desafiante', 'esfuerzo', 'duro'],
-  Máxima: ['máximo', 'sprint', 'explosivo', 'velocidad máxima'],
+  Low: ['easy', 'light', 'relaxed', 'calm', 'slow', 'comfortable'],
+  Medium: ['moderate', 'steady', 'medium', 'controlled', 'balanced'],
+  High: ['intense', 'hard', 'strong', 'challenging', 'effortful', 'tough', 'demanding'],
+  Max: ['max', 'all-out', 'explosive', 'maximum speed', 'sprint'],
 };
 
-export function useZoneDetection(
-  content: string
-): ZoneDetection & TrainingMetrics {
+export function useZoneDetection(content: string): ZoneDetection & TrainingMetrics {
   const [detection, setDetection] = useState<ZoneDetection & TrainingMetrics>({
     detectedZones: [],
     zoneDistribution: {},
@@ -139,9 +133,9 @@ export function useZoneDetection(
     const detectedIntensities: string[] = [];
     let totalDistance = 0;
 
-    // Detectar zonas
+    // Detect zones
     Object.entries(zoneKeywords).forEach(([zone, keywords]) => {
-      keywords.forEach(keyword => {
+      keywords.forEach((keyword) => {
         const regex = new RegExp(`\\b${keyword}\\b`, 'gi');
         const matches = text.match(regex);
         if (matches) {
@@ -153,9 +147,9 @@ export function useZoneDetection(
       });
     });
 
-    // Detectar estilos
+    // Detect strokes
     Object.entries(strokeKeywords).forEach(([stroke, keywords]) => {
-      keywords.forEach(keyword => {
+      keywords.forEach((keyword) => {
         const regex = new RegExp(`\\b${keyword}\\b`, 'gi');
         if (regex.test(text) && !detectedStrokes.includes(stroke)) {
           detectedStrokes.push(stroke);
@@ -163,9 +157,9 @@ export function useZoneDetection(
       });
     });
 
-    // Detectar intensidades
+    // Detect intensities
     Object.entries(intensityKeywords).forEach(([intensity, keywords]) => {
-      keywords.forEach(keyword => {
+      keywords.forEach((keyword) => {
         const regex = new RegExp(`\\b${keyword}\\b`, 'gi');
         if (regex.test(text) && !detectedIntensities.includes(intensity)) {
           detectedIntensities.push(intensity);
@@ -173,33 +167,24 @@ export function useZoneDetection(
       });
     });
 
-    // Extraer distancias
-    const distanceRegex = /(\d+(?:\.\d+)?)\s*(?:m|metros?|km|kilómetros?)/gi;
+    // Extract distances
+    const distanceRegex = /(\d+(?:\.\d+)?)\s*(?:m|meters?|km|kilometers?)/gi;
     const distanceMatches = text.match(distanceRegex);
     if (distanceMatches) {
       totalDistance = distanceMatches.reduce((sum, match) => {
         const value = parseFloat(match.replace(/[^\d.]/g, ''));
-        const unit = match.toLowerCase().includes('km') ? value * 1000 : value;
+        const unit = /km|kilometer/.test(match.toLowerCase()) ? value * 1000 : value;
         return sum + unit;
       }, 0);
     }
 
-    // Calcular distribución de zonas
-    const totalZoneMentions = Object.values(zoneCounts).reduce(
-      (sum, count) => sum + count,
-      0
-    );
+    // Calculate zone distribution
+    const totalZoneMentions = Object.values(zoneCounts).reduce((sum, count) => sum + count, 0);
     const zoneDistribution: Record<string, number> = {};
-    const zoneBreakdown: Record<
-      string,
-      { distance: number; percentage: number }
-    > = {};
+    const zoneBreakdown: Record<string, { distance: number; percentage: number }> = {};
 
-    detectedZones.forEach(zone => {
-      const percentage =
-        totalZoneMentions > 0
-          ? (zoneCounts[zone] / totalZoneMentions) * 100
-          : 0;
+    detectedZones.forEach((zone) => {
+      const percentage = totalZoneMentions > 0 ? (zoneCounts[zone] / totalZoneMentions) * 100 : 0;
       zoneDistribution[zone] = percentage;
       zoneBreakdown[zone] = {
         distance: (totalDistance * percentage) / 100,
@@ -207,40 +192,34 @@ export function useZoneDetection(
       };
     });
 
-    // Generar sugerencias
+    // Generate suggestions
     const suggestions: string[] = [];
 
     if (detectedZones.length === 0) {
-      suggestions.push(
-        'Considera agregar zonas de intensidad (Z1, Z2, Z3, Z4, Z5)'
-      );
+      suggestions.push('Consider adding intensity zones (Z1, Z2, Z3, Z4, Z5).');
     }
 
     if (detectedZones.length > 0 && !detectedZones.includes('Z1')) {
-      suggestions.push('Agrega un calentamiento en Z1 para comenzar');
+      suggestions.push('Add a Z1 warm-up to start the session.');
     }
 
     if (
       detectedZones.length > 0 &&
       !detectedZones.includes('Z1') &&
-      detectedZones.some(z => ['Z3', 'Z4', 'Z5'].includes(z))
+      detectedZones.some((z) => ['Z3', 'Z4', 'Z5'].includes(z))
     ) {
-      suggestions.push(
-        'Incluye vuelta a la calma en Z1 después del trabajo intenso'
-      );
+      suggestions.push('Include a Z1 cool-down after the high-intensity work.');
     }
 
     if (totalDistance === 0) {
-      suggestions.push('Especifica las distancias (ej: 200m, 1.5km)');
+      suggestions.push('Specify distances (e.g., 200m, 1.5km) for better analysis.');
     }
 
     if (detectedStrokes.length === 0) {
-      suggestions.push(
-        'Menciona los estilos de natación (libre, espalda, pecho, mariposa)'
-      );
+      suggestions.push('Mention strokes (freestyle, backstroke, breaststroke, butterfly).');
     }
 
-    // Calcular confianza
+    // Compute confidence
     let confidence = 0;
     if (detectedZones.length > 0) confidence += 30;
     if (totalDistance > 0) confidence += 25;
@@ -248,9 +227,8 @@ export function useZoneDetection(
     if (detectedIntensities.length > 0) confidence += 15;
     if (content.length > 100) confidence += 10;
 
-    // Estimar duración (aproximación: 1km = 20-30 minutos dependiendo del nivel)
-    const estimatedDuration =
-      totalDistance > 0 ? Math.round((totalDistance / 1000) * 25) : 0;
+    // Estimate duration (roughly: 1km ≈ 25 minutes)
+    const estimatedDuration = totalDistance > 0 ? Math.round((totalDistance / 1000) * 25) : 0;
 
     return {
       detectedZones,

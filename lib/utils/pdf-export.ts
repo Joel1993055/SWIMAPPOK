@@ -28,64 +28,64 @@ export class TrainingPDFExporter {
   }
 
   /**
-   * Exporta un entrenamiento a PDF con plantilla profesional
+   * Export a training session to PDF with a professional template
    */
   async exportTrainingToPDF(data: TrainingPDFData): Promise<void> {
     const { doc } = this;
     
-    // Configuración de página
+    // Page configuration
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
     const margin = 20;
-    const contentWidth = pageWidth - (margin * 2);
+    const contentWidth = pageWidth - margin * 2;
 
-    // Colores de las zonas
+    // Zone colors
     const zoneColors = {
-      z1: '#10B981', // Verde
-      z2: '#3B82F6', // Azul
-      z3: '#F59E0B', // Amarillo
-      z4: '#F97316', // Naranja
-      z5: '#EF4444', // Rojo
+      z1: '#10B981', // Green
+      z2: '#3B82F6', // Blue
+      z3: '#F59E0B', // Yellow
+      z4: '#F97316', // Orange
+      z5: '#EF4444', // Red
     };
 
-    // Header con logo y título
+    // Header with logo and title
     this.addHeader(data.title, data.date, contentWidth, margin);
 
-    // Información del entrenamiento
+    // Training info
     this.addTrainingInfo(data, contentWidth, margin);
 
-    // Contenido del entrenamiento
+    // Training content
     this.addTrainingContent(data.content, contentWidth, margin);
 
-    // Tabla de zonas con colores
+    // Zones table with colors
     this.addZonesTable(data.zones, zoneColors, contentWidth, margin);
 
     // Footer
     this.addFooter(pageWidth, pageHeight, margin);
 
-    // Guardar PDF
-    const fileName = `entrenamiento_${data.date.replace(/\//g, '-')}_${data.title.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+    // Save PDF
+    const fileName = `training_${data.date.replace(/\//g, '-')}_${data.title.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
     doc.save(fileName);
   }
 
   private addHeader(title: string, date: string, contentWidth: number, margin: number): void {
     const { doc } = this;
     
-    // Título principal
+    // Main title
     doc.setFontSize(24);
     doc.setFont('helvetica', 'bold');
-    doc.text('ENTRENAMIENTO DE NATACIÓN', margin, 30);
+    doc.text('SWIMMING TRAINING SESSION', margin, 30);
     
-    // Subtítulo
+    // Subtitle
     doc.setFontSize(16);
     doc.setFont('helvetica', 'normal');
     doc.text(title, margin, 45);
     
-    // Fecha
+    // Date
     doc.setFontSize(12);
-    doc.text(`Fecha: ${date}`, margin, 55);
+    doc.text(`Date: ${date}`, margin, 55);
     
-    // Línea separadora
+    // Separator line
     doc.setDrawColor(200, 200, 200);
     doc.line(margin, 60, margin + contentWidth, 60);
   }
@@ -96,34 +96,34 @@ export class TrainingPDFExporter {
 
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text('INFORMACIÓN DEL ENTRENAMIENTO', margin, yPosition);
+    doc.text('TRAINING INFORMATION', margin, yPosition);
     yPosition += 15;
 
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
 
-    // Información en dos columnas
+    // Two columns
     const leftColumn = margin;
-    const rightColumn = margin + (contentWidth / 2);
+    const rightColumn = margin + contentWidth / 2;
 
-    // Columna izquierda
+    // Left column
     if (data.duration) {
-      doc.text(`Duración: ${data.duration} minutos`, leftColumn, yPosition);
+      doc.text(`Duration: ${data.duration} minutes`, leftColumn, yPosition);
       yPosition += 8;
     }
     if (data.coach) {
-      doc.text(`Entrenador: ${data.coach}`, leftColumn, yPosition);
+      doc.text(`Coach: ${data.coach}`, leftColumn, yPosition);
       yPosition += 8;
     }
     if (data.location) {
-      doc.text(`Ubicación: ${data.location}`, leftColumn, yPosition);
+      doc.text(`Location: ${data.location}`, leftColumn, yPosition);
       yPosition += 8;
     }
 
-    // Columna derecha
+    // Right column
     yPosition = 90;
     if (data.stroke) {
-      doc.text(`Estilo: ${data.stroke}`, rightColumn, yPosition);
+      doc.text(`Stroke: ${data.stroke}`, rightColumn, yPosition);
       yPosition += 8;
     }
     if (data.rpe) {
@@ -131,11 +131,11 @@ export class TrainingPDFExporter {
       yPosition += 8;
     }
     if (data.objective) {
-      doc.text(`Objetivo: ${data.objective}`, rightColumn, yPosition);
+      doc.text(`Objective: ${data.objective}`, rightColumn, yPosition);
       yPosition += 8;
     }
 
-    // Línea separadora
+    // Separator line
     doc.setDrawColor(200, 200, 200);
     doc.line(margin, yPosition + 5, margin + contentWidth, yPosition + 5);
   }
@@ -146,17 +146,18 @@ export class TrainingPDFExporter {
 
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text('CONTENIDO DEL ENTRENAMIENTO', margin, yPosition);
+    doc.text('TRAINING CONTENT', margin, yPosition);
     yPosition += 15;
 
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
 
-    // Dividir el contenido en líneas que quepan en la página
+    // Split content into lines that fit the page
     const lines = doc.splitTextToSize(content, contentWidth);
     
     lines.forEach((line: string) => {
-      if (yPosition > 250) { // Si se acerca al final de la página
+      if (yPosition > 250) {
+        // If close to end of page
         doc.addPage();
         yPosition = 20;
       }
@@ -164,64 +165,69 @@ export class TrainingPDFExporter {
       yPosition += 6;
     });
 
-    // Línea separadora
+    // Separator line
     doc.setDrawColor(200, 200, 200);
     doc.line(margin, yPosition + 5, margin + contentWidth, yPosition + 5);
   }
 
-  private addZonesTable(zones: TrainingPDFData['zones'], zoneColors: Record<string, string>, contentWidth: number, margin: number): void {
+  private addZonesTable(
+    zones: TrainingPDFData['zones'], 
+    zoneColors: Record<string, string>, 
+    contentWidth: number, 
+    margin: number
+  ): void {
     const { doc } = this;
     let yPosition = 200;
 
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text('DISTRIBUCIÓN POR ZONAS', margin, yPosition);
+    doc.text('ZONE DISTRIBUTION', margin, yPosition);
     yPosition += 15;
 
-    // Configuración de la tabla
+    // Table configuration
     const tableWidth = contentWidth;
     const colWidth = tableWidth / 5;
     const rowHeight = 20;
 
-    // Headers de la tabla
-    const zoneNames = ['Z1 - Recuperación', 'Z2 - Aeróbico Base', 'Z3 - Tempo', 'Z4 - Velocidad', 'Z5 - VO2 Max'];
+    // Table headers
+    const zoneNames = ['Z1 - Recovery', 'Z2 - Aerobic Base', 'Z3 - Tempo', 'Z4 - Speed', 'Z5 - VO2 Max'];
     const zoneKeys = ['z1', 'z2', 'z3', 'z4', 'z5'];
 
-    // Dibujar headers
+    // Draw headers
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
     for (let i = 0; i < zoneNames.length; i++) {
-      const x = margin + (i * colWidth);
+      const x = margin + i * colWidth;
       
-      // Fondo de color para el header
+      // Colored header background
       doc.setFillColor(zoneColors[zoneKeys[i]]);
       doc.rect(x, yPosition - 5, colWidth, rowHeight, 'F');
       
-      // Texto del header
+      // Header text
       doc.setTextColor(255, 255, 255);
       doc.text(zoneNames[i], x + 2, yPosition + 5);
     }
 
     yPosition += rowHeight;
 
-    // Valores de las zonas
+    // Zone values
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(0, 0, 0);
     
     for (let i = 0; i < zoneKeys.length; i++) {
-      const x = margin + (i * colWidth);
+      const x = margin + i * colWidth;
       const value = zones[zoneKeys[i] as keyof typeof zones];
       
-      // Fondo gris claro
+      // Light gray background
       doc.setFillColor(245, 245, 245);
       doc.rect(x, yPosition - 5, colWidth, rowHeight, 'F');
       
-      // Borde
+      // Border
       doc.setDrawColor(200, 200, 200);
       doc.rect(x, yPosition - 5, colWidth, rowHeight, 'S');
       
-      // Texto centrado
+      // Centered text
       const textWidth = doc.getTextWidth(`${value}m`);
       doc.text(`${value}m`, x + (colWidth - textWidth) / 2, yPosition + 5);
     }
@@ -232,26 +238,26 @@ export class TrainingPDFExporter {
     const total = Object.values(zones).reduce((sum, zone) => sum + zone, 0);
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
-    doc.text(`TOTAL: ${total.toLocaleString()} metros`, margin, yPosition);
+    doc.text(`TOTAL: ${total.toLocaleString()} meters`, margin, yPosition);
   }
 
   private addFooter(pageWidth: number, pageHeight: number, margin: number): void {
     const { doc } = this;
     
-    // Línea separadora
+    // Separator line
     doc.setDrawColor(200, 200, 200);
     doc.line(margin, pageHeight - 30, pageWidth - margin, pageHeight - 30);
     
-    // Texto del footer
+    // Footer text
     doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(100, 100, 100);
-    doc.text('Generado por DECKapp - Sistema de Gestión de Entrenamientos', margin, pageHeight - 15);
-    doc.text(new Date().toLocaleString('es-ES'), pageWidth - margin - 50, pageHeight - 15);
+    doc.text('Generated by DECKapp - Training Management System', margin, pageHeight - 15);
+    doc.text(new Date().toLocaleString('en-GB'), pageWidth - margin - 50, pageHeight - 15);
   }
 
   /**
-   * Exporta múltiples entrenamientos a un PDF
+   * Export multiple training sessions to a single PDF
    */
   async exportMultipleTrainingsToPDF(trainings: TrainingPDFData[]): Promise<void> {
     const { doc } = this;
@@ -265,7 +271,7 @@ export class TrainingPDFExporter {
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
       const margin = 20;
-      const contentWidth = pageWidth - (margin * 2);
+      const contentWidth = pageWidth - margin * 2;
 
       this.addHeader(data.title, data.date, contentWidth, margin);
       this.addTrainingInfo(data, contentWidth, margin);
@@ -280,13 +286,13 @@ export class TrainingPDFExporter {
       this.addFooter(pageWidth, pageHeight, margin);
     }
 
-    const fileName = `entrenamientos_${new Date().toISOString().split('T')[0]}.pdf`;
+    const fileName = `trainings_${new Date().toISOString().split('T')[0]}.pdf`;
     doc.save(fileName);
   }
 }
 
 /**
- * Función helper para exportar un entrenamiento individual
+ * Helper function to export a single training
  */
 export async function exportTrainingToPDF(data: TrainingPDFData): Promise<void> {
   const exporter = new TrainingPDFExporter();
@@ -294,7 +300,7 @@ export async function exportTrainingToPDF(data: TrainingPDFData): Promise<void> 
 }
 
 /**
- * Función helper para exportar múltiples entrenamientos
+ * Helper function to export multiple trainings
  */
 export async function exportMultipleTrainingsToPDF(trainings: TrainingPDFData[]): Promise<void> {
   const exporter = new TrainingPDFExporter();

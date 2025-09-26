@@ -1,4 +1,4 @@
-// Servicio de detección automática de zonas con OpenAI
+// Automatic training zone detection service with OpenAI
 import OpenAI from 'openai';
 
 export interface ZoneDetectionResult {
@@ -24,7 +24,7 @@ export class AIZoneDetector {
   private client: OpenAI | null;
 
   constructor() {
-    // Solo inicializar si la API key está disponible
+    // Initialize only if the API key is available
     if (process.env.OPENAI_API_KEY) {
       this.client = new OpenAI({
         apiKey: process.env.OPENAI_API_KEY,
@@ -35,11 +35,11 @@ export class AIZoneDetector {
   }
 
   /**
-   * Detecta automáticamente las zonas de entrenamiento usando OpenAI
+   * Automatically detects training zones using OpenAI
    */
   async detectZones(request: ZoneDetectionRequest): Promise<ZoneDetectionResult> {
     if (!this.client) {
-      throw new Error('OpenAI client not initialized. Please set OPENAI_API_KEY environment variable.');
+      throw new Error('OpenAI client not initialized. Please set the OPENAI_API_KEY environment variable.');
     }
     
     try {
@@ -74,44 +74,44 @@ export class AIZoneDetector {
   }
 
   /**
-   * Construye el prompt para OpenAI
+   * Builds the user prompt for OpenAI
    */
   private buildPrompt(request: ZoneDetectionRequest): string {
     const { content } = request;
     
-    return `Analiza este entrenamiento de natación y extrae los metros por zona:
+    return `Analyze this swim workout and extract meters per zone:
 
-ENTRENAMIENTO: ${content}
+WORKOUT: ${content}
 
-ZONAS:
-- Z1: Calentamiento, recuperación, vuelta a la calma
-- Z2: Aeróbico base, resistencia
-- Z3: Tempo, umbral aeróbico  
-- Z4: Velocidad, alta intensidad
-- Z5: VO2 Max, sprint, máxima intensidad
+ZONES:
+- Z1: Warm-up, recovery, cool-down
+- Z2: Aerobic base, endurance
+- Z3: Tempo, aerobic threshold
+- Z4: Speed, high intensity
+- Z5: VO2 Max, sprint, maximal intensity
 
-Responde SOLO con este JSON:
+Reply ONLY with this JSON:
 {
   "zones": { "z1": 0, "z2": 0, "z3": 0, "z4": 0, "z5": 0 },
   "confidence": 85,
-  "reasoning": "Explicación",
-  "suggestions": ["Sugerencia 1"]
+  "reasoning": "Explanation",
+  "suggestions": ["Suggestion 1"]
 }`;
   }
 
   /**
-   * Obtiene el prompt del sistema para OpenAI
+   * System prompt for OpenAI
    */
   private getSystemPrompt(): string {
-    return `Eres un experto en natación. Analiza entrenamientos y extrae metros por zona. Responde solo con JSON válido.`;
+    return `You are a swimming coach expert. Analyze workouts and extract meters per intensity zone. Reply with valid JSON only.`;
   }
 
   /**
-   * Parsea la respuesta de OpenAI
+   * Parses OpenAI response content to a ZoneDetectionResult
    */
   private parseResponse(content: string): ZoneDetectionResult {
     try {
-      // Limpiar la respuesta para extraer solo el JSON
+      // Extract just the JSON from the response
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         throw new Error('No JSON found in response');
@@ -128,7 +128,7 @@ Responde SOLO con este JSON:
           z5: parsed.zones?.z5 || 0,
         },
         confidence: parsed.confidence || 0,
-        reasoning: parsed.reasoning || 'Análisis automático completado',
+        reasoning: parsed.reasoning || 'Automatic analysis completed',
         suggestions: parsed.suggestions || []
       };
     } catch (error) {
@@ -138,24 +138,27 @@ Responde SOLO con este JSON:
   }
 
   /**
-   * Resultado de fallback cuando hay errores
+   * Fallback result when an error occurs
    */
   private getFallbackResult(): ZoneDetectionResult {
     return {
       zones: { z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 },
       confidence: 0,
-      reasoning: 'No se pudo analizar automáticamente. Por favor, completa manualmente.',
-      suggestions: ['Revisa la descripción del entrenamiento', 'Asegúrate de incluir distancias y zonas']
+      reasoning: 'Automatic analysis could not be performed. Please complete it manually.',
+      suggestions: [
+        'Review the workout description',
+        'Be sure to include distances and zones'
+      ]
     };
   }
 
   /**
-   * Verifica si el servicio está configurado correctamente
+   * Checks if the service is properly configured
    */
   isConfigured(): boolean {
     return !!process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY.length > 0;
   }
 }
 
-// Instancia singleton
+// Singleton instance
 export const aiZoneDetector = new AIZoneDetector();

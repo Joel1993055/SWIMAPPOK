@@ -33,12 +33,12 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
 
-// Función para generar datos reales basados en las sesiones usando sistema unificado de zonas
+// Function to generate real data based on sessions using unified zone system
 const generateRealData = (sessions: Session[], period: string) => {
   const now = new Date();
 
   if (period === '7days') {
-    // Últimos 7 días
+    // Last 7 days
     const days = [];
     for (let i = 6; i >= 0; i--) {
       const date = new Date(now);
@@ -59,7 +59,7 @@ const generateRealData = (sessions: Session[], period: string) => {
     }
     return days;
   } else if (period === '30days') {
-    // Últimos 30 días
+    // Last 30 days
     const days = [];
     for (let i = 29; i >= 0; i--) {
       const date = new Date(now);
@@ -80,7 +80,7 @@ const generateRealData = (sessions: Session[], period: string) => {
     }
     return days;
   } else {
-    // Todo el año - por meses
+    // Whole year - by months
     const months = [];
     for (let i = 11; i >= 0; i--) {
       const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
@@ -107,7 +107,7 @@ const generateRealData = (sessions: Session[], period: string) => {
   }
 };
 
-// Función para generar datos de ejemplo (fallback)
+// Function to generate sample data (fallback)
 const generateDataUntilToday = () => {
   const data = [
     { date: '2024-04-01', Z1: 222, Z2: 150, Z3: 180, Z4: 120, Z5: 90 },
@@ -234,9 +234,9 @@ const generateDataUntilToday = () => {
   return data;
 };
 
-// Generar los datos completos (se hace dinámicamente en el componente)
+// Generate complete data (done dynamically in component)
 
-// Configuración del gráfico con las 5 zonas
+// Chart configuration with 5 zones
 const chartConfig = {
   Z1: {
     label: zoneLabels.Z1,
@@ -286,7 +286,7 @@ export default function ChartComponent() {
   const realData = generateRealData(sessions, timeRange);
   const chartData = realData.length > 0 ? realData : generateDataUntilToday();
 
-  // Función para agrupar datos por meses
+  // Function to group data by months
   const groupDataByMonths = (data: typeof chartData) => {
     const monthlyData: Record<
       string,
@@ -330,9 +330,9 @@ export default function ChartComponent() {
       monthlyData[monthKey].count += 1;
     });
 
-    // Generar meses faltantes según el rango
+    // Generate missing months according to range
     if (timeRange === '1y') {
-      // Todo el año - generar todos los meses desde enero 2024 hasta el mes actual de 2025
+      // Whole year - generate all months from January 2024 to current month 2025
       const currentDate = new Date();
       const startYear = 2024;
       const endYear = currentDate.getFullYear();
@@ -400,7 +400,7 @@ export default function ChartComponent() {
         Z5: data.count > 0 ? Math.round(data.Z5 / data.count) : 0,
       }))
       .sort((a, b) => {
-        // Ordenar por fecha real - extraer año y mes correctamente
+        // Sort by real date - extract year and month correctly
         const parseMonth = (monthStr: string) => {
           const [monthName, year] = monthStr.split(' ');
           const monthIndex = new Date(`${monthName} 1, 2000`).getMonth();
@@ -413,7 +413,7 @@ export default function ChartComponent() {
       });
   };
 
-  // Función para formatear datos diarios
+  // Function to format daily data
   const formatDailyData = (data: typeof chartData) => {
     return data.map(item => ({
       date: new Date(item.date).toLocaleDateString('es-ES', {
@@ -432,7 +432,7 @@ export default function ChartComponent() {
     const date = new Date(item.date);
 
     if (timeRange === '1y') {
-      // Todo el año - mostrar todos los datos
+      // Whole year - show all data
       return true;
     }
 
@@ -440,7 +440,7 @@ export default function ChartComponent() {
     const referenceDate = new Date();
 
     if (timeRange === '180d') {
-      // Últimos 6 meses - restar 6 meses
+      // Last 6 months - subtract 6 months
       const startDate = new Date(referenceDate);
       startDate.setMonth(startDate.getMonth() - 6);
       return date >= startDate;
@@ -450,12 +450,12 @@ export default function ChartComponent() {
       startDate.setMonth(startDate.getMonth() - 3);
       return date >= startDate;
     } else if (timeRange === '30d') {
-      // Últimos 30 días
+      // Last 30 days
       const startDate = new Date(referenceDate);
       startDate.setDate(startDate.getDate() - 30);
       return date >= startDate;
     } else if (timeRange === '7d') {
-      // Últimos 7 días
+      // Last 7 days
       const startDate = new Date(referenceDate);
       startDate.setDate(startDate.getDate() - 7);
       return date >= startDate;

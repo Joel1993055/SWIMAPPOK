@@ -1,19 +1,19 @@
 'use client';
 
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
 import { lazy, Suspense } from 'react';
 
 // =====================================================
-// LAZY LOADING DE GRÁFICOS PESADOS
+// LAZY LOADING FOR HEAVY CHARTS
 // =====================================================
 
-// Lazy load de Recharts para evitar bundle inicial grande
+// Lazy load Recharts to avoid large initial bundle
 const LineChart = lazy(() =>
   import('recharts').then(module => ({
     default: module.LineChart,
@@ -45,7 +45,7 @@ const Line = lazy(() =>
 );
 
 // =====================================================
-// COMPONENTE DE CARGA
+// LOADING COMPONENT
 // =====================================================
 function ChartSkeleton() {
   return (
@@ -58,7 +58,7 @@ function ChartSkeleton() {
 }
 
 // =====================================================
-// GRÁFICO DE TENDENCIAS SEMANALES
+// WEEKLY TRENDS CHART
 // =====================================================
 interface WeeklyTrendsChartProps {
   data: Array<{
@@ -107,7 +107,7 @@ export function WeeklyTrendsChart({ data }: WeeklyTrendsChartProps) {
 }
 
 // =====================================================
-// GRÁFICO DE DISTRIBUCIÓN DE ZONAS
+// ZONE DISTRIBUTION CHART
 // =====================================================
 interface ZoneDistributionChartProps {
   data: Array<{
@@ -121,9 +121,9 @@ export function ZoneDistributionChart({ data }: ZoneDistributionChartProps) {
   return (
     <Card className='bg-muted/50'>
       <CardHeader>
-        <CardTitle>Distribución por Zonas</CardTitle>
+        <CardTitle>Zone Distribution</CardTitle>
         <CardDescription>
-          Volumen de entrenamiento por zona de intensidad
+          Training volume by intensity zone
         </CardDescription>
       </CardHeader>
       <CardContent>

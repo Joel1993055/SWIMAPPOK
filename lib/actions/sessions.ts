@@ -75,7 +75,7 @@ export async function createSession(formData: FormData) {
     },
   };
 
-  // Validaciones básicas
+  // Basic validations
   if (!sessionData.title || !sessionData.content) {
     throw new Error('Title and content are required');
   }
@@ -91,11 +91,11 @@ export async function createSession(formData: FormData) {
     .single();
 
   if (error) {
-    console.error('Error creando sesión:', error);
-    throw new Error('Error al crear la sesión');
+    console.error('Error creating session:', error);
+    throw new Error('Error creating session');
   }
 
-  // Revalidar páginas
+  // Revalidate pages
   revalidatePath('/dashboard');
   revalidatePath('/training');
 
@@ -131,7 +131,7 @@ export async function getSessions() {
 }
 
 // =====================================================
-// OBTENER SESIÓN POR ID
+// GET SESSION BY ID
 // =====================================================
 export async function getSessionById(id: string) {
   const supabase = await createClient();
@@ -160,7 +160,7 @@ export async function getSessionById(id: string) {
 }
 
 // =====================================================
-// ACTUALIZAR SESIÓN
+// UPDATE SESSION
 // =====================================================
 export async function updateSession(id: string, formData: FormData) {
   const supabase = await createClient();
@@ -198,7 +198,7 @@ export async function updateSession(id: string, formData: FormData) {
     },
   };
 
-  // Validaciones básicas
+  // Basic validations
   if (!sessionData.title || !sessionData.content) {
     throw new Error('Title and content are required');
   }
@@ -217,7 +217,7 @@ export async function updateSession(id: string, formData: FormData) {
     throw new Error('Error updating session');
   }
 
-  // Revalidar páginas
+  // Revalidate pages
   revalidatePath('/dashboard');
   revalidatePath('/training');
 
@@ -225,7 +225,7 @@ export async function updateSession(id: string, formData: FormData) {
 }
 
 // =====================================================
-// ELIMINAR SESIÓN
+// DELETE SESSION
 // =====================================================
 export async function deleteSession(id: string) {
   const supabase = await createClient();
@@ -245,11 +245,11 @@ export async function deleteSession(id: string) {
     .eq('user_id', user.id);
 
   if (error) {
-    console.error('Error eliminando sesión:', error);
-    throw new Error('Error al eliminar la sesión');
+    console.error('Error deleting session:', error);
+    throw new Error('Error deleting session');
   }
 
-  // Revalidar páginas
+  // Revalidate pages
   revalidatePath('/dashboard');
   revalidatePath('/training');
 }
@@ -288,7 +288,7 @@ export async function getSessionsByDateRange(
 }
 
 // =====================================================
-// OBTENER ESTADÍSTICAS DE SESIONES
+// GET SESSION STATISTICS
 // =====================================================
 export async function getSessionStats() {
   const supabase = await createClient();
