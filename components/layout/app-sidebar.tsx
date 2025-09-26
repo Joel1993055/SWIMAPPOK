@@ -8,7 +8,6 @@ import {
     ClipboardListIcon,
     HelpCircleIcon,
     LayoutDashboardIcon,
-    MessageCircle,
     Plus,
     SettingsIcon,
     Target,
@@ -65,11 +64,6 @@ const data = {
       title: 'Tools',
       url: '/tools',
       icon: Wrench,
-    },
-    {
-      title: 'AI Chat',
-      url: '/ai-chat',
-      icon: MessageCircle,
     },
     {
       title: 'Coach Resources',

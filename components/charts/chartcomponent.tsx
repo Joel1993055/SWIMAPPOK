@@ -1,33 +1,33 @@
 'use client';
 
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
 import {
-    ChartConfig,
-    ChartContainer,
-    ChartLegend,
-    ChartLegendContent,
-    ChartTooltip,
-    ChartTooltipContent,
+  ChartConfig,
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
 } from '@/components/ui/chart';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { getSessions, type Session } from '@/lib/actions/sessions';
 import {
-    calculateZoneVolumes,
-    metersToKm,
-    zoneColors,
-    zoneLabels,
+  calculateZoneVolumes,
+  metersToKm,
+  zoneColors,
+  zoneLabels,
 } from '@/lib/utils/zone-detection';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
@@ -39,13 +39,20 @@ const generateRealData = (sessions: Session[], period: string) => {
 
   if (period === '7days') {
     // Last 7 days
-    const days = [];
+    const days: {
+      date: string;
+      Z1: number;
+      Z2: number;
+      Z3: number;
+      Z4: number;
+      Z5: number;
+    }[] = [];
     for (let i = 6; i >= 0; i--) {
       const date = new Date(now);
       date.setDate(now.getDate() - i);
       const dateString = date.toISOString().split('T')[0];
 
-      const daySessions = sessions.filter(s => s.date === dateString);
+      const daySessions = sessions.filter((s) => s.date === dateString);
       const zoneVolumes = calculateZoneVolumes(daySessions);
 
       days.push({
@@ -60,13 +67,20 @@ const generateRealData = (sessions: Session[], period: string) => {
     return days;
   } else if (period === '30days') {
     // Last 30 days
-    const days = [];
+    const days: {
+      date: string;
+      Z1: number;
+      Z2: number;
+      Z3: number;
+      Z4: number;
+      Z5: number;
+    }[] = [];
     for (let i = 29; i >= 0; i--) {
       const date = new Date(now);
       date.setDate(now.getDate() - i);
       const dateString = date.toISOString().split('T')[0];
 
-      const daySessions = sessions.filter(s => s.date === dateString);
+      const daySessions = sessions.filter((s) => s.date === dateString);
       const zoneVolumes = calculateZoneVolumes(daySessions);
 
       days.push({
@@ -81,13 +95,20 @@ const generateRealData = (sessions: Session[], period: string) => {
     return days;
   } else {
     // Whole year - by months
-    const months = [];
+    const months: {
+      date: string;
+      Z1: number;
+      Z2: number;
+      Z3: number;
+      Z4: number;
+      Z5: number;
+    }[] = [];
     for (let i = 11; i >= 0; i--) {
       const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
       const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
-      const monthSessions = sessions.filter(s => {
+      const monthSessions = sessions.filter((s) => {
         const sessionDate = new Date(s.date);
         return sessionDate >= monthStart && sessionDate <= monthEnd;
       });
@@ -203,16 +224,16 @@ const generateDataUntilToday = () => {
     { date: '2024-06-30', Z1: 446, Z2: 400, Z3: 340, Z4: 300, Z5: 260 },
   ];
 
-  // Extender datos hasta la fecha actual
+  // Extend data up to the current date
   const lastDate = new Date('2024-06-30');
   const today = new Date();
 
-  // Generar datos desde el 1 de julio de 2024 hasta hoy
+  // Generate data from July 1, 2024 to today
   const currentDate = new Date(lastDate);
   currentDate.setDate(currentDate.getDate() + 1);
 
   while (currentDate <= today) {
-    // Generar valores aleatorios realistas basados en los datos existentes
+    // Generate realistic random values based on existing data
     const baseZ1 = 200 + Math.random() * 300;
     const baseZ2 = 150 + Math.random() * 250;
     const baseZ3 = 120 + Math.random() * 200;
@@ -265,14 +286,14 @@ export default function ChartComponent() {
   const [isLoading, setIsLoading] = useState(true);
   const [timeRange, setTimeRange] = React.useState('30days');
 
-  // Cargar sesiones reales desde Supabase
+  // Load real sessions from Supabase
   useEffect(() => {
     const loadSessions = async () => {
       try {
         const data = await getSessions();
         setSessions(data);
       } catch (error) {
-        console.error('Error cargando sesiones:', error);
+        console.error('Error loading sessions:', error);
         setSessions([]);
       } finally {
         setIsLoading(false);
@@ -282,7 +303,7 @@ export default function ChartComponent() {
     loadSessions();
   }, []);
 
-  // Generar datos reales basados en el rango de tiempo
+  // Generate real data based on range
   const realData = generateRealData(sessions, timeRange);
   const chartData = realData.length > 0 ? realData : generateDataUntilToday();
 
@@ -301,11 +322,13 @@ export default function ChartComponent() {
       }
     > = {};
 
-    // Primero, procesar los datos existentes
-    data.forEach(item => {
+    // First, process existing data
+    data.forEach((item) => {
       const date = new Date(item.date);
-      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-      const monthName = date.toLocaleDateString('es-ES', {
+      const monthKey = `${date.getFullYear()}-${String(
+        date.getMonth() + 1
+      ).padStart(2, '0')}`;
+      const monthName = date.toLocaleDateString('en-US', {
         month: 'short',
         year: 'numeric',
       });
@@ -343,7 +366,7 @@ export default function ChartComponent() {
         for (let month = 0; month < monthsInYear; month++) {
           const monthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
           const monthName = new Date(year, month, 1).toLocaleDateString(
-            'es-ES',
+            'en-US',
             { month: 'short', year: 'numeric' }
           );
 
@@ -361,7 +384,7 @@ export default function ChartComponent() {
         }
       }
     } else if (timeRange === '180d' || timeRange === '90d') {
-      // Para 6 y 3 meses, generar los meses del rango
+      // For 6 and 3 months, generate the months in the range
       const currentDate = new Date();
       const monthsToGenerate = timeRange === '180d' ? 6 : 3;
 
@@ -369,8 +392,10 @@ export default function ChartComponent() {
         const targetDate = new Date(currentDate);
         targetDate.setMonth(targetDate.getMonth() - i);
 
-        const monthKey = `${targetDate.getFullYear()}-${String(targetDate.getMonth() + 1).padStart(2, '0')}`;
-        const monthName = targetDate.toLocaleDateString('es-ES', {
+        const monthKey = `${targetDate.getFullYear()}-${String(
+          targetDate.getMonth() + 1
+        ).padStart(2, '0')}`;
+        const monthName = targetDate.toLocaleDateString('en-US', {
           month: 'short',
           year: 'numeric',
         });
@@ -389,7 +414,7 @@ export default function ChartComponent() {
       }
     }
 
-    // Convertir a array y calcular promedios
+    // Convert to array and compute averages
     return Object.entries(monthlyData)
       .map(([, data]) => ({
         month: data.month,
@@ -415,8 +440,8 @@ export default function ChartComponent() {
 
   // Function to format daily data
   const formatDailyData = (data: typeof chartData) => {
-    return data.map(item => ({
-      date: new Date(item.date).toLocaleDateString('es-ES', {
+    return data.map((item) => ({
+      date: new Date(item.date).toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
       }),
@@ -428,7 +453,7 @@ export default function ChartComponent() {
     }));
   };
 
-  const filteredData = chartData.filter(item => {
+  const filteredData = chartData.filter((item) => {
     const date = new Date(item.date);
 
     if (timeRange === '1y') {
@@ -436,7 +461,7 @@ export default function ChartComponent() {
       return true;
     }
 
-    // Usar la fecha actual como referencia
+    // Use the current date as a reference
     const referenceDate = new Date();
 
     if (timeRange === '180d') {
@@ -445,7 +470,7 @@ export default function ChartComponent() {
       startDate.setMonth(startDate.getMonth() - 6);
       return date >= startDate;
     } else if (timeRange === '90d') {
-      // Últimos 3 meses - restar 3 meses
+      // Last 3 months - subtract 3 months
       const startDate = new Date(referenceDate);
       startDate.setMonth(startDate.getMonth() - 3);
       return date >= startDate;
@@ -464,20 +489,20 @@ export default function ChartComponent() {
     return true;
   });
 
-  // Decidir si mostrar datos por meses o por días
+  // Decide whether to show data by months or by days
   const shouldGroupByMonths = timeRange === 'year';
   const finalChartData = shouldGroupByMonths
     ? groupDataByMonths(filteredData)
     : formatDailyData(filteredData);
 
-  // Mostrar estado de carga
+  // Loading state
   if (isLoading) {
     return (
       <Card className='bg-muted/50 border-muted'>
         <CardHeader>
-          <CardTitle>Distribución por Zonas</CardTitle>
+          <CardTitle>Zone Distribution</CardTitle>
           <CardDescription>
-            Volumen de entrenamiento por zonas de intensidad
+            Training volume by intensity zones
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -497,36 +522,36 @@ export default function ChartComponent() {
         <div className='grid flex-1 gap-1 text-center sm:text-left'>
           <CardTitle>
             {timeRange === '7days'
-              ? '7 Days Volume'
+              ? '7-Day Volume'
               : timeRange === '30days'
-                ? '30 Days Volume'
-                : 'Annual Volume'}{' '}
-            - Distribución por Zonas
+              ? '30-Day Volume'
+              : 'Annual Volume'}{' '}
+            - Zone Distribution
           </CardTitle>
           <CardDescription>
             {timeRange === 'year'
               ? 'Showing the whole year'
               : timeRange === '30days'
-                ? 'Showing the last 30 days'
-                : 'Showing the last 7 days'}
+              ? 'Showing the last 30 days'
+              : 'Showing the last 7 days'}
           </CardDescription>
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>
           <SelectTrigger
             className='w-[160px] rounded-lg sm:ml-auto'
-            aria-label='Selecciona un rango'
+            aria-label='Select a range'
           >
-            <SelectValue placeholder='Últimos 30 días' />
+            <SelectValue placeholder='Last 30 days' />
           </SelectTrigger>
           <SelectContent className='rounded-xl'>
             <SelectItem value='year' className='rounded-lg'>
-              Todo el año
+              Whole year
             </SelectItem>
             <SelectItem value='30days' className='rounded-lg'>
-              Últimos 30 días
+              Last 30 days
             </SelectItem>
             <SelectItem value='7days' className='rounded-lg'>
-              Últimos 7 días
+              Last 7 days
             </SelectItem>
           </SelectContent>
         </Select>
@@ -606,13 +631,13 @@ export default function ChartComponent() {
               axisLine={false}
               tickMargin={8}
               minTickGap={32}
-              tickFormatter={value => value}
+              tickFormatter={(value) => value}
             />
             <ChartTooltip
               cursor={false}
               content={
                 <ChartTooltipContent
-                  labelFormatter={value => value}
+                  labelFormatter={(value) => value}
                   indicator='dot'
                 />
               }
