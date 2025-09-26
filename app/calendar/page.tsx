@@ -6,26 +6,26 @@ import { SiteHeader } from '@/components/layout/site-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { getSessions, type Session } from '@/lib/actions/sessions';
 import { useCompetitionsStore } from '@/lib/store/unified';
 import {
-    Activity,
-    Calendar as CalendarIcon,
-    ChevronLeft,
-    ChevronRight,
-    Target
+  Activity,
+  Calendar as CalendarIcon,
+  ChevronLeft,
+  ChevronRight,
+  Target,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export default function CalendarPage() {
-  // SOLUCIÓN: Estado de hidratación para evitar errores SSR
+  // FIX: Hydration state to avoid SSR errors
   const [isHydrated, setIsHydrated] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<{
@@ -38,18 +38,18 @@ export default function CalendarPage() {
   const [selectedTraining, setSelectedTraining] = useState<Session | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // MANTENER: Context existente
+  // KEEP: Existing context
   const { getCompetitionsByDate } = useCompetitionsStore();
 
-  // OPTIMIZADO: Solo usar lo necesario del store
+  // OPTIMIZED: Only use what's needed from the store
   const { competitions: storeCompetitions } = useCompetitionsStore();
 
-  // SOLUCIÓN: Efecto para manejar la hidratación
+  // FIX: Effect to handle hydration
   useEffect(() => {
     setIsHydrated(true);
   }, []);
 
-  // Cargar sesiones reales
+  // Load real sessions
   useEffect(() => {
     const loadSessions = async () => {
       try {
@@ -57,7 +57,7 @@ export default function CalendarPage() {
         const data = await getSessions();
         setSessions(data);
       } catch (error) {
-        console.error('Error cargando sesiones:', error);
+        console.error('Error loading sessions:', error);
       } finally {
         setIsLoading(false);
       }
@@ -69,27 +69,27 @@ export default function CalendarPage() {
   }, [isHydrated]);
 
   const months = [
-    { name: 'enero', short: 'ene', days: 31 },
-    { name: 'febrero', short: 'feb', days: 28 },
-    { name: 'marzo', short: 'mar', days: 31 },
-    { name: 'abril', short: 'abr', days: 30 },
-    { name: 'mayo', short: 'may', days: 31 },
-    { name: 'junio', short: 'jun', days: 30 },
-    { name: 'julio', short: 'jul', days: 31 },
-    { name: 'agosto', short: 'ago', days: 31 },
-    { name: 'septiembre', short: 'sep', days: 30 },
-    { name: 'octubre', short: 'oct', days: 31 },
-    { name: 'noviembre', short: 'nov', days: 30 },
-    { name: 'diciembre', short: 'dic', days: 31 },
+    { name: 'january', short: 'jan', days: 31 },
+    { name: 'february', short: 'feb', days: 28 },
+    { name: 'march', short: 'mar', days: 31 },
+    { name: 'april', short: 'apr', days: 30 },
+    { name: 'may', short: 'may', days: 31 },
+    { name: 'june', short: 'jun', days: 30 },
+    { name: 'july', short: 'jul', days: 31 },
+    { name: 'august', short: 'aug', days: 31 },
+    { name: 'september', short: 'sep', days: 30 },
+    { name: 'october', short: 'oct', days: 31 },
+    { name: 'november', short: 'nov', days: 30 },
+    { name: 'december', short: 'dec', days: 31 },
   ];
 
-  const weekDays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+  const weekDays = ['M', 'T', 'W', 'T', 'F', 'S', 'S']; // Monday-first layout
 
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
   const currentMonthName = months[currentMonth].name;
 
-  // Convertir sesiones reales a formato para el calendario
+  // Convert real sessions to calendar-ready format
   const dailyTrainingData = sessions.reduce(
     (acc, session) => {
       const dateKey = session.date;
@@ -98,11 +98,11 @@ export default function CalendarPage() {
       }
 
       acc[dateKey].sessions.push({
-        time: '09:00', // Podríamos agregar un campo de hora a las sesiones
+        time: '09:00', // We could add a time field to sessions
         type: session.type,
         distance: session.distance || 0,
         duration: session.duration || 0,
-        stroke: session.stroke || 'Libre',
+        stroke: session.stroke || 'Freestyle',
         rpe: session.rpe || 5,
       });
 
@@ -127,19 +127,19 @@ export default function CalendarPage() {
     const month = months[currentMonth];
     const days = [];
 
-    // Obtener el primer día del mes y qué día de la semana es
+    // Get the first day of the month and what weekday it is
     const firstDay = new Date(currentYear, currentMonth, 1);
-    const startDay = firstDay.getDay(); // 0 = domingo, 1 = lunes, etc.
+    const startDay = firstDay.getDay(); // 0 = Sunday, 1 = Monday, etc.
 
-    // Ajustar para que lunes sea 0
+    // Shift so Monday is 0
     const adjustedStartDay = startDay === 0 ? 6 : startDay - 1;
 
-    // Agregar días vacíos al inicio
+    // Add empty leading slots
     for (let i = 0; i < adjustedStartDay; i++) {
       days.push(null);
     }
 
-    // Generar días del mes
+    // Add month days
     for (let day = 1; day <= month.days; day++) {
       days.push(day);
     }
@@ -186,9 +186,9 @@ export default function CalendarPage() {
   };
 
   const handleEditTraining = (training: Session) => {
-    // Aquí podrías navegar a la página de edición o abrir un modal de edición
+    // Here you could navigate to an edit page or open an edit modal
     console.log('Edit training:', training);
-    // Por ahora solo cerramos el modal
+    // For now just close the modal
     handleCloseModal();
   };
 
@@ -207,7 +207,7 @@ export default function CalendarPage() {
     const dateKey = `${selectedDate.year}-${String(
       months.findIndex(m => m.name === selectedDate.month) + 1
     ).padStart(2, '0')}-${String(selectedDate.day).padStart(2, '0')}`;
-    
+
     return sessions.filter(session => session.date === dateKey);
   };
 
@@ -224,18 +224,18 @@ export default function CalendarPage() {
   const selectedDaySessions = getSelectedDaySessions();
   const selectedDayCompetitions = getSelectedDayCompetitions();
 
-  // SOLUCIÓN: Renderizar solo después de la hidratación
+  // FIX: Render only after hydration
   if (!isHydrated) {
     return (
       <SidebarProvider>
-        <AppSidebar variant='inset' />
+        <AppSidebar variant="inset" />
         <SidebarInset>
           <SiteHeader />
-          <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>
-            <div className='flex items-center justify-center min-h-[400px]'>
-              <div className='text-center'>
-                <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4'></div>
-                <p className='text-muted-foreground'>Cargando calendario...</p>
+          <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+            <div className="flex items-center justify-center min-h-[400px]">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                <p className="text-muted-foreground">Loading calendar...</p>
               </div>
             </div>
           </div>
@@ -246,111 +246,120 @@ export default function CalendarPage() {
 
   return (
     <SidebarProvider>
-      <AppSidebar variant='inset' />
+      <AppSidebar variant="inset" />
       <SidebarInset>
         <SiteHeader />
-        <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>
+        <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
           {/* Header */}
-          <div className='mb-8'>
-            <div className='flex items-center gap-3 mb-2'>
-              <div className='p-2 bg-primary/10 rounded-lg'>
-                <CalendarIcon className='h-6 w-6 text-primary' />
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <CalendarIcon className="h-6 w-6 text-primary" />
               </div>
-              <h1 className='text-3xl font-bold text-foreground'>Calendar</h1>
+              <h1 className="text-3xl font-bold text-foreground">Calendar</h1>
             </div>
-            <p className='text-muted-foreground'>
+            <p className="text-muted-foreground">
               Monthly view of your training sessions
             </p>
           </div>
 
           {/* Main layout: Calendar and panel 50/50 */}
-          <div className='flex flex-col lg:flex-row gap-6 w-full'>
+          <div className="flex flex-col lg:flex-row gap-6 w-full">
             {/* Calendar - 50% width */}
-            <div className='w-full lg:w-1/2'>
-              <Card className='bg-muted/50 border-muted'>
-                <CardHeader className='pb-4'>
+            <div className="w-full lg:w-1/2">
+              <Card className="bg-muted/50 border-muted">
+                <CardHeader className="pb-4">
                   {/* Header with integrated navigation */}
-                  <div className='flex items-center justify-between'>
+                  <div className="flex items-center justify-between">
                     <Button
-                      variant='ghost'
-                      size='sm'
+                      variant="ghost"
+                      size="sm"
                       onClick={() => navigateMonth('prev')}
-                      className='h-9 w-9 p-0 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full'
+                      className="h-9 w-9 p-0 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
                     >
-                      <ChevronLeft className='h-4 w-4' />
+                      <ChevronLeft className="h-4 w-4" />
                     </Button>
 
-                    <div className='text-center'>
-                      <h2 className='text-xl font-semibold capitalize text-gray-900 dark:text-white'>
+                    <div className="text-center">
+                      <h2 className="text-xl font-semibold capitalize text-gray-900 dark:text-white">
                         {currentMonthName} {currentYear}
                       </h2>
-                      <p className='text-sm text-gray-500 dark:text-gray-400'>
-                        {sessions.filter(session => {
-                          const sessionDate = new Date(session.date);
-                          return sessionDate.getMonth() === currentMonth && 
-                                 sessionDate.getFullYear() === currentYear;
-                        }).length}{' '}
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {
+                          sessions.filter(session => {
+                            const sessionDate = new Date(session.date);
+                            return (
+                              sessionDate.getMonth() === currentMonth &&
+                              sessionDate.getFullYear() === currentYear
+                            );
+                          }).length
+                        }{' '}
                         training sessions
                       </p>
                     </div>
 
                     <Button
-                      variant='ghost'
-                      size='sm'
+                      variant="ghost"
+                      size="sm"
                       onClick={() => navigateMonth('next')}
-                      className='h-9 w-9 p-0 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full'
+                      className="h-9 w-9 p-0 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
                     >
-                      <ChevronRight className='h-4 w-4' />
+                      <ChevronRight className="h-4 w-4" />
                     </Button>
                   </div>
 
-                  {/* Navegación de año - más sutil */}
-                  <div className='flex items-center justify-center gap-1 mt-2'>
+                  {/* Year navigation - subtle */}
+                  <div className="flex items-center justify-center gap-1 mt-2">
                     <Button
-                      variant='ghost'
-                      size='sm'
+                      variant="ghost"
+                      size="sm"
                       onClick={() => navigateYear('prev')}
-                      className='h-6 px-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                      className="h-6 px-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                     >
                       {currentYear - 1}
                     </Button>
 
-                    <div className='w-8 h-px bg-gray-200 dark:bg-gray-700'></div>
+                    <div className="w-8 h-px bg-gray-200 dark:bg-gray-700"></div>
 
                     <Button
-                      variant='ghost'
-                      size='sm'
+                      variant="ghost"
+                      size="sm"
                       onClick={() => navigateYear('next')}
-                      className='h-6 px-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                      className="h-6 px-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                     >
                       {currentYear + 1}
                     </Button>
                   </div>
                 </CardHeader>
 
-                <CardContent className='pt-0 pb-6'>
-                  {/* Días de la semana - alineados con los números */}
-                  <div className='grid grid-cols-7 gap-1 mb-3'>
+                <CardContent className="pt-0 pb-6">
+                  {/* Weekday headers - aligned with numbers */}
+                  <div className="grid grid-cols-7 gap-1 mb-3">
                     {weekDays.map(day => (
                       <div
                         key={day}
-                        className='h-10 flex items-center justify-center text-sm font-medium text-muted-foreground'
+                        className="h-10 flex items-center justify-center text-sm font-medium text-muted-foreground"
                       >
                         {day}
                       </div>
                     ))}
                   </div>
 
-                  {/* Days of the month - better design */}
-                  <div className='grid grid-cols-7 gap-1'>
+                  {/* Month days */}
+                  <div className="grid grid-cols-7 gap-1">
                     {generateCalendarDays().map((day, index) => {
                       // Check if there are real training sessions for this day
-                      const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                      const hasTraining = day !== null && dailyTrainingData[dateKey]?.sessions.length > 0;
-                      
+                      const dateKey = `${currentYear}-${String(
+                        currentMonth + 1
+                      ).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                      const hasTraining =
+                        day !== null &&
+                        dailyTrainingData[dateKey]?.sessions.length > 0;
+
                       // Check if there are competitions for this day
-                      const competitionsOnDay = day !== null ? getCompetitionsByDate(dateKey) : [];
-                      
+                      const competitionsOnDay =
+                        day !== null ? getCompetitionsByDate(dateKey) : [];
+
                       const isToday =
                         day === new Date().getDate() &&
                         currentMonth === new Date().getMonth() &&
@@ -368,28 +377,35 @@ export default function CalendarPage() {
                               : 'text-foreground hover:bg-accent cursor-pointer'
                           }`}
                         >
-                          <div className='flex flex-col items-center'>
+                          <div className="flex flex-col items-center">
                             <span>{day}</span>
-                            <div className='mt-1 flex gap-0.5'>
-                              {/* Training points */}
+                            <div className="mt-1 flex gap-0.5">
+                              {/* Training dots */}
                               {hasTraining && (
                                 <>
                                   {Array.from(
-                                    { length: Math.min(dailyTrainingData[dateKey]?.sessions.length || 0, 3) },
+                                    {
+                                      length: Math.min(
+                                        dailyTrainingData[dateKey]?.sessions
+                                          .length || 0,
+                                        3
+                                      ),
+                                    },
                                     (_, i) => (
                                       <div
                                         key={`training-${i}`}
-                                        className='h-1.5 w-1.5 rounded-full bg-blue-500'
+                                        className="h-1.5 w-1.5 rounded-full bg-blue-500"
                                       ></div>
                                     )
                                   )}
-                                  {(dailyTrainingData[dateKey]?.sessions.length || 0) > 3 && (
-                                    <div className='h-1.5 w-1.5 rounded-full bg-blue-300'></div>
+                                  {(dailyTrainingData[dateKey]?.sessions.length ||
+                                    0) > 3 && (
+                                    <div className="h-1.5 w-1.5 rounded-full bg-blue-300"></div>
                                   )}
                                 </>
                               )}
 
-                              {/* Puntos de competiciones - Solo después de hidratación */}
+                              {/* Competition dots - only after hydration */}
                               {competitionsOnDay.length > 0 && isHydrated && (
                                 <>
                                   {competitionsOnDay.map(comp => (
@@ -417,56 +433,58 @@ export default function CalendarPage() {
               </Card>
             </div>
 
-            {/* Panel de información - 50% del ancho */}
-            <div className='w-full lg:w-1/2'>
-              <Card className='bg-muted/50 border-muted h-full flex flex-col'>
-                <CardHeader className='pb-4'>
-                  <CardTitle className='text-lg font-semibold text-gray-900 dark:text-white'>
+            {/* Info panel - 50% width */}
+            <div className="w-full lg:w-1/2">
+              <Card className="bg-muted/50 border-muted h-full flex flex-col">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">
                     Day Details
                   </CardTitle>
-                  <CardDescription className='text-gray-600 dark:text-gray-400'>
+                  <CardDescription className="text-gray-600 dark:text-gray-400">
                     {selectedDate
-                      ? `${selectedDate.day} de ${selectedDate.month} de ${selectedDate.year}`
+                      ? `${selectedDate.day} of ${selectedDate.month} ${selectedDate.year}`
                       : 'Select a day to view details'}
                   </CardDescription>
                 </CardHeader>
-                <CardContent className='flex-1 flex flex-col'>
+                <CardContent className="flex-1 flex flex-col">
                   {selectedDate ? (
-                    <div className='space-y-4'>
+                    <div className="space-y-4">
                       {/* Competitions - Always show if they exist */}
                       {selectedDayCompetitions.length > 0 && (
-                        <div className='space-y-3'>
-                          <h4 className='font-semibold text-gray-900 dark:text-white flex items-center gap-2'>
-                            <CalendarIcon className='h-4 w-4' />
+                        <div className="space-y-3">
+                          <h4 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                            <CalendarIcon className="h-4 w-4" />
                             Competitions ({selectedDayCompetitions.length})
                           </h4>
                           {selectedDayCompetitions.map((comp, index) => (
                             <div
                               key={index}
-                              className='border border-red-200 dark:border-red-800 rounded-lg p-3 bg-red-50 dark:bg-red-900/20'
+                              className="border border-red-200 dark:border-red-800 rounded-lg p-3 bg-red-50 dark:bg-red-900/20"
                             >
-                              <div className='flex items-center justify-between'>
-                                <div className='flex items-center gap-2 flex-1'>
-                                  <div className={`h-2 w-2 rounded-full flex-shrink-0 ${
-                                    comp.priority === 'high'
-                                      ? 'bg-red-500'
-                                      : comp.priority === 'medium'
-                                      ? 'bg-orange-500'
-                                      : 'bg-green-500'
-                                  }`}></div>
-                                  <div className='flex-1 min-w-0'>
-                                    <span className='font-medium text-gray-900 dark:text-white block truncate'>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2 flex-1">
+                                  <div
+                                    className={`h-2 w-2 rounded-full flex-shrink-0 ${
+                                      comp.priority === 'high'
+                                        ? 'bg-red-500'
+                                        : comp.priority === 'medium'
+                                        ? 'bg-orange-500'
+                                        : 'bg-green-500'
+                                    }`}
+                                  ></div>
+                                  <div className="flex-1 min-w-0">
+                                    <span className="font-medium text-gray-900 dark:text-white block truncate">
                                       {comp.name}
                                     </span>
-                                    <div className='flex items-center gap-3 text-xs text-gray-600 dark:text-gray-400 mt-1'>
+                                    <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-400 mt-1">
                                       {comp.location && (
-                                        <span className='flex items-center gap-1'>
-                                          <Target className='h-3 w-3' />
+                                        <span className="flex items-center gap-1">
+                                          <Target className="h-3 w-3" />
                                           {comp.location}
                                         </span>
                                       )}
                                       {comp.type && (
-                                        <span className='capitalize'>
+                                        <span className="capitalize">
                                           {comp.type}
                                         </span>
                                       )}
@@ -474,7 +492,7 @@ export default function CalendarPage() {
                                   </div>
                                 </div>
                                 <Badge
-                                  variant='secondary'
+                                  variant="secondary"
                                   className={`text-xs flex-shrink-0 ${
                                     comp.priority === 'high'
                                       ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
@@ -483,7 +501,11 @@ export default function CalendarPage() {
                                       : 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
                                   }`}
                                 >
-                                  {comp.priority === 'high' ? 'Alta' : comp.priority === 'medium' ? 'Media' : 'Baja'}
+                                  {comp.priority === 'high'
+                                    ? 'High'
+                                    : comp.priority === 'medium'
+                                    ? 'Medium'
+                                    : 'Low'}
                                 </Badge>
                               </div>
                             </div>
@@ -493,37 +515,39 @@ export default function CalendarPage() {
 
                       {/* Training - Show if exists */}
                       {selectedDaySessions.length > 0 && (
-                        <div className='space-y-3'>
-                          <h4 className='font-semibold text-gray-900 dark:text-white flex items-center gap-2'>
-                            <Activity className='h-4 w-4' />
+                        <div className="space-y-3">
+                          <h4 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                            <Activity className="h-4 w-4" />
                             Training ({selectedDaySessions.length})
                           </h4>
-                          {selectedDaySessions.map((session) => (
+                          {selectedDaySessions.map(session => (
                             <div
                               key={session.id}
                               onClick={() => handleTrainingClick(session)}
-                              className='border border-blue-200 dark:border-blue-800 rounded-lg p-3 bg-blue-50 dark:bg-blue-900/20 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-800/30 transition-colors'
+                              className="border border-blue-200 dark:border-blue-800 rounded-lg p-3 bg-blue-50 dark:bg-blue-900/20 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-800/30 transition-colors"
                             >
-                              <div className='flex items-center justify-between'>
-                                <div className='flex items-center gap-2 flex-1'>
-                                  <div className='h-2 w-2 rounded-full bg-blue-500 flex-shrink-0'></div>
-                                  <div className='flex-1 min-w-0'>
-                                    <span className='font-medium text-gray-900 dark:text-white block'>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2 flex-1">
+                                  <div className="h-2 w-2 rounded-full bg-blue-500 flex-shrink-0"></div>
+                                  <div className="flex-1 min-w-0">
+                                    <span className="font-medium text-gray-900 dark:text-white block">
                                       {session.distance}m
                                     </span>
-                                    <div className='flex items-center gap-3 text-xs text-gray-600 dark:text-gray-400 mt-1'>
+                                    <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-400 mt-1">
                                       {session.stroke && (
                                         <span>{session.stroke}</span>
                                       )}
                                       {session.mainSet && (
-                                        <span className='truncate'>{session.mainSet}</span>
+                                        <span className="truncate">
+                                          {session.mainSet}
+                                        </span>
                                       )}
                                     </div>
                                   </div>
                                 </div>
                                 <Badge
-                                  variant='secondary'
-                                  className='bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 text-xs flex-shrink-0'
+                                  variant="secondary"
+                                  className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 text-xs flex-shrink-0"
                                 >
                                   {session.sessionType}
                                 </Badge>
@@ -533,30 +557,29 @@ export default function CalendarPage() {
                         </div>
                       )}
 
-                      {/* Mensaje cuando no hay nada */}
-                      {selectedDaySessions.length === 0 && selectedDayCompetitions.length === 0 && (
-                        <div className='flex-1 flex flex-col items-center justify-center text-center'>
-                          <div className='p-4 bg-muted rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center'>
-                            <CalendarIcon className='h-8 w-8 text-muted-foreground' />
+                      {/* Empty state */}
+                      {selectedDaySessions.length === 0 &&
+                        selectedDayCompetitions.length === 0 && (
+                          <div className="flex-1 flex flex-col items-center justify-center text-center">
+                            <div className="p-4 bg-muted rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                              <CalendarIcon className="h-8 w-8 text-muted-foreground" />
+                            </div>
+                            <p className="text-foreground font-medium">
+                              No activities recorded
+                            </p>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              for this day
+                            </p>
                           </div>
-                          <p className='text-foreground font-medium'>
-                            No activities recorded
-                          </p>
-                          <p className='text-sm text-muted-foreground mt-1'>
-                            for this day
-                          </p>
-                        </div>
-                      )}
+                        )}
                     </div>
                   ) : (
-                    <div className='flex-1 flex flex-col items-center justify-center text-center'>
-                      <div className='p-4 bg-primary/10 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center'>
-                        <CalendarIcon className='h-8 w-8 text-primary' />
+                    <div className="flex-1 flex flex-col items-center justify-center text-center">
+                      <div className="p-4 bg-primary/10 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                        <CalendarIcon className="h-8 w-8 text-primary" />
                       </div>
-                      <p className='text-foreground font-medium'>
-                        Select a day
-                      </p>
-                      <p className='text-sm text-muted-foreground mt-1'>
+                      <p className="text-foreground font-medium">Select a day</p>
+                      <p className="text-sm text-muted-foreground mt-1">
                         to view training details
                       </p>
                     </div>
@@ -566,48 +589,48 @@ export default function CalendarPage() {
             </div>
           </div>
 
-          {/* Leyenda actualizada */}
-          <div className='flex flex-wrap items-center justify-center gap-6 text-sm'>
-            <div className='flex items-center gap-3'>
-              <div className='w-4 h-4 bg-blue-500 rounded-lg shadow-sm'></div>
-              <span className='text-gray-600 dark:text-gray-400 font-medium'>
-                Entrenamiento
+          {/* Updated legend */}
+          <div className="flex flex-wrap items-center justify-center gap-6 text-sm">
+            <div className="flex items-center gap-3">
+              <div className="w-4 h-4 bg-blue-500 rounded-lg shadow-sm"></div>
+              <span className="text-gray-600 dark:text-gray-400 font-medium">
+                Training
               </span>
             </div>
-            <div className='flex items-center gap-3'>
-              <div className='w-4 h-4 bg-red-500 rounded-full'></div>
-              <span className='text-gray-600 dark:text-gray-400 font-medium'>
-                Competición Alta
+            <div className="flex items-center gap-3">
+              <div className="w-4 h-4 bg-red-500 rounded-full"></div>
+              <span className="text-gray-600 dark:text-gray-400 font-medium">
+                High Priority Competition
               </span>
             </div>
-            <div className='flex items-center gap-3'>
-              <div className='w-4 h-4 bg-orange-500 rounded-full'></div>
-              <span className='text-gray-600 dark:text-gray-400 font-medium'>
-                Competición Media
+            <div className="flex items-center gap-3">
+              <div className="w-4 h-4 bg-orange-500 rounded-full"></div>
+              <span className="text-gray-600 dark:text-gray-400 font-medium">
+                Medium Priority Competition
               </span>
             </div>
-            <div className='flex items-center gap-3'>
-              <div className='w-4 h-4 bg-green-500 rounded-full'></div>
-              <span className='text-gray-600 dark:text-gray-400 font-medium'>
-                Competición Baja
+            <div className="flex items-center gap-3">
+              <div className="w-4 h-4 bg-green-500 rounded-full"></div>
+              <span className="text-gray-600 dark:text-gray-400 font-medium">
+                Low Priority Competition
               </span>
             </div>
-            <div className='flex items-center gap-3'>
-              <div className='w-4 h-4 bg-gray-100 dark:bg-gray-800 border-2 border-blue-500 rounded-lg'></div>
-              <span className='text-gray-600 dark:text-gray-400 font-medium'>
-                Hoy
+            <div className="flex items-center gap-3">
+              <div className="w-4 h-4 bg-gray-100 dark:bg-gray-800 border-2 border-blue-500 rounded-lg"></div>
+              <span className="text-gray-600 dark:text-gray-400 font-medium">
+                Today
               </span>
             </div>
-            <div className='flex items-center gap-3'>
-              <div className='w-4 h-4 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700'></div>
-              <span className='text-gray-600 dark:text-gray-400 font-medium'>
-                Día normal
+            <div className="flex items-center gap-3">
+              <div className="w-4 h-4 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"></div>
+              <span className="text-gray-600 dark:text-gray-400 font-medium">
+                Normal Day
               </span>
             </div>
           </div>
         </div>
 
-        {/* Modal de detalles del entrenamiento */}
+        {/* Training details modal */}
         <TrainingDetailModal
           isOpen={isModalOpen}
           onClose={handleCloseModal}

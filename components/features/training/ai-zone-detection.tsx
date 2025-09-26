@@ -14,12 +14,12 @@ interface AIZoneDetectionProps {
   disabled?: boolean;
 }
 
-export function AIZoneDetection({ 
-  content, 
-  objective, 
-  timeSlot, 
-  onZonesDetected, 
-  disabled = false 
+export function AIZoneDetection({
+  content,
+  objective,
+  timeSlot,
+  onZonesDetected,
+  disabled = false,
 }: AIZoneDetectionProps) {
   const { isDetecting, result, error, detectZones, reset } = useAIZoneDetection();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -52,7 +52,7 @@ export function AIZoneDetection({
       <div className="bg-muted/30 rounded-lg p-4 border border-dashed">
         <div className="text-center text-muted-foreground">
           <Brain className="h-6 w-6 mx-auto mb-2 opacity-50" />
-          <p className="text-sm">Escribe tu entrenamiento para activar la detección automática de zonas</p>
+          <p className="text-sm">Write your workout to enable automatic zone detection</p>
         </div>
       </div>
     );
@@ -60,11 +60,11 @@ export function AIZoneDetection({
 
   return (
     <div className="bg-muted/30 rounded-lg p-4 border">
-      {/* Header compacto */}
+      {/* Compact header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Brain className="h-4 w-4 text-primary" />
-          <span className="text-sm font-medium">Detección Automática de Zonas</span>
+          <span className="text-sm font-medium">Automatic Zone Detection</span>
         </div>
         {result && (
           <Button
@@ -73,12 +73,12 @@ export function AIZoneDetection({
             onClick={() => setIsExpanded(!isExpanded)}
             className="h-7 px-2 text-xs"
           >
-            {isExpanded ? 'Ocultar' : 'Detalles'}
+            {isExpanded ? 'Hide' : 'Details'}
           </Button>
         )}
       </div>
 
-      {/* Botón de detección */}
+      {/* Detect button */}
       <div className="space-y-3">
         <Button
           onClick={handleDetect}
@@ -89,30 +89,30 @@ export function AIZoneDetection({
           {isDetecting ? (
             <>
               <Loader2 className="h-3 w-3 mr-2 animate-spin" />
-              Analizando...
+              Analyzing...
             </>
           ) : (
             <>
               <Brain className="h-3 w-3 mr-2" />
-              Detectar Zonas con IA
+              Detect Zones with AI
             </>
           )}
         </Button>
 
-        {/* Error compacto */}
+        {/* Compact error */}
         {error && (
           <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3">
             <div className="flex items-start gap-2">
               <AlertCircle className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
               <div className="space-y-1">
-                <p className="text-sm font-medium text-destructive">Error en la detección</p>
+                <p className="text-sm font-medium text-destructive">Detection error</p>
                 <p className="text-xs text-destructive/80">{error}</p>
                 {error.includes('OpenAI') && (
                   <div className="text-xs bg-muted p-2 rounded mt-2">
-                    <p className="font-medium">Solución:</p>
+                    <p className="font-medium">How to fix:</p>
                     <ul className="list-disc list-inside space-y-0.5 mt-1">
-                      <li>Configura OPENAI_API_KEY en .env.local</li>
-                      <li>Reinicia el servidor</li>
+                      <li>Set <code>OPENAI_API_KEY</code> in <code>.env.local</code></li>
+                      <li>Restart the dev server</li>
                     </ul>
                   </div>
                 )}
@@ -121,15 +121,15 @@ export function AIZoneDetection({
           </div>
         )}
 
-        {/* Resultado compacto */}
+        {/* Compact result */}
         {result && (
           <div className="space-y-3">
-            {/* Resumen compacto */}
+            {/* Compact summary */}
             <div className="flex items-center justify-between text-xs">
               <div className="flex items-center gap-2">
                 {getConfidenceIcon(result.confidence)}
                 <span className={`font-medium ${getConfidenceColor(result.confidence)}`}>
-                  {result.confidence}% confianza
+                  {result.confidence}% confidence
                 </span>
               </div>
               <Badge variant="outline" className="text-xs">
@@ -137,21 +137,19 @@ export function AIZoneDetection({
               </Badge>
             </div>
 
-            {/* Zonas detectadas compactas */}
+            {/* Compact detected zones */}
             <div className="grid grid-cols-5 gap-1">
               {Object.entries(result.zones).map(([zone, meters]) => (
                 <div key={zone} className="text-center p-2 border rounded bg-background/50">
                   <div className="text-xs font-medium text-muted-foreground">
                     {zone.toUpperCase()}
                   </div>
-                  <div className="text-sm font-bold">
-                    {meters}m
-                  </div>
+                  <div className="text-sm font-bold">{meters}m</div>
                 </div>
               ))}
             </div>
 
-            {/* Botón aplicar compacto */}
+            {/* Compact apply button */}
             <Button
               onClick={handleApplyZones}
               className="w-full h-8"
@@ -159,26 +157,26 @@ export function AIZoneDetection({
               disabled={result.confidence < 30}
             >
               <CheckCircle className="h-3 w-3 mr-2" />
-              Aplicar Zonas
+              Apply Zones
             </Button>
 
-            {/* Detalles expandibles compactos */}
+            {/* Expandable compact details */}
             {isExpanded && (
               <div className="space-y-2 pt-3 border-t">
-                {/* Razonamiento */}
+                {/* Reasoning */}
                 <div>
-                  <h4 className="text-xs font-medium mb-1">Análisis de la IA:</h4>
+                  <h4 className="text-xs font-medium mb-1">AI Analysis:</h4>
                   <p className="text-xs text-muted-foreground bg-background/50 p-2 rounded">
                     {result.reasoning}
                   </p>
                 </div>
 
-                {/* Sugerencias */}
+                {/* Suggestions */}
                 {result.suggestions.length > 0 && (
                   <div>
                     <h4 className="text-xs font-medium mb-1 flex items-center gap-1">
                       <Lightbulb className="h-3 w-3" />
-                      Sugerencias:
+                      Suggestions:
                     </h4>
                     <ul className="space-y-0.5">
                       {result.suggestions.map((suggestion, index) => (

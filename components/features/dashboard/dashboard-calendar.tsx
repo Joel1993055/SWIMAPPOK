@@ -4,33 +4,32 @@ import { TrainingDetailModal } from '@/components/features/calendar/training-det
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { getSessions, type Session } from '@/lib/actions/sessions';
 import { useCompetitionsStore } from '@/lib/store/unified';
 import {
-    Activity,
-    Calendar as CalendarIcon,
-    ChevronLeft,
-    ChevronRight,
-    Target
+  Activity,
+  Calendar as CalendarIcon,
+  ChevronLeft,
+  ChevronRight,
+  Target,
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-// NUEVO: Importar el store unificado
 
 export function DashboardCalendar() {
-  // SOLUCIÓN: Estado de hidratación para evitar errores SSR
+  // Hydration state to avoid SSR issues
   const [isHydrated, setIsHydrated] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<{
@@ -44,50 +43,49 @@ export function DashboardCalendar() {
   const [isTrainingModalOpen, setIsTrainingModalOpen] = useState(false);
   // const [isLoading, setIsLoading] = useState(true);
 
-  // MANTENER: Context existente
+  // Existing context
   const { getCompetitionsByDate } = useCompetitionsStore();
 
-  // OPTIMIZADO: Solo usar lo necesario del store
+  // Only what we need from the store
   const { competitions: storeCompetitions } = useCompetitionsStore();
 
-  // SOLUCIÓN: Efecto para manejar la hidratación
+  // Handle hydration
   useEffect(() => {
     setIsHydrated(true);
   }, []);
 
-  // NUEVO: Sincronizar datos del context al store
+  // Sync context data to store (placeholder – parent handles actual sync)
   React.useEffect(() => {
     if (storeCompetitions.length === 0) {
-      // Si el store está vacío, no hacer nada por ahora
-      // La sincronización se maneja en el componente padre
+      // No-op for now
     }
   }, [storeCompetitions]);
 
   const months = [
-    { name: 'enero', short: 'ene', days: 31 },
-    { name: 'febrero', short: 'feb', days: 28 },
-    { name: 'marzo', short: 'mar', days: 31 },
-    { name: 'abril', short: 'abr', days: 30 },
-    { name: 'mayo', short: 'may', days: 31 },
-    { name: 'junio', short: 'jun', days: 30 },
-    { name: 'julio', short: 'jul', days: 31 },
-    { name: 'agosto', short: 'ago', days: 31 },
-    { name: 'septiembre', short: 'sep', days: 30 },
-    { name: 'octubre', short: 'oct', days: 31 },
-    { name: 'noviembre', short: 'nov', days: 30 },
-    { name: 'diciembre', short: 'dic', days: 31 },
+    { name: 'january', short: 'jan', days: 31 },
+    { name: 'february', short: 'feb', days: 28 },
+    { name: 'march', short: 'mar', days: 31 },
+    { name: 'april', short: 'apr', days: 30 },
+    { name: 'may', short: 'may', days: 31 },
+    { name: 'june', short: 'jun', days: 30 },
+    { name: 'july', short: 'jul', days: 31 },
+    { name: 'august', short: 'aug', days: 31 },
+    { name: 'september', short: 'sep', days: 30 },
+    { name: 'october', short: 'oct', days: 31 },
+    { name: 'november', short: 'nov', days: 30 },
+    { name: 'december', short: 'dec', days: 31 },
   ];
 
-  const weekDays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+  const weekDays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
-  // Cargar sesiones reales desde Supabase
+  // Load sessions from Supabase
   useEffect(() => {
     const loadSessions = async () => {
       try {
         const data = await getSessions();
         setSessions(data);
       } catch (error) {
-        console.error('Error cargando sesiones:', error);
+        console.error('Error loading sessions:', error);
         setSessions([]);
       } finally {
         // setIsLoading(false);
@@ -101,7 +99,7 @@ export function DashboardCalendar() {
   const currentMonth = currentDate.getMonth();
   const currentMonthName = months[currentMonth].name;
 
-  // Convertir sesiones reales a formato para el calendario
+  // Convert sessions to calendar daily map
   const dailyTrainingData = sessions.reduce(
     (acc, session) => {
       const dateKey = session.date;
@@ -110,11 +108,11 @@ export function DashboardCalendar() {
       }
 
       acc[dateKey].sessions.push({
-        time: '09:00', // Podríamos agregar un campo de hora a las sesiones
+        time: '09:00', // Could add time to sessions later
         type: session.type,
         distance: session.distance || 0,
         duration: session.duration || 0,
-        stroke: session.stroke || 'Libre',
+        stroke: session.stroke || 'Freestyle',
         rpe: session.rpe || 5,
       });
 
@@ -135,27 +133,23 @@ export function DashboardCalendar() {
     >
   );
 
-  // Debug temporal (comentado para producción)
-  // console.log("Sessions en calendario:", sessions);
-  // console.log("Datos diarios del calendario:", dailyTrainingData);
-
   const generateCalendarDays = () => {
     const month = months[currentMonth];
-    const days = [];
+    const days: Array<number | null> = [];
 
-    // Get first day of month and what day of week it is
+    // First day of month and weekday (0=Sunday, 1=Monday, ...)
     const firstDay = new Date(currentYear, currentMonth, 1);
-    const startDay = firstDay.getDay(); // 0 = domingo, 1 = lunes, etc.
+    const startDay = firstDay.getDay();
 
-    // Ajustar para que lunes sea 0
+    // Make Monday index 0
     const adjustedStartDay = startDay === 0 ? 6 : startDay - 1;
 
-    // Add empty days at the beginning
+    // Leading empty days
     for (let i = 0; i < adjustedStartDay; i++) {
       days.push(null);
     }
 
-    // Generate days of the month
+    // Actual month days
     for (let day = 1; day <= month.days; day++) {
       days.push(day);
     }
@@ -191,9 +185,8 @@ export function DashboardCalendar() {
   };
 
   const handleEditTraining = (training: Session) => {
-    // Aquí podrías navegar a la página de edición o abrir un modal de edición
+    // Could navigate to edit page or open edit modal
     console.log('Edit training:', training);
-    // Por ahora solo cerramos el modal
     handleCloseTrainingModal();
   };
 
@@ -221,7 +214,7 @@ export function DashboardCalendar() {
     const dateKey = `${selectedDate.year}-${String(
       months.findIndex(m => m.name === selectedDate.month) + 1
     ).padStart(2, '0')}-${String(selectedDate.day).padStart(2, '0')}`;
-    
+
     return sessions.filter(session => session.date === dateKey);
   };
 
@@ -229,7 +222,7 @@ export function DashboardCalendar() {
   const selectedDaySessions = getSelectedDaySessions();
   const selectedDayCompetitions = getSelectedDayCompetitions();
 
-  // SOLUCIÓN: Renderizar solo después de la hidratación
+  // Render skeleton until hydrated
   if (!isHydrated) {
     return (
       <Card className="bg-muted/50 border-muted">
@@ -237,14 +230,14 @@ export function DashboardCalendar() {
           <div className="flex items-center justify-between">
             <div className="text-center">
               <h2 className="text-xl font-semibold capitalize text-gray-900 dark:text-white">
-                Cargando...
+                Loading...
               </h2>
             </div>
           </div>
         </CardHeader>
         <CardContent className="pt-0 pb-6">
           <div className="grid grid-cols-7 gap-1 mb-3">
-            {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map(day => (
+            {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(day => (
               <div
                 key={day}
                 className="h-10 flex items-center justify-center text-sm font-medium text-muted-foreground"
@@ -255,7 +248,10 @@ export function DashboardCalendar() {
           </div>
           <div className="grid grid-cols-7 gap-1">
             {Array.from({ length: 35 }, (_, i) => (
-              <div key={i} className="h-10 w-10 flex items-center justify-center text-sm font-medium rounded-lg bg-gray-100 dark:bg-gray-800" />
+              <div
+                key={i}
+                className="h-10 w-10 flex items-center justify-center text-sm font-medium rounded-lg bg-gray-100 dark:bg-gray-800"
+              />
             ))}
           </div>
         </CardContent>
@@ -265,62 +261,61 @@ export function DashboardCalendar() {
 
   return (
     <>
-      <Card className='bg-muted/50 border-muted col-span-3 h-full'>
-        <CardHeader className='pb-3'>
-          <div className='flex items-center justify-between'>
+      <Card className="bg-muted/50 border-muted col-span-3 h-full">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
             <div>
-              <CardTitle className='flex items-center gap-2'>
-                <CalendarIcon className='h-5 w-5' />
+              <CardTitle className="flex items-center gap-2">
+                <CalendarIcon className="h-5 w-5" />
                 Calendar
               </CardTitle>
               <CardDescription>Monthly view of your sessions</CardDescription>
             </div>
 
             {/* Month navigation */}
-            <div className='flex items-center gap-2'>
+            <div className="flex items-center gap-2">
               <Button
-                variant='ghost'
-                size='sm'
+                variant="ghost"
+                size="sm"
                 onClick={() => navigateMonth('prev')}
-                className='h-8 w-8 p-0'
+                className="h-8 w-8 p-0"
               >
-                <ChevronLeft className='h-4 w-4' />
+                <ChevronLeft className="h-4 w-4" />
               </Button>
 
-              <div className='min-w-[120px] text-center'>
-                <p className='text-sm font-medium capitalize'>
+              <div className="min-w-[120px] text-center">
+                <p className="text-sm font-medium capitalize">
                   {currentMonthName} {currentYear}
                 </p>
               </div>
 
               <Button
-                variant='ghost'
-                size='sm'
+                variant="ghost"
+                size="sm"
                 onClick={() => navigateMonth('next')}
-                className='h-8 w-8 p-0'
+                className="h-8 w-8 p-0"
               >
-                <ChevronRight className='h-4 w-4' />
+                <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
           </div>
         </CardHeader>
-        <CardContent className='flex flex-1 flex-col'>
-          {/* Days of the week */}
-          <div className='mb-3 grid grid-cols-7 gap-2'>
+        <CardContent className="flex flex-1 flex-col">
+          {/* Weekdays */}
+          <div className="mb-3 grid grid-cols-7 gap-2">
             {weekDays.map(day => (
               <div
                 key={day}
-                className='text-muted-foreground flex h-10 items-center justify-center text-sm font-medium'
+                className="text-muted-foreground flex h-10 items-center justify-center text-sm font-medium"
               >
                 {day}
               </div>
             ))}
           </div>
 
-          {/* Days of the month */}
-          <div className='grid flex-1 grid-cols-7 gap-2'>
+          {/* Month days */}
+          <div className="grid flex-1 grid-cols-7 gap-2">
             {generateCalendarDays().map((day, index) => {
-              // Get number of training sessions on this day
               const trainingCount =
                 day !== null
                   ? (() => {
@@ -333,7 +328,6 @@ export function DashboardCalendar() {
                     })()
                   : 0;
 
-              // Obtener competiciones en este día
               const competitionsOnDay =
                 day !== null
                   ? (() => {
@@ -361,10 +355,10 @@ export function DashboardCalendar() {
                       : 'text-foreground hover:bg-accent cursor-pointer'
                   }`}
                 >
-                  <div className='flex flex-col items-center'>
+                  <div className="flex flex-col items-center">
                     <span>{day}</span>
-                    <div className='mt-1 flex gap-0.5'>
-                      {/* Puntos de entrenamientos */}
+                    <div className="mt-1 flex gap-0.5">
+                      {/* Training dots */}
                       {trainingCount > 0 && (
                         <>
                           {Array.from(
@@ -372,17 +366,17 @@ export function DashboardCalendar() {
                             (_, i) => (
                               <div
                                 key={`training-${i}`}
-                                className='h-1.5 w-1.5 rounded-full bg-blue-500'
+                                className="h-1.5 w-1.5 rounded-full bg-blue-500"
                               ></div>
                             )
                           )}
                           {trainingCount > 3 && (
-                            <div className='h-1.5 w-1.5 rounded-full bg-blue-300'></div>
+                            <div className="h-1.5 w-1.5 rounded-full bg-blue-300"></div>
                           )}
                         </>
                       )}
 
-                      {/* Puntos de competiciones - Solo después de hidratación */}
+                      {/* Competition dots */}
                       {competitionsOnDay.length > 0 && isHydrated && (
                         <>
                           {competitionsOnDay.map(comp => (
@@ -407,48 +401,48 @@ export function DashboardCalendar() {
             })}
           </div>
 
-          {/* Leyenda del calendario */}
-          <div className='border-border mt-4 border-t pt-4'>
-            <div className='text-muted-foreground flex flex-col gap-3 text-xs'>
-               {/* Training - SIMPLIFIED */}
-               <div className='space-y-2'>
-                 <h4 className='text-foreground mb-2 text-sm font-medium'>
-                   Training Sessions
-                 </h4>
-                 <div className='flex items-center gap-2'>
-                   <div className='h-1.5 w-1.5 rounded-full bg-blue-500'></div>
-                   <span>Día con entrenamiento</span>
-                 </div>
-               </div>
-
-              {/* Competiciones */}
-              <div className='space-y-2'>
-                <h4 className='text-foreground mb-2 text-sm font-medium'>
-                  Competiciones
+          {/* Calendar legend */}
+          <div className="border-border mt-4 border-t pt-4">
+            <div className="text-muted-foreground flex flex-col gap-3 text-xs">
+              {/* Training - simplified */}
+              <div className="space-y-2">
+                <h4 className="text-foreground mb-2 text-sm font-medium">
+                  Training Sessions
                 </h4>
-                <div className='flex items-center gap-4'>
-                  <div className='flex items-center gap-2'>
-                    <div className='h-1.5 w-1.5 rounded-full bg-red-500'></div>
-                    <span>Alta prioridad</span>
+                <div className="flex items-center gap-2">
+                  <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                  <span>Day with training</span>
+                </div>
+              </div>
+
+              {/* Competitions */}
+              <div className="space-y-2">
+                <h4 className="text-foreground mb-2 text-sm font-medium">
+                  Competitions
+                </h4>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-red-500"></div>
+                    <span>High priority</span>
                   </div>
-                  <div className='flex items-center gap-2'>
-                    <div className='h-1.5 w-1.5 rounded-full bg-orange-500'></div>
-                    <span>Media prioridad</span>
+                  <div className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
+                    <span>Medium priority</span>
                   </div>
-                  <div className='flex items-center gap-2'>
-                    <div className='h-1.5 w-1.5 rounded-full bg-green-500'></div>
-                    <span>Baja prioridad</span>
+                  <div className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div>
+                    <span>Low priority</span>
                   </div>
                 </div>
               </div>
 
-              {/* Día actual */}
-              <div className='space-y-2'>
-                <h4 className='text-foreground mb-2 text-sm font-medium'>
-                  Indicadores
+              {/* Indicators */}
+              <div className="space-y-2">
+                <h4 className="text-foreground mb-2 text-sm font-medium">
+                  Indicators
                 </h4>
-                <div className='flex items-center gap-2'>
-                  <div className='bg-accent border-primary h-3 w-3 rounded-full border'></div>
+                <div className="flex items-center gap-2">
+                  <div className="bg-accent border-primary h-3 w-3 rounded-full border"></div>
                   <span>Today</span>
                 </div>
               </div>
@@ -457,54 +451,57 @@ export function DashboardCalendar() {
         </CardContent>
       </Card>
 
-      {/* Dialog con detalles del día */}
+      {/* Day details dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className='sm:max-w-md'>
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>
               {selectedDate
-                ? `${selectedDate.day} de ${selectedDate.month} de ${selectedDate.year}`
-                : 'Detalles del Día'}
+                ? `${selectedDate.month} ${selectedDate.day}, ${selectedDate.year}`
+                : 'Day Details'}
             </DialogTitle>
             <DialogDescription>
-              Información de entrenamientos para este día
+              Training information for this day
             </DialogDescription>
           </DialogHeader>
 
-          <div className='space-y-4'>
+          <div className="space-y-4">
             {selectedDate &&
-            (selectedDaySessions.length > 0 || selectedDayCompetitions.length > 0) ? (
+            (selectedDaySessions.length > 0 ||
+              selectedDayCompetitions.length > 0) ? (
               <>
                 {/* Training Sessions */}
                 {selectedDaySessions.length > 0 && (
-                  <div className='space-y-3'>
-                    <h4 className='font-semibold text-foreground flex items-center gap-2'>
-                      <Activity className='h-4 w-4' />
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-foreground flex items-center gap-2">
+                      <Activity className="h-4 w-4" />
                       Training Sessions ({selectedDaySessions.length})
                     </h4>
-                    {selectedDaySessions.map((session) => (
+                    {selectedDaySessions.map(session => (
                       <div
                         key={session.id}
                         onClick={() => handleTrainingClick(session)}
-                        className='border border-blue-200 dark:border-blue-800 rounded-lg p-3 bg-blue-50 dark:bg-blue-900/20 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-800/30 transition-colors'
+                        className="border border-blue-200 dark:border-blue-800 rounded-lg p-3 bg-blue-50 dark:bg-blue-900/20 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-800/30 transition-colors"
                       >
-                        <div className='flex items-center justify-between'>
-                          <div className='flex items-center gap-2 flex-1'>
-                            <div className='h-2 w-2 rounded-full bg-blue-500 flex-shrink-0'></div>
-                            <div className='flex-1 min-w-0'>
-                              <span className='font-medium text-foreground block'>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 flex-1">
+                            <div className="h-2 w-2 rounded-full bg-blue-500 flex-shrink-0"></div>
+                            <div className="flex-1 min-w-0">
+                              <span className="font-medium text-foreground block">
                                 {session.distance}m
                               </span>
-                              <div className='flex items-center gap-3 text-xs text-muted-foreground mt-1'>
+                              <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
                                 {session.mainSet && (
-                                  <span className='truncate'>{session.mainSet}</span>
+                                  <span className="truncate">
+                                    {session.mainSet}
+                                  </span>
                                 )}
                               </div>
                             </div>
                           </div>
                           <Badge
-                            variant='secondary'
-                            className='bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 text-xs flex-shrink-0'
+                            variant="secondary"
+                            className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 text-xs flex-shrink-0"
                           >
                             {session.sessionType}
                           </Badge>
@@ -514,95 +511,101 @@ export function DashboardCalendar() {
                   </div>
                 )}
 
-                {/* Competiciones */}
+                {/* Competitions */}
                 {selectedDayCompetitions.length > 0 && (
-                  <div className='space-y-3'>
-                    <h4 className='font-semibold text-foreground flex items-center gap-2'>
-                      <CalendarIcon className='h-4 w-4' />
-                      Competiciones ({selectedDayCompetitions.length})
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-foreground flex items-center gap-2">
+                      <CalendarIcon className="h-4 w-4" />
+                      Competitions ({selectedDayCompetitions.length})
                     </h4>
-                      {selectedDayCompetitions.map((competition, index) => (
-                        <div
-                          key={index}
-                          className='border border-red-200 dark:border-red-800 rounded-lg p-3 bg-red-50 dark:bg-red-900/20'
-                        >
-                          <div className='flex items-center justify-between'>
-                            <div className='flex items-center gap-2 flex-1'>
-                              <div className={`h-2 w-2 rounded-full flex-shrink-0 ${
+                    {selectedDayCompetitions.map((competition, index) => (
+                      <div
+                        key={index}
+                        className="border border-red-200 dark:border-red-800 rounded-lg p-3 bg-red-50 dark:bg-red-900/20"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 flex-1">
+                            <div
+                              className={`h-2 w-2 rounded-full flex-shrink-0 ${
                                 competition.priority === 'high'
                                   ? 'bg-red-500'
                                   : competition.priority === 'medium'
                                   ? 'bg-orange-500'
                                   : 'bg-green-500'
-                              }`}></div>
-                              <div className='flex-1 min-w-0'>
-                                <span className='font-medium text-foreground block truncate'>
-                                  {competition.name}
-                                </span>
-                                <div className='flex items-center gap-3 text-xs text-muted-foreground mt-1'>
-                                  {competition.location && (
-                                    <span className='flex items-center gap-1'>
-                                      <Target className='h-3 w-3' />
-                                      {competition.location}
-                                    </span>
-                                  )}
-                                  {competition.type && (
-                                    <span className='capitalize'>
-                                      {competition.type}
-                                    </span>
-                                  )}
-                                </div>
+                              }`}
+                            ></div>
+                            <div className="flex-1 min-w-0">
+                              <span className="font-medium text-foreground block truncate">
+                                {competition.name}
+                              </span>
+                              <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
+                                {competition.location && (
+                                  <span className="flex items-center gap-1">
+                                    <Target className="h-3 w-3" />
+                                    {competition.location}
+                                  </span>
+                                )}
+                                {competition.type && (
+                                  <span className="capitalize">
+                                    {competition.type}
+                                  </span>
+                                )}
                               </div>
                             </div>
-                            <Badge
-                              variant='secondary'
-                              className={`text-xs flex-shrink-0 ${
-                                competition.priority === 'high'
-                                  ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
-                                  : competition.priority === 'medium'
-                                  ? 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300'
-                                  : 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
-                              }`}
-                            >
-                              {competition.priority === 'high' ? 'Alta' : competition.priority === 'medium' ? 'Media' : 'Baja'}
-                            </Badge>
                           </div>
-
-                          <div className='space-y-1'>
-                            <p className='text-muted-foreground text-xs font-medium'>
-                              Eventos:
-                            </p>
-                            <div className='flex flex-wrap gap-1'>
-                              {competition.events.map((event, eventIndex) => (
-                                <Badge
-                                  key={eventIndex}
-                                  variant='secondary'
-                                  className='text-xs'
-                                >
-                                  {event}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-
-                          <p className='text-muted-foreground text-sm'>
-                            {competition.objectives}
-                          </p>
+                          <Badge
+                            variant="secondary"
+                            className={`text-xs flex-shrink-0 ${
+                              competition.priority === 'high'
+                                ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
+                                : competition.priority === 'medium'
+                                ? 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300'
+                                : 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+                            }`}
+                          >
+                            {competition.priority === 'high'
+                              ? 'High'
+                              : competition.priority === 'medium'
+                              ? 'Medium'
+                              : 'Low'}
+                          </Badge>
                         </div>
+
+                        <div className="space-y-1">
+                          <p className="text-muted-foreground text-xs font-medium">
+                            Events:
+                          </p>
+                          <div className="flex flex-wrap gap-1">
+                            {competition.events.map((event, eventIndex) => (
+                              <Badge
+                                key={eventIndex}
+                                variant="secondary"
+                                className="text-xs"
+                              >
+                                {event}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+
+                        <p className="text-muted-foreground text-sm">
+                          {competition.objectives}
+                        </p>
+                      </div>
                     ))}
                   </div>
                 )}
               </>
             ) : selectedDate ? (
-              <div className='py-8 text-center'>
-                <div className='bg-muted mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full p-4'>
-                  <CalendarIcon className='text-muted-foreground h-8 w-8' />
+              <div className="py-8 text-center">
+                <div className="bg-muted mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full p-4">
+                  <CalendarIcon className="text-muted-foreground h-8 w-8" />
                 </div>
-                <p className='text-foreground font-medium'>
+                <p className="text-foreground font-medium">
                   No activities recorded
                 </p>
-                <p className='text-muted-foreground mt-1 text-sm'>
-                  para este día
+                <p className="text-muted-foreground mt-1 text-sm">
+                  for this day
                 </p>
               </div>
             ) : null}
@@ -610,7 +613,7 @@ export function DashboardCalendar() {
         </DialogContent>
       </Dialog>
 
-      {/* Modal de detalles del entrenamiento */}
+      {/* Training details modal */}
       <TrainingDetailModal
         isOpen={isTrainingModalOpen}
         onClose={handleCloseTrainingModal}
