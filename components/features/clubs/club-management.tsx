@@ -128,7 +128,7 @@ export function ClubManagement() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Gestión de Clubes</h2>
+          <h2 className="text-2xl font-bold">Club Management</h2>
           <p className="text-muted-foreground">
             Administra tus clubes y equipos
           </p>
@@ -137,12 +137,12 @@ export function ClubManagement() {
           <DialogTrigger asChild>
             <Button className="gap-2">
               <Plus className="h-4 w-4" />
-              Nuevo Club
+              New Club
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Crear Nuevo Club</DialogTitle>
+              <DialogTitle>Create New Club</DialogTitle>
               <DialogDescription>
                 Completa la información para crear un nuevo club
               </DialogDescription>
@@ -163,7 +163,7 @@ export function ClubManagement() {
               className="ml-2"
               onClick={clearError}
             >
-              Cerrar
+              Close
             </Button>
           </AlertDescription>
         </Alert>
@@ -173,7 +173,7 @@ export function ClubManagement() {
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Buscar clubes..."
+          placeholder="Search clubs..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="pl-10"
@@ -209,7 +209,7 @@ export function ClubManagement() {
           {!searchTerm && (
             <Button onClick={() => setIsCreateDialogOpen(true)} className="gap-2">
               <Plus className="h-4 w-4" />
-              Crear Primer Club
+              Create First Club
             </Button>
           )}
         </div>
@@ -219,7 +219,7 @@ export function ClubManagement() {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Editar Club</DialogTitle>
+            <DialogTitle>Edit Club</DialogTitle>
             <DialogDescription>
               Modifica la información del club
             </DialogDescription>
@@ -373,7 +373,7 @@ function CreateClubForm({ onSubmit }: CreateClubFormProps) {
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="name">Nombre del Club *</Label>
+          <Label htmlFor="name">Club Name *</Label>
           <Input
             id="name"
             {...register('name')}
@@ -461,7 +461,7 @@ function CreateClubForm({ onSubmit }: CreateClubFormProps) {
 
       <DialogFooter>
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Creando...' : 'Crear Club'}
+          {isSubmitting ? 'Creating...' : 'Create Club'}
         </Button>
       </DialogFooter>
     </form>
@@ -590,10 +590,10 @@ function EditClubForm({ club, onSubmit, onCancel }: EditClubFormProps) {
 
       <DialogFooter>
         <Button type="button" variant="outline" onClick={onCancel}>
-          Cancelar
+          Cancel
         </Button>
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Actualizando...' : 'Actualizar Club'}
+          {isSubmitting ? 'Updating...' : 'Update Club'}
         </Button>
       </DialogFooter>
     </form>

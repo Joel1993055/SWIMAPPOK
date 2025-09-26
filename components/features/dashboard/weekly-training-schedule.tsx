@@ -4,11 +4,11 @@ import { QuickCreate } from '@/components/forms/quick-create';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
 import { getSessions, type Session } from '@/lib/actions/sessions';
 import { addDays, format, isSameDay, isToday, startOfWeek } from 'date-fns';
@@ -45,13 +45,13 @@ export function WeeklyTrainingSchedule({
   const days = Array.from({ length: 7 }, (_, i) => addDays(startWeek, i));
 
   const dayNames = [
-    'Lunes',
-    'Martes',
-    'Miércoles',
-    'Jueves',
-    'Viernes',
-    'Sábado',
-    'Domingo',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
   ];
 
   // Cargar sesiones reales desde Supabase
@@ -73,7 +73,7 @@ export function WeeklyTrainingSchedule({
 
   // Convertir sesiones reales a formato para el horario semanal
   const weeklyTrainings: TrainingSession[] = sessions.map(session => {
-    // Calcular intensidad basada en RPE
+    // Calculate intensity based on RPE
     const getIntensityFromRPE = (
       rpe: number
     ): 'Z1' | 'Z2' | 'Z3' | 'Z4' | 'Z5' => {
@@ -109,9 +109,9 @@ export function WeeklyTrainingSchedule({
   const sampleTrainings: TrainingSession[] = [
     {
       id: '1',
-      title: 'Entrenamiento de Resistencia',
+      title: 'Endurance Training',
       time: '07:00',
-      type: 'Aeróbico',
+      type: 'Aerobic',
       location: 'Piscina Municipal',
       coach: 'María García',
       group: 'Grupo A',
@@ -122,24 +122,24 @@ export function WeeklyTrainingSchedule({
     },
     {
       id: '2',
-      title: 'Trabajo de Técnica',
+      title: 'Technique Work',
       time: '18:30',
       duration: 60,
-      type: 'Técnica',
+      type: 'Technique',
       location: 'Piscina Municipal',
       coach: 'Carlos López',
       group: 'Grupo A',
-      objective: 'tecnica',
+      objective: 'technique',
       intensity: 'Z1',
       distance: 2000,
       isCompleted: false,
     },
     {
       id: '3',
-      title: 'Intervalos de Velocidad',
+      title: 'Speed Intervals',
       time: '07:00',
       duration: 75,
-      type: 'Velocidad',
+      type: 'Speed',
       location: 'Piscina Municipal',
       coach: 'Ana Martín',
       group: 'Grupo A',
@@ -187,7 +187,7 @@ export function WeeklyTrainingSchedule({
         return 'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800';
       case 'velocidad':
         return 'bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800';
-      case 'tecnica':
+      case 'technique':
         return 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800';
       case 'fuerza':
         return 'bg-purple-50 border-purple-200 dark:bg-purple-900/20 dark:border-purple-800';
@@ -210,7 +210,7 @@ export function WeeklyTrainingSchedule({
         return 'bg-blue-500 text-white hover:bg-blue-600';
       case 'velocidad':
         return 'bg-red-500 text-white hover:bg-red-600';
-      case 'tecnica':
+      case 'technique':
         return 'bg-green-500 text-white hover:bg-green-600';
       case 'fuerza':
         return 'bg-purple-500 text-white hover:bg-purple-600';
@@ -233,7 +233,7 @@ export function WeeklyTrainingSchedule({
   ): TrainingSession[] => {
     const dayString = format(day, 'yyyy-MM-dd');
 
-    // Filtrar entrenamientos reales para este día y horario
+    // Filter real training sessions for this day and schedule
     const dayTrainings = weeklyTrainings.filter(training => {
       const session = sessions.find(s => s.id === training.id);
       return (
@@ -279,7 +279,7 @@ export function WeeklyTrainingSchedule({
       <CardHeader>
         <CardTitle className='flex items-center gap-2'>
           <Calendar className='h-5 w-5' />
-          Plan Semanal
+          Weekly Plan
         </CardTitle>
         <CardDescription>
           {format(startWeek, 'dd MMM', { locale: es })} -{' '}
@@ -483,7 +483,7 @@ export function WeeklyTrainingSchedule({
                   )}
                 </div>
 
-                {/* Entrenamientos AM */}
+                {/* AM Training */}
                 {amTrainings.length > 0 && (
                   <div className='mb-4'>
                     <h4 className='text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2'>
@@ -531,7 +531,7 @@ export function WeeklyTrainingSchedule({
                   </div>
                 )}
 
-                {/* Entrenamientos PM */}
+                {/* PM Training */}
                 {pmTrainings.length > 0 && (
                   <div>
                     <h4 className='text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2'>
@@ -584,7 +584,7 @@ export function WeeklyTrainingSchedule({
                   <div className='text-center py-8'>
                     <Button size='sm' variant='outline' className='gap-2'>
                       <Plus className='h-4 w-4' />
-                      Agregar Entrenamiento
+                      Add Training
                     </Button>
                   </div>
                 )}
@@ -593,7 +593,7 @@ export function WeeklyTrainingSchedule({
           })}
         </div>
 
-        {/* Resumen semanal - Conectado a datos reales */}
+        {/* Weekly summary - Connected to real data */}
         <div className='mt-6 pt-4 border-t'>
           {(() => {
             // Calcular estadísticas reales de la semana actual
@@ -615,7 +615,7 @@ export function WeeklyTrainingSchedule({
                     {weekStats.totalTrainings}
                   </div>
                   <div className='text-xs text-muted-foreground'>
-                    Entrenamientos
+                    Training Sessions
                   </div>
                 </div>
                 <div className='text-center p-2 bg-muted/30 dark:bg-muted/50 rounded-lg'>
@@ -623,7 +623,7 @@ export function WeeklyTrainingSchedule({
                     {weekStats.completedTrainings}
                   </div>
                   <div className='text-xs text-muted-foreground'>
-                    Completados
+                    Completed
                   </div>
                 </div>
                 <div className='text-center p-2 bg-muted/30 dark:bg-muted/50 rounded-lg'>
@@ -631,7 +631,7 @@ export function WeeklyTrainingSchedule({
                     {(weekStats.totalDistance / 1000).toFixed(1)}km
                   </div>
                   <div className='text-xs text-muted-foreground'>
-                    Distancia Total
+                    Total Distance
                   </div>
                 </div>
               </div>

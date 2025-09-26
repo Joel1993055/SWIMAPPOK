@@ -21,7 +21,7 @@ export default function Page() {
               <h1 className='text-3xl font-bold text-foreground'>Dashboard</h1>
             </div>
             <p className='text-muted-foreground'>
-              Resumen de tu rendimiento y actividades
+              Overview of your performance and activities
             </p>
           </div>
           <DashboardOverview />

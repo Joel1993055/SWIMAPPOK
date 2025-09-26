@@ -18,11 +18,11 @@ export default function PlanificacionPage() {
                 <Target className='h-6 w-6 text-primary' />
               </div>
               <h1 className='text-3xl font-bold text-foreground'>
-                Planificación de Entrenamientos
+                Training Planning
               </h1>
             </div>
             <p className='text-muted-foreground'>
-              Planifica y organiza tus entrenamientos de manera eficiente
+              Plan and organize your training sessions efficiently
             </p>
           </div>
           <PlanificacionOverview />

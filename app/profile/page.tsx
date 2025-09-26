@@ -44,7 +44,7 @@ export default function ProfilePage() {
               <div className='p-2 bg-primary/10 rounded-lg'>
                 <User className='h-6 w-6 text-primary' />
               </div>
-              <h1 className='text-3xl font-bold text-foreground'>Perfil</h1>
+              <h1 className='text-3xl font-bold text-foreground'>Profile</h1>
             </div>
             <p className='text-muted-foreground'>
               Manage your personal information and preferences

@@ -1,40 +1,40 @@
 'use client';
 
-import { useState } from 'react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Plus,
-  Save,
-  Eye,
-  Trash2,
-  Copy,
-  Layout,
-  BarChart3,
-  Calendar,
-  Target,
-  FileText,
-  Image,
-  Table,
+    BarChart3,
+    Calendar,
+    Copy,
+    Eye,
+    FileText,
+    Image,
+    Layout,
+    Plus,
+    Save,
+    Table,
+    Target,
+    Trash2,
 } from 'lucide-react';
+import { useState } from 'react';
 
 interface TemplateElement {
   id: string;
@@ -72,13 +72,13 @@ export function TemplateEditor() {
     []
   );
 
-  // Plantillas predefinidas
+  // Predefined templates
   const defaultTemplates: ReportTemplate[] = [
     {
       id: 'perf-coach-prep',
-      name: 'Reporte de Rendimiento - Entrenador',
+      name: 'Performance Report - Coach',
       description:
-        'Análisis completo de rendimiento para entrenadores en fase de preparación',
+        'Comprehensive performance analysis for coaches in preparation phase',
       category: 'performance',
       userType: 'coach',
       season: 'preparation',
@@ -89,8 +89,8 @@ export function TemplateEditor() {
         {
           id: 'header-1',
           type: 'header',
-          title: 'Reporte de Rendimiento',
-          content: 'Análisis de rendimiento del equipo',
+          title: 'Performance Report',
+          content: 'Team performance analysis',
           position: { x: 0, y: 0 },
           size: { width: 12, height: 2 },
           config: { fontSize: 24, alignment: 'center', color: '#1f2937' },
@@ -98,19 +98,19 @@ export function TemplateEditor() {
         {
           id: 'kpi-1',
           type: 'kpi',
-          title: 'KPIs Principales',
-          content: 'Métricas clave del rendimiento',
+          title: 'Main KPIs',
+          content: 'Key performance metrics',
           position: { x: 0, y: 2 },
           size: { width: 6, height: 4 },
           config: {
-            metrics: ['distancia', 'tiempo', 'intensidad', 'frecuencia'],
+            metrics: ['distance', 'time', 'intensity', 'frequency'],
           },
         },
         {
           id: 'chart-1',
           type: 'chart',
-          title: 'Evolución del Rendimiento',
-          content: 'Gráfico de progreso temporal',
+          title: 'Performance Evolution',
+          content: 'Progress over time chart',
           position: { x: 6, y: 2 },
           size: { width: 6, height: 4 },
           config: { chartType: 'line', dataSource: 'performance' },
@@ -118,18 +118,18 @@ export function TemplateEditor() {
         {
           id: 'table-1',
           type: 'table',
-          title: 'Comparativa de Nadadores',
-          content: 'Tabla comparativa de resultados',
+          title: 'Swimmer Comparison',
+          content: 'Results comparison table',
           position: { x: 0, y: 6 },
           size: { width: 12, height: 4 },
-          config: { columns: ['nombre', 'tiempo', 'mejora', 'categoria'] },
+          config: { columns: ['name', 'time', 'improvement', 'category'] },
         },
       ],
     },
     {
       id: 'plan-team-comp',
-      name: 'Planificación de Equipo - Competición',
-      description: 'Planificación detallada para competiciones importantes',
+      name: 'Team Planning - Competition',
+      description: 'Detailed planning for important competitions',
       category: 'planning',
       userType: 'coach',
       season: 'competition',
@@ -140,8 +140,8 @@ export function TemplateEditor() {
         {
           id: 'header-2',
           type: 'header',
-          title: 'Planificación de Competición',
-          content: 'Estrategia y preparación para competición',
+          title: 'Competition Planning',
+          content: 'Strategy and preparation for competition',
           position: { x: 0, y: 0 },
           size: { width: 12, height: 2 },
           config: { fontSize: 24, alignment: 'center', color: '#dc2626' },
@@ -149,8 +149,8 @@ export function TemplateEditor() {
         {
           id: 'calendar-1',
           type: 'calendar',
-          title: 'Cronograma de Entrenamientos',
-          content: 'Calendario de preparación',
+          title: 'Training Schedule',
+          content: 'Preparation calendar',
           position: { x: 0, y: 2 },
           size: { width: 8, height: 6 },
           config: { view: 'month', showTraining: true },
@@ -158,18 +158,18 @@ export function TemplateEditor() {
         {
           id: 'kpi-2',
           type: 'kpi',
-          title: 'Objetivos de Competición',
-          content: 'Metas y objetivos específicos',
+          title: 'Competition Goals',
+          content: 'Specific goals and objectives',
           position: { x: 8, y: 2 },
           size: { width: 4, height: 6 },
-          config: { metrics: ['objetivo', 'progreso', 'dias_restantes'] },
+          config: { metrics: ['goal', 'progress', 'days_remaining'] },
         },
       ],
     },
     {
       id: 'train-swimmer',
-      name: 'Entrenamientos - Nadador',
-      description: 'Resumen personal de entrenamientos para nadadores',
+      name: 'Training - Swimmer',
+      description: 'Personal training summary for swimmers',
       category: 'training',
       userType: 'swimmer',
       season: 'all',
@@ -180,8 +180,8 @@ export function TemplateEditor() {
         {
           id: 'header-3',
           type: 'header',
-          title: 'Mis Entrenamientos',
-          content: 'Resumen personal de entrenamientos',
+          title: 'My Trainings',
+          content: 'Personal training summary',
           position: { x: 0, y: 0 },
           size: { width: 12, height: 2 },
           config: { fontSize: 24, alignment: 'center', color: '#059669' },
@@ -189,8 +189,8 @@ export function TemplateEditor() {
         {
           id: 'chart-2',
           type: 'chart',
-          title: 'Progreso Personal',
-          content: 'Evolución de mi rendimiento',
+          title: 'Personal Progress',
+          content: 'My performance evolution',
           position: { x: 0, y: 2 },
           size: { width: 8, height: 4 },
           config: { chartType: 'area', dataSource: 'personal' },
@@ -198,21 +198,21 @@ export function TemplateEditor() {
         {
           id: 'kpi-3',
           type: 'kpi',
-          title: 'Mis Estadísticas',
-          content: 'Métricas personales',
+          title: 'My Stats',
+          content: 'Personal metrics',
           position: { x: 8, y: 2 },
           size: { width: 4, height: 4 },
-          config: { metrics: ['total_metros', 'sesiones', 'mejor_tiempo'] },
+          config: { metrics: ['total_meters', 'sessions', 'best_time'] },
         },
         {
           id: 'table-2',
           type: 'table',
-          title: 'Últimos Entrenamientos',
-          content: 'Historial reciente',
+          title: 'Latest Trainings',
+          content: 'Recent history',
           position: { x: 0, y: 6 },
           size: { width: 12, height: 4 },
           config: {
-            columns: ['fecha', 'tipo', 'distancia', 'tiempo', 'notas'],
+            columns: ['date', 'type', 'distance', 'time', 'notes'],
           },
         },
       ],
@@ -225,45 +225,45 @@ export function TemplateEditor() {
   const elementTypes = [
     {
       type: 'header',
-      label: 'Encabezado',
+      label: 'Header',
       icon: FileText,
-      description: 'Título o encabezado del reporte',
+      description: 'Report title or header',
     },
     {
       type: 'chart',
-      label: 'Gráfico',
+      label: 'Chart',
       icon: BarChart3,
-      description: 'Gráficos de datos y estadísticas',
+      description: 'Data and statistics charts',
     },
     {
       type: 'table',
-      label: 'Tabla',
+      label: 'Table',
       icon: Table,
-      description: 'Tablas de datos estructurados',
+      description: 'Structured data tables',
     },
     {
       type: 'kpi',
       label: 'KPI',
       icon: Target,
-      description: 'Métricas clave y indicadores',
+      description: 'Key metrics and indicators',
     },
     {
       type: 'calendar',
-      label: 'Calendario',
+      label: 'Calendar',
       icon: Calendar,
-      description: 'Vista de calendario y eventos',
+      description: 'Calendar and events view',
     },
     {
       type: 'text',
-      label: 'Texto',
+      label: 'Text',
       icon: FileText,
-      description: 'Bloques de texto libre',
+      description: 'Free text blocks',
     },
     {
       type: 'image',
-      label: 'Imagen',
+      label: 'Image',
       icon: Image,
-      description: 'Imágenes y logos',
+      description: 'Images and logos',
     },
   ];
 
@@ -335,8 +335,8 @@ export function TemplateEditor() {
         | 'image'
         | 'kpi'
         | 'calendar',
-      title: `Nuevo ${elementType}`,
-      content: `Contenido del ${elementType}`,
+      title: `New ${elementType}`,
+      content: `Content of ${elementType}`,
       position: { x: 0, y: templateElements.length * 2 },
       size: { width: 6, height: 3 },
       config: {},
@@ -353,7 +353,7 @@ export function TemplateEditor() {
     const duplicatedTemplate: ReportTemplate = {
       ...template,
       id: `template-${Date.now()}`,
-      name: `${template.name} (Copia)`,
+      name: `${template.name} (Copy)`,
       isDefault: false,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -367,30 +367,30 @@ export function TemplateEditor() {
       {/* Header */}
       <div className='flex items-center justify-between'>
         <div>
-          <h2 className='text-2xl font-bold'>Editor de Plantillas</h2>
+          <h2 className='text-2xl font-bold'>Template Editor</h2>
           <p className='text-muted-foreground'>
-            Crea y personaliza plantillas de reportes para diferentes usuarios y
-            temporadas
+            Create and customize report templates for different users and
+            seasons
           </p>
         </div>
         <Button onClick={handleCreateTemplate} className='gap-2'>
           <Plus className='h-4 w-4' />
-          Nueva Plantilla
+          New Template
         </Button>
       </div>
 
       <Tabs defaultValue='templates' className='space-y-4'>
         <TabsList>
-          <TabsTrigger value='templates'>Plantillas</TabsTrigger>
+          <TabsTrigger value='templates'>Templates</TabsTrigger>
           <TabsTrigger value='editor' disabled={!isEditing}>
             Editor
           </TabsTrigger>
           <TabsTrigger value='preview' disabled={!isEditing}>
-            Vista Previa
+            Preview
           </TabsTrigger>
         </TabsList>
 
-        {/* Lista de plantillas */}
+        {/* Templates list */}
         <TabsContent value='templates' className='space-y-4'>
           <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
             {templates.map(template => (
@@ -404,7 +404,7 @@ export function TemplateEditor() {
                       </CardDescription>
                     </div>
                     {template.isDefault && (
-                      <Badge variant='secondary'>Predefinida</Badge>
+                      <Badge variant='secondary'>Default</Badge>
                     )}
                   </div>
                 </CardHeader>
@@ -417,7 +417,7 @@ export function TemplateEditor() {
 
                   <div className='flex items-center gap-2 text-sm text-muted-foreground'>
                     <Layout className='h-4 w-4' />
-                    {template.elements.length} elementos
+                    {template.elements.length} elements
                   </div>
 
                   <div className='flex gap-2'>
@@ -428,7 +428,7 @@ export function TemplateEditor() {
                       className='flex-1'
                     >
                       <Eye className='h-3 w-3 mr-1' />
-                      Editar
+                      Edit
                     </Button>
                     <Button
                       size='sm'
@@ -457,98 +457,90 @@ export function TemplateEditor() {
           </div>
         </TabsContent>
 
-        {/* Editor de plantillas */}
+        {/* Template editor */}
         <TabsContent value='editor' className='space-y-4'>
           <div className='grid gap-6 lg:grid-cols-3'>
-            {/* Panel de configuración */}
+            {/* Settings panel */}
             <div className='lg:col-span-1 space-y-4'>
               <Card className='bg-muted/50 border-muted'>
                 <CardHeader>
-                  <CardTitle className='text-lg'>Configuración</CardTitle>
+                  <CardTitle className='text-lg'>Settings</CardTitle>
                 </CardHeader>
                 <CardContent className='space-y-4'>
                   <div className='space-y-2'>
-                    <Label htmlFor='template-name'>
-                      Nombre de la plantilla
-                    </Label>
+                    <Label htmlFor='template-name'>Template name</Label>
                     <Input
                       id='template-name'
                       value={templateName}
                       onChange={e => setTemplateName(e.target.value)}
-                      placeholder='Mi plantilla personalizada'
+                      placeholder='My custom template'
                     />
                   </div>
 
                   <div className='space-y-2'>
-                    <Label htmlFor='template-description'>Descripción</Label>
+                    <Label htmlFor='template-description'>Description</Label>
                     <Textarea
                       id='template-description'
                       value={templateDescription}
                       onChange={e => setTemplateDescription(e.target.value)}
-                      placeholder='Describe el propósito de esta plantilla'
+                      placeholder='Describe the purpose of this template'
                       rows={3}
                     />
                   </div>
 
                   <div className='grid grid-cols-2 gap-4'>
                     <div className='space-y-2'>
-                      <Label htmlFor='template-category'>Categoría</Label>
+                      <Label htmlFor='template-category'>Category</Label>
                       <Select
                         value={templateCategory}
                         onValueChange={setTemplateCategory}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder='Seleccionar' />
+                          <SelectValue placeholder='Select' />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value='performance'>
-                            Rendimiento
-                          </SelectItem>
-                          <SelectItem value='planning'>
-                            Planificación
-                          </SelectItem>
-                          <SelectItem value='training'>
-                            Entrenamiento
-                          </SelectItem>
-                          <SelectItem value='team'>Equipo</SelectItem>
-                          <SelectItem value='custom'>Personalizada</SelectItem>
+                          <SelectItem value='performance'>Performance</SelectItem>
+                          <SelectItem value='planning'>Planning</SelectItem>
+                          <SelectItem value='training'>Training</SelectItem>
+                          <SelectItem value='team'>Team</SelectItem>
+                          <SelectItem value='custom'>Custom</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
                     <div className='space-y-2'>
-                      <Label htmlFor='template-user'>Tipo de usuario</Label>
+                      <Label htmlFor='template-user'>User type</Label>
                       <Select
                         value={templateUserType}
                         onValueChange={setTemplateUserType}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder='Seleccionar' />
+                          <SelectValue placeholder='Select' />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value='coach'>Entrenador</SelectItem>
-                          <SelectItem value='swimmer'>Nadador</SelectItem>
-                          <SelectItem value='admin'>Administrador</SelectItem>
-                          <SelectItem value='all'>Todos</SelectItem>
+                          <SelectItem value='coach'>Coach</SelectItem>
+                          <SelectItem value='swimmer'>Swimmer</SelectItem>
+                          <SelectItem value='admin'>Admin</SelectItem>
+                          <SelectItem value='all'>All</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
 
                   <div className='space-y-2'>
-                    <Label htmlFor='template-season'>Temporada</Label>
+                    <Label htmlFor='template-season'>Season</Label>
                     <Select
                       value={templateSeason}
                       onValueChange={setTemplateSeason}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder='Seleccionar' />
+                        <SelectValue placeholder='Select' />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value='preparation'>Preparación</SelectItem>
-                        <SelectItem value='competition'>Competición</SelectItem>
-                        <SelectItem value='recovery'>Recuperación</SelectItem>
-                        <SelectItem value='all'>Todas</SelectItem>
+                        <SelectItem value='preparation'>Preparation</SelectItem>
+                        <SelectItem value='competition'>Competition</SelectItem>
+                        <SelectItem value='recovery'>Recovery</SelectItem>
+                        <SelectItem value='all'>All</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -556,25 +548,23 @@ export function TemplateEditor() {
                   <div className='flex gap-2'>
                     <Button onClick={handleSaveTemplate} className='flex-1'>
                       <Save className='h-4 w-4 mr-2' />
-                      Guardar
+                      Save
                     </Button>
                     <Button
                       variant='outline'
                       onClick={() => setIsEditing(false)}
                     >
-                      Cancelar
+                      Cancel
                     </Button>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Elementos disponibles */}
+              {/* Available elements */}
               <Card className='bg-muted/50 border-muted'>
                 <CardHeader>
-                  <CardTitle className='text-lg'>Elementos</CardTitle>
-                  <CardDescription>
-                    Arrastra elementos al editor
-                  </CardDescription>
+                  <CardTitle className='text-lg'>Elements</CardTitle>
+                  <CardDescription>Drag elements to the editor</CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-2'>
                   {elementTypes.map(element => {
@@ -600,13 +590,13 @@ export function TemplateEditor() {
               </Card>
             </div>
 
-            {/* Editor visual */}
+            {/* Visual editor */}
             <div className='lg:col-span-2'>
               <Card className='bg-muted/50 border-muted'>
                 <CardHeader>
-                  <CardTitle className='text-lg'>Editor Visual</CardTitle>
+                  <CardTitle className='text-lg'>Visual Editor</CardTitle>
                   <CardDescription>
-                    Diseña tu plantilla arrastrando elementos
+                    Design your template by dragging elements
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -615,7 +605,7 @@ export function TemplateEditor() {
                       <div className='flex items-center justify-center h-full text-muted-foreground'>
                         <div className='text-center'>
                           <Layout className='h-12 w-12 mx-auto mb-4 opacity-50' />
-                          <p>Arrastra elementos aquí para crear tu plantilla</p>
+                          <p>Drag elements here to create your template</p>
                         </div>
                       </div>
                     ) : (
@@ -662,13 +652,13 @@ export function TemplateEditor() {
           </div>
         </TabsContent>
 
-        {/* Vista previa */}
+        {/* Preview */}
         <TabsContent value='preview' className='space-y-4'>
           <Card className='bg-muted/50 border-muted'>
             <CardHeader>
-              <CardTitle className='text-lg'>Vista Previa</CardTitle>
+              <CardTitle className='text-lg'>Preview</CardTitle>
               <CardDescription>
-                Así se verá tu reporte con datos reales
+                This is how your report will look with real data
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -677,7 +667,7 @@ export function TemplateEditor() {
                   <div className='flex items-center justify-center h-full text-muted-foreground'>
                     <div className='text-center'>
                       <Eye className='h-12 w-12 mx-auto mb-4 opacity-50' />
-                      <p>Agrega elementos para ver la vista previa</p>
+                      <p>Add elements to see the preview</p>
                     </div>
                   </div>
                 ) : (

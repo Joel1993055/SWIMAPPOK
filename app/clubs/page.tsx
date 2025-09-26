@@ -228,7 +228,7 @@ export default function ClubsPage() {
                     </div>
                     <DialogFooter>
                       <Button type="submit" disabled={createClubForm.formState.isSubmitting}>
-                        {createClubForm.formState.isSubmitting ? 'Creando...' : 'Crear Club'}
+                        {createClubForm.formState.isSubmitting ? 'Creating...' : 'Create Club'}
                       </Button>
                     </DialogFooter>
                   </form>
@@ -244,7 +244,7 @@ export default function ClubsPage() {
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Crear Nuevo Equipo</DialogTitle>
+                    <DialogTitle>Create New Team</DialogTitle>
                     <DialogDescription>
                       Create a new team in one of your clubs
                     </DialogDescription>
@@ -310,7 +310,7 @@ export default function ClubsPage() {
                     </div>
                     <DialogFooter>
                       <Button type="submit" disabled={createTeamForm.formState.isSubmitting}>
-                        {createTeamForm.formState.isSubmitting ? 'Creando...' : 'Crear Equipo'}
+                        {createTeamForm.formState.isSubmitting ? 'Creating...' : 'Create Team'}
                       </Button>
                     </DialogFooter>
                   </form>

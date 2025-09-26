@@ -15,7 +15,7 @@ import { BarChart3, Edit, Filter, Plus, Search, Trash2 } from 'lucide-react';
 import { memo, useCallback, useMemo, useState } from 'react';
 
 // =====================================================
-// TIPOS
+// TYPES
 // =====================================================
 
 interface SessionsListOptimizedProps {
@@ -33,7 +33,7 @@ interface SessionsListOptimizedProps {
 }
 
 // =====================================================
-// COMPONENTE DE SESIÓN INDIVIDUAL (MEMOIZADO)
+// INDIVIDUAL SESSION COMPONENT (MEMOIZED)
 // =====================================================
 
 interface SessionItemProps {
@@ -50,7 +50,7 @@ const SessionItem = memo<SessionItemProps>(
     }, [onEdit, session]);
 
     const handleDelete = useCallback(() => {
-      if (confirm('¿Estás seguro de que quieres eliminar esta sesión?')) {
+      if (confirm('Are you sure you want to delete this session?')) {
         onDelete(session.id);
       }
     }, [onDelete, session.id]);
@@ -103,7 +103,7 @@ const SessionItem = memo<SessionItemProps>(
 SessionItem.displayName = 'SessionItem';
 
 // =====================================================
-// COMPONENTE DE ESTADÍSTICAS (MEMOIZADO)
+// STATS COMPONENT (MEMOIZED)
 // =====================================================
 
 interface StatsCardProps {
@@ -145,26 +145,26 @@ const StatsCard = memo<StatsCardProps>(({ sessions }) => {
       <CardHeader>
         <CardTitle className='flex items-center gap-2'>
           <BarChart3 className='h-5 w-5' />
-          Estadísticas de Sesiones
+          Session Statistics
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
           <div className='text-center'>
             <div className='text-2xl font-bold'>{stats.totalSessions}</div>
-            <div className='text-sm text-muted-foreground'>Total Sesiones</div>
+            <div className='text-sm text-muted-foreground'>Total Sessions</div>
           </div>
           <div className='text-center'>
             <div className='text-2xl font-bold'>
               {(stats.totalDistance / 1000).toFixed(1)}km
             </div>
-            <div className='text-sm text-muted-foreground'>Distancia Total</div>
+            <div className='text-sm text-muted-foreground'>Total Distance</div>
           </div>
           <div className='text-center'>
             <div className='text-2xl font-bold'>
               {stats.averageRPE.toFixed(1)}
             </div>
-            <div className='text-sm text-muted-foreground'>RPE Promedio</div>
+            <div className='text-sm text-muted-foreground'>Average RPE</div>
           </div>
         </div>
       </CardContent>
@@ -175,7 +175,7 @@ const StatsCard = memo<StatsCardProps>(({ sessions }) => {
 StatsCard.displayName = 'StatsCard';
 
 // =====================================================
-// COMPONENTE DE FILTROS (MEMOIZADO)
+// FILTERS COMPONENT (MEMOIZED)
 // =====================================================
 
 interface FiltersCardProps {
@@ -200,13 +200,13 @@ const FiltersCard = memo<FiltersCardProps>(
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Filtros y Búsqueda</CardTitle>
+          <CardTitle>Filters & Search</CardTitle>
         </CardHeader>
         <CardContent>
           <div className='flex flex-col md:flex-row gap-4'>
             <div className='flex-1'>
               <Input
-                placeholder='Buscar sesiones...'
+                placeholder='Search sessions...'
                 value={searchQuery}
                 onChange={e => onSearchChange(e.target.value)}
                 onKeyPress={handleKeyPress}
@@ -215,15 +215,15 @@ const FiltersCard = memo<FiltersCardProps>(
             <div className='flex gap-2'>
               <Button onClick={onSearch} variant='outline'>
                 <Search className='h-4 w-4 mr-2' />
-                Buscar
+                Search
               </Button>
               <Button onClick={onFilter} variant='outline'>
                 <Filter className='h-4 w-4 mr-2' />
-                Filtrar
+                Filter
               </Button>
               <Button onClick={onCreate}>
                 <Plus className='h-4 w-4 mr-2' />
-                Nueva Sesión
+                New Session
               </Button>
             </div>
           </div>
@@ -236,7 +236,7 @@ const FiltersCard = memo<FiltersCardProps>(
 FiltersCard.displayName = 'FiltersCard';
 
 // =====================================================
-// COMPONENTE PRINCIPAL
+// MAIN COMPONENT
 // =====================================================
 
 export const SessionsListOptimized = memo<SessionsListOptimizedProps>(
@@ -247,20 +247,18 @@ export const SessionsListOptimized = memo<SessionsListOptimizedProps>(
     const { data: sessionsData, isLoading, error } = useSessionsQuery(filters);
     const deleteSessionMutation = useDeleteSessionMutation();
 
-    // Memoizar datos de sesiones
+    // Memoized sessions
     const sessions = useMemo(
       () => sessionsData?.data || [],
       [sessionsData?.data]
     );
 
-    // Callbacks memoizados
+    // Memoized callbacks
     const handleSearch = useCallback(() => {
-      // Implementar búsqueda
       console.log('Searching for:', searchQuery);
     }, [searchQuery]);
 
     const handleFilter = useCallback(() => {
-      // Implementar filtros
       console.log('Filtering with:', filters);
     }, [filters]);
 
@@ -306,7 +304,7 @@ export const SessionsListOptimized = memo<SessionsListOptimizedProps>(
       return (
         <Alert className='border-destructive'>
           <AlertDescription>
-            Error al cargar las sesiones: {error.message}
+            Error loading sessions: {error.message}
           </AlertDescription>
         </Alert>
       );
@@ -314,10 +312,10 @@ export const SessionsListOptimized = memo<SessionsListOptimizedProps>(
 
     return (
       <div className='space-y-6'>
-        {/* Estadísticas */}
+        {/* Stats */}
         <StatsCard sessions={sessions} />
 
-        {/* Filtros */}
+        {/* Filters */}
         <FiltersCard
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
@@ -326,15 +324,13 @@ export const SessionsListOptimized = memo<SessionsListOptimizedProps>(
           onCreate={handleCreate}
         />
 
-        {/* Lista de sesiones */}
+        {/* Sessions list */}
         {isLoading ? (
           LoadingSkeleton
         ) : sessions.length === 0 ? (
           <Card>
             <CardContent className='p-6 text-center'>
-              <p className='text-muted-foreground'>
-                No hay sesiones disponibles
-              </p>
+              <p className='text-muted-foreground'>No sessions available</p>
             </CardContent>
           </Card>
         ) : (

@@ -348,7 +348,7 @@ function SettingsContent() {
                         <div className='space-y-0.5'>
                           <Label htmlFor='achievements'>Achievements and records</Label>
                           <p className='text-sm text-muted-foreground'>
-                            Notificaciones cuando alcances nuevos logros
+                            Notifications when you reach new achievements
                           </p>
                         </div>
                         <Switch
@@ -384,16 +384,16 @@ function SettingsContent() {
                   {/* Reports */}
                   <div className='space-y-4'>
                     <h4 className='font-medium text-foreground'>
-                      Reportes y Resúmenes
+                      Reports and Summaries
                     </h4>
                     <div className='space-y-3'>
                       <div className='flex items-center justify-between'>
                         <div className='space-y-0.5'>
                           <Label htmlFor='weekly-reports'>
-                            Reportes semanales
+                            Weekly reports
                           </Label>
                           <p className='text-sm text-muted-foreground'>
-                            Resumen de tu actividad semanal
+                            Weekly activity summary
                           </p>
                         </div>
                         <Switch
@@ -446,7 +446,7 @@ function SettingsContent() {
                     <div className='flex items-center justify-between'>
                       <div className='space-y-0.5'>
                         <Label htmlFor='profile-visibility'>
-                          Perfil público
+                          Public profile
                         </Label>
                         <p className='text-sm text-muted-foreground'>
                           Permite que otros usuarios vean tu perfil
@@ -457,7 +457,7 @@ function SettingsContent() {
                     <div className='flex items-center justify-between'>
                       <div className='space-y-0.5'>
                         <Label htmlFor='activity-sharing'>
-                          Compartir actividad
+                          Share activity
                         </Label>
                         <p className='text-sm text-muted-foreground'>
                           Share your workouts with the community
@@ -487,14 +487,14 @@ function SettingsContent() {
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                       <Button variant='outline' className='gap-2'>
                         <Download className='h-4 w-4' />
-                        Descargar mis datos
+                        Download my data
                       </Button>
                       <Button
                         variant='outline'
                         className='gap-2 text-destructive hover:text-destructive'
                       >
                         <Trash2 className='h-4 w-4' />
-                        Eliminar cuenta
+                        Delete account
                       </Button>
                     </div>
                   </div>
@@ -513,7 +513,7 @@ function SettingsContent() {
                     Apariencia
                   </CardTitle>
                   <CardDescription>
-                    Personaliza la apariencia de la aplicación
+                    Customize the application appearance
                   </CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-6'>
@@ -538,7 +538,7 @@ function SettingsContent() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value='es'>Español</SelectItem>
+                          <SelectItem value='es'>Spanish</SelectItem>
                           <SelectItem value='en'>English</SelectItem>
                           <SelectItem value='fr'>Français</SelectItem>
                           <SelectItem value='de'>Deutsch</SelectItem>
@@ -546,7 +546,7 @@ function SettingsContent() {
                       </Select>
                     </div>
                     <div className='space-y-2'>
-                      <Label htmlFor='timezone'>Zona horaria</Label>
+                      <Label htmlFor='timezone'>Time zone</Label>
                       <Select defaultValue='europe-madrid'>
                         <SelectTrigger>
                           <SelectValue />
@@ -556,13 +556,13 @@ function SettingsContent() {
                             Madrid (GMT+1)
                           </SelectItem>
                           <SelectItem value='europe-london'>
-                            Londres (GMT+0)
+                            London (GMT+0)
                           </SelectItem>
                           <SelectItem value='america-new_york'>
-                            Nueva York (GMT-5)
+                            New York (GMT-5)
                           </SelectItem>
                           <SelectItem value='america-los_angeles'>
-                            Los Ángeles (GMT-8)
+                            Los Angeles (GMT-8)
                           </SelectItem>
                         </SelectContent>
                       </Select>
@@ -577,7 +577,7 @@ function SettingsContent() {
                     </h4>
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                       <div className='space-y-2'>
-                        <Label htmlFor='distance-unit'>Distancia</Label>
+                        <Label htmlFor='distance-unit'>Distance</Label>
                         <Select defaultValue='meters'>
                           <SelectTrigger>
                             <SelectValue />
@@ -616,7 +616,7 @@ function SettingsContent() {
                 <CardHeader>
                   <CardTitle className='flex items-center gap-2'>
                     <Activity className='h-5 w-5' />
-                    Configuración de Entrenamiento
+                    Training Configuration
                   </CardTitle>
                   <CardDescription>
                     Personaliza los nombres de las zonas de entrenamiento según
@@ -628,11 +628,10 @@ function SettingsContent() {
                     <div className='flex items-center justify-between'>
                       <div>
                         <h4 className='font-medium text-foreground'>
-                          Zonas de Intensidad
+                          Intensity Zones
                         </h4>
                         <p className='text-sm text-muted-foreground'>
-                          Personaliza los nombres de las zonas según tu sistema
-                          de entrenamiento
+                          Customize zone names according to your training system
                         </p>
                       </div>
                       <Button
@@ -642,54 +641,54 @@ function SettingsContent() {
                         className='gap-2'
                       >
                         <RotateCcw className='h-4 w-4' />
-                        Restaurar por defecto
+                        Restore default
                       </Button>
                     </div>
 
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                       <div className='space-y-2'>
-                        <Label htmlFor='zone1'>Zona 1 (Recuperación)</Label>
+                        <Label htmlFor='zone1'>Zone 1 (Recovery)</Label>
                         <Input
                           id='zone1'
                           value={trainingZones.z1?.name || ''}
                           onChange={e => handleZoneChange('z1', e.target.value)}
-                          placeholder='Ej: Recuperación, Regenerativo'
+                          placeholder='Ex: Recovery, Regenerative'
                         />
                       </div>
                       <div className='space-y-2'>
-                        <Label htmlFor='zone2'>Zona 2 (Aeróbico Base)</Label>
+                        <Label htmlFor='zone2'>Zone 2 (Aerobic Base)</Label>
                         <Input
                           id='zone2'
                           value={trainingZones.z2?.name || ''}
                           onChange={e => handleZoneChange('z2', e.target.value)}
-                          placeholder='Ej: Aeróbico Base, Resistencia'
+                          placeholder='Ex: Aerobic Base, Endurance'
                         />
                       </div>
                       <div className='space-y-2'>
-                        <Label htmlFor='zone3'>Zona 3 (Aeróbico Umbral)</Label>
+                        <Label htmlFor='zone3'>Zone 3 (Aerobic Threshold)</Label>
                         <Input
                           id='zone3'
                           value={trainingZones.z3?.name || ''}
                           onChange={e => handleZoneChange('z3', e.target.value)}
-                          placeholder='Ej: Aeróbico Umbral, Tempo'
+                          placeholder='Ex: Aerobic Threshold, Tempo'
                         />
                       </div>
                       <div className='space-y-2'>
-                        <Label htmlFor='zone4'>Zona 4 (VO2 Max)</Label>
+                        <Label htmlFor='zone4'>Zone 4 (VO2 Max)</Label>
                         <Input
                           id='zone4'
                           value={trainingZones.z4?.name || ''}
                           onChange={e => handleZoneChange('z4', e.target.value)}
-                          placeholder='Ej: VO2 Max, Intervalos'
+                          placeholder='Ex: VO2 Max, Intervals'
                         />
                       </div>
                       <div className='space-y-2'>
-                        <Label htmlFor='zone5'>Zona 5 (Neuromuscular)</Label>
+                        <Label htmlFor='zone5'>Zone 5 (Neuromuscular)</Label>
                         <Input
                           id='zone5'
                           value={trainingZones.z5?.name || ''}
                           onChange={e => handleZoneChange('z5', e.target.value)}
-                          placeholder='Ej: Neuromuscular, Velocidad'
+                          placeholder='Ex: Neuromuscular, Speed'
                         />
                       </div>
                     </div>
@@ -699,38 +698,38 @@ function SettingsContent() {
 
                   <div className='space-y-4'>
                     <h4 className='font-medium text-foreground'>
-                      Vista Previa
+                      Preview
                     </h4>
                     <div className='p-4 bg-muted/30 rounded-lg'>
                       <div className='space-y-2'>
                         <div className='flex items-center justify-between text-sm'>
                           <span className='font-medium'>Z1:</span>
                           <span className='text-muted-foreground'>
-                            {trainingZones.z1?.name || 'Zona 1'}
+                            {trainingZones.z1?.name || 'Zone 1'}
                           </span>
                         </div>
                         <div className='flex items-center justify-between text-sm'>
                           <span className='font-medium'>Z2:</span>
                           <span className='text-muted-foreground'>
-                            {trainingZones.z2?.name || 'Zona 2'}
+                            {trainingZones.z2?.name || 'Zone 2'}
                           </span>
                         </div>
                         <div className='flex items-center justify-between text-sm'>
                           <span className='font-medium'>Z3:</span>
                           <span className='text-muted-foreground'>
-                            {trainingZones.z3?.name || 'Zona 3'}
+                            {trainingZones.z3?.name || 'Zone 3'}
                           </span>
                         </div>
                         <div className='flex items-center justify-between text-sm'>
                           <span className='font-medium'>Z4:</span>
                           <span className='text-muted-foreground'>
-                            {trainingZones.z4?.name || 'Zona 4'}
+                            {trainingZones.z4?.name || 'Zone 4'}
                           </span>
                         </div>
                         <div className='flex items-center justify-between text-sm'>
                           <span className='font-medium'>Z5:</span>
                           <span className='text-muted-foreground'>
-                            {trainingZones.z5?.name || 'Zona 5'}
+                            {trainingZones.z5?.name || 'Zone 5'}
                           </span>
                         </div>
                       </div>
@@ -740,7 +739,7 @@ function SettingsContent() {
                   <div className='flex justify-end'>
                     <Button onClick={handleSaveZones} className='gap-2'>
                       <Save className='h-4 w-4' />
-                      Guardar configuración
+                      Save configuration
                     </Button>
                   </div>
                 </CardContent>
@@ -750,11 +749,10 @@ function SettingsContent() {
                 <CardHeader>
                   <CardTitle className='flex items-center gap-2'>
                     <Activity className='h-5 w-5' />
-                    Metodologías Científicas
+                    Scientific Methodologies
                   </CardTitle>
                   <CardDescription>
-                    Selecciona una metodología de entrenamiento basada en
-                    investigación científica
+                    Select a training methodology based on scientific research
                   </CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-4'>
@@ -853,8 +851,8 @@ function SettingsContent() {
                     {teams.length === 0 ? (
                       <div className='text-center py-8 text-muted-foreground'>
                         <User className='h-12 w-12 mx-auto mb-4 opacity-50' />
-                        <p>No hay equipos registrados</p>
-                        <p className='text-sm'>Crea equipos para organizar a los nadadores</p>
+                        <p>No teams registered</p>
+                        <p className='text-sm'>Create teams to organize swimmers</p>
                       </div>
                     ) : (
                       teams.map((team) => (
@@ -916,21 +914,21 @@ function SettingsContent() {
                       </div>
                     </div>
                     <div className='space-y-2'>
-                      <Label htmlFor='new-password'>Nueva contraseña</Label>
+                      <Label htmlFor='new-password'>New password</Label>
                       <Input
                         id='new-password'
                         type='password'
-                        placeholder='Ingresa tu nueva contraseña'
+                        placeholder='Enter your new password'
                       />
                     </div>
                     <div className='space-y-2'>
                       <Label htmlFor='confirm-password'>
-                        Confirmar contraseña
+                        Confirm password
                       </Label>
                       <Input
                         id='confirm-password'
                         type='password'
-                        placeholder='Confirma tu nueva contraseña'
+                        placeholder='Confirm your new password'
                       />
                     </div>
                   </div>
@@ -938,7 +936,7 @@ function SettingsContent() {
                   <div className='flex justify-end'>
                     <Button className='gap-2'>
                       <Save className='h-4 w-4' />
-                      Actualizar contraseña
+                      Update password
                     </Button>
                   </div>
 
@@ -946,7 +944,7 @@ function SettingsContent() {
 
                   <div className='space-y-4'>
                     <h4 className='font-medium text-foreground'>
-                      Sesiones Activas
+                      Active Sessions
                     </h4>
                     <div className='space-y-3'>
                       <div className='flex items-center justify-between p-3 border rounded-lg'>
@@ -955,11 +953,11 @@ function SettingsContent() {
                           <div>
                             <p className='font-medium'>iPhone 15 Pro</p>
                             <p className='text-sm text-muted-foreground'>
-                              Madrid, España
+                              Madrid, Spain
                             </p>
                           </div>
                         </div>
-                        <Badge variant='secondary'>Activa</Badge>
+                        <Badge variant='secondary'>Active</Badge>
                       </div>
                       <div className='flex items-center justify-between p-3 border rounded-lg'>
                         <div className='flex items-center gap-3'>
@@ -967,11 +965,11 @@ function SettingsContent() {
                           <div>
                             <p className='font-medium'>Chrome - Windows</p>
                             <p className='text-sm text-muted-foreground'>
-                              Barcelona, España
+                              Barcelona, Spain
                             </p>
                           </div>
                         </div>
-                        <Badge variant='outline'>Activa</Badge>
+                        <Badge variant='outline'>Active</Badge>
                       </div>
                     </div>
                   </div>

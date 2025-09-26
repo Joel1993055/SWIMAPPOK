@@ -43,7 +43,7 @@ import {
 } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 
-// Colores para las zonas de intensidad
+// Colors for intensity zones
 const ZONE_COLORS = {
   z1: '#3b82f6', // Azul
   z2: '#10b981', // Verde
@@ -262,7 +262,7 @@ function AnalysisContent() {
     };
   }, [comparisonSessions]);
 
-  // Análisis de zonas de comparación - NUEVO
+  // Zone comparison analysis - NEW
   const comparisonZoneAnalysis = useMemo(() => {
     if (comparisonSessions.length === 0) {
       return [];
@@ -320,7 +320,7 @@ function AnalysisContent() {
     return `${hours}h ${mins}m`;
   }, []);
 
-  // Análisis mensual - OPTIMIZADO
+  // Monthly analysis - OPTIMIZED
   const monthlyAnalysis = useMemo(() => {
     const monthlyData: {
       [key: string]: { distance: number; sessions: number; avgRPE: number };
@@ -356,7 +356,7 @@ function AnalysisContent() {
       improvements: [] as string[],
     };
 
-    // Análisis de consistencia
+    // Consistency analysis
     const avgSessionsPerWeek = currentSessions.length / 4; // Aproximado para 30 días
     if (avgSessionsPerWeek >= 4) {
       result.strengths.push(
@@ -368,7 +368,7 @@ function AnalysisContent() {
       );
     }
 
-    // Análisis de zonas de intensidad
+    // Intensity zone analysis
     const currentZoneAnalysis = zoneAnalysis;
     const z4z5Percentage = currentZoneAnalysis
       .filter(z => z.zone === 'Z4' || z.zone === 'Z5')
@@ -384,7 +384,7 @@ function AnalysisContent() {
       );
     }
 
-    // Análisis de progreso
+    // Progress analysis
     const distanceChange = calculateChange(
       currentMetrics.totalDistance,
       comparisonMetrics.totalDistance
@@ -416,7 +416,7 @@ function AnalysisContent() {
             <BarChart3 className='h-6 w-6 text-primary' />
           </div>
           <h1 className='text-3xl font-bold text-foreground'>
-            Análisis Avanzado
+            Advanced Analysis
           </h1>
         </div>
         <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
@@ -445,11 +445,11 @@ function AnalysisContent() {
             <BarChart3 className='h-6 w-6 text-primary' />
           </div>
           <h1 className='text-3xl font-bold text-foreground'>
-            Análisis
+            Analysis
           </h1>
         </div>
         <p className='text-muted-foreground'>
-          Análisis detallado de tu rendimiento y progreso basado en datos reales
+          Detailed analysis of your performance and progress based on real data
         </p>
 
         {/* Filtros */}
@@ -493,7 +493,7 @@ function AnalysisContent() {
 
           <Button variant='outline' size='sm' className='gap-2'>
             <Download className='h-4 w-4' />
-            Exportar
+            Export
           </Button>
         </div>
       </div>
@@ -503,7 +503,7 @@ function AnalysisContent() {
         <Card className='bg-muted/50'>
           <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
             <CardTitle className='text-sm font-medium'>
-              Distancia Total
+              Total Distance
             </CardTitle>
             <Target className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
@@ -579,7 +579,7 @@ function AnalysisContent() {
         <Card className='bg-muted/50'>
           <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
             <CardTitle className='text-sm font-medium'>
-              Intensidad Promedio
+              Average Intensity
             </CardTitle>
             <Zap className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
@@ -633,24 +633,24 @@ function AnalysisContent() {
         </Card>
       </div>
 
-      {/* Tabs de Análisis */}
+      {/* Analysis Tabs */}
       <Tabs defaultValue='overview' className='space-y-4'>
         <TabsList className='grid w-full grid-cols-4'>
-          <TabsTrigger value='overview'>Resumen</TabsTrigger>
+          <TabsTrigger value='overview'>Overview</TabsTrigger>
           <TabsTrigger value='trends'>Tendencias</TabsTrigger>
-          <TabsTrigger value='intensity'>Intensidad</TabsTrigger>
+          <TabsTrigger value='intensity'>Intensity</TabsTrigger>
           <TabsTrigger value='insights'>Insights</TabsTrigger>
         </TabsList>
 
-        {/* Tab: Resumen */}
+        {/* Tab: Overview */}
         <TabsContent value='overview' className='space-y-6'>
           <div className='grid gap-6 md:grid-cols-2'>
-            {/* Progreso Mensual */}
+            {/* Monthly Progress */}
             <Card className='bg-muted/50'>
               <CardHeader>
                 <CardTitle className='flex items-center gap-2'>
                   <TrendingUp className='h-5 w-5' />
-                  Progreso Mensual
+                  Monthly Progress
                 </CardTitle>
                 <CardDescription>
                   Evolución de la distancia y sesiones
@@ -700,7 +700,7 @@ function AnalysisContent() {
                 <div className='space-y-4'>
                   {[
                     {
-                      label: 'Distancia Total',
+                      label: 'Total Distance',
                       current: currentMetrics.totalDistance,
                       previous: comparisonMetrics.totalDistance,
                       unit: 'm',
@@ -712,13 +712,13 @@ function AnalysisContent() {
                       unit: '',
                     },
                     {
-                      label: 'Tiempo Total',
+                      label: 'Total Time',
                       current: currentMetrics.totalTime,
                       previous: comparisonMetrics.totalTime,
                       unit: 'min',
                     },
                     {
-                      label: 'RPE Promedio',
+                      label: 'Average RPE',
                       current: currentMetrics.avgRPE,
                       previous: comparisonMetrics.avgRPE,
                       unit: '/10',
@@ -754,7 +754,7 @@ function AnalysisContent() {
                               {metric.unit}
                             </div>
                             <div className='text-xs text-muted-foreground'>
-                              Actual
+                              Current
                             </div>
                           </div>
                           <div className='text-center p-2 bg-muted rounded'>
@@ -787,7 +787,7 @@ function AnalysisContent() {
           </div>
         </TabsContent>
 
-        {/* Tab: Intensidad */}
+        {/* Tab: Intensity */}
         <TabsContent value='intensity' className='space-y-6'>
           {/* Filtros de comparación */}
           <div className='flex gap-4 items-center flex-wrap'>
@@ -829,7 +829,7 @@ function AnalysisContent() {
               <CardHeader>
                 <CardTitle className='flex items-center gap-2'>
                   <Activity className='h-5 w-5' />
-                  Distribución Actual
+                  Current Distribution
                 </CardTitle>
                 <CardDescription>
                   Período seleccionado:{' '}
@@ -932,7 +932,7 @@ function AnalysisContent() {
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <TrendingUp className='h-5 w-5' />
-                Comparación de Intensidad
+                Intensity Comparison
               </CardTitle>
               <CardDescription>
                 Cambios en la distribución de intensidad entre períodos
@@ -973,7 +973,7 @@ function AnalysisContent() {
                       <div className='grid grid-cols-2 gap-2'>
                         <div>
                           <div className='text-xs text-muted-foreground mb-1'>
-                            Actual
+                            Current
                           </div>
                           <Progress
                             value={currentZone.percentage}
@@ -1003,12 +1003,12 @@ function AnalysisContent() {
             </CardContent>
           </Card>
 
-          {/* Análisis por fases de ciclo */}
+          {/* Analysis by cycle phases */}
           <Card className='bg-muted/50'>
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <Calendar className='h-5 w-5' />
-                Análisis por Fases de Ciclo
+                Analysis by Cycle Phases
               </CardTitle>
               <CardDescription>
                 Distribución de intensidad por fases de entrenamiento
@@ -1019,34 +1019,34 @@ function AnalysisContent() {
                 <div className='text-sm text-muted-foreground'>
                   💡 <strong>Próximamente:</strong> Esta funcionalidad se
                   conectará con las fases de entrenamiento creadas en
-                  Planificación para mostrar cómo varía la intensidad según la
-                  fase del ciclo (Base, Construcción, Pico, Taper).
+                  Planning to show how intensity varies according to
+                  cycle phase (Base, Construction, Peak, Taper).
                 </div>
                 <div className='grid gap-4 md:grid-cols-2'>
                   <div className='p-4 border rounded-lg bg-muted/30'>
-                    <div className='text-sm font-medium mb-2'>Fase Base</div>
+                    <div className='text-sm font-medium mb-2'>Base Phase</div>
                     <div className='text-xs text-muted-foreground'>
-                      Mayor volumen en Z1-Z2
+                      Higher volume in Z1-Z2
                     </div>
                   </div>
                   <div className='p-4 border rounded-lg bg-muted/30'>
                     <div className='text-sm font-medium mb-2'>
-                      Fase Construcción
+                      Construction Phase
                     </div>
                     <div className='text-xs text-muted-foreground'>
-                      Incremento en Z3-Z4
-                    </div>
-                  </div>
-                  <div className='p-4 border rounded-lg bg-muted/30'>
-                    <div className='text-sm font-medium mb-2'>Fase Pico</div>
-                    <div className='text-xs text-muted-foreground'>
-                      Máximo en Z4-Z5
+                      Increase in Z3-Z4
                     </div>
                   </div>
                   <div className='p-4 border rounded-lg bg-muted/30'>
-                    <div className='text-sm font-medium mb-2'>Fase Taper</div>
+                    <div className='text-sm font-medium mb-2'>Peak Phase</div>
                     <div className='text-xs text-muted-foreground'>
-                      Reducción gradual
+                      Maximum in Z4-Z5
+                    </div>
+                  </div>
+                  <div className='p-4 border rounded-lg bg-muted/30'>
+                    <div className='text-sm font-medium mb-2'>Taper Phase</div>
+                    <div className='text-xs text-muted-foreground'>
+                      Gradual reduction
                     </div>
                   </div>
                 </div>

@@ -24,7 +24,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-export default function CalendarioPage() {
+export default function CalendarPage() {
   // SOLUCIÓN: Estado de hidratación para evitar errores SSR
   const [isHydrated, setIsHydrated] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -187,7 +187,7 @@ export default function CalendarioPage() {
 
   const handleEditTraining = (training: Session) => {
     // Aquí podrías navegar a la página de edición o abrir un modal de edición
-    console.log('Editar entrenamiento:', training);
+    console.log('Edit training:', training);
     // Por ahora solo cerramos el modal
     handleCloseModal();
   };
@@ -256,20 +256,20 @@ export default function CalendarioPage() {
               <div className='p-2 bg-primary/10 rounded-lg'>
                 <CalendarIcon className='h-6 w-6 text-primary' />
               </div>
-              <h1 className='text-3xl font-bold text-foreground'>Calendario</h1>
+              <h1 className='text-3xl font-bold text-foreground'>Calendar</h1>
             </div>
             <p className='text-muted-foreground'>
-              Vista mensual de tus entrenamientos
+              Monthly view of your training sessions
             </p>
           </div>
 
-          {/* Layout principal: Calendario y panel 50/50 */}
+          {/* Main layout: Calendar and panel 50/50 */}
           <div className='flex flex-col lg:flex-row gap-6 w-full'>
-            {/* Calendario - 50% del ancho */}
+            {/* Calendar - 50% width */}
             <div className='w-full lg:w-1/2'>
               <Card className='bg-muted/50 border-muted'>
                 <CardHeader className='pb-4'>
-                  {/* Header con navegación integrada */}
+                  {/* Header with integrated navigation */}
                   <div className='flex items-center justify-between'>
                     <Button
                       variant='ghost'
@@ -290,7 +290,7 @@ export default function CalendarioPage() {
                           return sessionDate.getMonth() === currentMonth && 
                                  sessionDate.getFullYear() === currentYear;
                         }).length}{' '}
-                        entrenamientos
+                        training sessions
                       </p>
                     </div>
 
@@ -341,14 +341,14 @@ export default function CalendarioPage() {
                     ))}
                   </div>
 
-                  {/* Días del mes - mejor diseño */}
+                  {/* Days of the month - better design */}
                   <div className='grid grid-cols-7 gap-1'>
                     {generateCalendarDays().map((day, index) => {
-                      // Verificar si hay entrenamientos reales para este día
+                      // Check if there are real training sessions for this day
                       const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                       const hasTraining = day !== null && dailyTrainingData[dateKey]?.sessions.length > 0;
                       
-                      // Verificar si hay competiciones para este día
+                      // Check if there are competitions for this day
                       const competitionsOnDay = day !== null ? getCompetitionsByDate(dateKey) : [];
                       
                       const isToday =
@@ -371,7 +371,7 @@ export default function CalendarioPage() {
                           <div className='flex flex-col items-center'>
                             <span>{day}</span>
                             <div className='mt-1 flex gap-0.5'>
-                              {/* Puntos de entrenamientos */}
+                              {/* Training points */}
                               {hasTraining && (
                                 <>
                                   {Array.from(
@@ -422,23 +422,23 @@ export default function CalendarioPage() {
               <Card className='bg-muted/50 border-muted h-full flex flex-col'>
                 <CardHeader className='pb-4'>
                   <CardTitle className='text-lg font-semibold text-gray-900 dark:text-white'>
-                    Detalles del Día
+                    Day Details
                   </CardTitle>
                   <CardDescription className='text-gray-600 dark:text-gray-400'>
                     {selectedDate
                       ? `${selectedDate.day} de ${selectedDate.month} de ${selectedDate.year}`
-                      : 'Selecciona un día para ver los detalles'}
+                      : 'Select a day to view details'}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className='flex-1 flex flex-col'>
                   {selectedDate ? (
                     <div className='space-y-4'>
-                      {/* Competiciones - Mostrar siempre si existen */}
+                      {/* Competitions - Always show if they exist */}
                       {selectedDayCompetitions.length > 0 && (
                         <div className='space-y-3'>
                           <h4 className='font-semibold text-gray-900 dark:text-white flex items-center gap-2'>
                             <CalendarIcon className='h-4 w-4' />
-                            Competiciones ({selectedDayCompetitions.length})
+                            Competitions ({selectedDayCompetitions.length})
                           </h4>
                           {selectedDayCompetitions.map((comp, index) => (
                             <div
@@ -491,12 +491,12 @@ export default function CalendarioPage() {
                         </div>
                       )}
 
-                      {/* Entrenamientos - Mostrar si existen */}
+                      {/* Training - Show if exists */}
                       {selectedDaySessions.length > 0 && (
                         <div className='space-y-3'>
                           <h4 className='font-semibold text-gray-900 dark:text-white flex items-center gap-2'>
                             <Activity className='h-4 w-4' />
-                            Entrenamientos ({selectedDaySessions.length})
+                            Training ({selectedDaySessions.length})
                           </h4>
                           {selectedDaySessions.map((session) => (
                             <div
@@ -540,10 +540,10 @@ export default function CalendarioPage() {
                             <CalendarIcon className='h-8 w-8 text-muted-foreground' />
                           </div>
                           <p className='text-foreground font-medium'>
-                            No hay actividades registradas
+                            No activities recorded
                           </p>
                           <p className='text-sm text-muted-foreground mt-1'>
-                            para este día
+                            for this day
                           </p>
                         </div>
                       )}
@@ -554,10 +554,10 @@ export default function CalendarioPage() {
                         <CalendarIcon className='h-8 w-8 text-primary' />
                       </div>
                       <p className='text-foreground font-medium'>
-                        Selecciona un día
+                        Select a day
                       </p>
                       <p className='text-sm text-muted-foreground mt-1'>
-                        para ver los detalles de entrenamiento
+                        to view training details
                       </p>
                     </div>
                   )}

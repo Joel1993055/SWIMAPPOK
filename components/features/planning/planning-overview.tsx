@@ -96,7 +96,7 @@ const weeklyPlan: WeeklyPlan[] = [
     phase: 'Base',
     totalDistance: 25000,
     sessions: 6,
-    focus: 'Aeróbico',
+    focus: 'Aerobic',
     intensity: 4,
   },
   {
@@ -104,7 +104,7 @@ const weeklyPlan: WeeklyPlan[] = [
     phase: 'Base',
     totalDistance: 26000,
     sessions: 6,
-    focus: 'Aeróbico',
+    focus: 'Aerobic',
     intensity: 4,
   },
   {
@@ -112,7 +112,7 @@ const weeklyPlan: WeeklyPlan[] = [
     phase: 'Base',
     totalDistance: 27000,
     sessions: 6,
-    focus: 'Técnica',
+    focus: 'Technique',
     intensity: 4,
   },
   {
@@ -120,39 +120,39 @@ const weeklyPlan: WeeklyPlan[] = [
     phase: 'Base',
     totalDistance: 28000,
     sessions: 6,
-    focus: 'Aeróbico',
+    focus: 'Aerobic',
     intensity: 5,
   },
   {
     week: 5,
-    phase: 'Construcción',
+    phase: 'Construction',
     totalDistance: 30000,
     sessions: 7,
-    focus: 'Umbral',
+    focus: 'Threshold',
     intensity: 6,
   },
   {
     week: 6,
-    phase: 'Construcción',
+    phase: 'Construction',
     totalDistance: 31000,
     sessions: 7,
-    focus: 'Umbral',
+    focus: 'Threshold',
     intensity: 6,
   },
   {
     week: 7,
-    phase: 'Construcción',
+    phase: 'Construction',
     totalDistance: 32000,
     sessions: 7,
-    focus: 'Aeróbico',
+    focus: 'Aerobic',
     intensity: 6,
   },
   {
     week: 8,
-    phase: 'Construcción',
+    phase: 'Construction',
     totalDistance: 33000,
     sessions: 7,
-    focus: 'Umbral',
+    focus: 'Threshold',
     intensity: 7,
   },
   {
@@ -168,7 +168,7 @@ const weeklyPlan: WeeklyPlan[] = [
     phase: 'Específico',
     totalDistance: 29000,
     sessions: 8,
-    focus: 'Velocidad',
+    focus: 'Speed',
     intensity: 8,
   },
   {
@@ -184,23 +184,23 @@ const weeklyPlan: WeeklyPlan[] = [
     phase: 'Específico',
     totalDistance: 31000,
     sessions: 8,
-    focus: 'Velocidad',
+    focus: 'Speed',
     intensity: 9,
   },
   {
     week: 13,
-    phase: 'Pico',
+    phase: 'Peak',
     totalDistance: 20000,
     sessions: 6,
-    focus: 'Velocidad',
+    focus: 'Speed',
     intensity: 9,
   },
   {
     week: 14,
-    phase: 'Pico',
+    phase: 'Peak',
     totalDistance: 15000,
     sessions: 4,
-    focus: 'Recuperación',
+    focus: 'Recovery',
     intensity: 5,
   },
 ];
@@ -384,7 +384,7 @@ export function PlanificacionOverview() {
     let currentDate = new Date(updatedPhase.startDate!);
     const updatedPhases: TrainingPhase[] = [];
 
-    // Agregar la fase actualizada
+    // Add the updated phase
     updatedPhases.push({
       ...updatedPhase,
       endDate: calculateEndDate(updatedPhase.startDate!, updatedPhase.duration),
@@ -751,23 +751,23 @@ export function PlanificacionOverview() {
       {/* Tabs principales */}
       <Tabs defaultValue='fases' className='space-y-4'>
         <TabsList className='grid w-full grid-cols-4'>
-          <TabsTrigger value='fases'>Fases del Ciclo</TabsTrigger>
-          <TabsTrigger value='competiciones'>Competiciones</TabsTrigger>
-          <TabsTrigger value='planificacion'>Planificación Semanal</TabsTrigger>
-          <TabsTrigger value='carga'>Carga de Entrenamiento</TabsTrigger>
+          <TabsTrigger value='fases'>Cycle Phases</TabsTrigger>
+          <TabsTrigger value='competiciones'>Competitions</TabsTrigger>
+          <TabsTrigger value='planificacion'>Weekly Planning</TabsTrigger>
+          <TabsTrigger value='carga'>Training Load</TabsTrigger>
         </TabsList>
 
-        {/* Tab: Fases del Ciclo */}
+        {/* Tab: Cycle Phases */}
         <TabsContent value='fases' className='space-y-4'>
           <div className='flex justify-between items-center'>
-            <h3 className='text-lg font-semibold'>Fases de Entrenamiento</h3>
+            <h3 className='text-lg font-semibold'>Training Phases</h3>
             <Button
               onClick={() => setIsAddingPhase(true)}
               className='gap-2'
               size='sm'
             >
               <Plus className='h-4 w-4' />
-              Agregar Fase
+              Add Phase
             </Button>
           </div>
 
@@ -833,11 +833,11 @@ export function PlanificacionOverview() {
 
                   <div className='space-y-2'>
                     <div className='flex items-center justify-between text-sm'>
-                      <span>Intensidad:</span>
+                      <span>Intensity:</span>
                       <Badge variant='outline'>{phase.intensity}/10</Badge>
                     </div>
                     <div className='flex items-center justify-between text-sm'>
-                      <span>Volumen:</span>
+                      <span>Volume:</span>
                       <Badge variant='outline'>
                         {(phase.volume || 0).toLocaleString()}m
                       </Badge>
@@ -884,7 +884,7 @@ export function PlanificacionOverview() {
                     </p>
                   </div>
                   <div className='space-y-2'>
-                    <h4 className='font-medium'>Intensidad Objetivo</h4>
+                    <h4 className='font-medium'>Target Intensity</h4>
                     <div className='flex items-center gap-2'>
                       <Progress
                         value={currentPhase.intensity * 10}
@@ -896,7 +896,7 @@ export function PlanificacionOverview() {
                     </div>
                   </div>
                   <div className='space-y-2'>
-                    <h4 className='font-medium'>Volumen Semanal</h4>
+                    <h4 className='font-medium'>Weekly Volume</h4>
                     <p className='text-2xl font-bold'>
                       {(currentPhase?.volume || 0).toLocaleString()}m
                     </p>
@@ -925,7 +925,7 @@ export function PlanificacionOverview() {
             <DialogContent className='max-w-2xl'>
               <DialogHeader>
                 <DialogTitle>
-                  {isAddingPhase ? 'Agregar Nueva Fase' : 'Editar Fase'}
+                  {isAddingPhase ? 'Add New Phase' : 'Edit Phase'}
                 </DialogTitle>
                 <DialogDescription>
                   {isAddingPhase
@@ -937,7 +937,7 @@ export function PlanificacionOverview() {
               <div className='space-y-4'>
                 <div className='grid grid-cols-2 gap-4'>
                   <div className='space-y-2'>
-                    <Label htmlFor='phase-name'>Nombre de la Fase</Label>
+                    <Label htmlFor='phase-name'>Phase Name</Label>
                     <Input
                       id='phase-name'
                       value={phaseForm.name}
@@ -985,7 +985,7 @@ export function PlanificacionOverview() {
 
                 <div className='grid grid-cols-2 gap-4'>
                   <div className='space-y-2'>
-                    <Label htmlFor='phase-intensity'>Intensidad (1-10)</Label>
+                    <Label htmlFor='phase-intensity'>Intensity (1-10)</Label>
                     <Input
                       id='phase-intensity'
                       type='number'
@@ -1002,7 +1002,7 @@ export function PlanificacionOverview() {
                   </div>
                   <div className='space-y-2'>
                     <Label htmlFor='phase-volume'>
-                      Volumen Semanal (metros)
+                      Weekly Volume (meters)
                     </Label>
                     <Input
                       id='phase-volume'
@@ -1043,7 +1043,7 @@ export function PlanificacionOverview() {
                     )}
                   </div>
                   <div className='space-y-2'>
-                    <Label htmlFor='phase-order'>Orden de la Fase</Label>
+                    <Label htmlFor='phase-order'>Phase Order</Label>
                     <Input
                       id='phase-order'
                       type='number'
@@ -1077,13 +1077,13 @@ export function PlanificacionOverview() {
                   </div>
                   <div className='flex gap-2'>
                     {[
-                      'Aeróbico',
-                      'Técnica',
-                      'Fuerza',
-                      'Umbral',
+                      'Aerobic',
+                      'Technique',
+                      'Strength',
+                      'Threshold',
                       'VO2 Max',
-                      'Velocidad',
-                      'Recuperación',
+                      'Speed',
+                      'Recovery',
                     ].map(focus => (
                       <Button
                         key={focus}
@@ -1101,11 +1101,11 @@ export function PlanificacionOverview() {
 
                 <div className='flex justify-end gap-2 pt-4'>
                   <Button variant='outline' onClick={handleCancelPhase}>
-                    Cancelar
+                    Cancel
                   </Button>
                   <Button onClick={handleSavePhase} className='gap-2'>
                     <Save className='h-4 w-4' />
-                    {isAddingPhase ? 'Agregar' : 'Guardar'}
+                    {isAddingPhase ? 'Add' : 'Save'}
                   </Button>
                 </div>
               </div>
@@ -1668,7 +1668,7 @@ export function PlanificacionOverview() {
 
                 <div className='flex justify-end gap-2 pt-4'>
                   <Button variant='outline' onClick={handleCancelCompetition}>
-                    Cancelar
+                    Cancel
                   </Button>
                   <Button onClick={handleSaveCompetition} className='gap-2'>
                     <Save className='h-4 w-4' />

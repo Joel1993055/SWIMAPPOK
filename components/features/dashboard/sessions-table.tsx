@@ -1,56 +1,56 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
+import { Calendar } from '@/components/ui/calendar';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
 } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
 import {
-  getSessions,
-  updateSession,
-  deleteSession,
-  type Session as SupabaseSession,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import {
+    deleteSession,
+    getSessions,
+    updateSession,
+    type Session as SupabaseSession,
 } from '@/lib/actions/sessions';
-import {
-  Search,
-  Edit,
-  Trash2,
-  Calendar as CalendarIcon,
-  Activity,
-  Filter,
-  Download,
-  X,
-} from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import {
+    Activity,
+    Calendar as CalendarIcon,
+    Download,
+    Edit,
+    Filter,
+    Search,
+    Trash2,
+    X,
+} from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 
-// Tipos de datos para las sesiones (usando la interfaz de Supabase)
+// Data types for sessions (using Supabase interface)
 type Session = SupabaseSession;
 
-// Opciones para filtros (adaptadas a los datos reales)
+// Options for filters (adapted to real data)
 const STROKE_OPTIONS = [
   { value: 'Libre', label: 'Libre' },
   { value: 'Espalda', label: 'Espalda' },
@@ -60,27 +60,27 @@ const STROKE_OPTIONS = [
 ];
 
 const SESSION_TYPE_OPTIONS = [
-  { value: 'Aeróbico', label: 'Aeróbico' },
-  { value: 'Umbral', label: 'Umbral' },
-  { value: 'Velocidad', label: 'Velocidad' },
-  { value: 'Técnica', label: 'Técnica' },
-  { value: 'Recuperación', label: 'Recuperación' },
+  { value: 'Aerobic', label: 'Aerobic' },
+  { value: 'Threshold', label: 'Threshold' },
+  { value: 'Speed', label: 'Speed' },
+  { value: 'Technique', label: 'Technique' },
+  { value: 'Recovery', label: 'Recovery' },
 ];
 
 const RPE_OPTIONS = Array.from({ length: 10 }, (_, i) => i + 1);
 
 const SORT_OPTIONS = [
-  { value: 'date-desc', label: 'Fecha (más reciente)' },
-  { value: 'date-asc', label: 'Fecha (más antigua)' },
-  { value: 'distance-desc', label: 'Distancia (mayor)' },
-  { value: 'distance-asc', label: 'Distancia (menor)' },
-  { value: 'duration-desc', label: 'Duración (mayor)' },
-  { value: 'duration-asc', label: 'Duración (menor)' },
-  { value: 'rpe-desc', label: 'RPE (mayor)' },
-  { value: 'rpe-asc', label: 'RPE (menor)' },
+  { value: 'date-desc', label: 'Date (most recent)' },
+  { value: 'date-asc', label: 'Date (oldest)' },
+  { value: 'distance-desc', label: 'Distance (highest)' },
+  { value: 'distance-asc', label: 'Distance (lowest)' },
+  { value: 'duration-desc', label: 'Duration (longest)' },
+  { value: 'duration-asc', label: 'Duration (shortest)' },
+  { value: 'rpe-desc', label: 'RPE (highest)' },
+  { value: 'rpe-asc', label: 'RPE (lowest)' },
 ];
 
-// Función para formatear fechas
+// Function to format dates
 function formatDate(
   dateString: string,
   formatStr: string = 'dd/MM/yyyy'
@@ -93,18 +93,18 @@ function formatDate(
 }
 
 export function SessionsTable() {
-  // Estados para datos reales
+  // States for real data
   const [sessions, setSessions] = useState<Session[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Cargar sesiones reales desde Supabase
+  // Load real sessions from Supabase
   useEffect(() => {
     const loadSessions = async () => {
       try {
         const data = await getSessions();
         setSessions(data);
       } catch (error) {
-        console.error('Error cargando sesiones:', error);
+        console.error('Error loading sessions:', error);
         setSessions([]);
       } finally {
         setIsLoading(false);
@@ -114,13 +114,13 @@ export function SessionsTable() {
     loadSessions();
   }, []);
 
-  // Estados para búsqueda y filtros
+  // States for search and filters
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortBy, setSortBy] = useState('date-desc');
 
-  // Estados para filtros
+  // States for filters
   const [selectedStrokes, setSelectedStrokes] = useState<string[]>([]);
   const [selectedSessionTypes, setSelectedSessionTypes] = useState<string[]>(
     []
@@ -132,14 +132,14 @@ export function SessionsTable() {
     max?: number;
   }>({});
 
-  // Estados para diálogos
+  // States for dialogs
   const [editingSession, setEditingSession] = useState<Session | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [sessionToDelete, setSessionToDelete] = useState<Session | null>(null);
   const [showFilters, setShowFilters] = useState(false);
 
-  // Función para filtrar y ordenar sesiones
+  // Function to filter and sort sessions
   const filteredAndSortedSessions = useMemo(() => {
     const filtered = sessions.filter(session => {
       // Búsqueda por texto
@@ -152,27 +152,27 @@ export function SessionsTable() {
         (session.title &&
           session.title.toLowerCase().includes(searchTerm.toLowerCase()));
 
-      // Filtros por estilo
+      // Filters by stroke
       const matchesStroke =
         selectedStrokes.length === 0 ||
         selectedStrokes.includes(session.stroke || '');
 
-      // Filtros por tipo de sesión
+      // Filters by session type
       const matchesSessionType =
         selectedSessionTypes.length === 0 ||
         selectedSessionTypes.includes(session.type || '');
 
-      // Filtros por RPE
+      // RPE filters
       const matchesRPE =
         selectedRPEs.length === 0 || selectedRPEs.includes(session.rpe || 0);
 
-      // Filtros por fecha
+      // Filters by date
       const sessionDate = new Date(session.date);
       const matchesDate =
         (!dateRange.from || sessionDate >= dateRange.from) &&
         (!dateRange.to || sessionDate <= dateRange.to);
 
-      // Filtros por distancia
+      // Filters by distance
       const matchesDistance =
         (!distanceRange.min || session.distance >= distanceRange.min) &&
         (!distanceRange.max || session.distance <= distanceRange.max);
@@ -231,7 +231,7 @@ export function SessionsTable() {
     startIndex + itemsPerPage
   );
 
-  // Funciones para manejar filtros
+  // Functions to handle filters
   const toggleStrokeFilter = (stroke: string) => {
     setSelectedStrokes(prev =>
       prev.includes(stroke) ? prev.filter(s => s !== stroke) : [...prev, stroke]
@@ -272,7 +272,7 @@ export function SessionsTable() {
     distanceRange.min ||
     distanceRange.max;
 
-  // Funciones para manejar sesiones
+  // Functions to handle sessions
   const handleEdit = (session: Session) => {
     setEditingSession({ ...session });
     setIsEditDialogOpen(true);
@@ -292,7 +292,7 @@ export function SessionsTable() {
       const formData = new FormData();
       formData.append('title', editingSession.title || '');
       formData.append('date', editingSession.date);
-      formData.append('type', editingSession.type || 'Aeróbico');
+      formData.append('type', editingSession.type || 'Aerobic');
       formData.append('duration', (editingSession.duration || 0).toString());
       formData.append('distance', editingSession.distance.toString());
       formData.append('stroke', editingSession.stroke || 'Libre');
@@ -312,14 +312,14 @@ export function SessionsTable() {
 
       await updateSession(editingSession.id, formData);
 
-      // Recargar sesiones
+      // Reload sessions
       const data = await getSessions();
       setSessions(data);
 
       setIsEditDialogOpen(false);
       setEditingSession(null);
     } catch (error) {
-      console.error('Error actualizando sesión:', error);
+      console.error('Error updating session:', error);
     }
   };
 
@@ -329,7 +329,7 @@ export function SessionsTable() {
     try {
       await deleteSession(sessionToDelete.id);
 
-      // Recargar sesiones
+      // Reload sessions
       const data = await getSessions();
       setSessions(data);
 
@@ -340,21 +340,21 @@ export function SessionsTable() {
         setCurrentPage(currentPage - 1);
       }
     } catch (error) {
-      console.error('Error eliminando sesión:', error);
+      console.error('Error deleting session:', error);
     }
   };
 
   const exportToCSV = () => {
     const headers = [
-      'Fecha',
+      'Date',
       'Título',
-      'Distancia (m)',
-      'Duración (min)',
-      'Estilo',
+      'Distance (m)',
+      'Duration (min)',
+      'Stroke',
       'Tipo',
       'RPE',
-      'Entrenador',
-      'Objetivo',
+      'Coach',
+      'Objective',
       'Contenido',
     ];
     const csvContent = [
@@ -385,7 +385,7 @@ export function SessionsTable() {
     link.setAttribute('href', url);
     link.setAttribute(
       'download',
-      `sesiones_${format(new Date(), 'yyyy-MM-dd')}.csv`
+      `sessions_${format(new Date(), 'yyyy-MM-dd')}.csv`
     );
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
@@ -398,10 +398,10 @@ export function SessionsTable() {
       {/* Header con búsqueda y controles */}
       <div className='flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between'>
         <div className='space-y-1'>
-          <h3 className='text-lg font-semibold'>Historial de Sesiones</h3>
+          <h3 className='text-lg font-semibold'>Session History</h3>
           <p className='text-sm text-muted-foreground'>
-            {filteredAndSortedSessions.length} de {sessions.length} sesiones
-            {hasActiveFilters && ' (filtradas)'}
+            {filteredAndSortedSessions.length} of {sessions.length} sessions
+            {hasActiveFilters && ' (filtered)'}
           </p>
         </div>
 
@@ -410,7 +410,7 @@ export function SessionsTable() {
           <div className='relative'>
             <Search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
             <Input
-              placeholder='Buscar sesiones...'
+              placeholder='Search sessions...'
               value={searchTerm}
               onChange={e => {
                 setSearchTerm(e.target.value);
@@ -431,7 +431,7 @@ export function SessionsTable() {
               }
             >
               <Filter className='w-4 h-4 mr-2' />
-              Filtros
+              Filters
               {hasActiveFilters && (
                 <Badge variant='secondary' className='ml-2 h-5 w-5 p-0 text-xs'>
                   {selectedStrokes.length +
@@ -447,7 +447,7 @@ export function SessionsTable() {
 
             <Button variant='outline' size='sm' onClick={exportToCSV}>
               <Download className='w-4 h-4 mr-2' />
-              Exportar
+              Export
             </Button>
           </div>
         </div>
@@ -458,18 +458,18 @@ export function SessionsTable() {
         <Card className='bg-muted/50 border-muted'>
           <CardHeader className='pb-3'>
             <div className='flex items-center justify-between'>
-              <CardTitle className='text-base'>Filtros Avanzados</CardTitle>
+              <CardTitle className='text-base'>Advanced Filters</CardTitle>
               <Button variant='ghost' size='sm' onClick={clearAllFilters}>
                 <X className='w-4 h-4 mr-2' />
-                Limpiar todo
+                Clear all
               </Button>
             </div>
           </CardHeader>
           <CardContent className='space-y-4'>
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
-              {/* Filtro por estilo */}
+              {/* Filter by stroke */}
               <div className='space-y-2'>
-                <Label className='text-sm font-medium'>Estilo</Label>
+                <Label className='text-sm font-medium'>Stroke</Label>
                 <div className='space-y-1'>
                   {STROKE_OPTIONS.map(option => (
                     <div
@@ -492,9 +492,9 @@ export function SessionsTable() {
                 </div>
               </div>
 
-              {/* Filtro por tipo de sesión */}
+              {/* Filter by session type */}
               <div className='space-y-2'>
-                <Label className='text-sm font-medium'>Tipo de Sesión</Label>
+                <Label className='text-sm font-medium'>Session Type</Label>
                 <div className='space-y-1'>
                   {SESSION_TYPE_OPTIONS.map(option => (
                     <div
@@ -538,9 +538,9 @@ export function SessionsTable() {
                 </div>
               </div>
 
-              {/* Filtro por distancia */}
+              {/* Filter by distance */}
               <div className='space-y-2'>
-                <Label className='text-sm font-medium'>Distancia (m)</Label>
+                <Label className='text-sm font-medium'>Distance (m)</Label>
                 <div className='space-y-2'>
                   <Input
                     type='number'
@@ -572,9 +572,9 @@ export function SessionsTable() {
               </div>
             </div>
 
-            {/* Filtro por fecha */}
+            {/* Filter by date */}
             <div className='space-y-2'>
-              <Label className='text-sm font-medium'>Rango de Fechas</Label>
+              <Label className='text-sm font-medium'>Date Range</Label>
               <div className='flex gap-2'>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -632,7 +632,7 @@ export function SessionsTable() {
       {/* Controles de ordenamiento y paginación */}
       <div className='flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between'>
         <div className='flex items-center gap-2'>
-          <Label className='text-sm'>Ordenar por:</Label>
+          <Label className='text-sm'>Sort by:</Label>
           <Select value={sortBy} onValueChange={setSortBy}>
             <SelectTrigger className='w-48'>
               <SelectValue />
@@ -648,7 +648,7 @@ export function SessionsTable() {
         </div>
 
         <div className='flex items-center gap-2'>
-          <Label className='text-sm'>Mostrar:</Label>
+          <Label className='text-sm'>Show:</Label>
           <Select
             value={itemsPerPage.toString()}
             onValueChange={value => setItemsPerPage(parseInt(value))}
@@ -672,14 +672,14 @@ export function SessionsTable() {
           <table className='w-full'>
             <thead className='bg-muted/50'>
               <tr>
-                <th className='text-left p-3 font-medium text-sm'>Fecha</th>
+                <th className='text-left p-3 font-medium text-sm'>Date</th>
                 <th className='text-left p-3 font-medium text-sm'>Título</th>
-                <th className='text-left p-3 font-medium text-sm'>Distancia</th>
-                <th className='text-left p-3 font-medium text-sm'>Duración</th>
-                <th className='text-left p-3 font-medium text-sm'>Estilo</th>
+                <th className='text-left p-3 font-medium text-sm'>Distance</th>
+                <th className='text-left p-3 font-medium text-sm'>Duration</th>
+                <th className='text-left p-3 font-medium text-sm'>Stroke</th>
                 <th className='text-left p-3 font-medium text-sm'>Tipo</th>
                 <th className='text-left p-3 font-medium text-sm'>RPE</th>
-                <th className='text-left p-3 font-medium text-sm'>Objetivo</th>
+                <th className='text-left p-3 font-medium text-sm'>Objective</th>
                 <th className='text-left p-3 font-medium text-sm'>Acciones</th>
               </tr>
             </thead>
@@ -690,7 +690,7 @@ export function SessionsTable() {
                     <div className='flex flex-col items-center gap-2'>
                       <Activity className='w-8 h-8 text-muted-foreground animate-pulse' />
                       <p className='text-muted-foreground'>
-                        Cargando sesiones...
+                        Loading sessions...
                       </p>
                     </div>
                   </td>
@@ -702,8 +702,8 @@ export function SessionsTable() {
                       <Activity className='w-8 h-8 text-muted-foreground' />
                       <p className='text-muted-foreground'>
                         {searchTerm || hasActiveFilters
-                          ? 'No se encontraron sesiones con esos criterios'
-                          : 'No hay sesiones registradas'}
+                          ? 'No sessions found with those criteria'
+                          : 'No sessions registered'}
                       </p>
                       {(searchTerm || hasActiveFilters) && (
                         <Button
@@ -711,7 +711,7 @@ export function SessionsTable() {
                           size='sm'
                           onClick={clearAllFilters}
                         >
-                          Limpiar filtros
+                          Clear filters
                         </Button>
                       )}
                     </div>
@@ -751,7 +751,7 @@ export function SessionsTable() {
                     <td className='p-3'>
                       <Badge
                         variant={
-                          session.type === 'Técnica' ? 'default' : 'secondary'
+                          session.type === 'Technique' ? 'default' : 'secondary'
                         }
                         className='capitalize'
                       >
@@ -806,7 +806,7 @@ export function SessionsTable() {
               startIndex + itemsPerPage,
               filteredAndSortedSessions.length
             )}{' '}
-            de {filteredAndSortedSessions.length} sesiones
+            of {filteredAndSortedSessions.length} sessions
           </p>
 
           <div className='flex items-center gap-2'>
@@ -884,9 +884,9 @@ export function SessionsTable() {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className='max-w-2xl'>
           <DialogHeader>
-            <DialogTitle>Editar Sesión</DialogTitle>
+            <DialogTitle>Edit Session</DialogTitle>
             <DialogDescription>
-              Modifica los detalles de la sesión de entrenamiento
+              Modify training session details
             </DialogDescription>
           </DialogHeader>
 
@@ -928,7 +928,7 @@ export function SessionsTable() {
 
               <div className='grid grid-cols-2 gap-4'>
                 <div className='space-y-2'>
-                  <Label htmlFor='edit-distance'>Distancia (m)</Label>
+                  <Label htmlFor='edit-distance'>Distance (m)</Label>
                   <Input
                     id='edit-distance'
                     type='number'
@@ -945,7 +945,7 @@ export function SessionsTable() {
                 </div>
 
                 <div className='space-y-2'>
-                  <Label htmlFor='edit-coach'>Entrenador</Label>
+                  <Label htmlFor='edit-coach'>Coach</Label>
                   <Input
                     id='edit-coach'
                     type='text'
@@ -1028,7 +1028,7 @@ export function SessionsTable() {
                 <div className='space-y-2'>
                   <Label htmlFor='edit-sessionType'>Tipo</Label>
                   <Select
-                    value={editingSession.type || 'Aeróbico'}
+                    value={editingSession.type || 'Aerobic'}
                     onValueChange={value =>
                       setEditingSession({ ...editingSession, type: value })
                     }
@@ -1049,7 +1049,7 @@ export function SessionsTable() {
 
               <div className='space-y-2'>
                 <Label htmlFor='edit-content'>
-                  Contenido del Entrenamiento
+                  Training Content
                 </Label>
                 <Textarea
                   id='edit-content'
@@ -1071,11 +1071,11 @@ export function SessionsTable() {
                   variant='outline'
                   onClick={() => setIsEditDialogOpen(false)}
                 >
-                  Cancelar
+                  Cancel
                 </Button>
                 <Button type='submit'>
                   <Edit className='w-4 h-4 mr-2' />
-                  Guardar Cambios
+                  Save Changes
                 </Button>
               </div>
             </form>
@@ -1087,7 +1087,7 @@ export function SessionsTable() {
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Confirmar Eliminación</DialogTitle>
+            <DialogTitle>Confirm Deletion</DialogTitle>
             <DialogDescription>
               ¿Estás seguro de que quieres eliminar esta sesión? Esta acción no
               se puede deshacer.
@@ -1125,11 +1125,11 @@ export function SessionsTable() {
                   variant='outline'
                   onClick={() => setIsDeleteDialogOpen(false)}
                 >
-                  Cancelar
+                  Cancel
                 </Button>
                 <Button variant='destructive' onClick={handleDeleteConfirm}>
                   <Trash2 className='w-4 h-4 mr-2' />
-                  Eliminar
+                  Delete
                 </Button>
               </div>
             </div>

@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -8,8 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -18,20 +19,19 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {
-  Search,
-  Filter,
+  BarChart3,
+  Calendar,
   Download,
   Eye,
-  Star,
-  Users,
-  Calendar,
-  BarChart3,
-  Target,
   FileText,
+  Filter,
+  Search,
   Settings,
+  Star,
+  Target,
+  Users,
 } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { useState } from 'react';
 
 interface ReportTemplate {
   id: string;
@@ -55,13 +55,13 @@ export function TemplateManager() {
   const [selectedSeason, setSelectedSeason] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('name');
 
-  // Plantillas de ejemplo
+  // Example templates
   const templates: ReportTemplate[] = [
     {
       id: 'perf-coach-prep',
-      name: 'Reporte de Rendimiento - Entrenador',
+      name: 'Performance Report - Coach',
       description:
-        'Análisis completo de rendimiento para entrenadores en fase de preparación',
+        'Comprehensive performance analysis for coaches in preparation phase',
       category: 'performance',
       userType: 'coach',
       season: 'preparation',
@@ -74,8 +74,8 @@ export function TemplateManager() {
     },
     {
       id: 'plan-team-comp',
-      name: 'Planificación de Equipo - Competición',
-      description: 'Planificación detallada para competiciones importantes',
+      name: 'Team Planning - Competition',
+      description: 'Detailed planning for important competitions',
       category: 'planning',
       userType: 'coach',
       season: 'competition',
@@ -88,8 +88,8 @@ export function TemplateManager() {
     },
     {
       id: 'train-swimmer',
-      name: 'Entrenamientos - Nadador',
-      description: 'Resumen personal de entrenamientos para nadadores',
+      name: 'Training - Swimmer',
+      description: 'Personal training summary for swimmers',
       category: 'training',
       userType: 'swimmer',
       season: 'all',
@@ -102,8 +102,8 @@ export function TemplateManager() {
     },
     {
       id: 'team-analysis',
-      name: 'Análisis de Equipo',
-      description: 'Comparativa y análisis del rendimiento del equipo completo',
+      name: 'Team Analysis',
+      description: 'Comparison and analysis of full team performance',
       category: 'team',
       userType: 'coach',
       season: 'all',
@@ -116,8 +116,8 @@ export function TemplateManager() {
     },
     {
       id: 'recovery-report',
-      name: 'Reporte de Recuperación',
-      description: 'Seguimiento del estado de recuperación y fatiga',
+      name: 'Recovery Report',
+      description: 'Monitoring of recovery status and fatigue',
       category: 'performance',
       userType: 'all',
       season: 'recovery',
@@ -165,15 +165,15 @@ export function TemplateManager() {
   const getCategoryLabel = (category: string) => {
     switch (category) {
       case 'performance':
-        return 'Rendimiento';
+        return 'Performance';
       case 'planning':
-        return 'Planificación';
+        return 'Planning';
       case 'training':
-        return 'Entrenamiento';
+        return 'Training';
       case 'team':
-        return 'Equipo';
+        return 'Team';
       case 'custom':
-        return 'Personalizada';
+        return 'Custom';
       default:
         return category;
     }
@@ -182,13 +182,13 @@ export function TemplateManager() {
   const getUserTypeLabel = (userType: string) => {
     switch (userType) {
       case 'coach':
-        return 'Entrenador';
+        return 'Coach';
       case 'swimmer':
-        return 'Nadador';
+        return 'Swimmer';
       case 'admin':
-        return 'Administrador';
+        return 'Admin';
       case 'all':
-        return 'Todos';
+        return 'All';
       default:
         return userType;
     }
@@ -197,13 +197,13 @@ export function TemplateManager() {
   const getSeasonLabel = (season: string) => {
     switch (season) {
       case 'preparation':
-        return 'Preparación';
+        return 'Preparation';
       case 'competition':
-        return 'Competición';
+        return 'Competition';
       case 'recovery':
-        return 'Recuperación';
+        return 'Recovery';
       case 'all':
-        return 'Todas';
+        return 'All';
       default:
         return season;
     }
@@ -241,9 +241,9 @@ export function TemplateManager() {
   });
 
   const handleUseTemplate = (template: ReportTemplate) => {
-    // Aquí se aplicaría la plantilla al reporte actual
-    console.log('Usando plantilla:', template.name);
-    // Actualizar contador de uso
+    // Apply the template to the current report
+    console.log('Using template:', template.name);
+    // Update usage counter
     setTemplateList(prev =>
       prev.map(t =>
         t.id === template.id
@@ -266,11 +266,11 @@ export function TemplateManager() {
   };
 
   const handlePreviewTemplate = (template: ReportTemplate) => {
-    console.log('Vista previa de plantilla:', template.name);
+    console.log('Preview template:', template.name);
   };
 
   const handleDownloadTemplate = (template: ReportTemplate) => {
-    console.log('Descargando plantilla:', template.name);
+    console.log('Downloading template:', template.name);
   };
 
   return (
@@ -278,33 +278,33 @@ export function TemplateManager() {
       {/* Header */}
       <div className='flex items-center justify-between'>
         <div>
-          <h2 className='text-2xl font-bold'>Gestión de Plantillas</h2>
+          <h2 className='text-2xl font-bold'>Template Management</h2>
           <p className='text-muted-foreground'>
-            Selecciona y aplica plantillas a tus reportes
+            Select and apply templates to your reports
           </p>
         </div>
         <div className='flex gap-2'>
           <Button variant='outline' className='gap-2'>
             <Settings className='h-4 w-4' />
-            Configurar
+            Configure
           </Button>
         </div>
       </div>
 
-      {/* Filtros */}
+      {/* Filters */}
       <Card className='bg-muted/50 border-muted'>
         <CardHeader>
-          <CardTitle className='text-lg'>Filtros y Búsqueda</CardTitle>
+          <CardTitle className='text-lg'>Filters and Search</CardTitle>
         </CardHeader>
         <CardContent>
           <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-6'>
             <div className='lg:col-span-2'>
-              <Label htmlFor='search'>Buscar plantillas</Label>
+              <Label htmlFor='search'>Search templates</Label>
               <div className='relative'>
                 <Search className='absolute left-3 top-3 h-4 w-4 text-muted-foreground' />
                 <Input
                   id='search'
-                  placeholder='Buscar por nombre o descripción...'
+                  placeholder='Search by name or description...'
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
                   className='pl-10'
@@ -313,69 +313,69 @@ export function TemplateManager() {
             </div>
 
             <div>
-              <Label htmlFor='category'>Categoría</Label>
+              <Label htmlFor='category'>Category</Label>
               <Select
                 value={selectedCategory}
                 onValueChange={setSelectedCategory}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder='Todas' />
+                  <SelectValue placeholder='All' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='all'>Todas</SelectItem>
-                  <SelectItem value='performance'>Rendimiento</SelectItem>
-                  <SelectItem value='planning'>Planificación</SelectItem>
-                  <SelectItem value='training'>Entrenamiento</SelectItem>
-                  <SelectItem value='team'>Equipo</SelectItem>
-                  <SelectItem value='custom'>Personalizada</SelectItem>
+                  <SelectItem value='all'>All</SelectItem>
+                  <SelectItem value='performance'>Performance</SelectItem>
+                  <SelectItem value='planning'>Planning</SelectItem>
+                  <SelectItem value='training'>Training</SelectItem>
+                  <SelectItem value='team'>Team</SelectItem>
+                  <SelectItem value='custom'>Custom</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div>
-              <Label htmlFor='userType'>Tipo de usuario</Label>
+              <Label htmlFor='userType'>User type</Label>
               <Select
                 value={selectedUserType}
                 onValueChange={setSelectedUserType}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder='Todos' />
+                  <SelectValue placeholder='All' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='all'>Todos</SelectItem>
-                  <SelectItem value='coach'>Entrenador</SelectItem>
-                  <SelectItem value='swimmer'>Nadador</SelectItem>
-                  <SelectItem value='admin'>Administrador</SelectItem>
+                  <SelectItem value='all'>All</SelectItem>
+                  <SelectItem value='coach'>Coach</SelectItem>
+                  <SelectItem value='swimmer'>Swimmer</SelectItem>
+                  <SelectItem value='admin'>Admin</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div>
-              <Label htmlFor='season'>Temporada</Label>
+              <Label htmlFor='season'>Season</Label>
               <Select value={selectedSeason} onValueChange={setSelectedSeason}>
                 <SelectTrigger>
-                  <SelectValue placeholder='Todas' />
+                  <SelectValue placeholder='All' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='all'>Todas</SelectItem>
-                  <SelectItem value='preparation'>Preparación</SelectItem>
-                  <SelectItem value='competition'>Competición</SelectItem>
-                  <SelectItem value='recovery'>Recuperación</SelectItem>
+                  <SelectItem value='all'>All</SelectItem>
+                  <SelectItem value='preparation'>Preparation</SelectItem>
+                  <SelectItem value='competition'>Competition</SelectItem>
+                  <SelectItem value='recovery'>Recovery</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div>
-              <Label htmlFor='sort'>Ordenar por</Label>
+              <Label htmlFor='sort'>Sort by</Label>
               <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger>
-                  <SelectValue placeholder='Nombre' />
+                  <SelectValue placeholder='Name' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='name'>Nombre</SelectItem>
-                  <SelectItem value='usage'>Uso</SelectItem>
-                  <SelectItem value='lastUsed'>Último uso</SelectItem>
-                  <SelectItem value='created'>Fecha creación</SelectItem>
+                  <SelectItem value='name'>Name</SelectItem>
+                  <SelectItem value='usage'>Usage</SelectItem>
+                  <SelectItem value='lastUsed'>Last used</SelectItem>
+                  <SelectItem value='created'>Created date</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -383,7 +383,7 @@ export function TemplateManager() {
         </CardContent>
       </Card>
 
-      {/* Lista de plantillas */}
+      {/* Template list */}
       <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
         {sortedTemplates.map(template => {
           const CategoryIcon = getCategoryIcon(template.category);
@@ -410,7 +410,7 @@ export function TemplateManager() {
                   <div className='flex items-center gap-1'>
                     {template.isDefault && (
                       <Badge variant='secondary' className='text-xs'>
-                        Predefinida
+                        Default
                       </Badge>
                     )}
                     <Button
@@ -441,12 +441,12 @@ export function TemplateManager() {
 
                 <div className='grid grid-cols-2 gap-4 text-sm text-muted-foreground'>
                   <div>
-                    <span className='font-medium'>Usos:</span>{' '}
+                    <span className='font-medium'>Uses:</span>{' '}
                     {template.usageCount}
                   </div>
                   <div>
-                    <span className='font-medium'>Último uso:</span>{' '}
-                    {new Date(template.lastUsed).toLocaleDateString('es-ES')}
+                    <span className='font-medium'>Last used:</span>{' '}
+                    {new Date(template.lastUsed).toLocaleDateString('en-US')}
                   </div>
                 </div>
 
@@ -456,7 +456,7 @@ export function TemplateManager() {
                     onClick={() => handleUseTemplate(template)}
                     className='flex-1'
                   >
-                    Usar Plantilla
+                    Use Template
                   </Button>
                   <Button
                     size='sm'
@@ -485,10 +485,10 @@ export function TemplateManager() {
             <div className='text-center'>
               <Filter className='h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50' />
               <h3 className='text-lg font-semibold mb-2'>
-                No se encontraron plantillas
+                No templates found
               </h3>
               <p className='text-muted-foreground'>
-                Intenta ajustar los filtros o crear una nueva plantilla
+                Try adjusting the filters or create a new template
               </p>
             </div>
           </CardContent>

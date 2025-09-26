@@ -8,13 +8,13 @@ import { Activity, Target, Trophy, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export function KPICards() {
-  // OPTIMIZADO: Usar solo el store unificado
+  // OPTIMIZED: Use only unified store
   const { sessions, setSessions } = useSessionsStore();
   const { getCurrentPhase } = useTrainingStore();
   const { competitions, getMainCompetition } = useCompetitionsStore();
   const [isHydrated, setIsHydrated] = useState(false);
 
-  // Estados para los períodos seleccionados
+  // States for selected periods
   const [selectedDistancePeriod, setSelectedDistancePeriod] = useState<
     'year' | 'month' | 'week'
   >('week');
@@ -22,26 +22,26 @@ export function KPICards() {
     'year' | 'month' | 'week'
   >('week');
 
-  // Inicializar después de la hidratación para evitar errores de SSR
+  // Initialize after hydration to avoid SSR errors
   useEffect(() => {
     setIsHydrated(true);
   }, []);
 
-  // Cargar sesiones al montar el componente
+  // Load sessions when component mounts
   useEffect(() => {
     const loadSessions = async () => {
       try {
-        // Aquí iría la carga real de sesiones si fuera necesario
-        // Por ahora usamos las sesiones del store
+        // Here would go the real session loading if necessary
+        // For now we use sessions from the store
       } catch (error) {
-        console.error('Error cargando sesiones:', error);
+        console.error('Error loading sessions:', error);
       }
     };
 
     loadSessions();
   }, [setSessions]);
 
-  // Calcular datos de distancia basados en el período seleccionado
+  // Calculate distance data based on selected period
   const getDistanceData = () => {
     const now = new Date();
     let periodStart: Date;
@@ -60,7 +60,7 @@ export function KPICards() {
         break;
     }
 
-    // Filtrar sesiones del período
+    // Filter sessions for the period
     const periodSessions = sessions.filter(session => {
       const sessionDate = new Date(session.date);
       return sessionDate >= periodStart && sessionDate <= now;
@@ -77,31 +77,31 @@ export function KPICards() {
       case 'year':
         return {
           distance: periodDistanceKm.toFixed(1),
-          label: 'Total acumulado este año',
+          label: 'Total accumulated this year',
           subtitle: `${periodDistance.toLocaleString()} metros`,
         };
       case 'month':
         return {
           distance: periodDistanceKm.toFixed(1),
-          label: 'Total este mes',
+          label: 'Total this month',
           subtitle: `${periodDistance.toLocaleString()} metros`,
         };
       case 'week':
         return {
           distance: periodDistanceKm.toFixed(1),
-          label: 'Total esta semana',
+          label: 'Total this week',
           subtitle: `${periodDistance.toLocaleString()} metros`,
         };
       default:
         return {
           distance: periodDistanceKm.toFixed(1),
-          label: 'Total acumulado',
+          label: 'Total accumulated',
           subtitle: `${periodDistance.toLocaleString()} metros`,
         };
     }
   };
 
-  // Calcular datos de sesiones basados en el período seleccionado
+  // Calculate session data based on selected period
   const getSessionsData = () => {
     const now = new Date();
     let periodStart: Date;
@@ -119,7 +119,7 @@ export function KPICards() {
         break;
     }
 
-    // Filtrar sesiones del período
+    // Filter sessions for the period
     const periodSessions = sessions.filter(session => {
       const sessionDate = new Date(session.date);
       return sessionDate >= periodStart && sessionDate <= now;
@@ -131,25 +131,25 @@ export function KPICards() {
       case 'year':
         return {
           total: periodSessionsCount,
-          label: 'Total acumulado este año',
+          label: 'Total accumulated this year',
           subtitle: 'Sesiones registradas',
         };
       case 'month':
         return {
           total: periodSessionsCount,
-          label: 'Total este mes',
+          label: 'Total this month',
           subtitle: 'Sesiones del mes actual',
         };
       case 'week':
         return {
           total: periodSessionsCount,
-          label: 'Total esta semana',
+          label: 'Total this week',
           subtitle: 'Sesiones de esta semana',
         };
       default:
         return {
           total: periodSessionsCount,
-          label: 'Total acumulado',
+          label: 'Total accumulated',
           subtitle: 'Sesiones registradas',
         };
     }
@@ -287,7 +287,7 @@ export function KPICards() {
     <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
       <Card className='bg-muted/50 border-muted'>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-          <CardTitle className='text-sm font-medium'>Distancia Total</CardTitle>
+          <CardTitle className='text-sm font-medium'>Total Distance</CardTitle>
           <Target className='h-4 w-4 text-muted-foreground' />
         </CardHeader>
         <CardContent>
@@ -324,7 +324,7 @@ export function KPICards() {
 
       <Card className='bg-muted/50 border-muted'>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-          <CardTitle className='text-sm font-medium'>Total Sesiones</CardTitle>
+          <CardTitle className='text-sm font-medium'>Total Sessions</CardTitle>
           <Users className='h-4 w-4 text-muted-foreground' />
         </CardHeader>
         <CardContent>
@@ -361,7 +361,7 @@ export function KPICards() {
 
       <Card className='bg-muted/50 border-muted'>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-          <CardTitle className='text-sm font-medium'>Fase Actual</CardTitle>
+          <CardTitle className='text-sm font-medium'>Current Phase</CardTitle>
           <Activity className='h-4 w-4 text-muted-foreground' />
         </CardHeader>
         <CardContent>
@@ -397,7 +397,7 @@ export function KPICards() {
       <Card className='bg-muted/50 border-muted'>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
           <CardTitle className='text-sm font-medium'>
-            Próxima Competición
+            Next Competition
           </CardTitle>
           <Trophy className='h-4 w-4 text-muted-foreground' />
         </CardHeader>

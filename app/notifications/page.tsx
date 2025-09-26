@@ -36,16 +36,16 @@ export default function NotificationsPage() {
     },
     {
       id: 3,
-      title: 'Objetivo alcanzado',
-      message: '¡Felicitaciones! Has alcanzado tu objetivo semanal de 15km',
+      title: 'Objective achieved',
+      message: 'Congratulations! You have reached your weekly goal of 15km',
       type: 'success',
       read: true,
       date: '2024-01-13T09:15:00Z',
     },
     {
       id: 4,
-      title: 'Recordatorio de hidratación',
-      message: 'No olvides mantenerte hidratado durante tus entrenamientos',
+      title: 'Hydration reminder',
+      message: 'Don\'t forget to stay hydrated during your training sessions',
       type: 'info',
       read: true,
       date: '2024-01-12T14:20:00Z',
@@ -98,7 +98,7 @@ export default function NotificationsPage() {
                   <Bell className='h-6 w-6 text-primary' />
                 </div>
                 <div>
-                  <h1 className='text-3xl font-bold text-foreground'>Notificaciones</h1>
+                  <h1 className='text-3xl font-bold text-foreground'>Notifications</h1>
                   <p className='text-muted-foreground'>
                     Gestiona tus notificaciones y preferencias
                   </p>
@@ -113,13 +113,13 @@ export default function NotificationsPage() {
           </div>
 
           <div className='grid gap-6 lg:grid-cols-3'>
-            {/* Lista de Notificaciones */}
+            {/* Notifications List */}
             <div className='lg:col-span-2 space-y-4'>
               <Card>
                 <CardHeader>
                   <CardTitle className='flex items-center gap-2'>
                     <Bell className='h-5 w-5' />
-                    Notificaciones Recientes
+                    Recent Notifications
                     {unreadCount > 0 && (
                       <Badge variant='secondary'>{unreadCount}</Badge>
                     )}
@@ -166,24 +166,24 @@ export default function NotificationsPage() {
               </Card>
             </div>
 
-            {/* Configuración de Notificaciones */}
+            {/* Notifications Configuration */}
             <div className='space-y-4'>
               <Card>
                 <CardHeader>
                   <CardTitle className='flex items-center gap-2'>
                     <Settings className='h-5 w-5' />
-                    Configuración
+                    Configuration
                   </CardTitle>
                   <CardDescription>
-                    Personaliza tus notificaciones
+                    Customize your notifications
                   </CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-4'>
                   <div className='flex items-center justify-between'>
                     <div>
-                      <p className='text-sm font-medium'>Notificaciones por email</p>
+                      <p className='text-sm font-medium'>Email notifications</p>
                       <p className='text-xs text-muted-foreground'>
-                        Recibe notificaciones en tu email
+                        Receive notifications in your email
                       </p>
                     </div>
                     <Switch
@@ -195,9 +195,9 @@ export default function NotificationsPage() {
                   </div>
                   <div className='flex items-center justify-between'>
                     <div>
-                      <p className='text-sm font-medium'>Notificaciones push</p>
+                      <p className='text-sm font-medium'>Push notifications</p>
                       <p className='text-xs text-muted-foreground'>
-                        Notificaciones en el navegador
+                        Browser notifications
                       </p>
                     </div>
                     <Switch
@@ -209,9 +209,9 @@ export default function NotificationsPage() {
                   </div>
                   <div className='flex items-center justify-between'>
                     <div>
-                      <p className='text-sm font-medium'>Recordatorios de entrenamiento</p>
+                      <p className='text-sm font-medium'>Training reminders</p>
                       <p className='text-xs text-muted-foreground'>
-                        Avisos antes de entrenamientos
+                        Alerts before training sessions
                       </p>
                     </div>
                     <Switch
@@ -225,7 +225,7 @@ export default function NotificationsPage() {
                     <div>
                       <p className='text-sm font-medium'>Alertas de competiciones</p>
                       <p className='text-xs text-muted-foreground'>
-                        Notificaciones sobre competiciones
+                        Competition notifications
                       </p>
                     </div>
                     <Switch
@@ -237,9 +237,9 @@ export default function NotificationsPage() {
                   </div>
                   <div className='flex items-center justify-between'>
                     <div>
-                      <p className='text-sm font-medium'>Reportes semanales</p>
+                      <p className='text-sm font-medium'>Weekly reports</p>
                       <p className='text-xs text-muted-foreground'>
-                        Resumen semanal de progreso
+                        Weekly progress summary
                       </p>
                     </div>
                     <Switch

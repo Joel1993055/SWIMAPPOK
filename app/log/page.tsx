@@ -18,7 +18,7 @@ export default function LogPage() {
                 <BookOpenIcon className='h-6 w-6 text-primary' />
               </div>
               <h1 className='text-3xl font-bold text-foreground'>
-                Log de Entrenamientos
+                Training Log
               </h1>
             </div>
             <p className='text-muted-foreground'>

@@ -66,7 +66,7 @@ export default function AIChatPage() {
                     <p>Puedo ayudarte con:</p>
                     <ul className='mt-2 space-y-1'>
                       <li>• Técnica de natación</li>
-                      <li>• Planificación de entrenamientos</li>
+                      <li>• Training planning</li>
                       <li>• Nutrición deportiva</li>
                       <li>• Prevención de lesiones</li>
                       <li>• Psicología deportiva</li>
@@ -107,20 +107,20 @@ export default function AIChatPage() {
                   <div className='p-2 border rounded-lg bg-background/50'>
                     <div className='flex items-center gap-2 mb-1'>
                       <Heart className='h-3 w-3 text-red-500' />
-                      <span className='text-xs font-medium'>Recuperación</span>
+                      <span className='text-xs font-medium'>Recovery</span>
                     </div>
                     <p className='text-xs text-muted-foreground'>
-                      Descanso y nutrición
+                      Rest and nutrition
                     </p>
                   </div>
 
                   <div className='p-2 border rounded-lg bg-background/50'>
                     <div className='flex items-center gap-2 mb-1'>
                       <Trophy className='h-3 w-3 text-green-500' />
-                      <span className='text-xs font-medium'>Competición</span>
+                      <span className='text-xs font-medium'>Competition</span>
                     </div>
                     <p className='text-xs text-muted-foreground'>
-                      Estrategias de carrera
+                      Race strategies
                     </p>
                   </div>
                 </CardContent>

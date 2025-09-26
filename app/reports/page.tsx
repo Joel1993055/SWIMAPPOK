@@ -127,8 +127,8 @@ function ReportsContent() {
     {
       id: 'volume-chart',
       type: 'volume',
-      title: 'Gráfico Volumen Total',
-      description: 'Evolución del volumen de entrenamiento por período',
+      title: 'Total Volume Chart',
+      description: 'Training volume evolution by period',
       category: 'overview',
       selected: false,
     },
@@ -143,23 +143,23 @@ function ReportsContent() {
     {
       id: 'progress-chart',
       type: 'progress',
-      title: 'Progreso Semanal',
-      description: 'Evolución semanal de distancia y RPE',
+      title: 'Weekly Progress',
+      description: 'Weekly evolution of distance and RPE',
       category: 'trends',
       selected: false,
     },
     {
       id: 'zones-chart',
       type: 'zones',
-      title: 'Distribución de Zonas',
-      description: 'Tiempo invertido en cada zona de intensidad',
+      title: 'Zone Distribution',
+      description: 'Time spent in each intensity zone',
       category: 'analysis',
       selected: false,
     },
     {
       id: 'intensity-chart',
       type: 'intensity',
-      title: 'Análisis de Intensidad',
+      title: 'Intensity Analysis',
       description: 'Distribución de intensidad por períodos',
       category: 'analysis',
       selected: false,
@@ -167,8 +167,8 @@ function ReportsContent() {
     {
       id: 'weekly-chart',
       type: 'weekly',
-      title: 'Plan Semanal',
-      description: 'Horario semanal de entrenamientos',
+      title: 'Weekly Plan',
+      description: 'Weekly training schedule',
       category: 'overview',
       selected: false,
     },
@@ -178,8 +178,8 @@ function ReportsContent() {
   const reportTemplates: ReportTemplate[] = [
     {
       id: 'weekly-report',
-      name: 'Reporte Semanal',
-      description: 'Resumen semanal de entrenamientos y progreso',
+      name: 'Weekly Report',
+      description: 'Weekly summary of training and progress',
       category: 'weekly',
       charts: ['volume-chart', 'sessions-chart', 'weekly-chart'],
       includeTrainings: true,
@@ -191,8 +191,8 @@ function ReportsContent() {
     },
     {
       id: 'monthly-report',
-      name: 'Reporte Mensual',
-      description: 'Análisis mensual completo de rendimiento',
+      name: 'Monthly Report',
+      description: 'Complete monthly performance analysis',
       category: 'monthly',
       charts: [
         'volume-chart',
@@ -210,7 +210,7 @@ function ReportsContent() {
     {
       id: 'performance-report',
       name: 'Reporte de Rendimiento',
-      description: 'Análisis detallado de rendimiento y métricas',
+      description: 'Detailed performance and metrics analysis',
       category: 'performance',
       charts: ['progress-chart', 'intensity-chart', 'zones-chart'],
       includeTrainings: false,
@@ -222,8 +222,8 @@ function ReportsContent() {
     },
     {
       id: 'analysis-report',
-      name: 'Análisis Avanzado',
-      description: 'Análisis completo con todos los gráficos',
+      name: 'Advanced Analysis',
+      description: 'Complete analysis with all charts',
       category: 'custom',
       charts: [
         'volume-chart',
@@ -462,7 +462,7 @@ function ReportsContent() {
           <div className='p-2 bg-primary/10 rounded-lg'>
             <ClipboardListIcon className='h-6 w-6 text-primary' />
           </div>
-          <h1 className='text-3xl font-bold text-foreground'>Reportes</h1>
+          <h1 className='text-3xl font-bold text-foreground'>Reports</h1>
         </div>
         <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
           {[...Array(4)].map((_, i) => (
@@ -489,7 +489,7 @@ function ReportsContent() {
           <div className='p-2 bg-primary/10 rounded-lg'>
             <ClipboardListIcon className='h-6 w-6 text-primary' />
           </div>
-          <h1 className='text-3xl font-bold text-foreground'>Reportes</h1>
+          <h1 className='text-3xl font-bold text-foreground'>Reports</h1>
         </div>
         <p className='text-muted-foreground'>
           Genera reportes personalizados de gráficos y entrenamientos
@@ -533,12 +533,12 @@ function ReportsContent() {
         </Select>
       </div>
 
-      {/* Resumen de selección */}
+      {/* Selection Summary */}
       <Card className='bg-muted/50'>
         <CardHeader>
           <CardTitle className='flex items-center gap-2'>
             <ClipboardListIcon className='h-5 w-5' />
-            Resumen de Selección
+            Selection Summary
           </CardTitle>
           <CardDescription>
             Elementos seleccionados para tu reporte
@@ -604,7 +604,7 @@ function ReportsContent() {
           </TabsTrigger>
           <TabsTrigger value='trainings' className='gap-2'>
             <FileText className='h-4 w-4' />
-            Entrenamientos ({selectedTrainings.length})
+            Training Sessions ({selectedTrainings.length})
           </TabsTrigger>
           <TabsTrigger value='templates' className='gap-2'>
             <Layout className='h-4 w-4' />
@@ -636,7 +636,7 @@ function ReportsContent() {
                   <div className='flex gap-4'>
                     <div className='flex-1'>
                       <Input
-                        placeholder='Buscar gráficos...'
+                        placeholder='Search charts...'
                         value={searchTerm}
                         onChange={e => setSearchTerm(e.target.value)}
                       />
@@ -650,12 +650,12 @@ function ReportsContent() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value='all'>
-                          Todas las categorías
+                          All categories
                         </SelectItem>
-                        <SelectItem value='overview'>Resumen</SelectItem>
-                        <SelectItem value='performance'>Rendimiento</SelectItem>
-                        <SelectItem value='analysis'>Análisis</SelectItem>
-                        <SelectItem value='trends'>Tendencias</SelectItem>
+                        <SelectItem value='overview'>Overview</SelectItem>
+                        <SelectItem value='performance'>Performance</SelectItem>
+                        <SelectItem value='analysis'>Analysis</SelectItem>
+                        <SelectItem value='trends'>Trends</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -754,7 +754,7 @@ function ReportsContent() {
                     ) : (
                       <>
                         <Download className='h-4 w-4' />
-                        Exportar a PDF
+                        Export to PDF
                       </>
                     )}
                   </Button>
@@ -782,7 +782,7 @@ function ReportsContent() {
                     }
                   >
                     <X className='h-4 w-4' />
-                    Limpiar Selección
+                    Clear Selection
                   </Button>
                 </CardContent>
               </Card>
@@ -807,16 +807,16 @@ function ReportsContent() {
           </div>
         </TabsContent>
 
-        {/* Tab: Entrenamientos */}
+        {/* Tab: Training Sessions */}
         <TabsContent value='trainings' className='space-y-4'>
           <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
-            {/* Panel de Selección de Entrenamientos */}
+            {/* Training Selection Panel */}
             <div className='lg:col-span-2'>
               <Card className='bg-muted/50'>
                 <CardHeader>
                   <CardTitle className='flex items-center gap-2'>
                     <FileText className='h-5 w-5' />
-                    Seleccionar Entrenamientos
+                    Select Training Sessions
                   </CardTitle>
                   <CardDescription>
                     Elige los entrenamientos que quieres incluir en tu reporte
@@ -827,7 +827,7 @@ function ReportsContent() {
                   <div className='flex gap-4'>
                     <div className='flex-1'>
                       <Input
-                        placeholder='Buscar entrenamientos...'
+                        placeholder='Search training sessions...'
                         value={searchTerm}
                         onChange={e => setSearchTerm(e.target.value)}
                       />
@@ -949,7 +949,7 @@ function ReportsContent() {
                     ) : (
                       <>
                         <Download className='h-4 w-4' />
-                        Exportar a PDF
+                        Export to PDF
                       </>
                     )}
                   </Button>
@@ -977,7 +977,7 @@ function ReportsContent() {
                     }
                   >
                     <X className='h-4 w-4' />
-                    Limpiar Selección
+                    Clear Selection
                   </Button>
                 </CardContent>
               </Card>
@@ -1088,7 +1088,7 @@ function ReportsContent() {
                 </div>
               ) : (
                 <div className='space-y-6'>
-                  {/* Resumen del reporte */}
+                  {/* Report Summary */}
                   <div className='grid gap-4 md:grid-cols-3'>
                     <Card className='bg-background/50'>
                       <CardContent className='p-4'>
@@ -1106,7 +1106,7 @@ function ReportsContent() {
                       <CardContent className='p-4'>
                         <div className='flex items-center gap-2'>
                           <FileText className='h-5 w-5 text-primary' />
-                          <span className='font-medium'>Entrenamientos</span>
+                          <span className='font-medium'>Training Sessions</span>
                         </div>
                         <div className='text-2xl font-bold mt-2'>
                           {selectedTrainings.length}
@@ -1154,7 +1154,7 @@ function ReportsContent() {
 
                     {selectedTrainings.length > 0 && (
                       <div>
-                        <h4 className='font-medium mb-2'>Entrenamientos:</h4>
+                        <h4 className='font-medium mb-2'>Training Sessions:</h4>
                         <div className='space-y-2'>
                           {selectedTrainings.map(training => (
                             <div

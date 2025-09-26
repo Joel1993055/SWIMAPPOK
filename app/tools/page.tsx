@@ -8,7 +8,7 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calculator, Timer, Wrench } from 'lucide-react';
 
-export default function HerramientasPage() {
+export default function ToolsPage() {
   return (
     <SidebarProvider>
       <AppSidebar variant='inset' />
@@ -22,11 +22,11 @@ export default function HerramientasPage() {
                 <Wrench className='h-6 w-6 text-primary' />
               </div>
               <h1 className='text-3xl font-bold text-foreground'>
-                Herramientas
+                Tools
               </h1>
             </div>
             <p className='text-muted-foreground'>
-              Calculadoras y herramientas para análisis de rendimiento
+              Calculators and tools for performance analysis
             </p>
           </div>
 
@@ -45,7 +45,7 @@ export default function HerramientasPage() {
                 className='flex items-center gap-2'
               >
                 <Timer className='h-4 w-4' />
-                Velocidad Relativa
+                Relative Speed
               </TabsTrigger>
             </TabsList>
 

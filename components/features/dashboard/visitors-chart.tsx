@@ -33,7 +33,7 @@ const CartesianGrid = lazy(() => import('recharts').then(module => ({ default: m
 const XAxis = lazy(() => import('recharts').then(module => ({ default: module.XAxis })));
 const YAxis = lazy(() => import('recharts').then(module => ({ default: module.YAxis })));
 
-// Colores para las zonas de intensidad
+// Colors for intensity zones
 const zoneColors = {
   Z1: '#3b82f6', // Azul
   Z2: '#10b981', // Verde
@@ -42,11 +42,11 @@ const zoneColors = {
   Z5: '#8b5cf6', // Púrpura
 };
 
-// Etiquetas para las zonas
+// Labels for zones
 const zoneLabels = {
-  Z1: 'Z1 - Recuperación',
-  Z2: 'Z2 - Aeróbico Base',
-  Z3: 'Z3 - Aeróbico Umbral',
+  Z1: 'Z1 - Recovery',
+  Z2: 'Z2 - Aerobic Base',
+  Z3: 'Z3 - Aerobic Threshold',
   Z4: 'Z4 - Anaeróbico Láctico',
   Z5: 'Z5 - Anaeróbico Aláctico',
 };
@@ -69,7 +69,7 @@ const generateWeeklyData = (sessions: any[]) => {
 
     const dayName = daysOfWeek[index];
 
-    // Filtrar sesiones del día actual
+    // Filter sessions for current day
     const daySessions = sessions.filter(session => {
       const sessionDate = new Date(session.date);
       return sessionDate.toDateString() === currentDay.toDateString();
@@ -182,25 +182,25 @@ export function VisitorsChart() {
   // Debug solo en desarrollo
   if (process.env.NODE_ENV === 'development') {
     console.log("Datos del gráfico generados:", chartData);
-    console.log("Total semanal calculado:", chartData.reduce((total, day) => total + day.totalMeters, 0));
+    console.log("Weekly total calculated:", chartData.reduce((total, day) => total + day.totalMeters, 0));
   }
 
   // Calcular total semanal
-  const totalSemanal = chartData.reduce((total, day) => {
+  const totalWeekly = chartData.reduce((total, day) => {
     return total + ((day as any).Z1 || 0) + ((day as any).Z2 || 0) + ((day as any).Z3 || 0) + ((day as any).Z4 || 0) + ((day as any).Z5 || 0);
   }, 0);
 
   // Calcular promedio diario
-  const promedioDiario = Math.round(totalSemanal / 7);
+  const dailyAverage = Math.round(totalWeekly / 7);
 
   // Mostrar estado de carga
   if (isLoading) {
     return (
       <Card className='col-span-4 bg-muted/50 border-muted'>
         <CardHeader>
-          <CardTitle>Progreso Semanal</CardTitle>
+          <CardTitle>Weekly Progress</CardTitle>
           <CardDescription>
-            Distancia por zonas de entrenamiento (kilómetros)
+            Distance by training zones (kilometers)
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -219,9 +219,9 @@ export function VisitorsChart() {
     return (
       <Card className='col-span-4 bg-muted/50 border-muted'>
         <CardHeader>
-          <CardTitle>Progreso Semanal</CardTitle>
+          <CardTitle>Weekly Progress</CardTitle>
           <CardDescription>
-            Distancia por zonas de entrenamiento (kilómetros)
+            Distance by training zones (kilometers)
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -241,9 +241,9 @@ export function VisitorsChart() {
       <CardHeader>
         <div className='flex items-center justify-between'>
           <div>
-            <CardTitle>Progreso Semanal</CardTitle>
+            <CardTitle>Weekly Progress</CardTitle>
             <CardDescription>
-              Distancia por zonas de entrenamiento (kilómetros)
+              Distance by training zones (kilometers)
             </CardDescription>
           </div>
           <Select
@@ -420,16 +420,16 @@ export function VisitorsChart() {
           <div className='grid grid-cols-2 gap-4 pt-4 border-t'>
             <div className='text-center'>
               <div className='text-2xl font-bold text-primary'>
-                {totalSemanal.toFixed(1)}km
+                {totalWeekly.toFixed(1)}km
               </div>
-              <div className='text-sm text-muted-foreground'>Total Semanal</div>
+              <div className='text-sm text-muted-foreground'>Weekly Total</div>
             </div>
             <div className='text-center'>
               <div className='text-2xl font-bold text-primary'>
-                {promedioDiario.toFixed(1)}km
+                {dailyAverage.toFixed(1)}km
               </div>
               <div className='text-sm text-muted-foreground'>
-                Promedio Diario
+                Daily Average
               </div>
             </div>
           </div>

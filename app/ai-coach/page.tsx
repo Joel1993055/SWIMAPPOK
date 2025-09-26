@@ -6,24 +6,24 @@ import { SiteHeader } from '@/components/layout/site-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { useAICoachStore } from '@/lib/store/unified';
 import {
-  Activity,
-  BarChart3,
-  Bot,
-  Heart,
-  Lightbulb,
-  Settings,
-  Sparkles,
-  Target,
-  TrendingUp,
+    Activity,
+    BarChart3,
+    Bot,
+    Heart,
+    Lightbulb,
+    Settings,
+    Sparkles,
+    Target,
+    TrendingUp,
 } from 'lucide-react';
 import React from 'react';
 
@@ -44,7 +44,7 @@ function AICoachContent() {
     setAnalysis,
   } = useAICoachStore();
 
-  // NUEVO: Sincronizar datos del context al store
+  // NEW: Sync context data to store
   React.useEffect(() => {
     if (currentAnalysis && !storeAnalysis) {
       const mappedAnalysis = {
@@ -79,8 +79,7 @@ function AICoachContent() {
           </Badge>
         </div>
         <p className='text-muted-foreground'>
-          Tu entrenador personal inteligente para optimizar tu rendimiento en
-          natación
+          Your personal intelligent coach to optimize your swimming performance
         </p>
       </div>
 
@@ -100,7 +99,7 @@ function AICoachContent() {
                 <BarChart3 className='h-5 w-5' />
                 Estadísticas
               </CardTitle>
-              <CardDescription>Tu progreso con el AI Coach</CardDescription>
+              <CardDescription>Your progress with AI Coach</CardDescription>
             </CardHeader>
             <CardContent className='space-y-4'>
               <div className='grid grid-cols-2 gap-4'>
@@ -109,7 +108,7 @@ function AICoachContent() {
                     {currentAnalysis ? currentAnalysis.overallScore : 0}
                   </div>
                   <div className='text-xs text-muted-foreground'>
-                    Puntuación Promedio
+                    Average Score
                   </div>
                 </div>
                 <div className='text-center p-3 border rounded-lg bg-background/50'>
@@ -150,9 +149,9 @@ function AICoachContent() {
               </div>
 
               <div className='flex items-center justify-between'>
-                <span className='text-sm font-medium'>Análisis Automático</span>
+                <span className='text-sm font-medium'>Automatic Analysis</span>
                 <Badge variant={isEnabled ? 'default' : 'secondary'}>
-                  {isEnabled ? 'Habilitado' : 'Deshabilitado'}
+                  {isEnabled ? 'Enabled' : 'Disabled'}
                 </Badge>
               </div>
 
@@ -186,7 +185,7 @@ function AICoachContent() {
               <div className='p-3 border rounded-lg bg-background/50'>
                 <div className='flex items-center gap-2 mb-1'>
                   <Target className='h-4 w-4 text-blue-500' />
-                  <span className='text-sm font-medium'>Entrenamiento</span>
+                  <span className='text-sm font-medium'>Training</span>
                 </div>
                 <p className='text-xs text-muted-foreground'>
                   Incluye siempre calentamiento, trabajo principal y vuelta a la
@@ -197,7 +196,7 @@ function AICoachContent() {
               <div className='p-3 border rounded-lg bg-background/50'>
                 <div className='flex items-center gap-2 mb-1'>
                   <Heart className='h-4 w-4 text-red-500' />
-                  <span className='text-sm font-medium'>Recuperación</span>
+                  <span className='text-sm font-medium'>Recovery</span>
                 </div>
                 <p className='text-xs text-muted-foreground'>
                   Descansa adecuadamente entre entrenamientos intensos
@@ -207,10 +206,10 @@ function AICoachContent() {
               <div className='p-3 border rounded-lg bg-background/50'>
                 <div className='flex items-center gap-2 mb-1'>
                   <TrendingUp className='h-4 w-4 text-green-500' />
-                  <span className='text-sm font-medium'>Progreso</span>
+                  <span className='text-sm font-medium'>Progress</span>
                 </div>
                 <p className='text-xs text-muted-foreground'>
-                  Aumenta el volumen gradualmente para evitar lesiones
+                  Increase volume gradually to avoid injuries
                 </p>
               </div>
             </CardContent>

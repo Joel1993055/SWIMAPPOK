@@ -8,7 +8,7 @@ export function DashboardHeader() {
       <h2 className='text-3xl font-bold tracking-tight'>Dashboard</h2>
       <div className='flex items-center space-x-2'>
         <Badge variant='outline' className='text-sm'>
-          Última actualización: {new Date().toLocaleDateString()}
+          Last updated: {new Date().toLocaleDateString()}
         </Badge>
       </div>
     </div>

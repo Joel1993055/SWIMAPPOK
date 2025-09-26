@@ -9,9 +9,9 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: 'Swim APP PRO - Plataforma de Análisis de Natación',
+  title: 'DeckAPP PRO - Swimming Analysis Platform',
   description:
-    'La plataforma de análisis de natación más avanzada para nadadores de todos los niveles',
+    'The most advanced swimming analysis platform for swimmers of all levels',
 };
 
 const geistSans = Geist({

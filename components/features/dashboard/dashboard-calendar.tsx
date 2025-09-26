@@ -192,7 +192,7 @@ export function DashboardCalendar() {
 
   const handleEditTraining = (training: Session) => {
     // Aquí podrías navegar a la página de edición o abrir un modal de edición
-    console.log('Editar entrenamiento:', training);
+    console.log('Edit training:', training);
     // Por ahora solo cerramos el modal
     handleCloseTrainingModal();
   };
@@ -271,9 +271,9 @@ export function DashboardCalendar() {
             <div>
               <CardTitle className='flex items-center gap-2'>
                 <CalendarIcon className='h-5 w-5' />
-                Calendario
+                Calendar
               </CardTitle>
-              <CardDescription>Vista mensual de tus sesiones</CardDescription>
+              <CardDescription>Monthly view of your sessions</CardDescription>
             </div>
 
             {/* Navegación del mes */}
@@ -410,10 +410,10 @@ export function DashboardCalendar() {
           {/* Leyenda del calendario */}
           <div className='border-border mt-4 border-t pt-4'>
             <div className='text-muted-foreground flex flex-col gap-3 text-xs'>
-               {/* Entrenamientos - SIMPLIFICADO */}
+               {/* Training - SIMPLIFIED */}
                <div className='space-y-2'>
                  <h4 className='text-foreground mb-2 text-sm font-medium'>
-                   Entrenamientos
+                   Training Sessions
                  </h4>
                  <div className='flex items-center gap-2'>
                    <div className='h-1.5 w-1.5 rounded-full bg-blue-500'></div>
@@ -449,7 +449,7 @@ export function DashboardCalendar() {
                 </h4>
                 <div className='flex items-center gap-2'>
                   <div className='bg-accent border-primary h-3 w-3 rounded-full border'></div>
-                  <span>Hoy</span>
+                  <span>Today</span>
                 </div>
               </div>
             </div>
@@ -475,12 +475,12 @@ export function DashboardCalendar() {
             {selectedDate &&
             (selectedDaySessions.length > 0 || selectedDayCompetitions.length > 0) ? (
               <>
-                {/* Entrenamientos */}
+                {/* Training Sessions */}
                 {selectedDaySessions.length > 0 && (
                   <div className='space-y-3'>
                     <h4 className='font-semibold text-foreground flex items-center gap-2'>
                       <Activity className='h-4 w-4' />
-                      Entrenamientos ({selectedDaySessions.length})
+                      Training Sessions ({selectedDaySessions.length})
                     </h4>
                     {selectedDaySessions.map((session) => (
                       <div
@@ -599,7 +599,7 @@ export function DashboardCalendar() {
                   <CalendarIcon className='text-muted-foreground h-8 w-8' />
                 </div>
                 <p className='text-foreground font-medium'>
-                  No hay actividades registradas
+                  No activities recorded
                 </p>
                 <p className='text-muted-foreground mt-1 text-sm'>
                   para este día
