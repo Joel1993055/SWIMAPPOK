@@ -54,24 +54,24 @@ export function WeeklyTrainingSchedule({
     'Sunday',
   ];
 
-  // Cargar sesiones reales desde Supabase
+  // Load real sessions from Supabase
   useEffect(() => {
     const loadSessions = async () => {
       try {
         const data = await getSessions();
         setSessions(data);
       } catch (error) {
-        console.error('Error cargando sesiones:', error);
+        console.error('Error loading sessions:', error);
         setSessions([]);
       } finally {
-        // Loading completado
+        // Loading completed
       }
     };
 
     loadSessions();
   }, []);
 
-  // Convertir sesiones reales a formato para el horario semanal
+  // Convert real sessions to weekly schedule format
   const weeklyTrainings: TrainingSession[] = sessions.map(session => {
     // Calculate intensity based on RPE
     const getIntensityFromRPE = (
@@ -91,13 +91,13 @@ export function WeeklyTrainingSchedule({
       time:
         (session as { time_slot?: 'AM' | 'PM' }).time_slot === 'AM'
           ? '09:00'
-          : '18:00', // Usar time_slot para determinar hora
+          : '18:00', // Use time_slot to determine time
       duration: session.duration || 60,
       type: session.type,
-      location: session.location || 'No especificado',
-      coach: session.coach || 'No especificado',
-      group: session.group_name || 'No especificado',
-      objective: session.objective || 'otro',
+      location: session.location || 'Not specified',
+      coach: session.coach || 'Not specified',
+      group: session.group_name || 'Not specified',
+      objective: session.objective || 'other',
       intensity: getIntensityFromRPE(session.rpe || 5),
       distance: session.distance || 0,
       isCompleted: new Date(session.date) < new Date(),
@@ -105,17 +105,17 @@ export function WeeklyTrainingSchedule({
     };
   });
 
-  // Datos de ejemplo de entrenamientos (mantener algunos para demo)
+  // Sample training data (keep some for demo)
   const sampleTrainings: TrainingSession[] = [
     {
       id: '1',
       title: 'Endurance Training',
       time: '07:00',
       type: 'Aerobic',
-      location: 'Piscina Municipal',
-      coach: 'María García',
-      group: 'Grupo A',
-      objective: 'resistencia',
+      location: 'Municipal Pool',
+      coach: 'Maria Garcia',
+      group: 'Group A',
+      objective: 'endurance',
       intensity: 'Z2',
       distance: 3000,
       isCompleted: true,
@@ -126,9 +126,9 @@ export function WeeklyTrainingSchedule({
       time: '18:30',
       duration: 60,
       type: 'Technique',
-      location: 'Piscina Municipal',
-      coach: 'Carlos López',
-      group: 'Grupo A',
+      location: 'Municipal Pool',
+      coach: 'Carlos Lopez',
+      group: 'Group A',
       objective: 'technique',
       intensity: 'Z1',
       distance: 2000,
@@ -140,24 +140,24 @@ export function WeeklyTrainingSchedule({
       time: '07:00',
       duration: 75,
       type: 'Speed',
-      location: 'Piscina Municipal',
-      coach: 'Ana Martín',
-      group: 'Grupo A',
-      objective: 'velocidad',
+      location: 'Municipal Pool',
+      coach: 'Ana Martin',
+      group: 'Group A',
+      objective: 'speed',
       intensity: 'Z4',
       distance: 2500,
       isCompleted: false,
     },
     {
       id: '4',
-      title: 'Fondo Largo',
+      title: 'Long Distance',
       time: '09:00',
       duration: 120,
-      type: 'Fondo',
-      location: 'Piscina Municipal',
-      coach: 'María García',
-      group: 'Grupo A',
-      objective: 'resistencia',
+      type: 'Distance',
+      location: 'Municipal Pool',
+      coach: 'Maria Garcia',
+      group: 'Group A',
+      objective: 'endurance',
       intensity: 'Z2',
       distance: 5000,
       isCompleted: false,
@@ -183,21 +183,21 @@ export function WeeklyTrainingSchedule({
 
   const getObjectiveColor = (objective: string) => {
     switch (objective) {
-      case 'resistencia':
+      case 'endurance':
         return 'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800';
-      case 'velocidad':
+      case 'speed':
         return 'bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800';
       case 'technique':
         return 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800';
-      case 'fuerza':
+      case 'strength':
         return 'bg-purple-50 border-purple-200 dark:bg-purple-900/20 dark:border-purple-800';
-      case 'recuperacion':
+      case 'recovery':
         return 'bg-gray-50 border-gray-200 dark:bg-gray-900/20 dark:border-gray-800';
-      case 'competicion':
+      case 'competition':
         return 'bg-yellow-50 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-800';
       case 'test':
         return 'bg-orange-50 border-orange-200 dark:bg-orange-900/20 dark:border-orange-800';
-      case 'otro':
+      case 'other':
         return 'bg-slate-50 border-slate-200 dark:bg-slate-900/20 dark:border-slate-800';
       default:
         return 'bg-slate-50 border-slate-200 dark:bg-slate-900/20 dark:border-slate-800';
@@ -206,21 +206,21 @@ export function WeeklyTrainingSchedule({
 
   const getObjectiveBadgeColor = (objective: string) => {
     switch (objective) {
-      case 'resistencia':
+      case 'endurance':
         return 'bg-blue-500 text-white hover:bg-blue-600';
-      case 'velocidad':
+      case 'speed':
         return 'bg-red-500 text-white hover:bg-red-600';
       case 'technique':
         return 'bg-green-500 text-white hover:bg-green-600';
-      case 'fuerza':
+      case 'strength':
         return 'bg-purple-500 text-white hover:bg-purple-600';
-      case 'recuperacion':
+      case 'recovery':
         return 'bg-gray-500 text-white hover:bg-gray-600';
-      case 'competicion':
+      case 'competition':
         return 'bg-yellow-500 text-white hover:bg-yellow-600';
       case 'test':
         return 'bg-orange-500 text-white hover:bg-orange-600';
-      case 'otro':
+      case 'other':
         return 'bg-slate-500 text-white hover:bg-slate-600';
       default:
         return 'bg-slate-500 text-white hover:bg-slate-600';
@@ -241,7 +241,7 @@ export function WeeklyTrainingSchedule({
       );
     });
 
-    // Si no hay entrenamientos reales, mostrar algunos de ejemplo
+    // If no real trainings, show some examples
     if (dayTrainings.length === 0) {
       return sampleTrainings.filter(training => {
         const trainingDate = new Date(2024, 0, 15); // Fecha de ejemplo
@@ -460,7 +460,7 @@ export function WeeklyTrainingSchedule({
                 key={index}
                 className={`p-4 rounded-lg border ${isCurrentDay ? 'border-primary/50 bg-primary/5 dark:bg-primary/10' : 'border-muted bg-background/50 dark:bg-background/80'}`}
               >
-                {/* Header del día */}
+                {/* Day header */}
                 <div className='flex items-center justify-between mb-4'>
                   <div>
                     <h3 className='font-semibold text-lg'>{dayName}</h3>
@@ -490,7 +490,7 @@ export function WeeklyTrainingSchedule({
                       <span className='w-8 h-6 bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300 rounded text-xs flex items-center justify-center'>
                         AM
                       </span>
-                      Mañana
+                      Morning
                     </h4>
                     <div className='space-y-2'>
                       {amTrainings.map(training => (
@@ -538,7 +538,7 @@ export function WeeklyTrainingSchedule({
                       <span className='w-8 h-6 bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-300 rounded text-xs flex items-center justify-center'>
                         PM
                       </span>
-                      Tarde
+                      Afternoon
                     </h4>
                     <div className='space-y-2'>
                       {pmTrainings.map(training => (
@@ -579,7 +579,7 @@ export function WeeklyTrainingSchedule({
                   </div>
                 )}
 
-                {/* Botón para agregar entrenamiento si no hay ninguno */}
+                {/* Button to add training if there's none */}
                 {amTrainings.length === 0 && pmTrainings.length === 0 && (
                   <div className='text-center py-8'>
                     <Button size='sm' variant='outline' className='gap-2'>
@@ -596,7 +596,7 @@ export function WeeklyTrainingSchedule({
         {/* Weekly summary - Connected to real data */}
         <div className='mt-6 pt-4 border-t'>
           {(() => {
-            // Calcular estadísticas reales de la semana actual
+            // Calculate real statistics for current week
             const weekStats = days.reduce(
               (acc, day) => {
                 const dayStats = getDayStats(day);

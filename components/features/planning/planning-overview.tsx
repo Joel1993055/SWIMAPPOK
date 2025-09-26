@@ -55,10 +55,10 @@ interface TrainingPhase {
   volume: number; // metros por semana
   color: string;
   startDate?: string; // Fecha de inicio (opcional)
-  endDate?: string; // Fecha de fin (calculada automáticamente)
-  order: number; // Orden de las fases
-  created_at?: string; // Fecha de creación
-  updated_at?: string; // Fecha de actualización
+  endDate?: string; // End date (automatically calculated)
+  order: number; // Phase order
+  created_at?: string; // Creation date
+  updated_at?: string; // Update date
 }
 
 interface WeeklyPlan {
@@ -88,7 +88,7 @@ interface Competition {
   priority: 'high' | 'medium' | 'low';
 }
 
-// Los datos de ejemplo ahora están en el contexto
+// Sample data is now in context
 
 const weeklyPlan: WeeklyPlan[] = [
   {
@@ -157,7 +157,7 @@ const weeklyPlan: WeeklyPlan[] = [
   },
   {
     week: 9,
-    phase: 'Específico',
+    phase: 'Specific',
     totalDistance: 28000,
     sessions: 8,
     focus: 'VO2 Max',
@@ -165,7 +165,7 @@ const weeklyPlan: WeeklyPlan[] = [
   },
   {
     week: 10,
-    phase: 'Específico',
+    phase: 'Specific',
     totalDistance: 29000,
     sessions: 8,
     focus: 'Speed',
@@ -173,7 +173,7 @@ const weeklyPlan: WeeklyPlan[] = [
   },
   {
     week: 11,
-    phase: 'Específico',
+    phase: 'Specific',
     totalDistance: 30000,
     sessions: 8,
     focus: 'VO2 Max',
@@ -181,7 +181,7 @@ const weeklyPlan: WeeklyPlan[] = [
   },
   {
     week: 12,
-    phase: 'Específico',
+    phase: 'Specific',
     totalDistance: 31000,
     sessions: 8,
     focus: 'Speed',
@@ -234,7 +234,7 @@ export function PlanificacionOverview() {
   const [selectedCompetition, setSelectedCompetition] = useState<string>('');
 
 
-  // Estados para edición
+  // States for editing
   const [editingPhase, setEditingPhase] = useState<string | null>(null);
   const [editingCompetition, setEditingCompetition] = useState<string | null>(
     null
@@ -269,7 +269,7 @@ export function PlanificacionOverview() {
     status: 'upcoming' as 'upcoming' | 'completed' | 'cancelled',
   });
 
-  // Inicializar selecciones cuando los datos estén disponibles
+  // Initialize selections when data is available
   useEffect(() => {
     if (phases.length > 0 && !selectedPhase) {
       setSelectedPhase(phases[0].id);
@@ -298,7 +298,7 @@ export function PlanificacionOverview() {
         intensity: 5,
         volume: 0,
         startDate: '',
-        order: phases.length + 1, // Orden automático basado en el número de fases existentes
+        order: phases.length + 1, // Automatic order based on number of existing phases
       });
     }
   }, [isAddingPhase, editingPhase, phases.length]);
@@ -318,7 +318,7 @@ export function PlanificacionOverview() {
 
   // Las fases ya vienen con fechas calculadas del contexto
 
-  // Funciones para manejar edición de fases
+  // Functions to handle phase editing
   const handleEditPhase = (phase: TrainingPhase) => {
     setPhaseForm({
       name: phase.name,
@@ -333,11 +333,11 @@ export function PlanificacionOverview() {
     setEditingPhase(phase.id);
   };
 
-  // Función para calcular la fecha de inicio de la siguiente fase
+  // Function to calculate next phase start date
   const getNextPhaseStartDate = (): string | undefined => {
     if (!phaseForm.startDate) return undefined;
     
-    // Obtener todas las fases ordenadas por fecha de inicio
+    // Get all phases sorted by start date
     const phasesWithDates = phases
       .filter(phase => phase.startDate)
       .sort((a, b) => new Date(a.startDate!).getTime() - new Date(b.startDate!).getTime());
@@ -347,7 +347,7 @@ export function PlanificacionOverview() {
       return phaseForm.startDate;
     }
     
-    // Encontrar la última fase por fecha de fin
+    // Find the last phase by end date
     const lastPhase = phasesWithDates.reduce((latest, phase) => {
       if (!phase.endDate) return latest;
       const phaseEnd = new Date(phase.endDate);
@@ -355,7 +355,7 @@ export function PlanificacionOverview() {
       return phaseEnd > latestEnd ? phase : latest;
     }, null as TrainingPhase | null);
     
-    // Si hay una última fase con fecha de fin, la siguiente fase empieza al día siguiente
+    // If there is a last phase with end date, next phase starts the day after
     if (lastPhase?.endDate) {
       const nextStart = new Date(lastPhase.endDate);
       nextStart.setDate(nextStart.getDate() + 1);
@@ -366,7 +366,7 @@ export function PlanificacionOverview() {
     return phaseForm.startDate;
   };
 
-  // Función para recalcular fechas de todas las fases después de una edición
+  // Function to recalculate all phase dates after editing
   const recalculateAllPhaseDates = (updatedPhase: TrainingPhase) => {
     const calculateEndDate = (startDate: string, durationWeeks: number): string => {
       const start = new Date(startDate);
@@ -375,7 +375,7 @@ export function PlanificacionOverview() {
       return end.toISOString().split('T')[0];
     };
 
-    // Obtener todas las fases excepto la que se está editando, ordenadas por orden
+    // Get all phases except the one being edited, sorted by order
     const otherPhases = phases
       .filter(phase => phase.id !== updatedPhase.id)
       .sort((a, b) => a.order - b.order);
@@ -393,7 +393,7 @@ export function PlanificacionOverview() {
     // Recalcular las siguientes fases
     for (const phase of otherPhases) {
       if (phase.order > updatedPhase.order) {
-        // Fase posterior: empieza al día siguiente de la anterior
+        // Later phase: starts the day after the previous one
         currentDate.setDate(currentDate.getDate() + 1);
         const newStartDate = currentDate.toISOString().split('T')[0];
         const newEndDate = calculateEndDate(newStartDate, phase.duration);
@@ -426,22 +426,22 @@ export function PlanificacionOverview() {
   };
 
   const handleSavePhase = () => {
-    // Validar que todos los campos requeridos estén llenos
+    // Validate that all required fields are filled
     if (!phaseForm.name.trim()) {
       console.warn('Por favor, ingresa el nombre de la fase');
       return;
     }
     if (phaseForm.duration <= 0) {
-      console.warn('Por favor, ingresa una duración válida');
+      console.warn('Please enter a valid duration');
       return;
     }
     if (phaseForm.order <= 0) {
-      console.warn('Por favor, ingresa un orden válido');
+      console.warn('Please enter a valid order');
       return;
     }
 
     try {
-      // Calcular fecha de fin basada en la duración
+      // Calculate end date based on duration
       const calculateEndDate = (startDate: string, durationWeeks: number): string => {
         const start = new Date(startDate);
         const end = new Date(start);
@@ -476,14 +476,14 @@ export function PlanificacionOverview() {
         addPhase(newPhase);
         console.log('Fase agregada:', newPhase);
         
-        // Mostrar información sobre las fechas calculadas
+        // Show information about calculated dates
         if (actualStartDate !== phaseForm.startDate) {
           console.log(`Fase programada secuencialmente: ${actualStartDate} - ${endDate}`);
           setPhaseScheduleInfo({
             message: `Fase programada secuencialmente: ${new Date(actualStartDate).toLocaleDateString('es-ES')} - ${new Date(endDate!).toLocaleDateString('es-ES')}`,
             type: 'info'
           });
-          // Limpiar el mensaje después de 5 segundos
+          // Clear message after 5 seconds
           setTimeout(() => setPhaseScheduleInfo(null), 5000);
         } else {
           setPhaseScheduleInfo({
@@ -528,7 +528,7 @@ export function PlanificacionOverview() {
           updated_at: new Date().toISOString(),
         });
 
-        // Recalcular fechas de todas las fases si se cambió la fecha de inicio
+        // Recalculate dates of all phases if start date changed
         if (phaseForm.startDate) {
           recalculateAllPhaseDates(updatedPhase);
         }
@@ -540,8 +540,8 @@ export function PlanificacionOverview() {
       setEditingPhase(null);
       setIsAddingPhase(false);
 
-      // Mostrar mensaje de éxito (sin alert)
-      console.log('Fase guardada correctamente');
+      // Show success message (without alert)
+      console.log('Phase saved successfully');
     } catch (error) {
       console.error('Error guardando fase:', error);
     }
@@ -585,7 +585,7 @@ export function PlanificacionOverview() {
     }));
   };
 
-  // Funciones para manejar edición de competiciones
+  // Functions to handle competition editing
   const handleEditCompetition = (competition: Competition) => {
     setCompetitionForm({
       name: competition.name,
@@ -603,15 +603,15 @@ export function PlanificacionOverview() {
   const handleSaveCompetition = () => {
     // Validaciones
     if (!competitionForm.name.trim()) {
-      alert('El nombre de la competición es requerido');
+      alert('Competition name is required');
       return;
     }
     if (!competitionForm.date) {
-      alert('La fecha de la competición es requerida');
+      alert('Competition date is required');
       return;
     }
     if (!competitionForm.location.trim()) {
-      alert('La ubicación de la competición es requerida');
+      alert('Competition location is required');
       return;
     }
     if (competitionForm.events.length === 0) {
@@ -634,14 +634,14 @@ export function PlanificacionOverview() {
     try {
       if (isAddingCompetition) {
         addCompetition(competitionData);
-        console.log('Competición agregada:', competitionData);
+        console.log('Competition added:', competitionData);
       } else if (editingCompetition) {
         updateCompetition(editingCompetition, competitionData);
-        console.log('Competición actualizada:', competitionData);
+        console.log('Competition updated:', competitionData);
       }
     } catch (error) {
-      console.error('Error al guardar competición:', error);
-      alert('Error al guardar la competición. Inténtalo de nuevo.');
+      console.error('Error saving competition:', error);
+      alert('Error saving competition. Please try again.');
       return;
     }
 
@@ -724,7 +724,7 @@ export function PlanificacionOverview() {
 
   return (
     <div className='space-y-6'>
-      {/* Mensaje informativo sobre programación de fases */}
+      {/* Informative message about phase scheduling */}
       {phaseScheduleInfo && (
         <div className={`p-4 rounded-lg border ${
           phaseScheduleInfo.type === 'info' 
@@ -822,7 +822,7 @@ export function PlanificacionOverview() {
                     <div className='text-xs text-muted-foreground bg-muted/30 rounded p-2'>
                       <div className='flex items-center gap-1 mb-1'>
                         <Calendar className='h-3 w-3' />
-                        <span className='font-medium'>Período:</span>
+                        <span className='font-medium'>Period:</span>
                       </div>
                       <div>
                         {phase.startDate ? new Date(phase.startDate).toLocaleDateString('es-ES') : 'Sin fecha'}{' '}
@@ -878,7 +878,7 @@ export function PlanificacionOverview() {
               <CardContent className='space-y-4'>
                 <div className='grid gap-4 md:grid-cols-3'>
                   <div className='space-y-2'>
-                    <h4 className='font-medium'>Duración</h4>
+                    <h4 className='font-medium'>Duration</h4>
                     <p className='text-2xl font-bold'>
                       {currentPhase.duration} semanas
                     </p>
@@ -917,7 +917,7 @@ export function PlanificacionOverview() {
             </Card>
           )}
 
-          {/* Modal de Edición de Fases */}
+          {/* Phase Editing Modal */}
           <Dialog
             open={editingPhase !== null || isAddingPhase}
             onOpenChange={handleCancelPhase}
@@ -947,11 +947,11 @@ export function PlanificacionOverview() {
                           name: e.target.value,
                         }))
                       }
-                      placeholder='Ej: Base, Construcción, Pico'
+                      placeholder='Ex: Base, Construction, Peak'
                     />
                   </div>
                   <div className='space-y-2'>
-                    <Label htmlFor='phase-duration'>Duración (semanas)</Label>
+                    <Label htmlFor='phase-duration'>Duration (weeks)</Label>
                     <Input
                       id='phase-duration'
                       type='number'
@@ -968,7 +968,7 @@ export function PlanificacionOverview() {
                 </div>
 
                 <div className='space-y-2'>
-                  <Label htmlFor='phase-description'>Descripción</Label>
+                  <Label htmlFor='phase-description'>Description</Label>
                   <Textarea
                     id='phase-description'
                     value={phaseForm.description}
@@ -1038,7 +1038,7 @@ export function PlanificacionOverview() {
                     />
                     {phaseForm.order > 1 && (
                       <p className='text-xs text-muted-foreground'>
-                        Las fases posteriores se calculan automáticamente
+                        Later phases are calculated automatically
                       </p>
                     )}
                   </div>
@@ -1123,7 +1123,7 @@ export function PlanificacionOverview() {
               size='sm'
             >
               <Plus className='h-4 w-4' />
-              Agregar Competición
+              Add Competition
             </Button>
           </div>
 
@@ -1191,8 +1191,8 @@ export function PlanificacionOverview() {
                             {competition.status === 'completed'
                               ? 'Completada'
                               : competition.status === 'upcoming'
-                                ? 'Próxima'
-                                : 'Cancelada'}
+                                ? 'Upcoming'
+                                : 'Cancelled'}
                           </span>
                         </div>
                       </div>
@@ -1278,7 +1278,7 @@ export function PlanificacionOverview() {
             ))}
           </div>
 
-          {/* Detalles de la competición seleccionada */}
+          {/* Selected competition details */}
           {currentCompetition && currentCompetition !== null && (
             <Card className='bg-muted/50 border-muted'>
               <CardHeader>
@@ -1299,7 +1299,7 @@ export function PlanificacionOverview() {
                     </p>
                   </div>
                   <div className='space-y-2'>
-                    <h4 className='font-medium'>Ubicación</h4>
+                    <h4 className='font-medium'>Location</h4>
                     <p className='font-bold'>{currentCompetition.location}</p>
                   </div>
                   <div className='space-y-2'>
@@ -1355,7 +1355,7 @@ export function PlanificacionOverview() {
                                   variant='default'
                                   className='bg-green-500'
                                 >
-                                  Récord Personal
+                                  Personal Record
                                 </Badge>
                               )}
                             </div>
@@ -1368,7 +1368,7 @@ export function PlanificacionOverview() {
             </Card>
           )}
 
-          {/* Modal de Edición de Competiciones */}
+          {/* Competition Editing Modal */}
           <Dialog
             open={editingCompetition !== null || isAddingCompetition}
             onOpenChange={handleCancelCompetition}
@@ -1377,20 +1377,20 @@ export function PlanificacionOverview() {
               <DialogHeader>
                 <DialogTitle>
                   {isAddingCompetition
-                    ? 'Agregar Nueva Competición'
-                    : 'Editar Competición'}
+                    ? 'Add New Competition'
+                    : 'Edit Competition'}
                 </DialogTitle>
                 <DialogDescription>
                   {isAddingCompetition
-                    ? 'Crea una nueva competición'
-                    : 'Modifica los detalles de la competición'}
+                    ? 'Create a new competition'
+                    : 'Modify competition details'}
                 </DialogDescription>
               </DialogHeader>
 
               <div className='space-y-4'>
                 <div className='grid grid-cols-2 gap-4'>
                   <div className='space-y-2'>
-                    <Label htmlFor='comp-name'>Nombre de la Competición</Label>
+                    <Label htmlFor='comp-name'>Competition Name</Label>
                     <Input
                       id='comp-name'
                       value={competitionForm.name}
@@ -1421,7 +1421,7 @@ export function PlanificacionOverview() {
 
                 <div className='grid grid-cols-2 gap-4'>
                   <div className='space-y-2'>
-                    <Label htmlFor='comp-location'>Ubicación</Label>
+                    <Label htmlFor='comp-location'>Location</Label>
                     <Input
                       id='comp-location'
                       value={competitionForm.location}
@@ -1431,7 +1431,7 @@ export function PlanificacionOverview() {
                           location: e.target.value,
                         }))
                       }
-                      placeholder='Ej: Madrid, España'
+                      placeholder='Ex: Madrid, Spain'
                     />
                   </div>
                   <div className='space-y-2'>
@@ -1474,7 +1474,7 @@ export function PlanificacionOverview() {
                         objectives: e.target.value,
                       }))
                     }
-                    placeholder='Describe los objetivos para esta competición...'
+                    placeholder='Describe the objectives for this competition...'
                     className='min-h-[80px]'
                   />
                 </div>
@@ -1495,7 +1495,7 @@ export function PlanificacionOverview() {
                     )) : null}
                   </div>
 
-                  {/* Eventos organizados por categorías */}
+                  {/* Events organized by categories */}
                   <div className='space-y-3'>
                     <div>
                       <h4 className='text-sm font-medium mb-2'>Estilo Libre</h4>
@@ -1658,8 +1658,8 @@ export function PlanificacionOverview() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value='upcoming'>Próxima</SelectItem>
-                        <SelectItem value='completed'>Completada</SelectItem>
+                        <SelectItem value='upcoming'>Upcoming</SelectItem>
+                        <SelectItem value='completed'>Completed</SelectItem>
                         <SelectItem value='cancelled'>Cancelada</SelectItem>
                       </SelectContent>
                     </Select>
@@ -1680,13 +1680,13 @@ export function PlanificacionOverview() {
           </Dialog>
         </TabsContent>
 
-        {/* Tab: Planificación Semanal */}
+        {/* Tab: Weekly Planning */}
         <TabsContent value='planificacion' className='space-y-4'>
           <Card className='bg-muted/50 border-muted'>
             <CardHeader>
-              <CardTitle>Planificación Semanal del Ciclo</CardTitle>
+              <CardTitle>Weekly Cycle Planning</CardTitle>
               <CardDescription>
-                Distribución de carga y enfoques por semana
+                Load distribution and approaches per week
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -1758,7 +1758,7 @@ export function PlanificacionOverview() {
                 Zonas de Entrenamiento
               </CardTitle>
               <CardDescription>
-                Metodología actual aplicada en toda la aplicación
+                Current methodology applied throughout the application
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -1784,7 +1784,7 @@ export function PlanificacionOverview() {
           <div className='grid gap-4 md:grid-cols-2'>
             <Card className='bg-muted/50 border-muted'>
               <CardHeader>
-                <CardTitle>Evolución del Volumen</CardTitle>
+                <CardTitle>Volume Evolution</CardTitle>
                 <CardDescription>
                   Metros por semana a lo largo del ciclo
                 </CardDescription>
@@ -1816,7 +1816,7 @@ export function PlanificacionOverview() {
 
             <Card className='bg-muted/50 border-muted'>
               <CardHeader>
-                <CardTitle>Evolución de la Intensidad</CardTitle>
+                <CardTitle>Intensity Evolution</CardTitle>
                 <CardDescription>
                   Nivel de intensidad por semana
                 </CardDescription>

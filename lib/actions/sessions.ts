@@ -36,7 +36,7 @@ export interface Session extends SessionData {
 }
 
 // =====================================================
-// CREAR SESIÓN
+// CREATE SESSION
 // =====================================================
 export async function createSession(formData: FormData) {
   const supabase = await createClient();
@@ -123,8 +123,8 @@ export async function getSessions() {
     .order('date', { ascending: false });
 
   if (error) {
-    console.error('Error obteniendo sesiones:', error);
-    throw new Error('Error al obtener las sesiones');
+    console.error('Error fetching sessions:', error);
+    throw new Error('Error fetching sessions');
   }
 
   return data as Session[];
@@ -152,8 +152,8 @@ export async function getSessionById(id: string) {
     .single();
 
   if (error) {
-    console.error('Error obteniendo sesión:', error);
-    throw new Error('Error al obtener la sesión');
+    console.error('Error fetching session:', error);
+    throw new Error('Error fetching session');
   }
 
   return data as Session;
@@ -280,8 +280,8 @@ export async function getSessionsByDateRange(
     .order('date', { ascending: false });
 
   if (error) {
-    console.error('Error obteniendo sesiones por rango:', error);
-    throw new Error('Error al obtener las sesiones');
+    console.error('Error fetching sessions by range:', error);
+    throw new Error('Error fetching sessions');
   }
 
   return data as Session[];

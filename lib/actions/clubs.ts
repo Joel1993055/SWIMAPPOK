@@ -1,6 +1,6 @@
 /**
- * Acciones para la gestión de clubes
- * @fileoverview Funciones para CRUD de clubes y equipos
+ * Actions for club management
+ * @fileoverview Functions for CRUD of clubs and teams
  */
 
 import type {
@@ -40,7 +40,7 @@ export async function getClubs(filters?: ClubFilters): Promise<ApiResponse<ClubW
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      throw new Error('Usuario no autenticado');
+      throw new Error('User not authenticated');
     }
 
     let query = supabase
@@ -62,7 +62,7 @@ export async function getClubs(filters?: ClubFilters): Promise<ApiResponse<ClubW
     const { data, error } = await query.order('name');
 
     if (error) {
-      throw new Error(`Error al obtener clubes: ${error.message}`);
+      throw new Error(`Error fetching clubs: ${error.message}`);
     }
 
     return {
@@ -86,7 +86,7 @@ export async function getClubById(clubId: string): Promise<ApiResponse<ClubWithS
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      throw new Error('Usuario no autenticado');
+      throw new Error('User not authenticated');
     }
 
     const { data, error } = await supabase
@@ -128,7 +128,7 @@ export async function createClub(clubData: CreateClubData): Promise<ApiResponse<
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      throw new Error('Usuario no autenticado');
+      throw new Error('User not authenticated');
     }
 
     const { data, error } = await supabase
@@ -175,7 +175,7 @@ export async function updateClub(clubData: UpdateClubData): Promise<ApiResponse<
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      throw new Error('Usuario no autenticado');
+      throw new Error('User not authenticated');
     }
 
     const { id, ...updateData } = clubData;
@@ -213,7 +213,7 @@ export async function deleteClub(clubId: string): Promise<ApiResponse<boolean>> 
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      throw new Error('Usuario no autenticado');
+      throw new Error('User not authenticated');
     }
 
     const { error } = await supabase
@@ -251,7 +251,7 @@ export async function getTeamsByClub(clubId: string, filters?: TeamFilters): Pro
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      throw new Error('Usuario no autenticado');
+      throw new Error('User not authenticated');
     }
 
     let query = supabase
@@ -287,9 +287,9 @@ export async function getTeamsByClub(clubId: string, filters?: TeamFilters): Pro
     // Transformar los datos para que coincidan con TeamWithClub
     const teamsWithClub: TeamWithClub[] = (data || []).map(team => ({
       ...team,
-      club_name: team.clubs?.name || 'Club desconocido',
-      club_location: team.clubs?.location || 'Sin ubicación',
-      member_count: 0, // Por ahora 0, se puede calcular después
+      club_name: team.clubs?.name || 'Unknown club',
+      club_location: team.clubs?.location || 'No location',
+      member_count: 0, // For now 0, can be calculated later
     }));
 
     return {
@@ -313,7 +313,7 @@ export async function getTeamById(teamId: string): Promise<ApiResponse<TeamWithC
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      throw new Error('Usuario no autenticado');
+      throw new Error('User not authenticated');
     }
 
     const { data, error } = await supabase
@@ -344,9 +344,9 @@ export async function getTeamById(teamId: string): Promise<ApiResponse<TeamWithC
     // Transformar los datos para que coincidan con TeamWithClub
     const teamWithClub: TeamWithClub = {
       ...data,
-      club_name: data.clubs?.name || 'Club desconocido',
-      club_location: data.clubs?.location || 'Sin ubicación',
-      member_count: 0, // Por ahora 0, se puede calcular después
+      club_name: data.clubs?.name || 'Unknown club',
+      club_location: data.clubs?.location || 'No location',
+      member_count: 0, // For now 0, can be calculated later
     };
 
     return {
@@ -370,7 +370,7 @@ export async function createTeam(teamData: CreateTeamData): Promise<ApiResponse<
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      throw new Error('Usuario no autenticado');
+      throw new Error('User not authenticated');
     }
 
     const { data, error } = await supabase
@@ -409,7 +409,7 @@ export async function updateTeam(teamData: UpdateTeamData): Promise<ApiResponse<
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      throw new Error('Usuario no autenticado');
+      throw new Error('User not authenticated');
     }
 
     const { id, ...updateData } = teamData;
@@ -447,7 +447,7 @@ export async function deleteTeam(teamId: string): Promise<ApiResponse<boolean>> 
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      throw new Error('Usuario no autenticado');
+      throw new Error('User not authenticated');
     }
 
     const { error } = await supabase
@@ -485,7 +485,7 @@ export async function getTeamMembers(teamId: string, filters?: TeamMemberFilters
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      throw new Error('Usuario no autenticado');
+      throw new Error('User not authenticated');
     }
 
     let query = supabase
@@ -518,7 +518,7 @@ export async function getTeamMembers(teamId: string, filters?: TeamMemberFilters
       throw new Error(`Error al obtener miembros: ${error.message}`);
     }
 
-    // Transformar datos para incluir información del usuario
+    // Transform data to include user information
     const membersWithUser: TeamMemberWithUser[] = (data || []).map(member => ({
       ...member,
       user_name: member.user?.raw_user_meta_data?.full_name || member.user?.email?.split('@')[0] || 'Usuario',
@@ -547,7 +547,7 @@ export async function addTeamMember(memberData: CreateTeamMemberData): Promise<A
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      throw new Error('Usuario no autenticado');
+      throw new Error('User not authenticated');
     }
 
     const { data, error } = await supabase
@@ -589,7 +589,7 @@ export async function updateTeamMember(memberData: UpdateTeamMemberData): Promis
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      throw new Error('Usuario no autenticado');
+      throw new Error('User not authenticated');
     }
 
     const { id, ...updateData } = memberData;
@@ -627,7 +627,7 @@ export async function removeTeamMember(memberId: string): Promise<ApiResponse<bo
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      throw new Error('Usuario no autenticado');
+      throw new Error('User not authenticated');
     }
 
     const { error } = await supabase
@@ -684,7 +684,7 @@ export async function hasClubAccess(clubId: string): Promise<boolean> {
 }
 
 /**
- * Obtener estadísticas de un club
+ * Get club statistics
  */
 export async function getClubStats(clubId: string): Promise<ApiResponse<{
   total_teams: number;
@@ -695,7 +695,7 @@ export async function getClubStats(clubId: string): Promise<ApiResponse<{
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      throw new Error('Usuario no autenticado');
+      throw new Error('User not authenticated');
     }
 
     // Verificar acceso al club
@@ -708,7 +708,7 @@ export async function getClubStats(clubId: string): Promise<ApiResponse<{
       .rpc('get_club_stats', { club_uuid: clubId });
 
     if (error) {
-      throw new Error(`Error al obtener estadísticas: ${error.message}`);
+      throw new Error(`Error fetching statistics: ${error.message}`);
     }
 
     return {

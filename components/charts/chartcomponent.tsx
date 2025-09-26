@@ -1,33 +1,33 @@
 'use client';
 
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
 import {
-  ChartConfig,
-  ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
-  ChartTooltip,
-  ChartTooltipContent,
+    ChartConfig,
+    ChartContainer,
+    ChartLegend,
+    ChartLegendContent,
+    ChartTooltip,
+    ChartTooltipContent,
 } from '@/components/ui/chart';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from '@/components/ui/select';
 import { getSessions, type Session } from '@/lib/actions/sessions';
 import {
-  calculateZoneVolumes,
-  metersToKm,
-  zoneColors,
-  zoneLabels,
+    calculateZoneVolumes,
+    metersToKm,
+    zoneColors,
+    zoneLabels,
 } from '@/lib/utils/zone-detection';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
@@ -483,7 +483,7 @@ export default function ChartComponent() {
         <CardContent>
           <div className='h-[400px] flex items-center justify-center'>
             <div className='animate-pulse text-muted-foreground'>
-              Cargando datos...
+              Loading data...
             </div>
           </div>
         </CardContent>

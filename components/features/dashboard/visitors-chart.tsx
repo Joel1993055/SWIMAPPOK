@@ -61,7 +61,7 @@ const generateWeeklyData = (sessions: any[]) => {
   startOfWeek.setDate(today.getDate() - daysToMonday);
   startOfWeek.setHours(0, 0, 0, 0);
 
-  const daysOfWeek = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+  const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   const weeklyData = Array.from({ length: 7 }, (_, index) => {
     const currentDay = new Date(startOfWeek);
@@ -206,7 +206,7 @@ export function VisitorsChart() {
         <CardContent>
           <div className='h-[300px] flex items-center justify-center'>
             <div className='animate-pulse text-muted-foreground'>
-              Cargando datos...
+              Loading data...
             </div>
           </div>
         </CardContent>

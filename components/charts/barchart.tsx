@@ -353,7 +353,7 @@ export default function VolumeBarchart() {
         <CardContent>
           <div className='h-[400px] flex items-center justify-center'>
             <div className='animate-pulse text-muted-foreground'>
-              Cargando datos...
+              Loading data...
             </div>
           </div>
         </CardContent>

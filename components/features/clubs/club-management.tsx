@@ -106,7 +106,7 @@ export function ClubManagement() {
   };
 
   const handleDeleteClub = async (clubId: string) => {
-    if (confirm('¿Estás seguro de que quieres eliminar este club?')) {
+    if (confirm('Are you sure you want to delete this club?')) {
       const success = await deleteExistingClub(clubId);
       if (success && selectedClub?.id === clubId) {
         setSelectedClub(null);
@@ -144,7 +144,7 @@ export function ClubManagement() {
             <DialogHeader>
               <DialogTitle>Create New Club</DialogTitle>
               <DialogDescription>
-                Completa la información para crear un nuevo club
+                Complete the information to create a new club
               </DialogDescription>
             </DialogHeader>
             <CreateClubForm onSubmit={handleCreateClub} />
@@ -199,12 +199,12 @@ export function ClubManagement() {
         <div className="text-center py-12">
           <Building2 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
           <h3 className="text-lg font-semibold mb-2">
-            {searchTerm ? 'No se encontraron clubes' : 'No tienes clubes'}
+            {searchTerm ? 'No clubs found' : 'You have no clubs'}
           </h3>
           <p className="text-muted-foreground mb-4">
             {searchTerm
-              ? 'Intenta con otros términos de búsqueda'
-              : 'Crea tu primer club para comenzar'}
+              ? 'Try other search terms'
+              : 'Create your first club to get started'}
           </p>
           {!searchTerm && (
             <Button onClick={() => setIsCreateDialogOpen(true)} className="gap-2">
@@ -221,7 +221,7 @@ export function ClubManagement() {
           <DialogHeader>
             <DialogTitle>Edit Club</DialogTitle>
             <DialogDescription>
-              Modifica la información del club
+              Modify club information
             </DialogDescription>
           </DialogHeader>
           {editingClub && (
@@ -377,7 +377,7 @@ function CreateClubForm({ onSubmit }: CreateClubFormProps) {
           <Input
             id="name"
             {...register('name')}
-            placeholder="Ej: Club Natación Madrid"
+            placeholder="Ex: Madrid Swimming Club"
           />
           {errors.name && (
             <p className="text-sm text-destructive">{errors.name.message}</p>
@@ -385,11 +385,11 @@ function CreateClubForm({ onSubmit }: CreateClubFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="location">Ubicación *</Label>
+          <Label htmlFor="location">Location *</Label>
           <Input
             id="location"
             {...register('location')}
-            placeholder="Ej: Madrid, España"
+            placeholder="Ex: Madrid, Spain"
           />
           {errors.location && (
             <p className="text-sm text-destructive">{errors.location.message}</p>
@@ -410,7 +410,7 @@ function CreateClubForm({ onSubmit }: CreateClubFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="phone">Teléfono</Label>
+          <Label htmlFor="phone">Phone</Label>
           <Input
             id="phone"
             {...register('phone')}
@@ -431,7 +431,7 @@ function CreateClubForm({ onSubmit }: CreateClubFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="established_date">Fecha de Fundación</Label>
+          <Label htmlFor="established_date">Foundation Date</Label>
           <Input
             id="established_date"
             type="date"
@@ -441,7 +441,7 @@ function CreateClubForm({ onSubmit }: CreateClubFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="description">Descripción</Label>
+        <Label htmlFor="description">Description</Label>
         <Textarea
           id="description"
           {...register('description')}
@@ -451,11 +451,11 @@ function CreateClubForm({ onSubmit }: CreateClubFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="address">Dirección</Label>
+        <Label htmlFor="address">Address</Label>
         <Textarea
           id="address"
           {...register('address')}
-          placeholder="Dirección completa del club"
+          placeholder="Complete club address"
         />
       </div>
 
@@ -506,7 +506,7 @@ function EditClubForm({ club, onSubmit, onCancel }: EditClubFormProps) {
           <Input
             id="edit-name"
             {...register('name')}
-            placeholder="Ej: Club Natación Madrid"
+            placeholder="Ex: Madrid Swimming Club"
           />
           {errors.name && (
             <p className="text-sm text-destructive">{errors.name.message}</p>
@@ -514,11 +514,11 @@ function EditClubForm({ club, onSubmit, onCancel }: EditClubFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="edit-location">Ubicación *</Label>
+          <Label htmlFor="edit-location">Location *</Label>
           <Input
             id="edit-location"
             {...register('location')}
-            placeholder="Ej: Madrid, España"
+            placeholder="Ex: Madrid, Spain"
           />
           {errors.location && (
             <p className="text-sm text-destructive">{errors.location.message}</p>
@@ -539,7 +539,7 @@ function EditClubForm({ club, onSubmit, onCancel }: EditClubFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="edit-phone">Teléfono</Label>
+          <Label htmlFor="edit-phone">Phone</Label>
           <Input
             id="edit-phone"
             {...register('phone')}
@@ -560,7 +560,7 @@ function EditClubForm({ club, onSubmit, onCancel }: EditClubFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="edit-established_date">Fecha de Fundación</Label>
+          <Label htmlFor="edit-established_date">Foundation Date</Label>
           <Input
             id="edit-established_date"
             type="date"
@@ -570,7 +570,7 @@ function EditClubForm({ club, onSubmit, onCancel }: EditClubFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="edit-description">Descripción</Label>
+        <Label htmlFor="edit-description">Description</Label>
         <Textarea
           id="edit-description"
           {...register('description')}
@@ -580,11 +580,11 @@ function EditClubForm({ club, onSubmit, onCancel }: EditClubFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="edit-address">Dirección</Label>
+        <Label htmlFor="edit-address">Address</Label>
         <Textarea
           id="edit-address"
           {...register('address')}
-          placeholder="Dirección completa del club"
+          placeholder="Complete club address"
         />
       </div>
 
