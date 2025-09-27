@@ -1,3 +1,5 @@
+'use client';
+
 import { CheckCircle, ArrowRight, Download, Users, BarChart3 } from 'lucide-react';
 
 import { siteConfig } from '@/config/site';

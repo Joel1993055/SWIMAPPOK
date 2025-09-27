@@ -1,3 +1,5 @@
+'use client';
+
 import { Check, Star } from 'lucide-react';
 
 import { siteConfig } from '@/config/site';

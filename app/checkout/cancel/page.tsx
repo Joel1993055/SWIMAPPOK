@@ -1,3 +1,5 @@
+'use client';
+
 import { XCircle, ArrowLeft, RefreshCw, Mail, Phone } from 'lucide-react';
 
 import { siteConfig } from '@/config/site';
