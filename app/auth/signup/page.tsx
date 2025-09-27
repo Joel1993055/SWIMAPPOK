@@ -1,11 +1,11 @@
 'use client';
 
-import { signUpAction } from '@/infra/config/actions';
 import { FormMessage, Message } from '@/components/forms/form-message';
 import { SubmitButton } from '@/components/forms/submit-button';
 import { SocialLogin } from '@/components/home/header/social-login';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { signUpAction } from '@/infra/config/actions';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';

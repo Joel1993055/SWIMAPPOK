@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { IBillingFrequency } from '@/constants/billing-frequency';
 import { PricingTier } from '@/constants/pricing-tier';
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils/cn';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -13,27 +13,18 @@ interface Props {
 
 export function PriceCards({ loading, frequency, priceMap }: Props) {
   return (
-    <div className="isolate mx-auto grid grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+    <div className="isolate mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 relative z-50 max-w-6xl">
       {PricingTier.map((tier) => (
         <div 
           key={tier.id} 
           className={cn(
-            'relative rounded-2xl overflow-hidden transition-all duration-300',
+            'relative rounded-xl overflow-hidden transition-all duration-300 z-50',
             tier.featured 
-              ? 'bg-gray-800/80 backdrop-blur-sm border border-yellow-400/30 shadow-2xl shadow-yellow-400/20' 
-              : 'bg-gray-800/60 backdrop-blur-sm border border-gray-700/50 hover:border-gray-600/70'
+              ? 'bg-gray-900/40 backdrop-blur-sm border border-yellow-400/20 shadow-lg shadow-yellow-400/10' 
+              : 'bg-gray-900/30 backdrop-blur-sm border border-gray-700/30 hover:border-gray-600/50 hover:bg-gray-900/40'
           )}
         >
-          {/* Featured Badge */}
-          {tier.featured && (
-            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
-              <div className="bg-yellow-400 text-gray-900 px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
-                Most popular
-              </div>
-            </div>
-          )}
-          
-          <div className="p-8">
+          <div className="p-6">
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
@@ -85,10 +76,10 @@ export function PriceCards({ loading, frequency, priceMap }: Props) {
             {/* CTA Button */}
             <Button 
               className={cn(
-                'w-full py-3 text-sm font-semibold transition-all duration-200',
+                'w-full py-2.5 text-sm font-medium transition-all duration-200',
                 tier.featured 
-                  ? 'bg-yellow-400 hover:bg-yellow-500 text-gray-900 shadow-lg hover:shadow-xl' 
-                  : 'bg-gray-700 hover:bg-gray-600 text-white border border-gray-600'
+                  ? 'bg-yellow-400/90 hover:bg-yellow-400 text-gray-900 shadow-sm hover:shadow-md' 
+                  : 'bg-gray-700/50 hover:bg-gray-600/50 text-white border border-gray-600/50 hover:border-gray-500/50'
               )}
               asChild={true}
             >

@@ -1,6 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tier } from '@/constants/pricing-tier';
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils/cn';
 
 interface Props {
   loading: boolean;

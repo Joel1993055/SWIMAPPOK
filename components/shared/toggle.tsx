@@ -10,7 +10,7 @@ interface Props {
 
 export function Toggle({ setFrequency, frequency }: Props) {
   return (
-    <div className="flex justify-center mb-8">
+    <div className="flex justify-center mb-8 relative z-50">
       <Tabs
         value={frequency.value}
         onValueChange={(value) =>

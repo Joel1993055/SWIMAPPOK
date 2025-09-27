@@ -31,7 +31,7 @@ export function Pricing({ country }: Props) {
   }, []);
 
   return (
-    <div className="mx-auto max-w-7xl relative px-[32px] flex flex-col items-center justify-between">
+    <div className="mx-auto max-w-7xl relative px-[32px] flex flex-col items-center justify-between z-50">
       <Toggle frequency={frequency} setFrequency={setFrequency} />
       <PriceCards frequency={frequency} loading={loading} priceMap={priceMap} />
     </div>
