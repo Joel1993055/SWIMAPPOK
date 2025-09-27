@@ -1,8 +1,1 @@
-module.exports = {
-  plugins: {
-    tailwindcss: {},
-    autoprefixer: {
-      flexbox: 'no-2009',
-    },
-  },
-};
+module.exports = require('./configs/postcss.config.cjs');

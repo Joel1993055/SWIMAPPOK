@@ -1,6 +1,6 @@
 'use client';
 
-import { signUpAction } from '@/app/actions';
+import { signUpAction } from '@/infra/config/actions';
 import { FormMessage, Message } from '@/components/forms/form-message';
 import { SubmitButton } from '@/components/forms/submit-button';
 import { SocialLogin } from '@/components/home/header/social-login';

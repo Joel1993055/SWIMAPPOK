@@ -23,7 +23,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Textarea } from '@/components/ui/textarea';
-import { useClubsStore } from '@/lib/store/clubs-store';
+import { useClubsStore } from '@/core/stores/clubs-store';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Building2,

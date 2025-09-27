@@ -32,7 +32,7 @@ import {
     getSessions,
     updateSession,
     type Session as SupabaseSession,
-} from '@/lib/actions/sessions';
+} from '@/infra/config/actions/sessions';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import {

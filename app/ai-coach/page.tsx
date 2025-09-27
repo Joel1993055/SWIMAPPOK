@@ -13,7 +13,7 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
-import { useAICoachStore } from '@/lib/store/unified';
+import { useAICoachStore } from '@/core/stores/unified';
 import {
     Activity,
     BarChart3,

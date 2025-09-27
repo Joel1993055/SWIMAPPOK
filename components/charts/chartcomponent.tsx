@@ -22,13 +22,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { getSessions, type Session } from '@/lib/actions/sessions';
+import { getSessions, type Session } from '@/infra/config/actions/sessions';
 import {
   calculateZoneVolumes,
   metersToKm,
   zoneColors,
   zoneLabels,
-} from '@/lib/utils/zone-detection';
+} from '@/core/utils/zone-detection';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';

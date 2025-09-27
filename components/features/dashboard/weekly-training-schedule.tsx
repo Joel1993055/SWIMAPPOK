@@ -1,16 +1,16 @@
 'use client';
 
-import { QuickCreate } from '@/components/forms/quick-create';
+import { QuickCreate } from '@/components/features/forms/quick-create';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
-import { getSessions, type Session } from '@/lib/actions/sessions';
+import { getSessions, type Session } from '@/infra/config/actions/sessions';
 import { addDays, format, isSameDay, isToday, startOfWeek } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Activity, Calendar, Clock, MapPin, Plus } from 'lucide-react';

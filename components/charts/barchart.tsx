@@ -15,13 +15,13 @@ import {
 } from '@/components/ui/chart';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { getSessions, type Session } from '@/lib/actions/sessions';
+import { getSessions, type Session } from '@/infra/config/actions/sessions';
 import {
   calculateZoneVolumes,
   metersToKm,
   zoneColors,
   zoneLabels,
-} from '@/lib/utils/zone-detection';
+} from '@/core/utils/zone-detection';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Legend, XAxis, YAxis } from 'recharts';

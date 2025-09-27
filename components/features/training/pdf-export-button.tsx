@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { exportMultipleTrainingsToPDF, exportTrainingToPDF, type TrainingPDFData } from '@/lib/utils/pdf-export';
+import { exportMultipleTrainingsToPDF, exportTrainingToPDF, type TrainingPDFData } from '@/core/utils/pdf-export';
 import { Download, FileText, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useSessionsStore, useTrainingStore } from '@/lib/store/unified';
+import { useSessionsStore, useTrainingStore } from '@/core/stores/unified';
 import { useEffect } from 'react';
 
 // Demo data for sessions (last 30 days)

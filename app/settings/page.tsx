@@ -25,9 +25,9 @@ import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
-import { useClubsStore } from '@/lib/store/clubs-store';
-import { useTrainingStore } from '@/lib/store/unified';
-import { TrainingZones } from '@/lib/types/training';
+import { useClubsStore } from '@/core/stores/clubs-store';
+import { useTrainingStore } from '@/core/stores/unified';
+import { TrainingZones } from '@/core/types/training';
 import {
   Activity,
   Bell,

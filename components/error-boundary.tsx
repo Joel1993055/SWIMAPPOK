@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { useErrorHandler } from '@/lib/hooks/use-error-handler';
+import { useErrorHandler } from '@/core/hooks/use-error-handler';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
 import React from 'react';
 

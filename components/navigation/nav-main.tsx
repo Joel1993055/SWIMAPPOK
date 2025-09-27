@@ -1,6 +1,6 @@
 'use client';
 
-import { QuickCreate } from '@/components/forms/quick-create';
+import { QuickCreate } from '@/components/features/forms/quick-create';
 import {
     SidebarGroup,
     SidebarGroupContent,

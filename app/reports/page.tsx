@@ -19,8 +19,8 @@ import {
 } from '@/components/ui/select';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { getSessions, type Session } from '@/lib/actions/sessions';
-import { useReportsPDFExport } from '@/lib/hooks/use-reports-pdf-export';
+import { getSessions, type Session } from '@/infra/config/actions/sessions';
+import { useReportsPDFExport } from '@/core/hooks/use-reports-pdf-export';
 import { format, subDays, subMonths, subWeeks } from 'date-fns';
 import {
   BarChart3,

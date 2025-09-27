@@ -11,7 +11,7 @@ import {
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useSessionsData } from '@/lib/hooks/use-sessions-data';
+import { useSessionsData } from '@/core/hooks/use-sessions-data';
 import { format, subDays, subMonths, subWeeks } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import {

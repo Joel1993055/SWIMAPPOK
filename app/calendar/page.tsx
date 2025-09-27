@@ -13,8 +13,8 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
-import { getSessions, type Session } from '@/lib/actions/sessions';
-import { useCompetitionsStore } from '@/lib/store/unified';
+import { getSessions, type Session } from '@/infra/config/actions/sessions';
+import { useCompetitionsStore } from '@/core/stores/unified';
 import {
   Activity,
   Calendar as CalendarIcon,

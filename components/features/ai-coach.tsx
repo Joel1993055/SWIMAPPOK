@@ -1,6 +1,6 @@
 'use client';
 
-import { useAICoachStore } from '@/lib/store/unified';
+import { useAICoachStore } from '@/core/stores/unified';
 // NUEVO: Importar el store unificado
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

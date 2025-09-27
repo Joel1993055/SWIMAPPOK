@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useCompetitionsStore, useSessionsStore, useTrainingStore } from '@/lib/store/unified';
+import { useCompetitionsStore, useSessionsStore, useTrainingStore } from '@/core/stores/unified';
 import { Activity, Target, Trophy, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 

@@ -20,8 +20,8 @@ import * as React from 'react';
 import { NavDocuments } from '@/components/navigation/nav-documents';
 import { NavMain } from '@/components/navigation/nav-main';
 import { NavSecondary } from '@/components/navigation/nav-secondary';
-import { NavTeamSelectors } from '@/components/navigation/nav-team-selectors-real';
-import { NavUser } from '@/components/navigation/nav-user';
+import { NavTeamSelectors } from '@/components/features/navigation/nav-team-selectors-real';
+import { NavUser } from '@/components/features/navigation/nav-user';
 import {
     Sidebar,
     SidebarContent,
@@ -31,7 +31,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { useClubsStore } from '@/lib/store/clubs-store';
+import { useClubsStore } from '@/core/stores/clubs-store';
 
 const data = {
   navMain: [

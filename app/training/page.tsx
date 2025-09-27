@@ -13,9 +13,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Textarea } from '@/components/ui/textarea';
-import { createSession, deleteSession, updateSession, type Session as SupabaseSession } from '@/lib/actions/sessions';
-import { useSessionsData } from '@/lib/hooks/use-sessions-data';
-import type { Session } from '@/lib/types/session';
+import { createSession, deleteSession, updateSession, type Session as SupabaseSession } from '@/infra/config/actions/sessions';
+import { useSessionsData } from '@/core/hooks/use-sessions-data';
+import type { Session } from '@/core/types/session';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import {

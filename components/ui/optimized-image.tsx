@@ -5,7 +5,7 @@ import {
   generateImageSizes,
   useLazyImage,
 } from '@/lib/hooks/use-optimized-image';
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils/cn';
 import Image from 'next/image';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 

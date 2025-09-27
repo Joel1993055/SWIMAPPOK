@@ -17,8 +17,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { getSessions, type Session } from '@/lib/actions/sessions';
-import { useCompetitionsStore } from '@/lib/store/unified';
+import { getSessions, type Session } from '@/infra/config/actions/sessions';
+import { useCompetitionsStore } from '@/core/stores/unified';
 import {
   Activity,
   Calendar as CalendarIcon,

@@ -1,4 +1,4 @@
-import { aiZoneDetector } from '@/lib/services/ai-zone-detector';
+import { aiZoneDetector } from '@/core/services/ai-zone-detector';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {

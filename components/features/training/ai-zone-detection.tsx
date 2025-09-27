@@ -2,7 +2,7 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { useAIZoneDetection } from '@/lib/hooks/use-ai-zone-detection';
+import { useAIZoneDetection } from '@/core/hooks/use-ai-zone-detection';
 import { AlertCircle, Brain, CheckCircle, Lightbulb, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 
