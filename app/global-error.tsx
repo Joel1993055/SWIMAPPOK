@@ -31,9 +31,9 @@ export default function GlobalError({
             padding: '20px',
           }}
         >
-          <h1>Algo salió mal</h1>
+          <h1>Something went wrong</h1>
           <p>
-            Ha ocurrido un error inesperado. Nuestro equipo ha sido notificado.
+            An unexpected error has occurred. Our team has been notified.
           </p>
           <button
             onClick={reset}
@@ -47,7 +47,7 @@ export default function GlobalError({
               marginTop: '20px',
             }}
           >
-            Intentar de nuevo
+            Try again
           </button>
         </div>
       </body>

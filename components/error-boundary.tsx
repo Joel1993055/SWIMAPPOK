@@ -92,7 +92,7 @@ function DefaultErrorFallback({ error, resetError }: ErrorFallbackProps) {
     if (error && typeof error === 'object') {
       return error.message || error.title || error.type || JSON.stringify(error);
     }
-    return 'Error desconocido';
+    return 'Unknown error';
   };
 
   // Helper function to safely get error stack
@@ -127,7 +127,7 @@ function DefaultErrorFallback({ error, resetError }: ErrorFallbackProps) {
           <div className='space-y-4'>
             <Button onClick={resetError} className='w-full'>
               <RefreshCw className='h-4 w-4 mr-2' />
-              Intentar de nuevo
+              Try again
             </Button>
 
             <Button
@@ -135,14 +135,14 @@ function DefaultErrorFallback({ error, resetError }: ErrorFallbackProps) {
               onClick={() => (window.location.href = '/')}
               className='w-full'
             >
-              Ir al inicio
+              Go to home
             </Button>
           </div>
 
           {process.env.NODE_ENV === 'development' && (
             <details className='text-left'>
               <summary className='cursor-pointer text-sm text-muted-foreground'>
-                Detalles del error (desarrollo)
+                Error details (development)
               </summary>
               <pre className='mt-2 p-4 bg-muted rounded text-xs overflow-auto'>
                 {getErrorMessage(error)}
@@ -159,3 +159,4 @@ function DefaultErrorFallback({ error, resetError }: ErrorFallbackProps) {
 
 export { ErrorBoundary };
 export type { ErrorBoundaryProps, ErrorFallbackProps };
+
