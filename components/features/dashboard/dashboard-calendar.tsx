@@ -4,27 +4,27 @@ import { TrainingDetailModal } from '@/components/features/calendar/training-det
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
 } from '@/components/ui/dialog';
-import { getSessions, type Session } from '@/infra/config/actions/sessions';
 import { useCompetitionsStore } from '@/core/stores/unified';
+import { getSessions, type Session } from '@/infra/config/actions/sessions';
 import {
-  Activity,
-  Calendar as CalendarIcon,
-  ChevronLeft,
-  ChevronRight,
-  Target,
+    Activity,
+    Calendar as CalendarIcon,
+    ChevronLeft,
+    ChevronRight,
+    Target,
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 

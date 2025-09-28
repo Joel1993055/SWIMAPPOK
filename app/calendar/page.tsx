@@ -1,26 +1,44 @@
 'use client';
 
 import { TrainingDetailModal } from '@/components/features/calendar/training-detail-modal';
+import { TrainingPhases } from '@/components/features/calendar/training-phases';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { SiteHeader } from '@/components/layout/site-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
-import { getSessions, type Session } from '@/infra/config/actions/sessions';
-import { useCompetitionsStore } from '@/core/stores/unified';
 import {
-  Activity,
-  Calendar as CalendarIcon,
-  ChevronLeft,
-  ChevronRight,
-  Target,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { useCompetitionsStore } from '@/core/stores/unified';
+import { getSessions, type Session } from '@/infra/config/actions/sessions';
+import {
+    Activity,
+    Calendar as CalendarIcon,
+    ChevronLeft,
+    ChevronRight,
+    Plus,
+    Target,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -37,6 +55,7 @@ export default function CalendarPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedTraining, setSelectedTraining] = useState<Session | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCompetitionModalOpen, setIsCompetitionModalOpen] = useState(false);
 
   // KEEP: Existing context
   const { getCompetitionsByDate } = useCompetitionsStore();
@@ -256,10 +275,10 @@ export default function CalendarPage() {
               <div className="p-2 bg-primary/10 rounded-lg">
                 <CalendarIcon className="h-6 w-6 text-primary" />
               </div>
-              <h1 className="text-3xl font-bold text-foreground">Calendar</h1>
+              <h1 className="text-3xl font-bold text-foreground">Calendar & Planning</h1>
             </div>
             <p className="text-muted-foreground">
-              Monthly view of your training sessions
+              Monthly view of your training sessions and training phases planning
             </p>
           </div>
 
@@ -430,6 +449,35 @@ export default function CalendarPage() {
                     })}
                   </div>
                 </CardContent>
+                
+                {/* Legend inside calendar card */}
+                <div className="px-6 pb-6">
+                  <div className="border-t pt-4">
+                    <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-3">Legend</h4>
+                    <div className="grid grid-cols-2 gap-3 text-xs">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-blue-500 rounded-lg"></div>
+                        <span className="text-gray-600 dark:text-gray-400">Training Session</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <span className="text-gray-600 dark:text-gray-400">High Priority Competition</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-gray-100 dark:bg-gray-800 border-2 border-blue-500 rounded-lg"></div>
+                        <span className="text-gray-600 dark:text-gray-400">Today</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                        <span className="text-gray-600 dark:text-gray-400">Medium Priority Competition</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <span className="text-gray-600 dark:text-gray-400">Low Priority Competition</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </Card>
             </div>
 
@@ -572,6 +620,29 @@ export default function CalendarPage() {
                             </p>
                           </div>
                         )}
+
+                      {/* Action Buttons - Always show when a day is selected */}
+                      <div className="flex gap-2 pt-4 border-t">
+                        <Button
+                          onClick={() => {
+                            // TODO: Implement add training logic
+                            console.log('Add training clicked');
+                          }}
+                          className="flex-1 gap-2 bg-blue-500 hover:bg-blue-600 text-white"
+                          size="sm"
+                        >
+                          <Plus className="h-4 w-4" />
+                          Add Training
+                        </Button>
+                        <Button
+                          onClick={() => setIsCompetitionModalOpen(true)}
+                          className="flex-1 gap-2 bg-white text-gray-900 hover:bg-gray-50 border border-gray-200"
+                          size="sm"
+                        >
+                          <Plus className="h-4 w-4" />
+                          Add Competition
+                        </Button>
+                      </div>
                     </div>
                   ) : (
                     <div className="flex-1 flex flex-col items-center justify-center text-center">
@@ -589,45 +660,12 @@ export default function CalendarPage() {
             </div>
           </div>
 
-          {/* Updated legend */}
-          <div className="flex flex-wrap items-center justify-center gap-6 text-sm">
-            <div className="flex items-center gap-3">
-              <div className="w-4 h-4 bg-blue-500 rounded-lg shadow-sm"></div>
-              <span className="text-gray-600 dark:text-gray-400 font-medium">
-                Training
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-4 h-4 bg-red-500 rounded-full"></div>
-              <span className="text-gray-600 dark:text-gray-400 font-medium">
-                High Priority Competition
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-4 h-4 bg-orange-500 rounded-full"></div>
-              <span className="text-gray-600 dark:text-gray-400 font-medium">
-                Medium Priority Competition
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-              <span className="text-gray-600 dark:text-gray-400 font-medium">
-                Low Priority Competition
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-4 h-4 bg-gray-100 dark:bg-gray-800 border-2 border-blue-500 rounded-lg"></div>
-              <span className="text-gray-600 dark:text-gray-400 font-medium">
-                Today
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-4 h-4 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"></div>
-              <span className="text-gray-600 dark:text-gray-400 font-medium">
-                Normal Day
-              </span>
-            </div>
-          </div>
+          {/* Training Phases Section */}
+          <Card className="bg-muted/50 border-muted">
+            <CardContent className="p-6">
+              <TrainingPhases />
+            </CardContent>
+          </Card>
         </div>
 
         {/* Training details modal */}
@@ -637,6 +675,64 @@ export default function CalendarPage() {
           training={selectedTraining}
           onEdit={handleEditTraining}
         />
+
+        {/* Competition Modal */}
+        <Dialog open={isCompetitionModalOpen} onOpenChange={setIsCompetitionModalOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Add Competition</DialogTitle>
+              <DialogDescription>
+                Add a new competition for {selectedDate ? `${selectedDate.day} of ${selectedDate.month} ${selectedDate.year}` : 'selected day'}
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="comp-name">Competition Name</Label>
+                <Input
+                  id="comp-name"
+                  placeholder="e.g., National Championships"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="comp-location">Location</Label>
+                <Input
+                  id="comp-location"
+                  placeholder="e.g., Madrid, Spain"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="comp-type">Type</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select competition type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="local">Local</SelectItem>
+                    <SelectItem value="regional">Regional</SelectItem>
+                    <SelectItem value="national">National</SelectItem>
+                    <SelectItem value="international">International</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            <div className="flex justify-end gap-2 pt-4">
+              <Button variant="outline" onClick={() => setIsCompetitionModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={() => {
+                // TODO: Implement save competition logic
+                console.log('Save competition');
+                setIsCompetitionModalOpen(false);
+              }}>
+                Add Competition
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </SidebarInset>
     </SidebarProvider>
   );

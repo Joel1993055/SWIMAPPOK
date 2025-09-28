@@ -385,18 +385,19 @@ export const useTrainingStore = create<TrainingStore>()(
         const { phases } = get();
         const now = new Date().toISOString().split('T')[0];
         
-        // Find the current active phase
+        // Find the current active phase (between startDate and endDate)
         const currentPhase = phases.find(phase => 
+          phase.startDate && 
+          phase.endDate &&
           phase.startDate <= now && 
-          phase.endDate >= now && 
-          phase.isActive
+          phase.endDate >= now
         );
 
         if (currentPhase) return currentPhase;
 
         // If no active phase, return the most recent phase
         return phases
-          .filter(phase => phase.endDate <= now)
+          .filter(phase => phase.endDate && phase.endDate <= now)
           .sort((a, b) => b.endDate.localeCompare(a.endDate))[0] || null;
       },
       getPhaseById: id => {

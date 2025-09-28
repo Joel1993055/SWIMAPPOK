@@ -10,18 +10,17 @@ import {
     LayoutDashboardIcon,
     Plus,
     SettingsIcon,
-    Target,
     Users,
     Wrench
 } from 'lucide-react';
 import Image from 'next/image';
 import * as React from 'react';
 
+import { NavTeamSelectors } from '@/components/features/navigation/nav-team-selectors-real';
+import { NavUser } from '@/components/features/navigation/nav-user';
 import { NavDocuments } from '@/components/navigation/nav-documents';
 import { NavMain } from '@/components/navigation/nav-main';
 import { NavSecondary } from '@/components/navigation/nav-secondary';
-import { NavTeamSelectors } from '@/components/features/navigation/nav-team-selectors-real';
-import { NavUser } from '@/components/features/navigation/nav-user';
 import {
     Sidebar,
     SidebarContent,
@@ -41,14 +40,9 @@ const data = {
       icon: LayoutDashboardIcon,
     },
     {
-      title: 'Calendar',
+      title: 'Calendar & Planning',
       url: '/calendar',
       icon: CalendarIcon,
-    },
-    {
-      title: 'Planning',
-      url: '/planning',
-      icon: Target,
     },
     {
       title: 'Analysis',
