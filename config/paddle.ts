@@ -8,62 +8,31 @@ export const PADDLE_CONFIG = {
 
 // Product IDs mapping
 export const PADDLE_PRODUCTS = {
-  STARTER: process.env.PADDLE_PRODUCT_STARTER_ID || 'starter_plan_id',
-  PRO: process.env.PADDLE_PRODUCT_PRO_ID || 'pro_plan_id',
-  ENTERPRISE: process.env.PADDLE_PRODUCT_ENTERPRISE_ID || 'enterprise_plan_id',
+  SWIM_PRO_MONTHLY: process.env.PADDLE_PRODUCT_MONTHLY_ID || 'swim_pro_monthly_id',
+  SWIM_PRO_ANNUAL: process.env.PADDLE_PRODUCT_ANNUAL_ID || 'swim_pro_annual_id',
 };
 
 // Plan details for display
 export const PLAN_DETAILS = {
-  STARTER: {
-    name: 'Starter',
-    price: '$29',
-    period: '/month',
-    description: 'Perfect for individual swimmers and small teams',
+  SWIM_PRO: {
+    name: 'Swim Pro',
+    monthlyPrice: '€6',
+    annualPrice: '€60',
+    monthlyPeriod: '/month',
+    annualPeriod: '/year',
+    description: 'Complete training planning and analysis platform for swimming coaches',
     features: [
-      'Up to 5 swimmers',
-      'Basic training plans',
-      'Progress tracking',
-      'Mobile app access',
+      'Unlimited swimmers and groups',
+      'Advanced training planning with phases',
+      'AI-powered automatic zone analysis',
+      'Integrated calendar for sessions and competitions',
+      'Detailed PDF reports',
+      'Dashboard with key metrics',
       'Email support',
-      'Basic analytics'
+      '7-day free trial'
     ],
-    paddleProductId: PADDLE_PRODUCTS.STARTER
-  },
-  PRO: {
-    name: 'Pro',
-    price: '$79',
-    period: '/month',
-    description: 'Ideal for swimming clubs and competitive teams',
-    features: [
-      'Up to 25 swimmers',
-      'Advanced training plans',
-      'AI-powered zone detection',
-      'Custom workout builder',
-      'Team management tools',
-      'Advanced analytics & reports',
-      'Priority support',
-      'API access'
-    ],
-    paddleProductId: PADDLE_PRODUCTS.PRO
-  },
-  ENTERPRISE: {
-    name: 'Enterprise',
-    price: '$199',
-    period: '/month',
-    description: 'For large organizations and federations',
-    features: [
-      'Unlimited swimmers',
-      'Custom training methodologies',
-      'Advanced AI coaching',
-      'White-label options',
-      'Multi-club management',
-      'Custom integrations',
-      'Dedicated account manager',
-      'SLA guarantee',
-      'Custom reporting'
-    ],
-    paddleProductId: PADDLE_PRODUCTS.ENTERPRISE
+    monthlyProductId: PADDLE_PRODUCTS.SWIM_PRO_MONTHLY,
+    annualProductId: PADDLE_PRODUCTS.SWIM_PRO_ANNUAL
   }
 };
 

@@ -64,6 +64,15 @@ const config = {
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))',
         },
+        // Aspect Template Colors
+        obsidian: 'hsl(var(--obsidian))',
+        'dark-gray': 'hsl(var(--dark-gray))',
+        'mid-gray': 'hsl(var(--mid-gray))',
+        'overlay-gray': 'hsl(var(--overlay-gray))',
+        ebony: 'hsl(var(--ebony))',
+        charcoal: 'hsl(var(--charcoal))',
+        jet: 'hsl(var(--jet))',
+        star: 'hsl(var(--star))',
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -87,10 +96,19 @@ const config = {
             height: '0',
           },
         },
+        marquee: {
+          '0%': {
+            transform: 'translateX(0%)',
+          },
+          '100%': {
+            transform: 'translateX(-100%)',
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        marquee: 'marquee 25s linear infinite',
       },
     },
   },

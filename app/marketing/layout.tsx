@@ -1,84 +1,91 @@
-import '@/app/globals.css';
+import './styles/globals.css';
 
 import type { Metadata } from 'next';
+import { Figtree } from 'next/font/google';
 
-import { ThemeProvider } from 'next-themes';
-import { Geist } from 'next/font/google';
+import { ThemeProvider } from '@/app/marketing/components/contexts/theme-provider';
+import { Footer } from '@/app/marketing/components/layout/footer';
+import Navbar from '@/app/marketing/components/layout/navbar';
 
-import { siteConfig } from '@/config/site';
-
-const geistSans = Geist({
-  display: 'swap',
+const figtree = Figtree({
   subsets: ['latin'],
+  weight: ['400', '500', '700'],
+  variable: '--font-figtree',
 });
 
 export const metadata: Metadata = {
   title: {
-    default: siteConfig.name,
-    template: `%s - ${siteConfig.name}`,
+    default: 'DECKapp - Modern Swimming Platform',
+    template: '%s | DECKapp',
   },
-  metadataBase: new URL(siteConfig.getStartedUrl),
-  description: siteConfig.description,
+  description:
+    'A modern swimming platform built with Next.js, featuring comprehensive training management, analytics, and team collaboration tools.',
   keywords: [
-    'Landing page template',
-    'Components',
-    'Shadcn',
+    'Swimming',
+    'Training',
+    'Analytics',
+    'Team Management',
     'Next.js',
     'React',
-    'Tailwind CSS',
-    'Radix UI',
+    'TypeScript',
+    'TailwindCSS',
   ],
-  authors: [
-    {
-      name: 'Mikolaj Dobrucki',
-      url: 'https://mikolajdobrucki.com',
-    },
-  ],
-  creator: 'mikolajdobrucki',
+  authors: [{ name: 'DECKapp Team' }],
+  creator: 'DECKapp Team',
+  publisher: 'DECKapp',
+  robots: {
+    index: true,
+    follow: true,
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: '48x48' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
+    shortcut: [{ url: '/favicon.ico' }],
+  },
   openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: siteConfig.getStartedUrl,
-    title: siteConfig.name,
-    description: siteConfig.description,
-    siteName: siteConfig.name,
+    title: 'DECKapp - Modern Swimming Platform',
+    description:
+      'A modern swimming platform built with Next.js, featuring comprehensive training management, analytics, and team collaboration tools.',
+    siteName: 'DECKapp',
     images: [
       {
-        url: siteConfig.ogImage,
+        url: '/og.jpg',
         width: 1200,
         height: 630,
-        alt: siteConfig.name,
+        alt: 'DECKapp - Modern Swimming Platform',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: siteConfig.name,
-    description: siteConfig.description,
-    images: [siteConfig.ogImage],
-    creator: '@mikolajdobrucki',
-  },
-  icons: {
-    icon: '/favicon.svg',
-    apple: '/apple-touch-icon.png',
+    title: 'DECKapp - Modern Swimming Platform',
+    description:
+      'A modern swimming platform built with Next.js, featuring comprehensive training management, analytics, and team collaboration tools.',
+    images: ['/og.jpg'],
+    creator: '@deckapp',
   },
 };
 
-export default function RootLayout({
+export default function MarketingLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en' className={geistSans.className} suppressHydrationWarning>
-      <body className='bg-background text-foreground'>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`h-screen ${figtree.variable} antialiased`}>
         <ThemeProvider
-          attribute='class'
-          defaultTheme='system'
+          attribute="class"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <Navbar />
+          <main className="">{children}</main>
+          <Footer />
         </ThemeProvider>
       </body>
     </html>
