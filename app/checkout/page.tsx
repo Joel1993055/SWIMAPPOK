@@ -4,7 +4,7 @@ import { ArrowLeft, CheckCircle, CreditCard, Loader2, Shield } from 'lucide-reac
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 
 
 import { Badge } from '@/components/ui/badge';
@@ -38,7 +38,7 @@ const planDetails = {
   }
 };
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -295,5 +295,37 @@ export default function CheckoutPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-black flex items-center justify-center px-4">
+        <div className="max-w-md w-full">
+          <div className="text-center mb-4">
+            <Link href="/" className="inline-block">
+              <Image 
+                className="w-auto h-48 mx-auto mb-2" 
+                src="/DECKapp.svg" 
+                width={600} 
+                height={192} 
+                alt="DeckAPP" 
+                priority
+              />
+            </Link>
+          </div>
+          <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl border border-gray-800 p-8">
+            <div className="text-center mb-6">
+              <Loader2 className="w-8 h-8 animate-spin text-white mx-auto mb-4" />
+              <h2 className="text-2xl font-semibold text-white mb-2">Loading Checkout</h2>
+              <p className="text-gray-400">Please wait while we prepare your checkout...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    }>
+      <CheckoutContent />
+    </Suspense>
   );
 }
