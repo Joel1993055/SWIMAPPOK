@@ -237,9 +237,9 @@ export function DashboardCalendar() {
         </CardHeader>
         <CardContent className="pt-0 pb-6">
           <div className="grid grid-cols-7 gap-1 mb-3">
-            {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(day => (
+            {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, index) => (
               <div
-                key={day}
+                key={`day-${index}`}
                 className="h-10 flex items-center justify-center text-sm font-medium text-muted-foreground"
               >
                 {day}
@@ -303,9 +303,9 @@ export function DashboardCalendar() {
         <CardContent className="flex flex-1 flex-col">
           {/* Weekdays */}
           <div className="mb-3 grid grid-cols-7 gap-2">
-            {weekDays.map(day => (
+            {weekDays.map((day, index) => (
               <div
-                key={day}
+                key={`weekday-${index}`}
                 className="text-muted-foreground flex h-10 items-center justify-center text-sm font-medium"
               >
                 {day}

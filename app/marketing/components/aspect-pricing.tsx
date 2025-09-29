@@ -12,48 +12,48 @@ import { cn } from '@/lib/utils';
 const plans = [
   {
     name: 'Free',
-    monthlyPrice: '$0',
-    annualPrice: '$0',
+    monthlyPrice: '€0',
+    annualPrice: '€0',
     features: [
-      'Unlimited members',
-      '2 teams',
-      '500 issues',
-      'Slack and Github integrations',
+      'Up to 10 swimmers',
+      'Basic analytics',
+      '1 team',
+      'Basic training sessions',
     ],
     cta: 'Get started',
   },
   {
-    name: 'Startup',
-    monthlyPrice: '$8',
-    annualPrice: '$60',
-    monthlyPerUnit: 'per user/month',
-    annualPerUnit: 'per user/annum',
+    name: 'DECKapp Pro',
+    monthlyPrice: '€6',
+    annualPrice: '€60',
+    monthlyPerUnit: 'per month',
+    annualPerUnit: 'per year',
     features: [
-      'All free plan features and...',
-      'Streamline AI',
+      'Unlimited swimmers',
+      'Advanced analytics',
       'Unlimited teams',
-      'Unlimited issues and file uploads',
-      'Streamline Insights',
-      'Admin roles',
+      'Advanced training sessions',
+      'Competition tracking',
+      'Team management',
     ],
-    cta: '7 day free trial',
+    cta: 'Start Free Trial',
     popular: true,
   },
   {
     name: 'Enterprise',
-    monthlyPrice: '$15',
-    annualPrice: '$120',
-    monthlyPerUnit: 'per user/month',
-    annualPerUnit: 'per user/annum',
+    monthlyPrice: '€99',
+    annualPrice: '€990',
+    monthlyPerUnit: 'per month',
+    annualPerUnit: 'per year',
     features: [
-      'All free plan features and...',
-      'Streamline AI',
-      'Unlimited teams',
-      'Unlimited issues and file uploads',
-      'Streamline Insights',
-      'Admin roles',
+      'All Pro features',
+      'Custom integrations',
+      'Priority support',
+      'Advanced reporting',
+      'Multi-club management',
+      'API access',
     ],
-    cta: 'Get started',
+    cta: 'Contact Sales',
   },
 ];
 
@@ -62,7 +62,7 @@ const AspectPricing = () => {
 
   return (
     <section
-      id="aspect-faq"
+      id="aspect-pricing"
       className="bg-obsidian relative overflow-hidden px-2.5 lg:px-0"
     >
       <div className="border-b-dark-gray border-l-dark-gray border-r-dark-gray relative container border px-0">
@@ -70,7 +70,7 @@ const AspectPricing = () => {
           <div className="flex flex-col items-center justify-center gap-4 lg:gap-6">
             <h1 className="text-foreground text-3xl tracking-tight">Pricing</h1>
             <p className="text-mid-gray text-base">
-              Choose the plan that fits your needs
+              Choose the plan that fits your swimming club needs
             </p>
             <div className="flex items-center gap-2">
               <Switch
@@ -78,9 +78,10 @@ const AspectPricing = () => {
                 onCheckedChange={setIsAnnual}
                 aria-label="Toggle annual vs. monthly billing"
                 className="data-[state=checked]:bg-white data-[state=unchecked]:bg-white [&>span]:bg-black [&>span]:data-[state=checked]:bg-black"
+                suppressHydrationWarning
               />
               <span className="text-foreground text-sm font-medium">
-                {isAnnual ? 'Billed annually' : 'Billed monthly'}
+                {isAnnual ? 'Billed annually (Save 20%)' : 'Billed monthly'}
               </span>
             </div>
           </div>

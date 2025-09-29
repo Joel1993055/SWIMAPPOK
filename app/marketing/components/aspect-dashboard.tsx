@@ -5,26 +5,26 @@ import { cn } from '@/lib/utils';
 
 const FEATURES = [
   {
-    title: 'Click-Through Detail',
-    description: `Drill from high-level numbers straight into the underlying transactions, filters, and audit trail.`,
+    title: 'Detailed Performance Analysis',
+    description: `Drill from high-level metrics straight into individual swim times, stroke techniques, and training progress.`,
     icon: BookUser,
   },
   {
-    title: 'One-Click Transfers',
+    title: 'One-Click Session Management',
     description:
-      'Move funds between accounts (or currencies) in less than ten seconds—no separate portal required.',
+      'Create and manage training sessions in less than ten seconds—no separate tools required.',
     icon: ArrowDownUp,
   },
   {
     title: 'Smart Alerts & Insights',
     description:
-      'Set thresholds once and get proactive nudges when balances dip, spikes occur, or FX moves against you.',
+      'Set performance thresholds once and get proactive notifications when times improve, goals are reached, or training needs adjustment.',
     icon: SmartphoneNfc,
   },
   {
     title: 'Enterprise-Grade Security',
     description:
-      'AES-256 encryption, SOC 2 Type II compliance, and MFA baked in to keep every action—and every dollar—safe.',
+      'Advanced data protection with encrypted storage, secure cloud backup, and privacy controls to keep every swimmer\'s performance data—and personal information—completely secure.',
     icon: FileLock2,
   },
 ];
@@ -38,12 +38,12 @@ const AspectDashboard = () => {
       <div className="border-r-dark-gray border-l-dark-gray relative container border px-0">
         <div className="border-b-dark-gray grid grid-cols-1 gap-4 border-b px-6 pt-20 pb-6 lg:grid-cols-2 lg:gap-12 lg:px-8 lg:pt-32 lg:pb-12">
           <h1 className="text-foreground text-3xl tracking-tight">
-            See Every Dollar, Understand Every Trend, and Act with Unmatched
-            Speed
+            Track Every Stroke, Analyze Every Performance, and Improve with
+            Unmatched Precision
           </h1>
           <p className="font-inter-tight text-mid-gray text-base">
-            Our unified dashboard brings all your accounts, currencies, and
-            subsidiaries into a single panoramic view—updated in real time.
+            Our unified dashboard brings all your swimmers, training sessions, and
+            competitions into a single panoramic view—updated in real time.
           </p>
         </div>
         <div className="relative">

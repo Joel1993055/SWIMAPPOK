@@ -87,10 +87,10 @@ export const Footer = () => {
           </div>
           <div className="flex justify-end px-6 py-10 lg:px-8 lg:py-12">
             <Image
-              src="/images/layout/logo.svg"
-              alt="logo"
-              width={329}
-              height={52}
+              src="/DECKapp.svg"
+              alt="DECKapp logo"
+              width={320}
+              height={80}
               className="invert dark:invert-0"
             />
           </div>

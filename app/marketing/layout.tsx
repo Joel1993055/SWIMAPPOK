@@ -77,12 +77,12 @@ export default function MarketingLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`h-screen ${figtree.variable} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
+                <ThemeProvider
+                  attribute="class"
+                  defaultTheme="dark"
+                  enableSystem={false}
+                  disableTransitionOnChange
+                >
           <Navbar />
           <main className="">{children}</main>
           <Footer />

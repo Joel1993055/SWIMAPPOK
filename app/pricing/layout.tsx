@@ -73,7 +73,7 @@ export default function PricingLayout({
     <ThemeProvider
       attribute="class"
       defaultTheme="dark"
-      enableSystem
+      enableSystem={false}
       disableTransitionOnChange
     >
       <div className={`${figtree.variable} antialiased`}>

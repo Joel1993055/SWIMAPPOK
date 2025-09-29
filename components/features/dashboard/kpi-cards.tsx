@@ -246,8 +246,8 @@ export function KPICards() {
     if (!isHydrated || !competitions || competitions.length === 0) {
       return {
         days: 0,
-        event: 'Sin competiciones',
-        location: 'No hay eventos programados',
+        event: 'No competitions',
+        location: 'No events scheduled',
       };
     }
 
@@ -260,8 +260,8 @@ export function KPICards() {
     if (!nextCompetition) {
       return {
         days: 0,
-        event: 'Sin competiciones',
-        location: 'No hay eventos programados',
+        event: 'No competitions',
+        location: 'No events scheduled',
       };
     }
 
