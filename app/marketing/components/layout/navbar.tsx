@@ -194,14 +194,13 @@ const Navbar = () => {
         className={cn(
           'border-t-dark-gray absolute inset-x-0 top-full container flex h-[calc(100vh-80px)] flex-col border-t px-2.5 lg:px-0',
           'transition duration-300 ease-in-out lg:hidden',
-          'bg-black bg-obsidian backdrop-blur-sm',
-          'sm:bg-obsidian md:bg-obsidian lg:bg-obsidian',
           isMenuOpen
             ? 'pointer-events-auto translate-y-0 opacity-100'
             : 'pointer-events-none -translate-y-full opacity-0',
+          bgColor,
         )}
       >
-        <div className="border-dark-gray h-[calc(100vh-80px)] border-x px-5 bg-black bg-obsidian">
+        <div className="border-dark-gray h-[calc(100vh-80px)] border-x px-5">
           <nav className="mt-6 flex flex-1 flex-col gap-6">
             {ITEMS.map((link) =>
               link.dropdownItems ? (

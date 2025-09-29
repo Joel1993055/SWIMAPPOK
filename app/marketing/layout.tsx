@@ -4,6 +4,8 @@ import type { Metadata } from 'next';
 import { Figtree } from 'next/font/google';
 
 import { ThemeProvider } from '@/app/marketing/components/contexts/theme-provider';
+import { Footer } from '@/app/marketing/components/layout/footer';
+import Navbar from '@/app/marketing/components/layout/navbar';
 
 const figtree = Figtree({
   subsets: ['latin'],
@@ -75,13 +77,15 @@ export default function MarketingLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`h-screen ${figtree.variable} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem={false}
-          disableTransitionOnChange
-        >
+                <ThemeProvider
+                  attribute="class"
+                  defaultTheme="dark"
+                  enableSystem={false}
+                  disableTransitionOnChange
+                >
+          <Navbar />
           <main className="">{children}</main>
+          <Footer />
         </ThemeProvider>
       </body>
     </html>

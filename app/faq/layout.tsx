@@ -4,6 +4,8 @@ import type { Metadata } from 'next';
 import { Figtree } from 'next/font/google';
 
 import { ThemeProvider } from '@/app/marketing/components/contexts/theme-provider';
+import { Footer } from '@/app/marketing/components/layout/footer';
+import Navbar from '@/app/marketing/components/layout/navbar';
 
 const figtree = Figtree({
   subsets: ['latin'],
@@ -75,7 +77,9 @@ export default function FAQLayout({
       disableTransitionOnChange
     >
       <div className={`${figtree.variable} antialiased`}>
+        <Navbar />
         <main className="">{children}</main>
+        <Footer />
       </div>
     </ThemeProvider>
   );

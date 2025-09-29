@@ -14,14 +14,17 @@ const figtree = Figtree({
 });
 
 export const metadata: Metadata = {
-  title: 'Login - DECKapp',
-  description: 'Sign in to your DECKapp account to access your swimming team management dashboard and analytics.',
+  title: {
+    default: 'DECKapp - Modern Swimming Platform',
+    template: '%s | DECKapp',
+  },
+  description:
+    'A modern swimming platform built with Next.js, featuring comprehensive training management, analytics, and team collaboration tools.',
   keywords: [
     'Swimming',
-    'Login',
-    'Sign in',
-    'Account',
-    'Dashboard',
+    'Training',
+    'Analytics',
+    'Team Management',
     'Next.js',
     'React',
     'TypeScript',
@@ -43,28 +46,30 @@ export const metadata: Metadata = {
     shortcut: [{ url: '/favicon.ico' }],
   },
   openGraph: {
-    title: 'Login - DECKapp',
-    description: 'Sign in to your DECKapp account to access your swimming team management dashboard and analytics.',
+    title: 'DECKapp - Modern Swimming Platform',
+    description:
+      'A modern swimming platform built with Next.js, featuring comprehensive training management, analytics, and team collaboration tools.',
     siteName: 'DECKapp',
     images: [
       {
         url: '/og.jpg',
         width: 1200,
         height: 630,
-        alt: 'DECKapp Login',
+        alt: 'DECKapp - Modern Swimming Platform',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Login - DECKapp',
-    description: 'Sign in to your DECKapp account to access your swimming team management dashboard and analytics.',
+    title: 'DECKapp - Modern Swimming Platform',
+    description:
+      'A modern swimming platform built with Next.js, featuring comprehensive training management, analytics, and team collaboration tools.',
     images: ['/og.jpg'],
     creator: '@deckapp',
   },
 };
 
-export default function LoginLayout({
+export default function MarketingLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

@@ -2,7 +2,6 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { ThemeProvider } from 'next-themes';
 import { Geist } from 'next/font/google';
 import './globals.css';
-import { ConditionalNavigation } from '@/components/layout/conditional-navigation';
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -35,7 +34,6 @@ export default function RootLayout({
             enableSystem={true}
             disableTransitionOnChange={false}
           >
-            <ConditionalNavigation />
             <main className='min-h-screen'>{children}</main>
           </ThemeProvider>
         </ErrorBoundary>
