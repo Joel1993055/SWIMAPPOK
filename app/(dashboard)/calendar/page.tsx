@@ -2,8 +2,6 @@
 
 import { TrainingDetailModal } from '@/components/features/calendar/training-detail-modal';
 import { TrainingPhases } from '@/components/features/calendar/training-phases';
-import { AppSidebar } from '@/components/layout/app-sidebar';
-import { SiteHeader } from '@/components/layout/site-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -29,7 +27,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { useCompetitionsStore } from '@/core/stores/unified';
 import { createCompetition } from '@/infra/config/actions/competitions';
 import { createSession, getSessions, type Session } from '@/infra/config/actions/sessions';
@@ -46,6 +43,10 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 export default function CalendarPage() {
+  return <CalendarPageContent />;
+}
+
+function CalendarPageContent() {
   const router = useRouter();
   // FIX: Hydration state to avoid SSR errors
   const [isHydrated, setIsHydrated] = useState(false);
@@ -358,41 +359,30 @@ export default function CalendarPage() {
   // FIX: Render only after hydration
   if (!isHydrated) {
     return (
-      <SidebarProvider>
-        <AppSidebar variant="inset" />
-        <SidebarInset>
-          <SiteHeader />
-          <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-            <div className="flex items-center justify-center min-h-[400px]">
-              <div className="text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                <p className="text-muted-foreground">Loading calendar...</p>
-              </div>
-            </div>
-          </div>
-        </SidebarInset>
-      </SidebarProvider>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading calendar...</p>
+        </div>
+      </div>
     );
   }
 
   return (
-    <SidebarProvider>
-      <AppSidebar variant="inset" />
-      <SidebarInset>
-        <SiteHeader />
-        <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-          {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <CalendarIcon className="h-6 w-6 text-primary" />
-              </div>
-              <h1 className="text-3xl font-bold text-foreground">Calendar & Planning</h1>
+    <>
+      <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <CalendarIcon className="h-6 w-6 text-primary" />
             </div>
-            <p className="text-muted-foreground">
-              Monthly view of your training sessions and training phases planning
-            </p>
+            <h1 className="text-3xl font-bold text-foreground">Calendar & Planning</h1>
           </div>
+          <p className="text-muted-foreground">
+            Monthly view of your training sessions and training phases planning
+          </p>
+        </div>
 
           {/* Main layout: Calendar and panel 50/50 */}
           <div className="flex flex-col lg:flex-row gap-6 w-full">
@@ -954,7 +944,6 @@ export default function CalendarPage() {
             </div>
           </DialogContent>
         </Dialog>
-      </SidebarInset>
-    </SidebarProvider>
-  );
-}
+      </>
+    );
+  }

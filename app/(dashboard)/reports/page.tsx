@@ -1,7 +1,5 @@
 'use client';
 
-import { AppSidebar } from '@/components/layout/app-sidebar';
-import { SiteHeader } from '@/components/layout/site-header';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -17,7 +15,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useReportsPDFExport } from '@/core/hooks/use-reports-pdf-export';
 import { getSessions, type Session } from '@/infra/config/actions/sessions';
@@ -621,13 +618,5 @@ function ReportsContent() {
 }
 
 export default function ReportsPage() {
-  return (
-    <SidebarProvider>
-      <AppSidebar variant='inset' />
-      <SidebarInset>
-        <SiteHeader />
-        <ReportsContent />
-      </SidebarInset>
-    </SidebarProvider>
-  );
+  return <ReportsContent />;
 }

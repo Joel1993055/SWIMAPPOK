@@ -1,7 +1,7 @@
 'use server';
 
-import { encodedRedirect } from '@/utils/utils';
 import { createClient } from '@/utils/supabase/server';
+import { encodedRedirect } from '@/utils/utils';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -44,13 +44,17 @@ export const signInAction = async (formData: FormData) => {
   const password = formData.get('password') as string;
   const supabase = await createClient();
 
+  if (!email || !password) {
+    return encodedRedirect('error', '/auth/login', 'Email and password are required');
+  }
+
   const { error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
 
   if (error) {
-    return encodedRedirect('error', '/sign-in', error.message);
+    return encodedRedirect('error', '/auth/login', error.message);
   }
 
   return redirect('/dashboard');

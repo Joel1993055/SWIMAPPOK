@@ -4,16 +4,16 @@ import { ChevronRight, Feather } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
-    NavigationMenu,
-    NavigationMenuContent,
-    NavigationMenuItem,
-    NavigationMenuLink,
-    NavigationMenuList,
-    NavigationMenuTrigger,
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
 import { cn } from '@/utils/cn';
 
@@ -151,7 +151,7 @@ const Navbar = () => {
             {/* Auth Buttons */}
             <div className="flex items-center gap-2.5">
               <Link
-                href="/login"
+                href="/auth/login"
                 className={`transition-opacity duration-300 ${isMenuOpen ? 'max-lg:pointer-events-none max-lg:opacity-0' : 'opacity-100'}`}
               >
                 <Button size="sm">Login</Button>

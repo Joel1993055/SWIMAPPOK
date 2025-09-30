@@ -1,8 +1,6 @@
 'use client';
 
 import { AICoach } from '@/components/features/ai-coach';
-import { AppSidebar } from '@/components/layout/app-sidebar';
-import { SiteHeader } from '@/components/layout/site-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,7 +10,6 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { useAICoachStore } from '@/core/stores/unified';
 import {
     Activity,
@@ -221,13 +218,5 @@ function AICoachContent() {
 }
 
 export default function AICoachPage() {
-  return (
-    <SidebarProvider>
-      <AppSidebar variant='inset' />
-      <SidebarInset>
-        <SiteHeader />
-        <AICoachContent />
-      </SidebarInset>
-    </SidebarProvider>
-  );
+  return <AICoachContent />;
 }

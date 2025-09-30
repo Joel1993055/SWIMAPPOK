@@ -3,8 +3,6 @@
 import { Button } from '@/components/ui/button';
 import { createClient } from '@/utils/supabase/client';
 
-const supabase = createClient();
-
 interface SocialLoginProps {
   onSuccess?: () => void;
   onError?: (error: string) => void;
@@ -13,6 +11,7 @@ interface SocialLoginProps {
 export function SocialLogin({ onSuccess, onError }: SocialLoginProps) {
   const handleSocialLogin = async (provider: 'google') => {
     try {
+      const supabase = createClient();
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {

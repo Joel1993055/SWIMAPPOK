@@ -2,8 +2,6 @@
 
 import { AIZoneDetection } from '@/components/features/training/ai-zone-detection';
 import { PDFExportButton, useTrainingPDFData } from '@/components/features/training/pdf-export-button';
-import { AppSidebar } from '@/components/layout/app-sidebar';
-import { SiteHeader } from '@/components/layout/site-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,7 +9,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Textarea } from '@/components/ui/textarea';
 import { useSessionsData } from '@/core/hooks/use-sessions-data';
 import type { Session } from '@/core/types/session';
@@ -160,15 +157,7 @@ const createEmptyZoneVolumes = (): ZoneVolumeRow[] =>
 // MAIN COMPONENT
 // =====================================================
 export default function TrainingPage() {
-  return (
-    <SidebarProvider>
-      <AppSidebar variant="inset" />
-      <SidebarInset>
-        <SiteHeader />
-        <TrainingPageContent />
-      </SidebarInset>
-    </SidebarProvider>
-  );
+  return <TrainingPageContent />;
 }
 
 // =====================================================

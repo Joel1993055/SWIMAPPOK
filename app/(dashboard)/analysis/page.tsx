@@ -2,10 +2,7 @@
 
 import { AnalysisOverview } from '@/components/analysis/analysis-overview';
 import { WeeklyComparison } from '@/components/analysis/weekly-comparison';
-import { AppSidebar } from '@/components/layout/app-sidebar';
-import { SiteHeader } from '@/components/layout/site-header';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSessionsData } from '@/core/hooks/use-sessions-data';
@@ -91,13 +88,5 @@ function AnalysisContent() {
 }
 
 export default function AnalysisPage() {
-  return (
-    <SidebarProvider>
-      <AppSidebar variant='inset' />
-      <SidebarInset>
-        <SiteHeader />
-        <AnalysisContent />
-      </SidebarInset>
-    </SidebarProvider>
-  );
+  return <AnalysisContent />;
 }

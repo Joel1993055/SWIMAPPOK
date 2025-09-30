@@ -1,7 +1,5 @@
 'use client';
 
-import { AppSidebar } from '@/components/layout/app-sidebar';
-import { SiteHeader } from '@/components/layout/site-header';
 import { AccountTab } from '@/components/settings/account-tab';
 import { AppearanceTab } from '@/components/settings/appearance-tab';
 import { ClubsTab } from '@/components/settings/clubs-tab';
@@ -10,7 +8,6 @@ import { PrivacyTab } from '@/components/settings/privacy-tab';
 import { ProfileTab } from '@/components/settings/profile-tab';
 import { TrainingTab } from '@/components/settings/training-tab';
 import { Card, CardContent } from '@/components/ui/card';
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useSettings } from '@/core/hooks/use-settings';
 import { Activity, Bell, Building2, Lock, Palette, Settings as SettingsIcon, Shield, User } from 'lucide-react';
@@ -210,13 +207,5 @@ function SettingsContent() {
 }
 
 export default function SettingsPage() {
-  return (
-    <SidebarProvider>
-      <AppSidebar variant='inset' />
-      <SidebarInset>
-        <SiteHeader />
-        <SettingsContent />
-      </SidebarInset>
-    </SidebarProvider>
-  );
+  return <SettingsContent />;
 }
