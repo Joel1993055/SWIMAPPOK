@@ -160,7 +160,7 @@ export function useCrudApi<T extends { id: string }>(entityName: string) {
         },
         {
           onSuccess: () => {
-            console.log(`${entityName} created successfully`);
+            // Entity created successfully
           },
         }
       );
@@ -187,7 +187,7 @@ export function useCrudApi<T extends { id: string }>(entityName: string) {
         },
         {
           onSuccess: () => {
-            console.log(`${entityName} updated successfully`);
+            // Entity updated successfully
           },
         }
       );
@@ -204,7 +204,7 @@ export function useCrudApi<T extends { id: string }>(entityName: string) {
         },
         {
           onSuccess: () => {
-            console.log(`${entityName} deleted successfully`);
+            // Entity deleted successfully
           },
         }
       );
@@ -236,7 +236,7 @@ export function useSearchApi<T>(entityName: string) {
         },
         {
           onSuccess: () => {
-            console.log(`Search completed for ${entityName}`);
+            // Search completed
           },
         }
       );
@@ -282,7 +282,7 @@ export function usePaginatedApi<T>(entityName: string) {
         },
         {
           onSuccess: () => {
-            console.log(`Page ${page} loaded for ${entityName}`);
+            // Page loaded
           },
         }
       );

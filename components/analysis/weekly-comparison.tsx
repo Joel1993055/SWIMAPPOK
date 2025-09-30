@@ -8,7 +8,7 @@ import type { Session } from '@/infra/config/actions/sessions';
 import { addDays, format, subWeeks } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { ArrowDown, ArrowUp, BarChart3, Minus, TrendingUp } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { WeeklyBarChart } from './weekly-bar-chart';
 import { WeeklyDailyChart } from './weekly-daily-chart';
 import { WeeklyZoneRadial } from './weekly-zone-radial';
@@ -43,7 +43,7 @@ const ZONE_COLORS = {
   z5: '#8b5cf6', // Purple
 };
 
-export function WeeklyComparison({ sessions }: WeeklyComparisonProps) {
+export const WeeklyComparison = memo(function WeeklyComparison({ sessions }: WeeklyComparisonProps) {
   const [weeksCount, setWeeksCount] = useState(4);
 
   // Calcular distribución de zonas
@@ -247,4 +247,4 @@ export function WeeklyComparison({ sessions }: WeeklyComparisonProps) {
       </div>
     </div>
   );
-}
+});

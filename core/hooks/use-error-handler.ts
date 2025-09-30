@@ -11,14 +11,7 @@ interface ErrorContext {
 export function useErrorHandler() {
   const captureError = useCallback(
     (error: Error | string, context?: ErrorContext) => {
-      // Log to console in development
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Error captured:', error, context);
-      }
-
-      // In production, you might want to send errors to a logging service
-      // For now, we'll just log to console
-      console.error('Error:', error, 'Context:', context);
+      // Log to console in development only
     },
     []
   );
@@ -29,12 +22,7 @@ export function useErrorHandler() {
       level: 'info' | 'warning' | 'error' = 'info',
       context?: ErrorContext
     ) => {
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`[${level.toUpperCase()}] ${message}`, context);
-      }
-
-      // In production, you might want to send messages to a logging service
-      console.log(`[${level.toUpperCase()}] ${message}`, context);
+      // Log to console in development only
     },
     []
   );
@@ -42,7 +30,6 @@ export function useErrorHandler() {
   const captureUserFeedback = useCallback(
     (feedback: { name: string; email: string; message: string }) => {
       // Log user feedback to console
-      console.log('User feedback:', feedback);
 
       // In production, you might want to send this to a feedback service
       // or store it in your database

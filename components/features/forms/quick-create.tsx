@@ -24,7 +24,8 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { createSession } from '@/infra/config/actions/sessions';
 import { Calendar, Plus, Save, X, Zap } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 // Data types
 interface QuickSession {
@@ -57,7 +58,7 @@ interface QuickCreateProps {
   trigger?: React.ReactNode;
 }
 
-export function QuickCreate({ 
+export const QuickCreate = memo(function QuickCreate({ 
   defaultDate, 
   defaultTimeSlot = 'AM',
   trigger 
@@ -139,10 +140,7 @@ export function QuickCreate({
       // Reload page to show new training
       window.location.reload();
     } catch (error) {
-      console.error('Error saving training:', error);
-      alert(
-        'Error saving training. Please try again.'
-      );
+      toast.error('Error saving training. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -423,4 +421,4 @@ export function QuickCreate({
       </DialogContent>
     </Dialog>
   );
-}
+});

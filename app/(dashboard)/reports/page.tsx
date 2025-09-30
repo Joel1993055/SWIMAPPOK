@@ -4,34 +4,35 @@ import { AppSidebar } from '@/components/layout/app-sidebar';
 import { SiteHeader } from '@/components/layout/site-header';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from '@/components/ui/select';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { getSessions, type Session } from '@/infra/config/actions/sessions';
 import { useReportsPDFExport } from '@/core/hooks/use-reports-pdf-export';
+import { getSessions, type Session } from '@/infra/config/actions/sessions';
 import { format, subDays, subMonths, subWeeks } from 'date-fns';
 import {
-  BarChart3,
-  Calendar,
-  ClipboardListIcon,
-  Eye,
-  FileText,
-  Layout,
-  X
+    BarChart3,
+    Calendar,
+    ClipboardListIcon,
+    Eye,
+    FileText,
+    Layout,
+    X
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 // Data types
 interface ChartData {
@@ -100,7 +101,7 @@ function ReportsContent() {
         const data = await getSessions();
         setSessions(data);
       } catch (error) {
-        console.error('Error loading sessions:', error);
+        // Error handling is done in the hook
         setSessions([]);
       } finally {
         setIsLoading(false);
@@ -365,10 +366,10 @@ function ReportsContent() {
         trainings: selectedTrainings,
         period: selectedPeriod,
       });
-      alert('Report generated successfully');
+      toast.success('Report generated successfully');
     } catch (error) {
-      console.error('Error generating report:', error);
-      alert('Error generating the report');
+      // Error handling is done in the hook
+      toast.error('Error generating the report');
     } finally {
       setIsGenerating(false);
     }
@@ -378,7 +379,7 @@ function ReportsContent() {
     try {
       const template = reportTemplates.find(t => t.id === selectedTemplate);
       if (!template) {
-        alert('Please select a report template');
+        toast.error('Please select a report template');
         return;
       }
 
@@ -422,8 +423,8 @@ function ReportsContent() {
         sessions,
       });
     } catch (error) {
-      console.error('Error exporting PDF:', error);
-      alert(error instanceof Error ? error.message : 'Error exporting PDF');
+      // Error handling is done in the hook
+      toast.error(error instanceof Error ? error.message : 'Error exporting PDF');
     }
   };
 

@@ -3,12 +3,12 @@
 // =====================================================
 
 import {
-  useAICoachStore,
-  useAuthStore,
-  useCompetitionsStore,
-  useReportsStore,
-  useSessionsStore,
-  useTrainingStore,
+    useAICoachStore,
+    useAuthStore,
+    useCompetitionsStore,
+    useReportsStore,
+    useSessionsStore,
+    useTrainingStore,
 } from '@/lib/store/unified';
 import { useEffect } from 'react';
 
@@ -27,11 +27,11 @@ export function useSessionsMigration() {
           const parsed = JSON.parse(stored);
           if (parsed.state?.sessions) {
             setSessions(parsed.state.sessions);
-            console.log('✅ Sessions migradas exitosamente');
+            // Sessions migrated successfully
           }
         }
       } catch (error) {
-        console.warn('⚠️ Error migrando sessions:', error);
+        // Error migrating sessions
       }
     };
 
@@ -52,10 +52,10 @@ export function useCompetitionsMigration() {
         if (stored) {
           const competitions = JSON.parse(stored);
           setCompetitions(competitions);
-          console.log('✅ Competitions migradas exitosamente');
+          // Competitions migrated successfully
         }
       } catch (error) {
-        console.warn('⚠️ Error migrando competitions:', error);
+        // Error migrating competitions
       }
     };
 
@@ -82,10 +82,10 @@ export function useTrainingZonesMigration() {
         if (customZones) {
           const zones = JSON.parse(customZones);
           setZones(zones);
-          console.log('✅ Training zones migradas exitosamente');
+          // Training zones migrated successfully
         }
       } catch (error) {
-        console.warn('⚠️ Error migrando training zones:', error);
+        // Error migrating training zones
       }
     };
 

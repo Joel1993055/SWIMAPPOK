@@ -1,7 +1,7 @@
 'use client';
 
-import { PriceCards } from '@/components/home/pricing/price-cards';
-import { Toggle } from '@/components/shared/toggle';
+import { Toggle } from '@/components/common/theme-toggle';
+import { PriceCards } from '@/components/marketing/home/pricing/price-cards';
 import { BillingFrequency, IBillingFrequency } from '@/constants/billing-frequency';
 import { useEffect, useState } from 'react';
 

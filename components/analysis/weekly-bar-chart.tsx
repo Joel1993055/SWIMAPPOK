@@ -2,7 +2,7 @@
 
 import type { Session } from '@/infra/config/actions/sessions';
 import { addDays, subWeeks } from 'date-fns';
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import {
     Bar,
     CartesianGrid,
@@ -30,7 +30,7 @@ interface WeeklyData {
   weekLabel: string;
 }
 
-export function WeeklyBarChart({ sessions, weeksCount }: WeeklyBarChartProps) {
+export const WeeklyBarChart = memo(function WeeklyBarChart({ sessions, weeksCount }: WeeklyBarChartProps) {
   // Calcular datos semanales
   const weeklyData = useMemo(() => {
     const weeks: WeeklyData[] = [];
@@ -171,4 +171,4 @@ export function WeeklyBarChart({ sessions, weeksCount }: WeeklyBarChartProps) {
       </div>
     </div>
   );
-}
+});

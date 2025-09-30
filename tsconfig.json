@@ -1,10 +1,29 @@
 {
   "extends": "./configs/tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./*"],
+      "@/app/*": ["./app/*"],
+      "@/components/*": ["./components/*"],
+      "@/utils/*": ["./utils/*"],
+      "@/core/*": ["./core/*"],
+      "@/constants/*": ["./constants/*"],
+      "@/lib/*": ["./lib/*"]
+    }
+  },
   "include": [
     "configs/next-env.d.ts",
     "configs/**/*.ts",
     "configs/**/*.tsx",
     "configs/.next/types/**/*.ts",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "components/**/*.ts",
+    "components/**/*.tsx",
+    "utils/**/*.ts",
+    "core/**/*.ts",
+    "constants/**/*.ts",
+    "lib/**/*.ts"
   ]
 }

@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/navigation-menu';
 import { cn } from '@/utils/cn';
 
-import { ThemeToggle } from '../ui/theme-toggle';
+import { ThemeToggle } from '@/components/common/theme-toggle';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

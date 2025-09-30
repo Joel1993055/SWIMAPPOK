@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import type { TrainingZones } from '@/core/hooks/use-settings';
 import { useTrainingStore } from '@/core/stores/unified';
 import { Activity, RotateCcw, Save } from 'lucide-react';
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 
 interface TrainingTabProps {
   trainingZones: TrainingZones | null;
@@ -17,7 +17,7 @@ interface TrainingTabProps {
   isSaving: boolean;
 }
 
-export function TrainingTab({ 
+export const TrainingTab = memo(function TrainingTab({ 
   trainingZones, 
   onSaveZones, 
   onApplyMethodology, 
@@ -27,7 +27,7 @@ export function TrainingTab({
   const [localZones, setLocalZones] = useState<TrainingZones | null>(trainingZones);
   const [hasChanges, setHasChanges] = useState(false);
 
-  const handleZoneChange = (zone: keyof TrainingZones, field: 'name' | 'min' | 'max', value: string) => {
+  const handleZoneChange = useCallback((zone: keyof TrainingZones, field: 'name' | 'min' | 'max', value: string) => {
     if (!localZones) return;
     
     setLocalZones(prev => ({
@@ -38,15 +38,15 @@ export function TrainingTab({
       }
     }));
     setHasChanges(true);
-  };
+  }, []);
 
-  const resetZonesToDefault = () => {
+  const resetZonesToDefault = useCallback(() => {
     const defaultZones = methodologies.standard.zones as unknown as TrainingZones;
     setLocalZones(defaultZones);
     setHasChanges(true);
-  };
+  }, [methodologies]);
 
-  const handleSaveZones = async () => {
+  const handleSaveZones = useCallback(async () => {
     if (!localZones) return;
     
     try {
@@ -55,9 +55,9 @@ export function TrainingTab({
     } catch (error) {
       // Error handling is done in the hook
     }
-  };
+  }, [localZones, onSaveZones]);
 
-  const handleApplyMethodology = async (methodologyKey: string) => {
+  const handleApplyMethodology = useCallback(async (methodologyKey: string) => {
     try {
       await onApplyMethodology(methodologyKey);
       // Update local zones after applying methodology
@@ -69,7 +69,7 @@ export function TrainingTab({
     } catch (error) {
       // Error handling is done in the hook
     }
-  };
+  }, [onApplyMethodology, methodologies]);
 
   if (!localZones) {
     return (
@@ -234,4 +234,4 @@ export function TrainingTab({
       </Card>
     </div>
   );
-}
+});

@@ -43,6 +43,7 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 export default function CalendarPage() {
   const router = useRouter();
@@ -271,8 +272,7 @@ export default function CalendarPage() {
         mainSet: 'Warm up + Main set + Cool down'
       });
     } catch (error) {
-      console.error('Error saving training:', error);
-      alert('Error saving training. Please try again.');
+      toast.error('Error saving training. Please try again.');
     } finally {
       setIsLoadingTraining(false);
     }
@@ -317,8 +317,7 @@ export default function CalendarPage() {
         priority: 'medium'
       });
     } catch (error) {
-      console.error('Error saving competition:', error);
-      alert('Error saving competition. Please try again.');
+      toast.error('Error saving competition. Please try again.');
     } finally {
       setIsLoadingCompetition(false);
     }

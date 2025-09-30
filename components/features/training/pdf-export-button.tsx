@@ -3,7 +3,8 @@
 import { Button } from '@/components/ui/button';
 import { exportMultipleTrainingsToPDF, exportTrainingToPDF, type TrainingPDFData } from '@/core/utils/pdf-export';
 import { Download, FileText, Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
+import { toast } from 'sonner';
 
 interface PDFExportButtonProps {
   training?: TrainingPDFData;
@@ -14,7 +15,7 @@ interface PDFExportButtonProps {
   children?: React.ReactNode;
 }
 
-export function PDFExportButton({ 
+export const PDFExportButton = memo(function PDFExportButton({ 
   training, 
   trainings, 
   variant = 'outline',
@@ -24,7 +25,7 @@ export function PDFExportButton({
 }: PDFExportButtonProps) {
   const [isExporting, setIsExporting] = useState(false);
 
-  const handleExport = async () => {
+  const handleExport = useCallback(async () => {
     if (!training && !trainings) return;
 
     setIsExporting(true);
@@ -35,12 +36,11 @@ export function PDFExportButton({
         await exportMultipleTrainingsToPDF(trainings);
       }
     } catch (error) {
-      console.error('Error exportando a PDF:', error);
-      alert('Error al exportar el PDF. Por favor, inténtalo de nuevo.');
+      toast.error('Error exporting PDF. Please try again.');
     } finally {
       setIsExporting(false);
     }
-  };
+  }, [training, trainings]);
 
   const getButtonText = () => {
     if (isExporting) return 'Exportando...';
@@ -66,7 +66,7 @@ export function PDFExportButton({
       {children || getButtonText()}
     </Button>
   );
-}
+});
 
 /**
  * Hook para convertir datos de sesión a formato PDF

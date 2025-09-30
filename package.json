@@ -3,11 +3,19 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:turbo": "next dev --turbopack",
+    "dev:fast": "next dev --port 3000 --hostname 0.0.0.0",
     "build": "next build",
+    "build:analyze": "ANALYZE=true next build",
     "start": "next start",
+    "clean": "rm -rf .next && rm -rf node_modules/.cache",
+    "clean:all": "rm -rf .next && rm -rf node_modules && npm install",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@dnd-kit/accessibility": "^3.1.1",

@@ -7,30 +7,58 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Eye, EyeOff, Globe, Lock, Save, Smartphone } from 'lucide-react';
-import { useState } from 'react';
+import { memo, useCallback, useState } from 'react';
+import { toast } from 'sonner';
 
-export function AccountTab() {
+export const AccountTab = memo(function AccountTab() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+  const [passwords, setPasswords] = useState({
+    current: '',
+    new: '',
+    confirm: ''
+  });
 
-  const handlePasswordChange = () => {
+  const handlePasswordChange = useCallback((field: keyof typeof passwords, value: string) => {
+    setPasswords(prev => ({ ...prev, [field]: value }));
     setHasChanges(true);
-  };
+  }, []);
 
-  const handleSavePassword = async () => {
+  const handleSavePassword = useCallback(async () => {
+    // Validation
+    if (!passwords.current || !passwords.new || !passwords.confirm) {
+      toast.error('Please fill in all password fields');
+      return;
+    }
+
+    if (passwords.new !== passwords.confirm) {
+      toast.error('New passwords do not match');
+      return;
+    }
+
+    if (passwords.new.length < 8) {
+      toast.error('New password must be at least 8 characters long');
+      return;
+    }
+
     try {
       setIsSaving(true);
-      // TODO: Implement password update
-      console.log('Password update requested');
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      
+      // Simulate API call - replace with actual password update
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Reset form
+      setPasswords({ current: '', new: '', confirm: '' });
       setHasChanges(false);
+      
+      toast.success('Password updated successfully');
     } catch (error) {
-      console.error('Error updating password:', error);
+      toast.error('Failed to update password. Please try again.');
     } finally {
       setIsSaving(false);
     }
-  };
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -53,7 +81,8 @@ export function AccountTab() {
                   id="current-password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Enter your current password"
-                  onChange={handlePasswordChange}
+                  value={passwords.current}
+                  onChange={e => handlePasswordChange('current', e.target.value)}
                 />
                 <Button
                   type="button"
@@ -76,7 +105,8 @@ export function AccountTab() {
                 id="new-password"
                 type="password"
                 placeholder="Enter your new password"
-                onChange={handlePasswordChange}
+                value={passwords.new}
+                onChange={e => handlePasswordChange('new', e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -85,7 +115,8 @@ export function AccountTab() {
                 id="confirm-password"
                 type="password"
                 placeholder="Confirm your new password"
-                onChange={handlePasswordChange}
+                value={passwords.confirm}
+                onChange={e => handlePasswordChange('confirm', e.target.value)}
               />
             </div>
           </div>
@@ -138,4 +169,4 @@ export function AccountTab() {
       </Card>
     </div>
   );
-}
+});

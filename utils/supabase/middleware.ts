@@ -63,7 +63,7 @@ export const updateSession = async (request: NextRequest) => {
     );
     
     if (isProtectedRoute && user.error) {
-      return NextResponse.redirect(new URL('/login', request.url));
+      return NextResponse.redirect(new URL('/auth/signin', request.url));
     }
 
     if (request.nextUrl.pathname === '/' && !user.error) {

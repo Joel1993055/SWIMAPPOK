@@ -1,6 +1,6 @@
-import { ErrorBoundary } from '@/components/error-boundary';
 import { ThemeProvider } from 'next-themes';
 import { Geist } from 'next/font/google';
+import { ErrorBoundary } from '../components/error-boundary';
 import './globals.css';
 
 const defaultUrl = process.env.VERCEL_URL

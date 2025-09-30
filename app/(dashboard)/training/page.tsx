@@ -13,21 +13,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Textarea } from '@/components/ui/textarea';
-import { createSession, deleteSession, updateSession, type Session as SupabaseSession } from '@/infra/config/actions/sessions';
 import { useSessionsData } from '@/core/hooks/use-sessions-data';
 import type { Session } from '@/core/types/session';
+import { createSession, deleteSession, updateSession, type Session as SupabaseSession } from '@/infra/config/actions/sessions';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import {
-  Calendar as CalendarIcon,
-  Edit,
-  FileText,
-  MapPin,
-  Plus,
-  Save,
-  Target,
-  Trash2,
-  Users
+    Calendar as CalendarIcon,
+    Edit,
+    FileText,
+    MapPin,
+    Plus,
+    Save,
+    Target,
+    Trash2,
+    Users
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -241,7 +241,7 @@ function TrainingPageContent() {
         
         handleSaveSuccess('Training deleted successfully');
     } catch (error) {
-      console.error('Error deleting training:', error);
+      // Error handling is done in the hook
         handleSaveError('Error deleting training');
     } finally {
       setIsLoading(false);
@@ -519,9 +519,7 @@ function TrainingForm({
       }
 
       // Reload sessions to show changes
-      console.log('Reloading sessions after saving...');
       await onRefresh();
-      console.log('Sessions reloaded successfully');
 
 
       // Reset form only if we're not editing
@@ -541,7 +539,7 @@ function TrainingForm({
       }
 
     } catch (error) {
-      console.error('Error saving training:', error);
+      // Error handling is done in the hook
       onSaveError(`Error saving training: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsLoading(false);

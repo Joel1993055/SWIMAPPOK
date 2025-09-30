@@ -42,6 +42,7 @@ import {
     X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 // ==============================
 // Data Types
@@ -495,19 +496,19 @@ export function PlanificacionOverview() {
 
   const handleSaveCompetition = () => {
     if (!competitionForm.name.trim()) {
-      alert('Competition name is required');
+      toast.error('Competition name is required');
       return;
     }
     if (!competitionForm.date) {
-      alert('Competition date is required');
+      toast.error('Competition date is required');
       return;
     }
     if (!competitionForm.location.trim()) {
-      alert('Competition location is required');
+      toast.error('Competition location is required');
       return;
     }
     if (competitionForm.events.length === 0) {
-      alert('You must select at least one event');
+      toast.error('You must select at least one event');
       return;
     }
 
@@ -530,8 +531,7 @@ export function PlanificacionOverview() {
         updateCompetition(editingCompetition, competitionData);
       }
     } catch (error) {
-      console.error('Error saving competition:', error);
-      alert('Error saving competition. Please try again.');
+      toast.error('Error saving competition. Please try again.');
       return;
     }
 

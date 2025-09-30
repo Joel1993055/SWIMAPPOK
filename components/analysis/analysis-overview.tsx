@@ -13,7 +13,7 @@ import {
     TrendingUp,
     Zap
 } from 'lucide-react';
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 
 interface AnalysisOverviewProps {
   sessions: Session[];
@@ -21,7 +21,7 @@ interface AnalysisOverviewProps {
   onPeriodChange: (period: string) => void;
 }
 
-export function AnalysisOverview({ sessions, selectedPeriod, onPeriodChange }: AnalysisOverviewProps) {
+export const AnalysisOverview = memo(function AnalysisOverview({ sessions, selectedPeriod, onPeriodChange }: AnalysisOverviewProps) {
   // Filtrar sesiones por período
   const filteredSessions = useMemo(() => {
     const now = new Date();
@@ -293,4 +293,4 @@ export function AnalysisOverview({ sessions, selectedPeriod, onPeriodChange }: A
       </Card>
     </div>
   );
-}
+});

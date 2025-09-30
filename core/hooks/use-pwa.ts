@@ -125,7 +125,7 @@ export function usePWA(): PWAState & PWAActions {
             }
           });
 
-          console.log('[PWA] Service Worker registered successfully');
+          // Service Worker registered successfully
         };
 
         // Ejecutar en background
