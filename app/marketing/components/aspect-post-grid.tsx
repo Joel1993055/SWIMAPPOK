@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import type { BlogPost } from '@/lib/blog';
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils/cn';
 
 type Props = { posts: BlogPost[] };
 

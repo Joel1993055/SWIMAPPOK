@@ -3,12 +3,12 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { signOutAction } from '@/lib/actions/auth';
 import { createClient } from '@/utils/supabase/client';
@@ -87,13 +87,13 @@ export function UserMenu() {
         <DropdownMenuItem asChild>
           <a href='/settings' className='flex items-center'>
             <Settings className='mr-2 h-4 w-4' />
-            <span>Configuración</span>
+            <span>Settings</span>
           </a>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut} className='text-red-600'>
           <LogOut className='mr-2 h-4 w-4' />
-          <span>Cerrar sesión</span>
+          <span>Sign Out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

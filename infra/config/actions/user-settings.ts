@@ -15,6 +15,34 @@ export interface TrainingZones {
 export interface UserSettingsData {
   training_zones: TrainingZones;
   selected_methodology: string;
+  profile_data?: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    bio: string;
+  };
+  notification_settings?: {
+    email: boolean;
+    push: boolean;
+    sms: boolean;
+    weekly: boolean;
+    monthly: boolean;
+    achievements: boolean;
+    reminders: boolean;
+  };
+  appearance_settings?: {
+    theme: 'light' | 'dark' | 'system';
+    language: 'en' | 'es' | 'fr' | 'de';
+    timezone: string;
+    distanceUnit: 'meters' | 'yards';
+    temperatureUnit: 'celsius' | 'fahrenheit';
+  };
+  privacy_settings?: {
+    publicProfile: boolean;
+    shareActivity: boolean;
+    dataAnalytics: boolean;
+  };
 }
 
 export interface UserSettings extends UserSettingsData {
@@ -132,6 +160,50 @@ export async function updateUserSettings(formData: FormData) {
   const selectedMethodology = formData.get('selected_methodology');
   if (selectedMethodology) {
     settingsData.selected_methodology = selectedMethodology as string;
+  }
+
+  // Actualizar datos de perfil si se proporcionan
+  const profileData = formData.get('profile_data');
+  if (profileData) {
+    try {
+      settingsData.profile_data = JSON.parse(profileData as string);
+    } catch (error) {
+      console.error('Error parseando profile_data:', error);
+      throw new Error('Error en el formato de los datos de perfil');
+    }
+  }
+
+  // Actualizar configuraciones de notificaciones si se proporcionan
+  const notificationSettings = formData.get('notification_settings');
+  if (notificationSettings) {
+    try {
+      settingsData.notification_settings = JSON.parse(notificationSettings as string);
+    } catch (error) {
+      console.error('Error parseando notification_settings:', error);
+      throw new Error('Error en el formato de las configuraciones de notificaciones');
+    }
+  }
+
+  // Actualizar configuraciones de apariencia si se proporcionan
+  const appearanceSettings = formData.get('appearance_settings');
+  if (appearanceSettings) {
+    try {
+      settingsData.appearance_settings = JSON.parse(appearanceSettings as string);
+    } catch (error) {
+      console.error('Error parseando appearance_settings:', error);
+      throw new Error('Error en el formato de las configuraciones de apariencia');
+    }
+  }
+
+  // Actualizar configuraciones de privacidad si se proporcionan
+  const privacySettings = formData.get('privacy_settings');
+  if (privacySettings) {
+    try {
+      settingsData.privacy_settings = JSON.parse(privacySettings as string);
+    } catch (error) {
+      console.error('Error parseando privacy_settings:', error);
+      throw new Error('Error en el formato de las configuraciones de privacidad');
+    }
   }
 
   // Actualizar en la base de datos

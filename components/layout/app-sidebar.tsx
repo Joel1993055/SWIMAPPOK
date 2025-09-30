@@ -3,14 +3,10 @@
 import {
     BarChartIcon,
     BookOpenIcon,
-    Building2,
     CalendarIcon,
-    ClipboardListIcon,
     HelpCircleIcon,
     LayoutDashboardIcon,
     Plus,
-    SettingsIcon,
-    Users,
     Wrench
 } from 'lucide-react';
 import Image from 'next/image';
@@ -59,18 +55,8 @@ const data = {
       url: '/tools',
       icon: Wrench,
     },
-    {
-      title: 'Coach Resources',
-      url: '/coach-resources',
-      icon: Users,
-    },
   ],
   navTools: [
-    {
-      name: 'Reports',
-      url: '/reports',
-      icon: ClipboardListIcon,
-    },
     {
       name: 'Log',
       url: '/log',
@@ -78,16 +64,6 @@ const data = {
     },
   ],
   navSecondary: [
-    {
-      title: 'Settings',
-      url: '/settings',
-      icon: SettingsIcon,
-    },
-    {
-      title: 'Clubs and Teams',
-      url: '/settings?tab=clubes',
-      icon: Building2,
-    },
     {
       title: 'Help',
       url: '#',

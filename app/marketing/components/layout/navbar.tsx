@@ -15,7 +15,7 @@ import {
     NavigationMenuList,
     NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils/cn';
 
 import { ThemeToggle } from '../ui/theme-toggle';
 

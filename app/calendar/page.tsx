@@ -31,7 +31,8 @@ import {
 } from '@/components/ui/select';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { useCompetitionsStore } from '@/core/stores/unified';
-import { getSessions, type Session } from '@/infra/config/actions/sessions';
+import { createCompetition } from '@/infra/config/actions/competitions';
+import { createSession, getSessions, type Session } from '@/infra/config/actions/sessions';
 import {
     Activity,
     Calendar as CalendarIcon,
@@ -40,9 +41,11 @@ import {
     Plus,
     Target,
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function CalendarPage() {
+  const router = useRouter();
   // FIX: Hydration state to avoid SSR errors
   const [isHydrated, setIsHydrated] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -56,6 +59,25 @@ export default function CalendarPage() {
   const [selectedTraining, setSelectedTraining] = useState<Session | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCompetitionModalOpen, setIsCompetitionModalOpen] = useState(false);
+  const [isTrainingModalOpen, setIsTrainingModalOpen] = useState(false);
+  const [isLoadingTraining, setIsLoadingTraining] = useState(false);
+  const [isLoadingCompetition, setIsLoadingCompetition] = useState(false);
+  
+  // Form states
+  const [trainingForm, setTrainingForm] = useState({
+    distance: '1000',
+    stroke: 'Freestyle',
+    sessionType: 'Training',
+    rpe: '5',
+    mainSet: 'Warm up + Main set + Cool down'
+  });
+  
+  const [competitionForm, setCompetitionForm] = useState({
+    name: '',
+    location: '',
+    type: 'local',
+    priority: 'medium'
+  });
 
   // KEEP: Existing context
   const { getCompetitionsByDate } = useCompetitionsStore();
@@ -205,10 +227,101 @@ export default function CalendarPage() {
   };
 
   const handleEditTraining = (training: Session) => {
-    // Here you could navigate to an edit page or open an edit modal
-    console.log('Edit training:', training);
-    // For now just close the modal
     handleCloseModal();
+    router.push(`/training?edit=${training.id}`);
+  };
+
+  // Handle add training
+  const handleAddTraining = () => {
+    setIsTrainingModalOpen(true);
+  };
+
+  const handleSaveTraining = async () => {
+    if (!selectedDate) return;
+    
+    setIsLoadingTraining(true);
+    try {
+      const formData = new FormData();
+      const dateKey = `${selectedDate.year}-${String(
+        months.findIndex(m => m.name === selectedDate.month) + 1
+      ).padStart(2, '0')}-${String(selectedDate.day).padStart(2, '0')}`;
+      
+      formData.append('date', dateKey);
+      formData.append('distance', trainingForm.distance);
+      formData.append('stroke', trainingForm.stroke);
+      formData.append('sessionType', trainingForm.sessionType);
+      formData.append('rpe', trainingForm.rpe);
+      formData.append('mainSet', trainingForm.mainSet);
+      formData.append('objective', 'Training');
+      formData.append('time_slot', 'AM');
+      formData.append('content', trainingForm.mainSet);
+
+      await createSession(formData);
+      
+      // Reload sessions
+      const data = await getSessions();
+      setSessions(data);
+      
+      setIsTrainingModalOpen(false);
+      setTrainingForm({
+        distance: '1000',
+        stroke: 'Freestyle',
+        sessionType: 'Training',
+        rpe: '5',
+        mainSet: 'Warm up + Main set + Cool down'
+      });
+    } catch (error) {
+      console.error('Error saving training:', error);
+      alert('Error saving training. Please try again.');
+    } finally {
+      setIsLoadingTraining(false);
+    }
+  };
+
+  // Handle add competition
+  const handleSaveCompetition = async () => {
+    if (!selectedDate || !competitionForm.name) return;
+    
+    setIsLoadingCompetition(true);
+    try {
+      const formData = new FormData();
+      const dateKey = `${selectedDate.year}-${String(
+        months.findIndex(m => m.name === selectedDate.month) + 1
+      ).padStart(2, '0')}-${String(selectedDate.day).padStart(2, '0')}`;
+      
+      formData.append('name', competitionForm.name);
+      formData.append('date', dateKey);
+      formData.append('priority', competitionForm.priority);
+      formData.append('location', competitionForm.location);
+      formData.append('description', `${competitionForm.type} competition`);
+
+      const newCompetition = await createCompetition(formData);
+      
+      // Add to store
+      const { addCompetition } = useCompetitionsStore.getState();
+      addCompetition({
+        id: newCompetition.id,
+        name: competitionForm.name,
+        date: dateKey,
+        priority: competitionForm.priority as 'low' | 'medium' | 'high',
+        location: competitionForm.location,
+        type: competitionForm.type,
+        status: 'upcoming'
+      });
+      
+      setIsCompetitionModalOpen(false);
+      setCompetitionForm({
+        name: '',
+        location: '',
+        type: 'local',
+        priority: 'medium'
+      });
+    } catch (error) {
+      console.error('Error saving competition:', error);
+      alert('Error saving competition. Please try again.');
+    } finally {
+      setIsLoadingCompetition(false);
+    }
   };
 
   const getSelectedDayData = () => {
@@ -623,17 +736,14 @@ export default function CalendarPage() {
 
                       {/* Action Buttons - Always show when a day is selected */}
                       <div className="flex gap-2 pt-4 border-t">
-                        <Button
-                          onClick={() => {
-                            // TODO: Implement add training logic
-                            console.log('Add training clicked');
-                          }}
-                          className="flex-1 gap-2 bg-blue-500 hover:bg-blue-600 text-white"
-                          size="sm"
-                        >
-                          <Plus className="h-4 w-4" />
-                          Add Training
-                        </Button>
+                <Button
+                  onClick={handleAddTraining}
+                  className="flex-1 gap-2 bg-blue-500 hover:bg-blue-600 text-white"
+                  size="sm"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Training
+                </Button>
                         <Button
                           onClick={() => setIsCompetitionModalOpen(true)}
                           className="flex-1 gap-2 bg-white text-gray-900 hover:bg-gray-50 border border-gray-200"
@@ -676,6 +786,95 @@ export default function CalendarPage() {
           onEdit={handleEditTraining}
         />
 
+        {/* Training Creation Modal */}
+        <Dialog open={isTrainingModalOpen} onOpenChange={setIsTrainingModalOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Add Training</DialogTitle>
+              <DialogDescription>
+                Add a new training session for {selectedDate ? `${selectedDate.day} of ${selectedDate.month} ${selectedDate.year}` : 'selected day'}
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="training-distance">Distance (meters)</Label>
+                <Input
+                  id="training-distance"
+                  placeholder="e.g., 1000"
+                  value={trainingForm.distance}
+                  onChange={(e) => setTrainingForm(prev => ({ ...prev, distance: e.target.value }))}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="training-stroke">Stroke</Label>
+                <Select 
+                  value={trainingForm.stroke}
+                  onValueChange={(value) => setTrainingForm(prev => ({ ...prev, stroke: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select stroke" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Freestyle">Freestyle</SelectItem>
+                    <SelectItem value="Backstroke">Backstroke</SelectItem>
+                    <SelectItem value="Breaststroke">Breaststroke</SelectItem>
+                    <SelectItem value="Butterfly">Butterfly</SelectItem>
+                    <SelectItem value="IM">Individual Medley</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="training-rpe">RPE (Rate of Perceived Exertion)</Label>
+                <Select 
+                  value={trainingForm.rpe}
+                  onValueChange={(value) => setTrainingForm(prev => ({ ...prev, rpe: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select RPE" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1 - Very Easy</SelectItem>
+                    <SelectItem value="2">2 - Easy</SelectItem>
+                    <SelectItem value="3">3 - Moderate</SelectItem>
+                    <SelectItem value="4">4 - Somewhat Hard</SelectItem>
+                    <SelectItem value="5">5 - Hard</SelectItem>
+                    <SelectItem value="6">6 - Very Hard</SelectItem>
+                    <SelectItem value="7">7 - Extremely Hard</SelectItem>
+                    <SelectItem value="8">8 - Maximal</SelectItem>
+                    <SelectItem value="9">9 - Near Maximal</SelectItem>
+                    <SelectItem value="10">10 - Maximal</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="training-main-set">Main Set</Label>
+                <Input
+                  id="training-main-set"
+                  placeholder="e.g., Warm up + Main set + Cool down"
+                  value={trainingForm.mainSet}
+                  onChange={(e) => setTrainingForm(prev => ({ ...prev, mainSet: e.target.value }))}
+                />
+              </div>
+            </div>
+            
+            <div className="flex justify-end gap-2 pt-4">
+              <Button variant="outline" onClick={() => setIsTrainingModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleSaveTraining}
+                disabled={isLoadingTraining || !trainingForm.distance}
+              >
+                {isLoadingTraining ? 'Saving...' : 'Add Training'}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
         {/* Competition Modal */}
         <Dialog open={isCompetitionModalOpen} onOpenChange={setIsCompetitionModalOpen}>
           <DialogContent className="max-w-md">
@@ -692,6 +891,8 @@ export default function CalendarPage() {
                 <Input
                   id="comp-name"
                   placeholder="e.g., National Championships"
+                  value={competitionForm.name}
+                  onChange={(e) => setCompetitionForm(prev => ({ ...prev, name: e.target.value }))}
                 />
               </div>
               
@@ -700,12 +901,17 @@ export default function CalendarPage() {
                 <Input
                   id="comp-location"
                   placeholder="e.g., Madrid, Spain"
+                  value={competitionForm.location}
+                  onChange={(e) => setCompetitionForm(prev => ({ ...prev, location: e.target.value }))}
                 />
               </div>
               
               <div className="space-y-2">
                 <Label htmlFor="comp-type">Type</Label>
-                <Select>
+                <Select 
+                  value={competitionForm.type}
+                  onValueChange={(value) => setCompetitionForm(prev => ({ ...prev, type: value }))}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select competition type" />
                   </SelectTrigger>
@@ -717,18 +923,34 @@ export default function CalendarPage() {
                   </SelectContent>
                 </Select>
               </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="comp-priority">Priority</Label>
+                <Select 
+                  value={competitionForm.priority}
+                  onValueChange={(value) => setCompetitionForm(prev => ({ ...prev, priority: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select priority" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="high">High</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             
             <div className="flex justify-end gap-2 pt-4">
               <Button variant="outline" onClick={() => setIsCompetitionModalOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={() => {
-                // TODO: Implement save competition logic
-                console.log('Save competition');
-                setIsCompetitionModalOpen(false);
-              }}>
-                Add Competition
+              <Button 
+                onClick={handleSaveCompetition}
+                disabled={isLoadingCompetition || !competitionForm.name}
+              >
+                {isLoadingCompetition ? 'Saving...' : 'Add Competition'}
               </Button>
             </div>
           </DialogContent>

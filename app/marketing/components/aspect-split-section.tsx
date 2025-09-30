@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils/cn';
 
 interface AspectSplitSectionProps {
   header: string;

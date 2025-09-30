@@ -158,21 +158,21 @@ export function NavUser() {
             <DropdownMenuGroup>
               <DropdownMenuItem onClick={handleSettings} className='cursor-pointer'>
                 <SettingsIcon className='mr-2 h-4 w-4' />
-                <span>Configuración</span>
+                <span>Settings</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleProfile} className='cursor-pointer'>
                 <UserCircleIcon className='mr-2 h-4 w-4' />
-                <span>Perfil</span>
+                <span>Profile</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleNotifications} className='cursor-pointer'>
                 <BellIcon className='mr-2 h-4 w-4' />
-                <span>Notificaciones</span>
+                <span>Notifications</span>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleSignOut} className='text-red-600'>
               <LogOutIcon className='mr-2 h-4 w-4' />
-              <span>Cerrar sesión</span>
+              <span>Sign Out</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
