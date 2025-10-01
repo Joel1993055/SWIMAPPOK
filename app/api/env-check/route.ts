@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server'
 
-export function GET() {
+export async function GET() {
   return NextResponse.json({
-    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ?? null,
-    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'exists' : null,
-    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY ? 'exists' : null,
-  });
+    url: process.env.NEXT_PUBLIC_SUPABASE_URL || "MISSING",
+    anon: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? "OK" : "MISSING",
+    service: process.env.SUPABASE_SERVICE_ROLE_KEY ? "OK" : "MISSING",
+  })
 }

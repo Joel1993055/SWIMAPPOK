@@ -4,7 +4,6 @@
  */
 
 import { useErrorHandler } from '@/core/hooks/use-error-handler';
-import { checkIfUserHasData } from '@/utils/demo-data-seeder';
 import { useCallback, useEffect, useState } from 'react';
 
 interface OnboardingState {
@@ -38,16 +37,14 @@ export function useOnboarding(userId: string | null): OnboardingState & Onboardi
     try {
       setState(prev => ({ ...prev, isLoading: true }));
 
-      // Check if user has any data
-      const hasData = await checkIfUserHasData(userId);
-      
-      // Check if user has completed onboarding (stored in localStorage)
+      // Simplified: Assume new users should see welcome tour
+      // You can add your own logic here if needed
       const hasCompletedOnboarding = localStorage.getItem(`onboarding_completed_${userId}`) === 'true';
 
       setState({
-        isNewUser: !hasData,
+        isNewUser: true, // Simplified - always show as new user
         hasCompletedOnboarding,
-        shouldShowWelcomeTour: !hasData && !hasCompletedOnboarding,
+        shouldShowWelcomeTour: !hasCompletedOnboarding,
         isLoading: false,
       });
     } catch (error) {

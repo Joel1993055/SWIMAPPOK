@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
 import { useErrorHandler } from '@/core/hooks/use-error-handler';
-import { checkIfUserHasData, seedDemoData } from '@/utils/demo-data-seeder';
+// Removed demo data seeder imports - simplified onboarding
 import { CheckCircle, PlusCircle, TrendingUp, Users } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -57,39 +57,15 @@ export function WelcomeTour({ userId, onComplete }: WelcomeTourProps) {
   ];
 
   useEffect(() => {
-    // Check if user already has data
-    const checkData = async () => {
-      try {
-        const hasUserData = await checkIfUserHasData(userId);
-        setHasData(hasUserData);
-        
-        // Only show onboarding if user doesn't have data
-        if (!hasUserData) {
-          setIsOpen(true);
-        }
-      } catch (error) {
-        captureError(error as Error, { component: 'WelcomeTour', action: 'checkData' });
-      }
-    };
-
-    checkData();
+    // Simplified: Always show onboarding for new users
+    setIsOpen(true);
   }, [userId, captureError]);
 
   const handleNext = async () => {
     if (currentStep === 1) {
-      // Step 2: Add demo data
-      setIsLoading(true);
-      try {
-        await seedDemoData(userId);
-        setHasData(true);
-        toast.success('¡Datos de demostración añadidos!');
-        setCurrentStep(2);
-      } catch (error) {
-        captureError(error as Error, { component: 'WelcomeTour', action: 'seedDemoData' });
-        toast.error('Error al añadir datos de demostración');
-      } finally {
-        setIsLoading(false);
-      }
+      // Step 2: Skip demo data - simplified onboarding
+      toast.success('¡Bienvenido! Comienza a usar la aplicación.');
+      setCurrentStep(2);
     } else if (currentStep === 2) {
       // Step 3: Complete onboarding
       handleComplete();

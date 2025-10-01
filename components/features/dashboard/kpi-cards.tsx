@@ -277,21 +277,21 @@ export function KPICards() {
   return (
     <div className='grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4'>
       {/* Distance Card */}
-      <Card className='bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/50 dark:to-blue-900/50 border-blue-200 dark:border-blue-800'>
+      <Card className='bg-muted/50 border-muted'>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-          <CardTitle className='text-xs sm:text-sm font-medium text-blue-700 dark:text-blue-300'>
+          <CardTitle className='text-xs sm:text-sm font-medium text-muted-foreground'>
             Distance
           </CardTitle>
-          <Target className='h-3 w-3 sm:h-4 sm:w-4 text-blue-600 dark:text-blue-400' />
+          <Target className='h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground' />
         </CardHeader>
         <CardContent className='space-y-2'>
-          <div className='text-lg sm:text-2xl font-bold text-blue-900 dark:text-blue-100'>
+          <div className='text-lg sm:text-2xl font-bold text-foreground'>
             {distanceData.distance} km
           </div>
-          <p className='text-xs text-blue-600 dark:text-blue-400 leading-tight'>
+          <p className='text-xs text-muted-foreground leading-tight'>
             {distanceData.label}
           </p>
-          <p className='text-xs text-blue-500 dark:text-blue-500'>
+          <p className='text-xs text-muted-foreground'>
             {distanceData.subtitle}
           </p>
           <Tabs value={selectedDistancePeriod} onValueChange={setSelectedDistancePeriod} className='mt-2'>
@@ -305,21 +305,21 @@ export function KPICards() {
       </Card>
 
       {/* Sessions Card */}
-      <Card className='bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950/50 dark:to-green-900/50 border-green-200 dark:border-green-800'>
+      <Card className='bg-muted/50 border-muted'>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-          <CardTitle className='text-xs sm:text-sm font-medium text-green-700 dark:text-green-300'>
+          <CardTitle className='text-xs sm:text-sm font-medium text-muted-foreground'>
             Sessions
           </CardTitle>
-          <Activity className='h-3 w-3 sm:h-4 sm:w-4 text-green-600 dark:text-green-400' />
+          <Activity className='h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground' />
         </CardHeader>
         <CardContent className='space-y-2'>
-          <div className='text-lg sm:text-2xl font-bold text-green-900 dark:text-green-100'>
+          <div className='text-lg sm:text-2xl font-bold text-foreground'>
             {sessionsData.total}
           </div>
-          <p className='text-xs text-green-600 dark:text-green-400 leading-tight'>
+          <p className='text-xs text-muted-foreground leading-tight'>
             {sessionsData.label}
           </p>
-          <p className='text-xs text-green-500 dark:text-green-500'>
+          <p className='text-xs text-muted-foreground'>
             {sessionsData.subtitle}
           </p>
           <Tabs value={selectedPeriod} onValueChange={setSelectedPeriod} className='mt-2'>
@@ -333,29 +333,29 @@ export function KPICards() {
       </Card>
 
       {/* Training Phase Card */}
-      <Card className='bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/50 dark:to-purple-900/50 border-purple-200 dark:border-purple-800'>
+      <Card className='bg-muted/50 border-muted'>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-          <CardTitle className='text-xs sm:text-sm font-medium text-purple-700 dark:text-purple-300'>
+          <CardTitle className='text-xs sm:text-sm font-medium text-muted-foreground'>
             Training Phase
           </CardTitle>
-          <Users className='h-3 w-3 sm:h-4 sm:w-4 text-purple-600 dark:text-purple-400' />
+          <Users className='h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground' />
         </CardHeader>
         <CardContent className='space-y-2'>
-          <div className='text-lg sm:text-2xl font-bold text-purple-900 dark:text-purple-100'>
+          <div className='text-lg sm:text-2xl font-bold text-foreground'>
             {trainingCycleData.phase}
           </div>
-          <p className='text-xs text-purple-600 dark:text-purple-400 leading-tight'>
+          <p className='text-xs text-muted-foreground leading-tight'>
             {trainingCycleData.description}
           </p>
           <div className='space-y-1'>
             <div className='flex items-center justify-between text-xs'>
-              <span className='text-purple-500 dark:text-purple-500'>Progress</span>
-              <span className='text-purple-500 dark:text-purple-500'>{trainingCycleData.progress}%</span>
+              <span className='text-muted-foreground'>Progress</span>
+              <span className='text-muted-foreground'>{trainingCycleData.progress}%</span>
             </div>
             <Progress value={trainingCycleData.progress} className='h-1 sm:h-2' />
           </div>
           {trainingCycleData.additionalInfo && (
-            <p className='text-xs text-purple-500 dark:text-purple-500'>
+            <p className='text-xs text-muted-foreground'>
               {trainingCycleData.additionalInfo}
             </p>
           )}
@@ -363,29 +363,29 @@ export function KPICards() {
       </Card>
 
       {/* Competition Card */}
-      <Card className='bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950/50 dark:to-orange-900/50 border-orange-200 dark:border-orange-800'>
+      <Card className='bg-muted/50 border-muted'>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-          <CardTitle className='text-xs sm:text-sm font-medium text-orange-700 dark:text-orange-300'>
+          <CardTitle className='text-xs sm:text-sm font-medium text-muted-foreground'>
             Next Competition
           </CardTitle>
-          <Trophy className='h-3 w-3 sm:h-4 sm:w-4 text-orange-600 dark:text-orange-400' />
+          <Trophy className='h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground' />
         </CardHeader>
         <CardContent className='space-y-2'>
-          <div className='text-lg sm:text-2xl font-bold text-orange-900 dark:text-orange-100'>
+          <div className='text-lg sm:text-2xl font-bold text-foreground'>
             {competitionData.nextCompetition}
           </div>
-          <p className='text-xs text-orange-600 dark:text-orange-400 leading-tight'>
+          <p className='text-xs text-muted-foreground leading-tight'>
             {competitionData.description}
           </p>
           <div className='space-y-1'>
-            <p className='text-xs text-orange-500 dark:text-orange-500'>
+            <p className='text-xs text-muted-foreground'>
               {competitionData.daysUntil > 0 
                 ? `${competitionData.daysUntil} days remaining`
                 : 'Competition completed'
               }
             </p>
             {competitionData.location && (
-              <p className='text-xs text-orange-500 dark:text-orange-500'>
+              <p className='text-xs text-muted-foreground'>
                 📍 {competitionData.location}
               </p>
             )}
