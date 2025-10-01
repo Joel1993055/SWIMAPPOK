@@ -5,6 +5,7 @@ import { WeeklyComparison } from '@/components/analysis/weekly-comparison';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useDeviceType } from '@/core/hooks/mobile';
 import { useSessionsData } from '@/core/hooks/use-sessions-data';
 import { BarChart3, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
@@ -12,6 +13,7 @@ import { useState } from 'react';
 function AnalysisContent() {
   const { sessions, isLoading } = useSessionsData();
   const [selectedPeriod, setSelectedPeriod] = useState('last-30-days');
+  const deviceType = useDeviceType();
 
   if (isLoading) {
     return (
@@ -20,11 +22,15 @@ function AnalysisContent() {
           <div className='p-2 bg-primary/10 rounded-lg'>
             <BarChart3 className='h-6 w-6 text-primary' />
           </div>
-          <h1 className='text-3xl font-bold text-foreground'>
+          <h1 className='text-2xl sm:text-3xl font-bold text-foreground'>
             Análisis Avanzado
           </h1>
         </div>
-        <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
+        <div className={`grid gap-4 ${
+          deviceType === 'mobile' 
+            ? 'grid-cols-1' 
+            : 'md:grid-cols-2 lg:grid-cols-4'
+        }`}>
           {[...Array(4)].map((_, i) => (
             <Card key={i} className='bg-muted/50'>
               <CardHeader className='space-y-0 pb-2'>
@@ -42,35 +48,39 @@ function AnalysisContent() {
   }
 
   return (
-    <div className='flex-1 space-y-6 p-4 md:p-8 pt-6'>
+    <div className='flex-1 space-y-4 sm:space-y-6 p-4 md:p-8 pt-6'>
       {/* Header */}
-      <div className='mb-8'>
+      <div className='mb-6 sm:mb-8'>
         <div className='flex items-center gap-3 mb-2'>
           <div className='p-2 bg-primary/10 rounded-lg'>
-            <BarChart3 className='h-6 w-6 text-primary' />
+            <BarChart3 className='h-5 w-5 sm:h-6 sm:w-6 text-primary' />
           </div>
-          <h1 className='text-3xl font-bold text-foreground'>Analysis</h1>
+          <h1 className='text-2xl sm:text-3xl font-bold text-foreground'>Analysis</h1>
         </div>
-        <p className='text-muted-foreground'>
+        <p className='text-sm sm:text-base text-muted-foreground'>
           Detailed analysis of your performance and progress based on real data
         </p>
       </div>
 
       {/* Tabs */}
-      <Tabs defaultValue='overview' className='space-y-6'>
-        <TabsList className='grid w-full grid-cols-2'>
-          <TabsTrigger value='overview' className='flex items-center gap-2'>
+      <Tabs defaultValue='overview' className='space-y-4 sm:space-y-6'>
+        <TabsList className={`grid w-full ${
+          deviceType === 'mobile' 
+            ? 'grid-cols-1 h-auto' 
+            : 'grid-cols-2'
+        }`}>
+          <TabsTrigger value='overview' className='flex items-center gap-2 h-10 sm:h-11'>
             <BarChart3 className='h-4 w-4' />
-            Overview
+            <span className='text-sm sm:text-base'>Overview</span>
           </TabsTrigger>
-          <TabsTrigger value='comparison' className='flex items-center gap-2'>
+          <TabsTrigger value='comparison' className='flex items-center gap-2 h-10 sm:h-11'>
             <TrendingUp className='h-4 w-4' />
-            Weekly Comparison
+            <span className='text-sm sm:text-base'>Weekly Comparison</span>
           </TabsTrigger>
         </TabsList>
 
         {/* Overview */}
-        <TabsContent value='overview'>
+        <TabsContent value='overview' className='space-y-4'>
           <AnalysisOverview 
             sessions={sessions} 
             selectedPeriod={selectedPeriod}
@@ -79,7 +89,7 @@ function AnalysisContent() {
         </TabsContent>
 
         {/* Weekly Comparison */}
-        <TabsContent value='comparison'>
+        <TabsContent value='comparison' className='space-y-4'>
           <WeeklyComparison sessions={sessions} />
         </TabsContent>
       </Tabs>

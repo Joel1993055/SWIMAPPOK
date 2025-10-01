@@ -3,6 +3,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useDeviceType } from '@/core/hooks/mobile';
 import type { Session } from '@/infra/config/actions/sessions';
 import { subDays, subMonths } from 'date-fns';
 import {
@@ -22,6 +23,7 @@ interface AnalysisOverviewProps {
 }
 
 export const AnalysisOverview = memo(function AnalysisOverview({ sessions, selectedPeriod, onPeriodChange }: AnalysisOverviewProps) {
+  const deviceType = useDeviceType();
   // Filtrar sesiones por período
   const filteredSessions = useMemo(() => {
     const now = new Date();
@@ -137,24 +139,32 @@ export const AnalysisOverview = memo(function AnalysisOverview({ sessions, selec
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className={`flex ${
+        deviceType === 'mobile' 
+          ? 'flex-col gap-3' 
+          : 'items-center justify-between'
+      }`}>
         <div className="flex items-center gap-2">
-          <Activity className="h-5 w-5 text-primary" />
-          <h2 className="text-xl font-semibold">Overview</h2>
-          <Badge variant="outline">{getPeriodLabel()}</Badge>
+          <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+          <h2 className="text-lg sm:text-xl font-semibold">Overview</h2>
+          <Badge variant="outline" className="text-xs">{getPeriodLabel()}</Badge>
         </div>
         
         {/* Period Selector */}
-        <div className="flex gap-1">
+        <div className={`flex gap-1 ${
+          deviceType === 'mobile' 
+            ? 'flex-wrap' 
+            : ''
+        }`}>
           {periods.map(period => (
             <Button
               key={period.value}
               variant={selectedPeriod === period.value ? "default" : "outline"}
               size="sm"
               onClick={() => onPeriodChange(period.value)}
-              className="h-8 px-3 text-xs"
+              className="h-7 sm:h-8 px-2 sm:px-3 text-xs"
             >
               {period.label}
             </Button>
@@ -163,15 +173,19 @@ export const AnalysisOverview = memo(function AnalysisOverview({ sessions, selec
       </div>
 
       {/* Main KPIs */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className={`grid gap-3 sm:gap-4 ${
+        deviceType === 'mobile' 
+          ? 'grid-cols-2' 
+          : 'md:grid-cols-2 lg:grid-cols-4'
+      }`}>
         {/* Total Distance */}
         <Card className="bg-muted/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Distance</CardTitle>
-            <Target className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs sm:text-sm font-medium">Total Distance</CardTitle>
+            <Target className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.totalDistance.toLocaleString()}m</div>
+            <div className="text-lg sm:text-2xl font-bold">{metrics.totalDistance.toLocaleString()}m</div>
             <p className="text-xs text-muted-foreground">
               Average: {metrics.avgDistance.toFixed(0)}m/session
             </p>
@@ -181,11 +195,11 @@ export const AnalysisOverview = memo(function AnalysisOverview({ sessions, selec
         {/* Total Sessions */}
         <Card className="bg-muted/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Sessions</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs sm:text-sm font-medium">Sessions</CardTitle>
+            <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.totalSessions}</div>
+            <div className="text-lg sm:text-2xl font-bold">{metrics.totalSessions}</div>
             <p className="text-xs text-muted-foreground">
               Consistency: {metrics.consistency.toFixed(1)} sessions/week
             </p>
@@ -195,11 +209,11 @@ export const AnalysisOverview = memo(function AnalysisOverview({ sessions, selec
         {/* Average RPE */}
         <Card className="bg-muted/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg RPE</CardTitle>
-            <Zap className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs sm:text-sm font-medium">Avg RPE</CardTitle>
+            <Zap className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.avgRPE.toFixed(1)}</div>
+            <div className="text-lg sm:text-2xl font-bold">{metrics.avgRPE.toFixed(1)}</div>
             <p className="text-xs text-muted-foreground">
               Average intensity
             </p>
@@ -209,11 +223,11 @@ export const AnalysisOverview = memo(function AnalysisOverview({ sessions, selec
         {/* Total Time */}
         <Card className="bg-muted/50">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Time</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs sm:text-sm font-medium">Total Time</CardTitle>
+            <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatTime(metrics.totalTime)}</div>
+            <div className="text-lg sm:text-2xl font-bold">{formatTime(metrics.totalTime)}</div>
             <p className="text-xs text-muted-foreground">
               Training time
             </p>

@@ -1,5 +1,6 @@
 'use client';
 
+import { MobileSessionForm } from '@/components/features/mobile';
 import { AIZoneDetection } from '@/components/features/training/ai-zone-detection';
 import { PDFExportButton, useTrainingPDFData } from '@/components/features/training/pdf-export-button';
 import { Badge } from '@/components/ui/badge';
@@ -10,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
+import { useDeviceType } from '@/core/hooks/mobile';
 import { useSessionsData } from '@/core/hooks/use-sessions-data';
 import type { Session } from '@/core/types/session';
 import { createSession, deleteSession, updateSession, type Session as SupabaseSession } from '@/infra/config/actions/sessions';
@@ -168,12 +170,16 @@ function TrainingPageContent() {
   const [isHydrated, setIsHydrated] = useState(false);
   const [activeTab, setActiveTab] = useState<'create' | 'saved'>('create');
   const [editingTraining, setEditingTraining] = useState<Session | null>(null);
+  const [showMobileForm, setShowMobileForm] = useState(false);
 
   // UI states
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  // Device detection
+  const deviceType = useDeviceType();
 
   // Data hook
   const { sessions, isLoading: dataLoading, loadSessions } = useSessionsData();
@@ -208,6 +214,24 @@ function TrainingPageContent() {
   const handleSaveError = useCallback((errorMessage: string) => {
     setError(errorMessage);
     setTimeout(() => setError(null), 5000);
+  }, []);
+
+  const handleMobileFormSuccess = useCallback(async () => {
+    setShowMobileForm(false);
+    setSuccess('Sesión creada exitosamente');
+    setTimeout(() => setSuccess(null), 3000);
+    
+    // Reload sessions to show changes
+    setIsRefreshing(true);
+    try {
+      await loadSessions(true);
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [loadSessions]);
+
+  const handleMobileFormCancel = useCallback(() => {
+    setShowMobileForm(false);
   }, []);
 
   const handleDeleteTraining = useCallback(
@@ -246,6 +270,17 @@ function TrainingPageContent() {
     return <TrainingPageSkeleton />;
   }
 
+  // Show mobile form if requested
+  if (showMobileForm && deviceType === 'mobile') {
+    return (
+      <MobileSessionForm
+        defaultDate={new Date().toISOString().split('T')[0]}
+        onSuccess={handleMobileFormSuccess}
+        onCancel={handleMobileFormCancel}
+      />
+    );
+  }
+
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
       {/* Header */}
@@ -277,7 +312,13 @@ function TrainingPageContent() {
         <div className="flex gap-2 mt-6">
           <Button
             variant={activeTab === 'create' ? 'default' : 'outline'}
-            onClick={() => setActiveTab('create')}
+            onClick={() => {
+              if (deviceType === 'mobile') {
+                setShowMobileForm(true);
+              } else {
+                setActiveTab('create');
+              }
+            }}
             className="gap-2"
           >
             <Plus className="h-4 w-4" />

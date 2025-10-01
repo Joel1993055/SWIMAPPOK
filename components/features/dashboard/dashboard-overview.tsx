@@ -6,18 +6,27 @@ import { DashboardHeader } from '@/components/features/dashboard/dashboard-heade
 import { KPICards } from '@/components/features/dashboard/kpi-cards';
 import { VisitorsChartSimple } from '@/components/features/dashboard/visitors-chart-simple';
 import { WeeklyTrainingSchedule } from '@/components/features/dashboard/weekly-training-schedule';
+import { useDeviceType } from '@/core/hooks/mobile';
 
 export function DashboardOverview() {
+  const deviceType = useDeviceType();
+
   return (
     <div className='space-y-4'>
       {/* Header */}
       <DashboardHeader />
 
-      {/* KPIs Cards - 4 tarjetas arriba */}
+      {/* KPIs Cards - Responsive grid */}
       <KPICards />
 
-      {/* Charts Section - Gráfico de visitantes y calendario */}
-      <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-7'>
+      {/* Charts Section - Responsive layout */}
+      <div className={`grid gap-4 ${
+        deviceType === 'mobile' 
+          ? 'grid-cols-1' 
+          : deviceType === 'tablet' 
+            ? 'grid-cols-1 lg:grid-cols-2' 
+            : 'md:grid-cols-2 lg:grid-cols-7'
+      }`}>
         <VisitorsChartSimple />
         <DashboardCalendar />
       </div>
@@ -25,7 +34,7 @@ export function DashboardOverview() {
       {/* Weekly Training Schedule */}
       <WeeklyTrainingSchedule />
 
-      {/* Swimming Charts Section - Los dos gráficos debajo uno del otro */}
+      {/* Swimming Charts Section - Stacked on mobile */}
       <div className='space-y-4'>
         <ChartsSection />
       </div>
