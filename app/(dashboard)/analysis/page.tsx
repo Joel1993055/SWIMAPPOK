@@ -50,6 +50,7 @@ function AnalysisContent() {
 
   if (isLoading) {
     return (
+      <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>
         <div className='flex items-center gap-3 mb-2'>
           <div className='p-2 bg-primary/10 rounded-lg'>
             <BarChart3 className='h-6 w-6 text-primary' />
