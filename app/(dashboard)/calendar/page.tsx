@@ -456,9 +456,9 @@ function CalendarPageContent() {
                 <CardContent className="pt-0 pb-6">
                   {/* Weekday headers - aligned with numbers */}
                   <div className="grid grid-cols-7 gap-1 mb-3">
-                    {weekDays.map(day => (
+                    {weekDays.map((day, index) => (
                       <div
-                        key={day}
+                        key={`weekday-${index}`}
                         className="h-10 flex items-center justify-center text-sm font-medium text-muted-foreground"
                       >
                         {day}

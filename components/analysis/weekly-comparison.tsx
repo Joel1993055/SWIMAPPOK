@@ -11,7 +11,7 @@ import { ArrowDown, ArrowUp, BarChart3, Minus, TrendingUp } from 'lucide-react';
 import { memo, useMemo, useState } from 'react';
 import { WeeklyBarChart } from './weekly-bar-chart';
 import { WeeklyDailyChart } from './weekly-daily-chart';
-import { WeeklyZoneRadial } from './weekly-zone-radial';
+import { WeeklyZoneKPIs } from './weekly-zone-kpis';
 
 interface WeeklyData {
   weekNumber: number;
@@ -45,6 +45,7 @@ const ZONE_COLORS = {
 
 export const WeeklyComparison = memo(function WeeklyComparison({ sessions }: WeeklyComparisonProps) {
   const [weeksCount, setWeeksCount] = useState(4);
+  const [hoveredDay, setHoveredDay] = useState<Date | null>(null);
 
   // Calcular distribución de zonas
   const calculateZoneDistribution = (weekSessions: Session[]): ZoneDistribution[] => {
@@ -193,19 +194,19 @@ export const WeeklyComparison = memo(function WeeklyComparison({ sessions }: Wee
                           {(week.totalDistance / 1000).toFixed(1)}km total
                         </div>
                       </div>
-                      <WeeklyDailyChart sessions={sessions} weekStart={week.startDate} />
+                      <WeeklyDailyChart 
+                        sessions={sessions} 
+                        weekStart={week.startDate}
+                        onDayHover={setHoveredDay}
+                      />
                     </div>
                     
-                    {/* Zone Distribution Radial Chart */}
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-semibold">Zone Distribution</h4>
-                        <div className="text-xs text-muted-foreground">
-                          {week.sessionCount} sessions
-                        </div>
-                      </div>
-                      <WeeklyZoneRadial sessions={sessions} weekStart={week.startDate} />
-                    </div>
+                    {/* Zone Distribution Mini KPIs */}
+                    <WeeklyZoneKPIs 
+                      sessions={sessions} 
+                      weekStart={week.startDate}
+                      hoveredDay={hoveredDay}
+                    />
                   </div>
 
                   <Separator />

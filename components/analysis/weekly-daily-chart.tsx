@@ -13,6 +13,7 @@ import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 interface WeeklyDailyChartProps {
   sessions: Session[];
   weekStart: Date;
+  onDayHover?: (day: Date | null) => void;
 }
 
 interface DailyData {
@@ -30,7 +31,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function WeeklyDailyChart({ sessions, weekStart }: WeeklyDailyChartProps) {
+export function WeeklyDailyChart({ sessions, weekStart, onDayHover }: WeeklyDailyChartProps) {
   // Calculate daily data for the week
   const dailyData: DailyData[] = [];
   const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -87,6 +88,19 @@ export function WeeklyDailyChart({ sessions, weekStart }: WeeklyDailyChartProps)
             dataKey="volume"
             fill="hsl(var(--primary))"
             radius={[4, 4, 0, 0]}
+            onMouseEnter={(data) => {
+              if (onDayHover && data) {
+                const dayIndex = dailyData.findIndex(d => d.dayShort === data.dayShort);
+                if (dayIndex !== -1) {
+                  onDayHover(addDays(weekStart, dayIndex));
+                }
+              }
+            }}
+            onMouseLeave={() => {
+              if (onDayHover) {
+                onDayHover(null);
+              }
+            }}
           />
         </BarChart>
       </ChartContainer>
