@@ -6,18 +6,50 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useDeviceType } from '@/core/hooks/mobile';
-import { useSessionsData } from '@/core/hooks/use-sessions-data';
+import { useFilteredSessions } from '@/core/hooks/use-filtered-sessions';
 import { BarChart3, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
 
 function AnalysisContent() {
-  const { sessions, isLoading } = useSessionsData();
+  const { sessions, isLoading, hasContext, contextInfo } = useFilteredSessions();
   const [selectedPeriod, setSelectedPeriod] = useState('last-30-days');
   const deviceType = useDeviceType();
 
+  // Show message if no context is selected
+  if (!hasContext) {
+    return (
+      <div className='flex-1 space-y-4 sm:space-y-6 p-4 md:p-8 pt-6'>
+        {/* Header */}
+        <div className='mb-6 sm:mb-8'>
+          <div className='flex items-center gap-3 mb-2'>
+            <div className='p-2 bg-primary/10 rounded-lg'>
+              <BarChart3 className='h-5 w-5 sm:h-6 sm:w-6 text-primary' />
+            </div>
+            <h1 className='text-2xl sm:text-3xl font-bold text-foreground'>Analysis</h1>
+          </div>
+          <p className='text-sm sm:text-base text-muted-foreground'>
+            Please select a club and group to view your performance analysis
+          </p>
+        </div>
+
+        {/* No context message */}
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-center h-64 text-muted-foreground">
+              <div className="text-center">
+                <BarChart3 className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                <p className="text-sm">No club/group selected</p>
+                <p className="text-xs mt-1">Select from the sidebar to view your analysis</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
-      <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>
         <div className='flex items-center gap-3 mb-2'>
           <div className='p-2 bg-primary/10 rounded-lg'>
             <BarChart3 className='h-6 w-6 text-primary' />

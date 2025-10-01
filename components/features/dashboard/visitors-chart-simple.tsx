@@ -15,7 +15,7 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from '@/components/ui/chart';
-import { useSessionsData } from '@/core/hooks/use-sessions-data';
+import { useFilteredSessions } from '@/core/hooks/use-filtered-sessions';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 
 // Simple zone colors
@@ -37,12 +37,32 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function VisitorsChartSimple() {
-  const { sessions, isLoading } = useSessionsData();
+  const { sessions, isLoading, hasContext, contextInfo } = useFilteredSessions();
   
   console.log('VisitorsChartSimple - Sessions:', sessions.length);
   console.log('VisitorsChartSimple - Sample session:', sessions[0]);
 
-  // Generate simple weekly data
+  // Show message if no context is selected
+  if (!hasContext) {
+    return (
+      <Card className="col-span-4">
+        <CardHeader>
+          <CardTitle>Training Zones</CardTitle>
+          <CardDescription>
+            Please select a club and group to view training data
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center h-32 text-muted-foreground">
+            <div className="text-center">
+              <p className="text-sm">No club/group selected</p>
+              <p className="text-xs mt-1">Select from the sidebar to view data</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
   const generateSimpleData = () => {
     const today = new Date();
     const startOfWeek = new Date(today);
