@@ -121,20 +121,20 @@ const mapSessionToSupabase = (session: Session): SupabaseSession => ({
   user_id: '',
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
-  title: session.mainSet,
+  title: session.mainSet || '',
   date: session.date,
-  type: session.sessionType,
+  type: session.sessionType || 'Personalizado',
   duration: 0,
-  distance: session.distance,
-  stroke: session.stroke,
+  distance: session.distance || 0,
+  stroke: session.stroke || 'Libre',
   rpe: 5,
   location: '',
-  coach: session.swimmer,
+  coach: session.swimmer || '',
   club: '',
   group_name: '',
   objective: session.notes || '',
   time_slot: 'AM',
-  content: session.mainSet,
+  content: session.mainSet || '',
   zone_volumes: {
     z1: 0,
     z2: 0,
@@ -369,13 +369,13 @@ function TrainingForm({
     if (editingTraining) {
       const supabaseTraining = mapSessionToSupabase(editingTraining);
       setFormData({
-        title: supabaseTraining.title,
+        title: supabaseTraining.title || '',
         date: new Date(editingTraining.date),
-        location: supabaseTraining.location,
-        coach: supabaseTraining.coach,
-        content: supabaseTraining.content,
+        location: supabaseTraining.location || '',
+        coach: supabaseTraining.coach || '',
+        content: supabaseTraining.content || '',
         objective: supabaseTraining.objective || '',
-        timeSlot: supabaseTraining.time_slot as 'AM' | 'PM',
+        timeSlot: (supabaseTraining.time_slot as 'AM' | 'PM') || 'AM',
         club: 'club-1', // Default
         group: 'group-1-1', // Default
         zoneVolumes: createEmptyZoneVolumes(),
@@ -471,17 +471,15 @@ function TrainingForm({
       const formDataToSend = new FormData();
       formDataToSend.append('title', formData.title);
       formDataToSend.append('date', formData.date.toISOString().split('T')[0]);
-      formDataToSend.append('type', 'Custom');
+      formDataToSend.append('type', 'Personalizado');
       formDataToSend.append('duration', '90');
       formDataToSend.append('distance', totalMeters.toString());
-      formDataToSend.append('stroke', 'Freestyle');
+      formDataToSend.append('stroke', 'Libre');
       formDataToSend.append('rpe', '5');
-      formDataToSend.append('location', formData.location || 'Not specified');
-      formDataToSend.append('coach', formData.coach || 'Not specified');
-      formDataToSend.append('club', selectedClubData?.name || 'Not specified');
-      formDataToSend.append('group_name', selectedGroupData?.name || 'Not specified');
-      formDataToSend.append('objective', formData.objective || 'other');
-      formDataToSend.append('time_slot', formData.timeSlot);
+      formDataToSend.append('location', formData.location || 'No especificado');
+      formDataToSend.append('coach', formData.coach || 'No especificado');
+      formDataToSend.append('club', selectedClubData?.name || 'No especificado');
+      formDataToSend.append('group_name', selectedGroupData?.name || 'No especificado');
       formDataToSend.append('content', formData.content);
 
       // Add volumes by zone (this is what gets saved to the database)
@@ -493,10 +491,14 @@ function TrainingForm({
 
       console.log('Saving training with data:', {
         title: formData.title,
+        date: formData.date.toISOString().split('T')[0],
+        type: 'Personalizado',
+        stroke: 'Libre',
         totalMeters,
         zoneTotals,
         club: selectedClubData?.name,
         group: selectedGroupData?.name,
+        content: formData.content,
       });
 
       if (editingTraining) {
@@ -528,8 +530,18 @@ function TrainingForm({
       }
 
     } catch (error) {
-      // Error handling is done in the hook
-      onSaveError(`Error saving training: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error('Error saving training:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Error details:', {
+        error: errorMessage,
+        formData: {
+          title: formData.title,
+          content: formData.content,
+          totalMeters,
+          zoneTotals,
+        }
+      });
+      onSaveError(`Error saving training: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }

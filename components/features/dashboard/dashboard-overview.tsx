@@ -4,7 +4,7 @@ import { ChartsSection } from '@/components/features/dashboard/charts-section';
 import { DashboardCalendar } from '@/components/features/dashboard/dashboard-calendar';
 import { DashboardHeader } from '@/components/features/dashboard/dashboard-header';
 import { KPICards } from '@/components/features/dashboard/kpi-cards';
-import { VisitorsChart } from '@/components/features/dashboard/visitors-chart';
+import { VisitorsChartSimple } from '@/components/features/dashboard/visitors-chart-simple';
 import { WeeklyTrainingSchedule } from '@/components/features/dashboard/weekly-training-schedule';
 
 export function DashboardOverview() {
@@ -18,7 +18,7 @@ export function DashboardOverview() {
 
       {/* Charts Section - Gráfico de visitantes y calendario */}
       <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-7'>
-        <VisitorsChart />
+        <VisitorsChartSimple />
         <DashboardCalendar />
       </div>
 

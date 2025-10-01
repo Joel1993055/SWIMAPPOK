@@ -105,16 +105,36 @@ export const QuickCreate = memo(function QuickCreate({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate required fields
+    if (!session.content.trim()) {
+      toast.error('Please enter training content');
+      return;
+    }
+    
+    if (!session.objective) {
+      toast.error('Please select a training objective');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       const formData = new FormData();
+      const trainingTitle = session.objective 
+        ? `${session.objective} Training - ${totalMeters}m`
+        : `Training Session - ${totalMeters}m`;
+      formData.append('title', trainingTitle);
       formData.append('date', session.date);
-      formData.append('distance', totalMeters.toString()); // Use calculated total distance
-      formData.append('stroke', 'Freestyle'); // Default stroke
-      formData.append('rpe', '5'); // Default RPE
-      formData.append('objective', session.objective);
-      formData.append('time_slot', session.time_slot);
+      formData.append('type', 'Personalizado');
+      formData.append('duration', '90');
+      formData.append('distance', totalMeters.toString());
+      formData.append('stroke', 'Libre');
+      formData.append('rpe', '5');
+      formData.append('location', 'No especificado');
+      formData.append('coach', 'No especificado');
+      formData.append('club', 'No especificado');
+      formData.append('group_name', 'No especificado');
       formData.append('content', session.content);
 
       // Add volumes by zone
@@ -123,6 +143,15 @@ export const QuickCreate = memo(function QuickCreate({
       formData.append('z3', session.zone_volumes.z3.toString());
       formData.append('z4', session.zone_volumes.z4.toString());
       formData.append('z5', session.zone_volumes.z5.toString());
+
+      console.log('QuickCreate sending data:', {
+        title: trainingTitle,
+        content: session.content,
+        date: session.date,
+        objective: session.objective,
+        totalMeters,
+        zone_volumes: session.zone_volumes,
+      });
 
       await createSession(formData);
 
@@ -140,7 +169,19 @@ export const QuickCreate = memo(function QuickCreate({
       // Reload page to show new training
       window.location.reload();
     } catch (error) {
-      toast.error('Error saving training. Please try again.');
+      console.error('Error saving training in QuickCreate:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('QuickCreate error details:', {
+        error: errorMessage,
+        session: {
+          date: session.date,
+          objective: session.objective,
+          content: session.content,
+          totalMeters,
+          zone_volumes: session.zone_volumes,
+        }
+      });
+      toast.error(`Error saving training: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
@@ -267,6 +308,7 @@ export const QuickCreate = memo(function QuickCreate({
                   placeholder='Write your training here... Example:&#10;&#10;Warm-up: 200m freestyle Z1&#10;Main set: 8x100m freestyle Z3 with 20s rest&#10;Cool-down: 200m backstroke Z1&#10;&#10;You can include:&#10;- Distances (200m, 1.5km)&#10;- Times (45min, 1h 30min)&#10;- Zones (Z1, Z2, Z3, Z4, Z5)&#10;- Styles (freestyle, backstroke, breaststroke, butterfly)'
                   rows={8}
                   className='min-h-[200px] resize-none'
+                  required
                 />
               </div>
             </form>

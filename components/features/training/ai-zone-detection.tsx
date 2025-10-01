@@ -25,6 +25,7 @@ export function AIZoneDetection({
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleDetect = async () => {
+    if (!content || !content.trim()) return;
     await detectZones(content, objective, timeSlot);
   };
 
@@ -47,7 +48,7 @@ export function AIZoneDetection({
     return <AlertCircle className="h-4 w-4 text-red-600" />;
   };
 
-  if (!content.trim()) {
+  if (!content || !content.trim()) {
     return (
       <div className="bg-muted/30 rounded-lg p-4 border border-dashed">
         <div className="text-center text-muted-foreground">
