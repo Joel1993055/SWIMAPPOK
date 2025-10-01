@@ -51,7 +51,7 @@ export async function createSession(formData: FormData) {
   }
 
   // Extract form data
-  const sessionData: SessionData = {
+  const sessionData = {
     title: formData.get('title') as string,
     date: formData.get('date') as string,
     type: formData.get('type') as string,
@@ -59,12 +59,10 @@ export async function createSession(formData: FormData) {
     distance: parseInt(formData.get('distance') as string) || 0,
     stroke: (formData.get('stroke') as string) || 'Libre',
     rpe: parseInt(formData.get('rpe') as string) || 5,
-    location: (formData.get('location') as string) || 'Not specified',
-    coach: (formData.get('coach') as string) || 'Not specified',
-    club: (formData.get('club') as string) || 'Not specified',
-    group_name: (formData.get('group_name') as string) || 'Not specified',
-    objective: (formData.get('objective') as string) || 'other',
-    time_slot: (formData.get('time_slot') as string) || 'AM',
+    location: (formData.get('location') as string) || 'No especificado',
+    coach: (formData.get('coach') as string) || 'No especificado',
+    club: (formData.get('club') as string) || 'No especificado',
+    group_name: (formData.get('group_name') as string) || 'No especificado',
     content: formData.get('content') as string,
     zone_volumes: {
       z1: parseInt(formData.get('z1') as string) || 0,

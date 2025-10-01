@@ -5,38 +5,38 @@ import { TrainingPhases } from '@/components/features/calendar/training-phases';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { useCompetitionsStore } from '@/core/stores/unified';
 import { createCompetition } from '@/infra/config/actions/competitions';
 import { createSession, getSessions, type Session } from '@/infra/config/actions/sessions';
 import {
-    Activity,
-    Calendar as CalendarIcon,
-    ChevronLeft,
-    ChevronRight,
-    Plus,
-    Target,
+  Activity,
+  Calendar as CalendarIcon,
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  Target,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -248,15 +248,25 @@ function CalendarPageContent() {
         months.findIndex(m => m.name === selectedDate.month) + 1
       ).padStart(2, '0')}-${String(selectedDate.day).padStart(2, '0')}`;
       
+      formData.append('title', `${trainingForm.stroke} Training - ${trainingForm.distance}m`);
       formData.append('date', dateKey);
+      formData.append('type', 'Personalizado'); // Use valid type from schema
       formData.append('distance', trainingForm.distance);
-      formData.append('stroke', trainingForm.stroke);
-      formData.append('sessionType', trainingForm.sessionType);
+      formData.append('stroke', trainingForm.stroke === 'Freestyle' ? 'Libre' : trainingForm.stroke);
       formData.append('rpe', trainingForm.rpe);
-      formData.append('mainSet', trainingForm.mainSet);
-      formData.append('objective', 'Training');
-      formData.append('time_slot', 'AM');
       formData.append('content', trainingForm.mainSet);
+      formData.append('duration', '60'); // Default duration
+      formData.append('location', 'No especificado');
+      formData.append('coach', 'No especificado');
+      formData.append('club', 'No especificado');
+      formData.append('group_name', 'No especificado');
+      
+      // Add zone volumes (default to 0)
+      formData.append('z1', '0');
+      formData.append('z2', '0');
+      formData.append('z3', '0');
+      formData.append('z4', '0');
+      formData.append('z5', '0');
 
       await createSession(formData);
       
@@ -687,9 +697,9 @@ function CalendarPageContent() {
                                       {session.stroke && (
                                         <span>{session.stroke}</span>
                                       )}
-                                      {session.mainSet && (
+                                      {session.content && (
                                         <span className="truncate">
-                                          {session.mainSet}
+                                          {session.content}
                                         </span>
                                       )}
                                     </div>
@@ -699,7 +709,7 @@ function CalendarPageContent() {
                                   variant="secondary"
                                   className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 text-xs flex-shrink-0"
                                 >
-                                  {session.sessionType}
+                                  {session.type}
                                 </Badge>
                               </div>
                             </div>
