@@ -3,6 +3,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useDeviceType } from '@/core/hooks/mobile';
 import type { Session } from '@/infra/config/actions/sessions';
 import { subDays, subMonths } from 'date-fns';
@@ -153,23 +154,38 @@ export const AnalysisOverview = memo(function AnalysisOverview({ sessions, selec
         </div>
         
         {/* Period Selector */}
-        <div className={`flex gap-1 ${
-          deviceType === 'mobile' 
-            ? 'flex-wrap' 
-            : ''
-        }`}>
-          {periods.map(period => (
-            <Button
-              key={period.value}
-              variant={selectedPeriod === period.value ? "default" : "outline"}
-              size="sm"
-              onClick={() => onPeriodChange(period.value)}
-              className="h-7 sm:h-8 px-2 sm:px-3 text-xs"
-            >
-              {period.label}
-            </Button>
-          ))}
-        </div>
+        {deviceType === 'mobile' ? (
+          <Select value={selectedPeriod} onValueChange={onPeriodChange}>
+            <SelectTrigger className="w-full h-10">
+              <SelectValue placeholder="Select period" />
+            </SelectTrigger>
+            <SelectContent>
+              {periods.map(period => (
+                <SelectItem key={period.value} value={period.value}>
+                  {period.label === '7d' ? 'Last 7 days' :
+                   period.label === '30d' ? 'Last 30 days' :
+                   period.label === '3m' ? 'Last 3 months' :
+                   period.label === '6m' ? 'Last 6 months' :
+                   period.label === '1y' ? 'Last year' : period.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        ) : (
+          <div className="flex gap-1 justify-end">
+            {periods.map(period => (
+              <Button
+                key={period.value}
+                variant={selectedPeriod === period.value ? "default" : "outline"}
+                size="sm"
+                onClick={() => onPeriodChange(period.value)}
+                className="h-7 sm:h-8 px-2 sm:px-3 text-xs"
+              >
+                {period.label}
+              </Button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Main KPIs */}
