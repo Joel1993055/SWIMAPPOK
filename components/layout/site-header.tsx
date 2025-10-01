@@ -1,5 +1,4 @@
 import { ThemeToggle } from '@/components/common/theme-toggle';
-import { ContextIndicator } from '@/components/ui/context-indicator';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 
@@ -14,7 +13,6 @@ export function SiteHeader() {
         />
         <h1 className='text-base font-medium'>Swim Training App</h1>
         <div className='ml-auto flex items-center gap-2'>
-          <ContextIndicator />
           <ThemeToggle />
         </div>
       </div>

@@ -12,7 +12,7 @@ import {
 import Image from 'next/image';
 import * as React from 'react';
 
-import { NavTeamSelectors } from '@/components/navigation/nav-team-selectors';
+import { NavTeamSelectors } from '@/components/features/navigation/nav-team-selectors-real';
 import { NavUser } from '@/components/features/navigation/nav-user';
 import { NavDocuments } from '@/components/navigation/nav-documents';
 import { NavMain } from '@/components/navigation/nav-main';
@@ -26,7 +26,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { AppContextProvider, useAppContext } from '@/core/contexts/app-context';
+import { useClubsStore } from '@/core/stores/clubs-store';
 
 const data = {
   navMain: [
@@ -72,18 +72,19 @@ const data = {
   ],
 };
 
-// Wrapper component with provider
-export function AppSidebarWithProvider({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  return (
-    <AppContextProvider>
-      <AppSidebar {...props} />
-    </AppContextProvider>
-  );
-}
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { navigation } = useClubsStore();
+  const [selectedClub, setSelectedClub] = React.useState(navigation.selectedClubId || 'none');
+  const [selectedGroup, setSelectedGroup] = React.useState(navigation.selectedTeamId || 'none');
 
-// Internal component that uses the context
-function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { selectedClub, selectedGroup, setSelectedClub, setSelectedGroup } = useAppContext();
+  // Sincronizar con el store
+  React.useEffect(() => {
+    setSelectedClub(navigation.selectedClubId || 'none');
+  }, [navigation.selectedClubId]);
+
+  React.useEffect(() => {
+    setSelectedGroup(navigation.selectedTeamId || 'none');
+  }, [navigation.selectedTeamId]);
 
   return (
     <Sidebar collapsible='offcanvas' {...props}>
@@ -114,8 +115,8 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/* Selectores de Club y Grupo */}
         <div className='mt-6'>
           <NavTeamSelectors
-            selectedClub={selectedClub || 'none'}
-            selectedGroup={selectedGroup || 'none'}
+            selectedClub={selectedClub}
+            selectedGroup={selectedGroup}
             onClubChange={setSelectedClub}
             onGroupChange={setSelectedGroup}
           />

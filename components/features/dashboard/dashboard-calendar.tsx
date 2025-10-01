@@ -18,7 +18,7 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { useCompetitionsStore } from '@/core/stores/unified';
-import { useFilteredSessions } from '@/core/hooks/use-filtered-sessions';
+import { getSessions, type Session } from '@/infra/config/actions/sessions';
 import {
     Activity,
     Calendar as CalendarIcon,
@@ -42,9 +42,6 @@ export function DashboardCalendar() {
   const [selectedTraining, setSelectedTraining] = useState<Session | null>(null);
   const [isTrainingModalOpen, setIsTrainingModalOpen] = useState(false);
   // const [isLoading, setIsLoading] = useState(true);
-
-  // Use filtered sessions
-  const { sessions: filteredSessions, hasContext, contextInfo } = useFilteredSessions();
 
   // Existing context
   const { getCompetitionsByDate } = useCompetitionsStore();
@@ -81,37 +78,26 @@ export function DashboardCalendar() {
 
   const weekDays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
-  // Load sessions from filtered hook
+  // Load sessions from Supabase
   useEffect(() => {
-    setSessions(filteredSessions);
-  }, [filteredSessions]);
+    const loadSessions = async () => {
+      try {
+        const data = await getSessions();
+        setSessions(data);
+      } catch (error) {
+        console.error('Error loading sessions:', error);
+        setSessions([]);
+      } finally {
+        // setIsLoading(false);
+      }
+    };
+
+    loadSessions();
+  }, []);
 
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
   const currentMonthName = months[currentMonth].name;
-
-  // Show message if no context is selected
-  if (!hasContext) {
-    return (
-      <Card className="col-span-3">
-        <CardHeader>
-          <CardTitle>Training Calendar</CardTitle>
-          <CardDescription>
-            Please select a club and group to view your training schedule
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-center h-64 text-muted-foreground">
-            <div className="text-center">
-              <CalendarIcon className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p className="text-sm">No club/group selected</p>
-              <p className="text-xs mt-1">Select from the sidebar to view your calendar</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
 
   // Convert sessions to calendar daily map
   const dailyTrainingData = sessions.reduce(

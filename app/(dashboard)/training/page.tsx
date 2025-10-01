@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-import { useAppContext } from '@/core/contexts/app-context';
+import { useDeviceType } from '@/core/hooks/mobile';
 import { useSessionsData } from '@/core/hooks/use-sessions-data';
 import type { Session } from '@/core/types/session';
 import { createSession, deleteSession, updateSession, type Session as SupabaseSession } from '@/infra/config/actions/sessions';
@@ -66,6 +66,33 @@ interface ClubsData {
 // =====================================================
 // CONSTANTS
 // =====================================================
+const CLUBS_DATA: ClubsData = {
+    'club-1': {
+      name: 'Madrid Swimming Club',
+      groups: [
+        { id: 'group-1-1', name: 'Group A - Competition' },
+        { id: 'group-1-2', name: 'Group B - Development' },
+        { id: 'group-1-3', name: 'Group C - Beginners' },
+      ],
+    },
+    'club-2': {
+      name: 'Barcelona Aquatic Club',
+      groups: [
+        { id: 'group-2-1', name: 'Elite' },
+        { id: 'group-2-2', name: 'Promises' },
+        { id: 'group-2-3', name: 'Base' },
+      ],
+    },
+    'club-3': {
+      name: 'Valencia Sports Center',
+      groups: [
+        { id: 'group-3-1', name: 'Senior' },
+        { id: 'group-3-2', name: 'Junior' },
+        { id: 'group-3-3', name: 'Youth' },
+      ],
+    },
+} as const;
+
 const OBJECTIVE_OPTIONS = [
   { value: 'endurance', label: 'Endurance' },
   { value: 'speed', label: 'Speed' },
@@ -153,16 +180,6 @@ function TrainingPageContent() {
 
   // Device detection
   const deviceType = useDeviceType();
-
-  // App context for club/group selection
-  const { 
-    selectedClub, 
-    selectedGroup, 
-    currentClub, 
-    currentGroup, 
-    availableGroups,
-    isLoading: contextLoading 
-  } = useAppContext();
 
   // Data hook
   const { sessions, isLoading: dataLoading, loadSessions } = useSessionsData();
@@ -325,6 +342,7 @@ function TrainingPageContent() {
           onSaveSuccess={handleSaveSuccess}
           onSaveError={handleSaveError}
           onCancelEdit={handleCancelEdit}
+          clubsData={CLUBS_DATA}
           objectiveOptions={OBJECTIVE_OPTIONS}
           onRefresh={async () => {
             setIsRefreshing(true);
@@ -355,6 +373,7 @@ interface TrainingFormProps {
   onSaveSuccess: (message: string) => void;
   onSaveError: (message: string) => void;
   onCancelEdit: () => void;
+  clubsData: ClubsData;
   objectiveOptions: Array<{ value: string; label: string }>;
   onRefresh: () => Promise<void>;
 }
@@ -364,18 +383,10 @@ function TrainingForm({
   onSaveSuccess,
   onSaveError,
   onCancelEdit,
+  clubsData,
   objectiveOptions,
   onRefresh,
 }: TrainingFormProps) {
-  // App context for club/group selection
-  const { 
-    selectedClub, 
-    selectedGroup, 
-    currentClub, 
-    currentGroup, 
-    availableGroups 
-  } = useAppContext();
-
   // Form states
   const [formData, setFormData] = useState<TrainingFormData>(() => ({
     title: '',
@@ -385,8 +396,8 @@ function TrainingForm({
     content: '',
     objective: '',
     timeSlot: 'AM',
-    club: currentClub?.name || '',
-    group: currentGroup?.name || '',
+    club: 'club-1',
+    group: 'group-1-1',
     zoneVolumes: createEmptyZoneVolumes(),
   }));
 
@@ -406,8 +417,8 @@ function TrainingForm({
         content: supabaseTraining.content || '',
         objective: supabaseTraining.objective || '',
         timeSlot: (supabaseTraining.time_slot as 'AM' | 'PM') || 'AM',
-        club: currentClub?.name || '',
-        group: currentGroup?.name || '',
+        club: 'club-1', // Default
+        group: 'group-1-1', // Default
         zoneVolumes: createEmptyZoneVolumes(),
       });
     } else {
@@ -420,12 +431,12 @@ function TrainingForm({
         content: '',
         objective: '',
         timeSlot: 'AM',
-        club: currentClub?.name || '',
-        group: currentGroup?.name || '',
+        club: 'club-1',
+        group: 'group-1-1',
         zoneVolumes: createEmptyZoneVolumes(),
       });
     }
-  }, [editingTraining, currentClub, currentGroup]);
+  }, [editingTraining]);
 
   // =====================================================
   // FUNCIONES DE MANEJO
@@ -435,11 +446,12 @@ function TrainingForm({
   }, []);
 
   const handleClubChange = useCallback((clubId: string) => {
-    const club = availableGroups.find(g => g.club_id === clubId);
-    if (club) {
-      setFormData(prev => ({ ...prev, club: club.club_name }));
-    }
-  }, [availableGroups]);
+    setFormData(prev => ({
+      ...prev,
+      club: clubId,
+      group: clubsData[clubId]?.groups[0]?.id || 'group-1-1',
+    }));
+  }, [clubsData]);
 
   const handleZoneVolumeChange = useCallback((
     rowIndex: number,
@@ -586,8 +598,8 @@ function TrainingForm({
   }, [formData.zoneVolumes]);
 
   const selectedClubGroups = useMemo(() => {
-    return availableGroups.filter(group => group.club_id === selectedClub);
-  }, [availableGroups, selectedClub]);
+    return clubsData[formData.club]?.groups || [];
+  }, [clubsData, formData.club]);
 
   // =====================================================
   // RENDERIZADO
@@ -667,18 +679,18 @@ function TrainingForm({
               <div className="space-y-2">
                 <Label htmlFor="training-club">Club</Label>
                 <Select value={formData.club} onValueChange={handleClubChange}>
-                  <SelectTrigger>
+                      <SelectTrigger>
                     <SelectValue placeholder="Select club" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {currentClub && (
-                      <SelectItem key={currentClub.id} value={currentClub.name}>
-                        {currentClub.name}
-                      </SelectItem>
-                    )}
-                  </SelectContent>
-                </Select>
-              </div>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(clubsData).map(([clubId, club]) => (
+                          <SelectItem key={clubId} value={clubId}>
+                            {club.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
               <div className="space-y-2">
                 <Label htmlFor="training-group">Group</Label>
                     <Select
@@ -690,10 +702,10 @@ function TrainingForm({
                       </SelectTrigger>
                       <SelectContent>
                     {selectedClubGroups.map(group => (
-                      <SelectItem key={group.id} value={group.name}>
-                        {group.name}
-                      </SelectItem>
-                    ))}
+                          <SelectItem key={group.id} value={group.id}>
+                            {group.name}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>

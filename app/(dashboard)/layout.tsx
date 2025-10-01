@@ -1,4 +1,4 @@
-import { AppSidebarWithProvider } from '@/components/layout/app-sidebar';
+import { AppSidebar } from '@/components/layout/app-sidebar';
 import { SiteHeader } from '@/components/layout/site-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { createClient } from '@/utils/supabase/server';
@@ -18,7 +18,7 @@ export default async function DashboardLayout({
 
   return (
     <SidebarProvider>
-      <AppSidebarWithProvider variant='inset' />
+      <AppSidebar variant='inset' />
       <SidebarInset>
         <SiteHeader />
         <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>
