@@ -1,5 +1,13 @@
 'use client';
 
+import {
+    ChartConfig,
+    ChartContainer,
+    ChartLegend,
+    ChartLegendContent,
+    ChartTooltip,
+    ChartTooltipContent,
+} from '@/components/ui/chart';
 import type { Session } from '@/infra/config/actions/sessions';
 import { addDays, subWeeks } from 'date-fns';
 import { memo, useMemo } from 'react';
@@ -7,10 +15,7 @@ import {
     Bar,
     CartesianGrid,
     ComposedChart,
-    Legend,
     Line,
-    ResponsiveContainer,
-    Tooltip,
     XAxis,
     YAxis
 } from 'recharts';
@@ -30,6 +35,17 @@ interface WeeklyData {
   weekLabel: string;
 }
 
+const chartConfig = {
+  distance: {
+    label: "Distance (km)",
+    color: "hsl(var(--primary))",
+  },
+  sessions: {
+    label: "Sessions Count",
+    color: "hsl(var(--chart-2))",
+  },
+} satisfies ChartConfig;
+
 export const WeeklyBarChart = memo(function WeeklyBarChart({ sessions, weeksCount }: WeeklyBarChartProps) {
   // Calcular datos semanales
   const weeklyData = useMemo(() => {
@@ -45,10 +61,7 @@ export const WeeklyBarChart = memo(function WeeklyBarChart({ sessions, weeksCoun
         return sessionDate >= weekStart && sessionDate <= weekEnd;
       });
       
-      const totalDistance = weekSessions.reduce((sum, s) => sum + (s.distance || 0), 0);
-      const avgRPE = weekSessions.length > 0 
-        ? weekSessions.reduce((sum, s) => sum + (s.rpe || 0), 0) / weekSessions.length 
-        : 0;
+      const totalDistance = weekSessions.reduce((sum, s) => sum + (s.distance || 0), 0) / 1000; // Convert to km
       
       weeks.push({
         weekNumber: weeksCount - i,
@@ -56,32 +69,13 @@ export const WeeklyBarChart = memo(function WeeklyBarChart({ sessions, weeksCoun
         endDate: weekEnd,
         totalDistance,
         sessionCount: weekSessions.length,
-        avgRPE,
-        weekLabel: `S${weeksCount - i}`,
+        avgRPE: 0, // Keep for interface compatibility
+        weekLabel: `Week ${weeksCount - i}`,
       });
     }
     
     return weeks;
   }, [weeksCount, sessions]);
-
-  // Custom tooltip
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-background border border-border rounded-lg p-3 shadow-lg">
-          <p className="font-semibold text-foreground mb-2">{label}</p>
-          {payload.map((entry: any, index: number) => (
-            <p key={index} className="text-sm" style={{ color: entry.color }}>
-              {entry.name}: {entry.name === 'Distance (km)' ? `${(entry.value / 1000).toFixed(1)}km` : 
-                           entry.name === 'Sessions' ? `${entry.value}` : 
-                           `${entry.value.toFixed(1)}`}
-            </p>
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
 
   if (weeklyData.length === 0) {
     return (
@@ -94,79 +88,80 @@ export const WeeklyBarChart = memo(function WeeklyBarChart({ sessions, weeksCoun
     );
   }
 
+  // Calculate totals
+  const totalDistance = weeklyData.reduce((sum, week) => sum + week.totalDistance, 0);
+  const totalSessions = weeklyData.reduce((sum, week) => sum + week.sessionCount, 0);
+
   return (
-    <div className="w-full">
-      <div className="h-96 w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart
-            data={weeklyData}
-            margin={{
-              top: 20,
-              right: 30,
-              left: 20,
-              bottom: 5,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-            <XAxis 
-              dataKey="weekLabel" 
-              tick={{ fontSize: 12 }}
-              tickLine={{ stroke: 'hsl(var(--muted-foreground))' }}
-            />
-            <YAxis 
-              yAxisId="distance"
-              orientation="left"
-              tick={{ fontSize: 12 }}
-              tickLine={{ stroke: 'hsl(var(--muted-foreground))' }}
-              tickFormatter={(value) => `${(value / 1000).toFixed(1)}km`}
-            />
-            <YAxis 
-              yAxisId="sessions"
-              orientation="right"
-              tick={{ fontSize: 12 }}
-              tickLine={{ stroke: 'hsl(var(--muted-foreground))' }}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Legend />
-            
-            {/* Distance Bar */}
-            <Bar 
-              yAxisId="distance"
-              dataKey="totalDistance" 
-              name="Distance (km)"
-              fill="hsl(var(--primary))"
-              opacity={0.8}
-              radius={[2, 2, 0, 0]}
-            />
-            
-            {/* Sessions Line */}
-            <Line 
-              yAxisId="sessions"
-              type="monotone" 
-              dataKey="sessionCount" 
-              name="Sessions"
-              stroke="hsl(var(--chart-2))"
-              strokeWidth={3}
-              dot={{ fill: 'hsl(var(--chart-2))', strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6, stroke: 'hsl(var(--chart-2))', strokeWidth: 2 }}
-            />
-          </ComposedChart>
-        </ResponsiveContainer>
-      </div>
+    <div className="space-y-6">
+      <ChartContainer config={chartConfig} className="h-96 w-full">
+        <ComposedChart
+          data={weeklyData}
+          margin={{
+            top: 20,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+          <XAxis 
+            dataKey="weekLabel" 
+            tick={{ fontSize: 12 }}
+            tickLine={{ stroke: 'hsl(var(--muted-foreground))' }}
+            axisLine={false}
+          />
+          <YAxis 
+            yAxisId="distance"
+            orientation="left"
+            tick={{ fontSize: 12 }}
+            tickLine={{ stroke: 'hsl(var(--muted-foreground))' }}
+            tickFormatter={(value) => `${value.toFixed(1)}km`}
+            axisLine={false}
+          />
+          <YAxis 
+            yAxisId="sessions"
+            orientation="right"
+            tick={{ fontSize: 12 }}
+            tickLine={{ stroke: 'hsl(var(--muted-foreground))' }}
+            axisLine={false}
+          />
+          <ChartTooltip content={<ChartTooltipContent />} />
+          <ChartLegend content={<ChartLegendContent />} />
+          
+          {/* Distance Bar */}
+          <Bar 
+            yAxisId="distance"
+            dataKey="totalDistance" 
+            name="Distance (km)"
+            fill="var(--color-distance)"
+            opacity={0.8}
+            radius={[2, 2, 0, 0]}
+          />
+          
+          {/* Sessions Line */}
+          <Line 
+            yAxisId="sessions"
+            type="monotone"
+            dataKey="sessionCount" 
+            name="Sessions Count"
+            stroke="var(--color-sessions)"
+            strokeWidth={2}
+            dot={{ fill: 'var(--color-sessions)', strokeWidth: 2, r: 4 }}
+            activeDot={{ r: 6, stroke: 'var(--color-sessions)', strokeWidth: 2 }}
+          />
+        </ComposedChart>
+      </ChartContainer>
       
-      {/* Statistical Summary */}
-      <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
-        <div className="text-center">
-          <div className="font-semibold text-primary">
-            {(weeklyData.reduce((sum, week) => sum + week.totalDistance, 0) / 1000).toFixed(1)}km
-          </div>
-          <div className="text-muted-foreground">Total Distance</div>
+      {/* Stats below legend */}
+      <div className="grid grid-cols-2 gap-4 text-center">
+        <div className="space-y-1">
+          <div className="text-2xl font-bold text-foreground">{totalDistance.toFixed(1)}km</div>
+          <div className="text-xs text-muted-foreground">Total Distance</div>
         </div>
-        <div className="text-center">
-          <div className="font-semibold text-primary">
-            {weeklyData.reduce((sum, week) => sum + week.sessionCount, 0)}
-          </div>
-          <div className="text-muted-foreground">Total Sessions</div>
+        <div className="space-y-1">
+          <div className="text-2xl font-bold text-foreground">{totalSessions}</div>
+          <div className="text-xs text-muted-foreground">Total Sessions</div>
         </div>
       </div>
     </div>
