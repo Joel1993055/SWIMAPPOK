@@ -59,7 +59,7 @@ const ChartTypeOption = ({ type }: { type: 'bar' | 'line' }) => (
 export function VisitorsChartSimple() {
   const { sessions, isLoading } = useSessionsData();
   const [chartType, setChartType] = useState<'bar' | 'line'>('bar');
-
+  
   // Generar datos semanales
   const generateSimpleData = () => {
     const today = new Date();
@@ -117,14 +117,14 @@ export function VisitorsChartSimple() {
   const finalData = hasData
     ? chartData
     : [
-        { day: 'Mon', Z1: 0.5, Z2: 0.3, Z3: 0.2, Z4: 0.1, Z5: 0.0 },
-        { day: 'Tue', Z1: 0.8, Z2: 0.4, Z3: 0.3, Z4: 0.2, Z5: 0.1 },
-        { day: 'Wed', Z1: 0.2, Z2: 0.6, Z3: 0.4, Z4: 0.3, Z5: 0.2 },
-        { day: 'Thu', Z1: 0.6, Z2: 0.3, Z3: 0.5, Z4: 0.4, Z5: 0.3 },
-        { day: 'Fri', Z1: 0.4, Z2: 0.5, Z3: 0.3, Z4: 0.2, Z5: 0.1 },
-        { day: 'Sat', Z1: 0.7, Z2: 0.2, Z3: 0.4, Z4: 0.3, Z5: 0.2 },
-        { day: 'Sun', Z1: 0.3, Z2: 0.4, Z3: 0.2, Z4: 0.1, Z5: 0.0 },
-      ];
+    { day: 'Mon', Z1: 0.5, Z2: 0.3, Z3: 0.2, Z4: 0.1, Z5: 0.0 },
+    { day: 'Tue', Z1: 0.8, Z2: 0.4, Z3: 0.3, Z4: 0.2, Z5: 0.1 },
+    { day: 'Wed', Z1: 0.2, Z2: 0.6, Z3: 0.4, Z4: 0.3, Z5: 0.2 },
+    { day: 'Thu', Z1: 0.6, Z2: 0.3, Z3: 0.5, Z4: 0.4, Z5: 0.3 },
+    { day: 'Fri', Z1: 0.4, Z2: 0.5, Z3: 0.3, Z4: 0.2, Z5: 0.1 },
+    { day: 'Sat', Z1: 0.7, Z2: 0.2, Z3: 0.4, Z4: 0.3, Z5: 0.2 },
+    { day: 'Sun', Z1: 0.3, Z2: 0.4, Z3: 0.2, Z4: 0.1, Z5: 0.0 },
+  ];
 
   // Stats
   const totalWeekly = finalData.reduce(
@@ -135,27 +135,27 @@ export function VisitorsChartSimple() {
   const currentWeekSessions = chartData.filter(
     day => day.Z1 > 0 || day.Z2 > 0 || day.Z3 > 0 || day.Z4 > 0 || day.Z5 > 0
   ).length;
-
+  
   // Renderizador de gráficos
   const renderChart = () => (
-    <ChartContainer config={chartConfig}>
+          <ChartContainer config={chartConfig}>
       {chartType === 'bar' ? (
-        <BarChart accessibilityLayer data={finalData}>
-          <CartesianGrid vertical={false} />
+            <BarChart accessibilityLayer data={finalData}>
+              <CartesianGrid vertical={false} />
           <XAxis dataKey="day" tickLine={false} tickMargin={10} axisLine={false} />
-          <YAxis
-            tickLine={false}
-            axisLine={false}
-            tickMargin={10}
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                tickMargin={10}
             tickFormatter={v => `${v}km`}
-          />
-          <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-          <ChartLegend content={<ChartLegendContent />} />
+              />
+              <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+              <ChartLegend content={<ChartLegendContent />} />
           {Object.entries(chartConfig).map(([key, { color }], i) => (
-            <Bar
+              <Bar
               key={key}
               dataKey={key}
-              stackId="a"
+                stackId="a"
               fill={color}
               radius={i === 0 ? [0, 0, 4, 4] : i === 4 ? [4, 4, 0, 0] : 0}
             />
@@ -186,7 +186,7 @@ export function VisitorsChartSimple() {
           ))}
         </LineChart>
       )}
-    </ChartContainer>
+          </ChartContainer>
   );
 
   if (isLoading) {
@@ -195,10 +195,10 @@ export function VisitorsChartSimple() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-lg font-semibold">Weekly Progress</CardTitle>
-              <CardDescription className="text-sm text-muted-foreground">
-                Distance by training zones
-              </CardDescription>
+          <CardTitle className="text-lg font-semibold">Weekly Progress</CardTitle>
+          <CardDescription className="text-sm text-muted-foreground">
+            Distance by training zones
+          </CardDescription>
             </div>
             <Select
               value={chartType}

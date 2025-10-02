@@ -1,16 +1,14 @@
 'use client';
 
-import { AnalysisOverview } from '@/components/analysis/analysis-overview';
+import { WeeklyComparison } from '@/components/analysis/weekly-comparison';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useDeviceType } from '@/core/hooks/mobile';
 import { useSessionsData } from '@/core/hooks/use-sessions-data';
-import { BarChart3 } from 'lucide-react';
-import { useState } from 'react';
+import { TrendingUp } from 'lucide-react';
 
-function AnalysisContent() {
+export default function WeeklyComparisonPage() {
   const { sessions, isLoading } = useSessionsData();
-  const [selectedPeriod, setSelectedPeriod] = useState('last-30-days');
   const deviceType = useDeviceType();
 
   if (isLoading) {
@@ -18,10 +16,10 @@ function AnalysisContent() {
       <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>
         <div className='flex items-center gap-3 mb-2'>
           <div className='p-2 bg-primary/10 rounded-lg'>
-            <BarChart3 className='h-6 w-6 text-primary' />
+            <TrendingUp className='h-6 w-6 text-primary' />
           </div>
           <h1 className='text-2xl sm:text-3xl font-bold text-foreground'>
-            Análisis Avanzado
+            Weekly Comparison
           </h1>
         </div>
         <div className={`grid gap-4 ${
@@ -51,25 +49,17 @@ function AnalysisContent() {
       <div className='mb-6 sm:mb-8'>
         <div className='flex items-center gap-3 mb-2'>
           <div className='p-2 bg-primary/10 rounded-lg'>
-            <BarChart3 className='h-5 w-5 sm:h-6 sm:w-6 text-primary' />
+            <TrendingUp className='h-5 w-5 sm:h-6 sm:w-6 text-primary' />
           </div>
-          <h1 className='text-2xl sm:text-3xl font-bold text-foreground'>Analysis</h1>
+          <h1 className='text-2xl sm:text-3xl font-bold text-foreground'>Weekly Comparison</h1>
         </div>
         <p className='text-sm sm:text-base text-muted-foreground'>
-          Detailed analysis of your performance and progress based on real data
+          Compare your weekly performance and track progress over time
         </p>
       </div>
 
-      {/* Analysis Overview Content */}
-      <AnalysisOverview 
-        sessions={sessions} 
-        selectedPeriod={selectedPeriod}
-        onPeriodChange={setSelectedPeriod}
-      />
+      {/* Weekly Comparison Content */}
+      <WeeklyComparison sessions={sessions} />
     </div>
   );
-}
-
-export default function AnalysisPage() {
-  return <AnalysisContent />;
 }

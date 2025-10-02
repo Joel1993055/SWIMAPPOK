@@ -39,11 +39,23 @@ const data = {
       title: 'Calendar & Planning',
       url: '/calendar',
       icon: CalendarIcon,
+      children: [
+        {
+          title: 'Yearly Planning',
+          url: '/calendar/yearly-planning',
+        },
+      ],
     },
     {
       title: 'Analysis',
       url: '/analysis',
       icon: BarChartIcon,
+      children: [
+        {
+          title: 'Weekly Comparison',
+          url: '/analysis/weekly-comparison',
+        },
+      ],
     },
     {
       title: 'Training',

@@ -147,7 +147,7 @@ export const WeeklyComparison = memo(function WeeklyComparison({ sessions }: Wee
       </div>
 
       {/* Bar Chart */}
-      <Card className="bg-muted/50">
+      <Card className="bg-muted/50 border-muted">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <BarChart3 className="h-5 w-5" />
@@ -171,7 +171,7 @@ export const WeeklyComparison = memo(function WeeklyComparison({ sessions }: Wee
             : 0;
 
           return (
-            <Card key={week.weekNumber} className="overflow-hidden bg-muted/50">
+            <Card key={week.weekNumber} className="overflow-hidden bg-muted/50 border-muted">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg">
