@@ -403,47 +403,53 @@ export function DashboardCalendar() {
 
           {/* Calendar legend */}
           <div className="border-border mt-4 border-t pt-4">
-            <div className="text-muted-foreground flex flex-col gap-3 text-xs">
-              {/* Training - simplified */}
-              <div className="space-y-2">
-                <h4 className="text-foreground mb-2 text-sm font-medium">
-                  Training Sessions
-                </h4>
-                <div className="flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
-                  <span>Day with training</span>
-                </div>
-              </div>
-
-              {/* Competitions */}
-              <div className="space-y-2">
-                <h4 className="text-foreground mb-2 text-sm font-medium">
-                  Competitions
-                </h4>
-                <div className="flex items-center gap-4">
+            <div className="flex justify-between items-start">
+              {/* Left side - Training Sessions */}
+              <div className="text-muted-foreground flex flex-col gap-3 text-xs">
+                <div className="space-y-2">
+                  <h4 className="text-foreground mb-2 text-sm font-medium">
+                    Training Sessions
+                  </h4>
                   <div className="flex items-center gap-2">
-                    <div className="h-1.5 w-1.5 rounded-full bg-red-500"></div>
-                    <span>High priority</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
-                    <span>Medium priority</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div>
-                    <span>Low priority</span>
+                    <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                    <span>Day with training</span>
                   </div>
                 </div>
               </div>
 
-              {/* Indicators */}
-              <div className="space-y-2">
-                <h4 className="text-foreground mb-2 text-sm font-medium">
-                  Indicators
-                </h4>
-                <div className="flex items-center gap-2">
-                  <div className="bg-accent border-primary h-3 w-3 rounded-full border"></div>
-                  <span>Today</span>
+              {/* Center - Indicators */}
+              <div className="text-muted-foreground flex flex-col gap-3 text-xs">
+                <div className="space-y-2">
+                  <h4 className="text-foreground mb-2 text-sm font-medium">
+                    Indicators
+                  </h4>
+                  <div className="flex items-center gap-2">
+                    <div className="bg-accent border-primary h-3 w-3 rounded-full border"></div>
+                    <span>Today</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right side - Competitions (vertical) */}
+              <div className="text-muted-foreground flex flex-col gap-3 text-xs">
+                <div className="space-y-2">
+                  <h4 className="text-foreground mb-2 text-sm font-medium">
+                    Competitions
+                  </h4>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                      <div className="h-1.5 w-1.5 rounded-full bg-red-500"></div>
+                      <span>High priority</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
+                      <span>Medium priority</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div>
+                      <span>Low priority</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

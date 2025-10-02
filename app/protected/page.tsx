@@ -1,4 +1,3 @@
-import FetchDataSteps from '@/components/onboarding/tutorial/fetch-data-steps';
 import { createClient } from '@/utils/supabase/server';
 import { InfoIcon } from 'lucide-react';
 import { redirect } from 'next/navigation';
@@ -30,8 +29,10 @@ export default async function ProtectedPage() {
         </pre>
       </div>
       <div>
-        <h2 className='font-bold text-2xl mb-4'>Next steps</h2>
-        <FetchDataSteps />
+        <h2 className='font-bold text-2xl mb-4'>Welcome to your dashboard</h2>
+        <p className='text-muted-foreground'>
+          You can now access all the features of the application. Navigate to the dashboard to see your data and analytics.
+        </p>
       </div>
     </div>
   );
