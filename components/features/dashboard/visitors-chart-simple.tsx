@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useSessionsData } from '@/core/hooks/use-sessions-data';
+import { useSessions, useSessionsLoading } from '@/core/stores/entities/session';
 import { BarChart3, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
 import {
@@ -59,7 +59,9 @@ const ChartTypeOption = ({ type }: { type: 'bar' | 'line' }) => (
 );
 
 export function VisitorsChartSimple() {
-  const { sessions, isLoading } = useSessionsData();
+  // MIGRATED: Use new entity store directly
+  const sessions = useSessions();
+  const isLoading = useSessionsLoading();
   const [chartType, setChartType] = useState<'bar' | 'line'>('bar');
   
   // Generar datos semanales
@@ -86,12 +88,12 @@ export function VisitorsChartSimple() {
       const dayZones = { Z1: 0, Z2: 0, Z3: 0, Z4: 0, Z5: 0 };
 
       daySessions.forEach(session => {
-        if (session.zone_volumes) {
-          dayZones.Z1 += session.zone_volumes.z1 || 0;
-          dayZones.Z2 += session.zone_volumes.z2 || 0;
-          dayZones.Z3 += session.zone_volumes.z3 || 0;
-          dayZones.Z4 += session.zone_volumes.z4 || 0;
-          dayZones.Z5 += session.zone_volumes.z5 || 0;
+        if (session.zoneVolumes) {
+          dayZones.Z1 += session.zoneVolumes.z1 || 0;
+          dayZones.Z2 += session.zoneVolumes.z2 || 0;
+          dayZones.Z3 += session.zoneVolumes.z3 || 0;
+          dayZones.Z4 += session.zoneVolumes.z4 || 0;
+          dayZones.Z5 += session.zoneVolumes.z5 || 0;
         }
       });
 

@@ -6,10 +6,14 @@ import { DashboardHeader } from '@/components/features/dashboard/dashboard-heade
 import { KPICards } from '@/components/features/dashboard/kpi-cards';
 import { VisitorsChartSimple } from '@/components/features/dashboard/visitors-chart-simple';
 import { WeeklyTrainingSchedule } from '@/components/features/dashboard/weekly-training-schedule';
+import { useLoadSessionsFromSupabase } from '@/core/hooks/data/use-load-sessions';
 import { useDeviceType } from '@/core/hooks/mobile';
 
 export function DashboardOverview() {
   const deviceType = useDeviceType();
+  
+  // Load sessions from Supabase into the normalized store
+  useLoadSessionsFromSupabase();
 
   return (
     <div className='space-y-4'>

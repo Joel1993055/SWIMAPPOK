@@ -27,9 +27,9 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { useSessions } from '@/core/stores/entities/session';
 import {
     deleteSession,
-    getSessions,
     updateSession,
     type Session as SupabaseSession,
 } from '@/infra/config/actions/sessions';
@@ -45,7 +45,7 @@ import {
     Trash2,
     X,
 } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 // Data types for sessions (using Supabase interface)
 type Session = SupabaseSession;
@@ -93,26 +93,8 @@ function formatDate(
 }
 
 export function SessionsTable() {
-  // States for real data
-  const [sessions, setSessions] = useState<Session[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Load real sessions from Supabase
-  useEffect(() => {
-    const loadSessions = async () => {
-      try {
-        const data = await getSessions();
-        setSessions(data);
-      } catch (error) {
-        console.error('Error loading sessions:', error);
-        setSessions([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadSessions();
-  }, []);
+  // MIGRATED: Use new normalized store instead of legacy getSessions
+  const sessions = useSessions();
 
   // States for search and filters
   const [searchTerm, setSearchTerm] = useState('');
@@ -147,10 +129,10 @@ export function SessionsTable() {
         !searchTerm ||
         session.coach?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         session.stroke?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        session.type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        session.content?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (session.title &&
-          session.title.toLowerCase().includes(searchTerm.toLowerCase()));
+        session.sessionType?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        session.notes?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (session.mainSet &&
+          session.mainSet.toLowerCase().includes(searchTerm.toLowerCase()));
 
       // Filters by stroke
       const matchesStroke =
@@ -160,11 +142,11 @@ export function SessionsTable() {
       // Filters by session type
       const matchesSessionType =
         selectedSessionTypes.length === 0 ||
-        selectedSessionTypes.includes(session.type || '');
+        selectedSessionTypes.includes(session.sessionType || '');
 
       // RPE filters
       const matchesRPE =
-        selectedRPEs.length === 0 || selectedRPEs.includes(session.rpe || 0);
+        selectedRPEs.length === 0 || selectedRPEs.includes(session.averageRPE || 0);
 
       // Filters by date
       const sessionDate = new Date(session.date);
@@ -201,12 +183,12 @@ export function SessionsTable() {
           return isAsc ? a.distance - b.distance : b.distance - a.distance;
         case 'duration':
           return isAsc
-            ? (a.duration || 0) - (b.duration || 0)
-            : (b.duration || 0) - (a.duration || 0);
+            ? (a.totalVolume || 0) - (b.totalVolume || 0)
+            : (b.totalVolume || 0) - (a.totalVolume || 0);
         case 'rpe':
           return isAsc
-            ? (a.rpe || 0) - (b.rpe || 0)
-            : (b.rpe || 0) - (a.rpe || 0);
+            ? (a.averageRPE || 0) - (b.averageRPE || 0)
+            : (b.averageRPE || 0) - (a.averageRPE || 0);
         default:
           return 0;
       }
@@ -312,9 +294,8 @@ export function SessionsTable() {
 
       await updateSession(editingSession.id, formData);
 
-      // Reload sessions
-      const data = await getSessions();
-      setSessions(data);
+      // MIGRATED: Data will be automatically updated by the store via Supabase loader
+      // No need to manually reload since the normalized store syncs with database
 
       setIsEditDialogOpen(false);
       setEditingSession(null);
@@ -329,9 +310,8 @@ export function SessionsTable() {
     try {
       await deleteSession(sessionToDelete.id);
 
-      // Reload sessions
-      const data = await getSessions();
-      setSessions(data);
+      // MIGRATED: Data will be automatically updated by the store via Supabase loader
+      // No need to manually reload since the normalized store syncs with database
 
       setIsDeleteDialogOpen(false);
       setSessionToDelete(null);
@@ -362,19 +342,19 @@ export function SessionsTable() {
       ...filteredAndSortedSessions.map(session =>
         [
           formatDate(session.date),
-          `"${session.title || ''}"`,
+          `"${session.mainSet || ''}"`,
           session.distance,
-          session.duration || 0,
+          session.totalVolume || 0,
           STROKE_OPTIONS.find(s => s.value === session.stroke)?.label ||
             session.stroke ||
             '',
-          SESSION_TYPE_OPTIONS.find(s => s.value === session.type)?.label ||
-            session.type ||
+          SESSION_TYPE_OPTIONS.find(s => s.value === session.sessionType)?.label ||
+            session.sessionType ||
             '',
-          session.rpe || 0,
+          session.averageRPE || 0,
           `"${session.coach || ''}"`,
           session.objective || 'otro',
-          `"${session.content || ''}"`,
+          `"${session.notes || ''}"`,
         ].join(',')
       ),
     ].join('\n');
@@ -730,14 +710,14 @@ export function SessionsTable() {
                       </div>
                     </td>
                     <td className='p-3 font-medium'>
-                      {session.title || 'Sin título'}
+                      {session.mainSet || 'Sin título'}
                     </td>
                     <td className='p-3'>
                       <Badge variant='outline'>{session.distance}m</Badge>
                     </td>
                     <td className='p-3'>
-                      {session.duration && session.duration > 0
-                        ? `${session.duration}min`
+                      {session.totalVolume && session.totalVolume > 0
+                        ? `${session.totalVolume}min`
                         : '-'}
                     </td>
                     <td className='p-3'>
@@ -751,19 +731,19 @@ export function SessionsTable() {
                     <td className='p-3'>
                       <Badge
                         variant={
-                          session.type === 'Technique' ? 'default' : 'secondary'
+                          session.sessionType === 'Technique' ? 'default' : 'secondary'
                         }
                         className='capitalize'
                       >
                         {SESSION_TYPE_OPTIONS.find(
-                          s => s.value === session.type
+                          s => s.value === session.sessionType
                         )?.label ||
-                          session.type ||
+                          session.sessionType ||
                           'N/A'}
                       </Badge>
                     </td>
                     <td className='p-3'>
-                      <Badge variant='outline'>RPE {session.rpe || 0}/10</Badge>
+                      <Badge variant='outline'>RPE {session.averageRPE || 0}/10</Badge>
                     </td>
                     <td className='p-3'>
                       <Badge variant='outline' className='capitalize'>
@@ -914,11 +894,12 @@ export function SessionsTable() {
                   <Input
                     id='edit-title'
                     type='text'
-                    value={editingSession.title || ''}
+                    value={editingSession.mainSet || editingSession.title || ''}
                     onChange={e =>
                       setEditingSession({
                         ...editingSession,
-                        title: e.target.value,
+                        title: e.target.value, // Keep title for compatibility with server actions
+                        mainSet: e.target.value,
                       })
                     }
                     placeholder='Título del entrenamiento'

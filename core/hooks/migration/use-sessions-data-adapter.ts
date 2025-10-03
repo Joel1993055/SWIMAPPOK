@@ -3,7 +3,6 @@
 // =====================================================
 
 import { useNewSessionsStore } from '@/core/stores/entities/session';
-import { useSessionsStoreBridge } from '@/core/stores/migration/sessions-bridge';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 // =====================================================
@@ -46,7 +45,7 @@ interface SessionsFilters {
 // =====================================================
 
 export function useSessionsData() {
-  const bridge = useSessionsStoreBridge();
+  // MIGRATED: Use new store directly without bridge to avoid infinite loops
   const newStore = useNewSessionsStore();
   const [lastFetch, setLastFetch] = useState<number>(0);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -93,10 +92,7 @@ export function useSessionsData() {
       }
 
       try {
-        bridge.setLoading(true);
-        bridge.setError(null);
-
-        // For now, return existing sessions (API integration will come later)
+        // MIGRATED: Direct access to new store
         const sessions = newStore.ids.map(id => newStore.entities[id]);
         const legacySessions = sessions.map(transformToLegacy);
 
@@ -106,13 +102,10 @@ export function useSessionsData() {
         return legacySessions;
       } catch (error) {
         console.error('Error loading sessions:', error);
-        bridge.setError('Error loading sessions');
         throw error;
-      } finally {
-        bridge.setLoading(false);
       }
     },
-    [bridge, newStore, lastFetch, transformToLegacy]
+    [newStore, lastFetch, transformToLegacy]
   );
 
   // =====================================================
@@ -120,10 +113,10 @@ export function useSessionsData() {
   // =====================================================
 
   useEffect(() => {
-    if (!isInitialized && !bridge.isLoading) {
+    if (!isInitialized && !newStore.isLoading) {
       loadSessions();
     }
-  }, [isInitialized, bridge.isLoading, loadSessions]);
+  }, [isInitialized, newStore.isLoading, loadSessions]);
 
   // =====================================================
   // FILTERED SESSIONS (OPTIMIZED)
@@ -271,7 +264,7 @@ export function useSessionsData() {
     metrics,
     zoneAnalysis,
     weeklyAnalysis,
-    isLoading: bridge.isLoading,
+    isLoading: newStore.isLoading,
     isInitialized,
     loadSessions,
     getFilteredSessions,

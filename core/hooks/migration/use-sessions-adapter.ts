@@ -3,7 +3,6 @@
 // =====================================================
 
 import { useNewSessionsStore } from '@/core/stores/entities/session';
-import { useSessionsStoreBridge } from '@/core/stores/migration/sessions-bridge';
 import { useCallback, useEffect, useState } from 'react';
 
 // =====================================================
@@ -48,7 +47,7 @@ interface SessionsFilters {
 // =====================================================
 
 export function useSessions() {
-  const bridge = useSessionsStoreBridge();
+  // MIGRATED: Use new store directly without bridge to avoid infinite loops
   const newStore = useNewSessionsStore();
   const [lastFetch, setLastFetch] = useState<number>(0);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -98,10 +97,7 @@ export function useSessions() {
   const loadSessions = useCallback(
     async (filters?: SessionsFilters) => {
       try {
-        bridge.setLoading(true);
-        bridge.setError(null);
-
-        // For now, return existing sessions (API integration will come later)
+        // MIGRATED: Direct access to new store without bridge
         const sessions = newStore.ids.map(id => newStore.entities[id]);
         const legacySessions = sessions.map(transformToLegacy);
 
@@ -114,30 +110,21 @@ export function useSessions() {
         };
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        bridge.setError(errorMessage);
         return {
           data: null,
           error: { message: errorMessage },
         };
-      } finally {
-        bridge.setLoading(false);
       }
     },
-    [bridge, newStore, transformToLegacy]
+    [newStore, transformToLegacy]
   );
 
   const createSession = useCallback(
     async (sessionData: Omit<LegacySession, 'id'>) => {
       try {
-        bridge.setLoading(true);
-        bridge.setError(null);
-
+        // MIGRATED: Direct access to new store
         const transformedData = transformFromLegacy(sessionData as LegacySession);
-        const result = bridge.addSession(transformedData);
-
-        if (!result.success) {
-          throw new Error(result.error || 'Failed to create session');
-        }
+        newStore.addSession(transformedData);
 
         return {
           data: transformToLegacy(newStore.entities[newStore.ids[newStore.ids.length - 1]]),
@@ -145,30 +132,21 @@ export function useSessions() {
         };
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        bridge.setError(errorMessage);
         return {
           data: null,
           error: { message: errorMessage },
         };
-      } finally {
-        bridge.setLoading(false);
       }
     },
-    [bridge, newStore, transformFromLegacy, transformToLegacy]
+    [newStore, transformFromLegacy, transformToLegacy]
   );
 
   const updateSession = useCallback(
     async (id: string, updates: Partial<LegacySession>) => {
       try {
-        bridge.setLoading(true);
-        bridge.setError(null);
-
+        // MIGRATED: Direct access to new store
         const transformedUpdates = transformFromLegacy(updates as LegacySession);
-        const result = bridge.updateSession(id, transformedUpdates);
-
-        if (!result.success) {
-          throw new Error(result.error || 'Failed to update session');
-        }
+        newStore.updateSession(id, transformedUpdates);
 
         const updatedSession = newStore.entities[id];
         return {
@@ -177,29 +155,20 @@ export function useSessions() {
         };
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        bridge.setError(errorMessage);
         return {
           data: null,
           error: { message: errorMessage },
         };
-      } finally {
-        bridge.setLoading(false);
       }
     },
-    [bridge, newStore, transformFromLegacy, transformToLegacy]
+    [newStore, transformFromLegacy, transformToLegacy]
   );
 
   const deleteSession = useCallback(
     async (id: string) => {
       try {
-        bridge.setLoading(true);
-        bridge.setError(null);
-
-        const result = bridge.deleteSession(id);
-
-        if (!result.success) {
-          throw new Error(result.error || 'Failed to delete session');
-        }
+        // MIGRATED: Direct access to new store
+        newStore.deleteSession(id);
 
         return {
           data: { id },
@@ -207,25 +176,19 @@ export function useSessions() {
         };
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        bridge.setError(errorMessage);
         return {
           data: null,
           error: { message: errorMessage },
         };
-      } finally {
-        bridge.setLoading(false);
       }
     },
-    [bridge]
+    [newStore]
   );
 
   const searchSessions = useCallback(
     async (query: string) => {
       try {
-        bridge.setLoading(true);
-        bridge.setError(null);
-
-        // Simple client-side search for now
+        // MIGRATED: Direct access to new store
         const sessions = newStore.ids.map(id => newStore.entities[id]);
         const filteredSessions = sessions.filter(session =>
           session.mainSet.toLowerCase().includes(query.toLowerCase()) ||
@@ -241,16 +204,13 @@ export function useSessions() {
         };
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        bridge.setError(errorMessage);
         return {
           data: null,
           error: { message: errorMessage },
         };
-      } finally {
-        bridge.setLoading(false);
       }
     },
-    [bridge, newStore, transformToLegacy]
+    [newStore, transformToLegacy]
   );
 
   // =====================================================
@@ -305,14 +265,14 @@ export function useSessions() {
   }, [newStore]);
 
   // =====================================================
-  // AUTO-LOAD ON MOUNT
+  // AUTO-LOAD ON MOUNT - SIMPLIFIED TO AVOID LOOPS
   // =====================================================
 
   useEffect(() => {
-    if (!isInitialized && !bridge.isLoading && newStore.ids.length === 0) {
+    if (!isInitialized && newStore.ids.length === 0) {
       loadSessions();
     }
-  }, [isInitialized, bridge.isLoading, newStore.ids.length, loadSessions]);
+  }, [isInitialized, newStore.ids.length, loadSessions]);
 
   // =====================================================
   // RETURN LEGACY API
@@ -321,8 +281,8 @@ export function useSessions() {
   return {
     // State
     sessions: getAllSessions(),
-    isLoading: bridge.isLoading,
-    error: bridge.error,
+    isLoading: newStore.isLoading,
+    error: newStore.error,
 
     // Actions
     loadSessions,
@@ -342,8 +302,8 @@ export function useSessions() {
     getAverageRPE,
 
     // Store actions
-    clearSessions: bridge.clearEntities,
-    setError: bridge.setError,
+    clearSessions: newStore.clearEntities,
+    setError: newStore.setError,
   };
 }
 
@@ -352,7 +312,7 @@ export function useSessions() {
 // =====================================================
 
 export function useSessionsPagination(limit: number = 10) {
-  const bridge = useSessionsStoreBridge();
+  // MIGRATED: Use new store directly
   const newStore = useNewSessionsStore();
 
   const loadPage = useCallback(
@@ -366,10 +326,7 @@ export function useSessionsPagination(limit: number = 10) {
       }
     ) => {
       try {
-        bridge.setLoading(true);
-        bridge.setError(null);
-
-        // Simple pagination for now
+        // MIGRATED: Direct access to new store
         const allSessions = newStore.ids.map(id => newStore.entities[id]);
         const startIndex = (page - 1) * limit;
         const endIndex = startIndex + limit;
@@ -387,22 +344,19 @@ export function useSessionsPagination(limit: number = 10) {
         };
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        bridge.setError(errorMessage);
         return {
           data: null,
           error: { message: errorMessage },
         };
-      } finally {
-        bridge.setLoading(false);
       }
     },
-    [bridge, newStore, limit]
+    [newStore, limit]
   );
 
   return {
     loadPage,
-    loading: bridge.isLoading,
-    error: bridge.error,
+    loading: newStore.isLoading,
+    error: newStore.error,
     hasMore: newStore.ids.length > 0,
   };
 }
@@ -412,7 +366,7 @@ export function useSessionsPagination(limit: number = 10) {
 // =====================================================
 
 export function useSessionsStats() {
-  const bridge = useSessionsStoreBridge();
+  // MIGRATED: Use new store directly
   const newStore = useNewSessionsStore();
 
   const loadStats = useCallback(
@@ -422,9 +376,7 @@ export function useSessionsStats() {
       training_phase_id?: string;
     }) => {
       try {
-        bridge.setLoading(true);
-        bridge.setError(null);
-
+        // MIGRATED: Direct access to new store
         const sessions = newStore.ids.map(id => newStore.entities[id]);
         
         const stats = {
@@ -450,22 +402,19 @@ export function useSessionsStats() {
         };
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        bridge.setError(errorMessage);
         return {
           data: null,
           error: { message: errorMessage },
         };
-      } finally {
-        bridge.setLoading(false);
       }
     },
-    [bridge, newStore]
+    [newStore]
   );
 
   return {
     loadStats,
-    loading: bridge.isLoading,
-    error: bridge.error,
+    loading: newStore.isLoading,
+    error: newStore.error,
   };
 }
 
@@ -474,14 +423,12 @@ export function useSessionsStats() {
 // =====================================================
 
 export function useSession(id: string) {
-  const bridge = useSessionsStoreBridge();
+  // MIGRATED: Use new store directly
   const newStore = useNewSessionsStore();
 
   const loadSession = useCallback(async () => {
     try {
-      bridge.setLoading(true);
-      bridge.setError(null);
-
+      // MIGRATED: Direct access to new store
       const session = newStore.entities[id];
       if (!session) {
         throw new Error('Session not found');
@@ -493,27 +440,18 @@ export function useSession(id: string) {
       };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      bridge.setError(errorMessage);
       return {
         data: null,
         error: { message: errorMessage },
       };
-    } finally {
-      bridge.setLoading(false);
     }
-  }, [bridge, newStore, id]);
+  }, [newStore, id]);
 
   const updateSession = useCallback(
     async (updates: Partial<any>) => {
       try {
-        bridge.setLoading(true);
-        bridge.setError(null);
-
-        const result = bridge.updateSession(id, updates);
-
-        if (!result.success) {
-          throw new Error(result.error || 'Failed to update session');
-        }
+        // MIGRATED: Direct access to new store
+        newStore.updateSession(id, updates);
 
         const updatedSession = newStore.entities[id];
         return {
@@ -522,28 +460,19 @@ export function useSession(id: string) {
         };
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        bridge.setError(errorMessage);
         return {
           data: null,
           error: { message: errorMessage },
         };
-      } finally {
-        bridge.setLoading(false);
       }
     },
-    [bridge, newStore, id]
+    [newStore, id]
   );
 
   const deleteSession = useCallback(async () => {
     try {
-      bridge.setLoading(true);
-      bridge.setError(null);
-
-      const result = bridge.deleteSession(id);
-
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to delete session');
-      }
+      // MIGRATED: Direct access to new store
+      newStore.deleteSession(id);
 
       return {
         data: { id },
@@ -551,27 +480,24 @@ export function useSession(id: string) {
       };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      bridge.setError(errorMessage);
       return {
         data: null,
         error: { message: errorMessage },
       };
-    } finally {
-      bridge.setLoading(false);
     }
-  }, [bridge, id]);
+  }, [newStore, id]);
 
-  // Auto-load session if not exists
+  // Auto-load session if not exists - SIMPLIFIED TO AVOID LOOPS
   useEffect(() => {
-    if (!newStore.entities[id] && !bridge.isLoading) {
+    if (!newStore.entities[id] && !newStore.isLoading) {
       loadSession();
     }
-  }, [id, loadSession, bridge.isLoading, newStore.entities]);
+  }, [id, loadSession, newStore.isLoading, newStore.entities]);
 
   return {
     session: newStore.entities[id],
-    loading: bridge.isLoading,
-    error: bridge.error,
+    loading: newStore.isLoading,
+    error: newStore.error,
     loadSession,
     updateSession,
     deleteSession,

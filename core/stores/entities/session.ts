@@ -2,6 +2,7 @@
 // SESSION ENTITY STORE - NORMALIZED ARCHITECTURE
 // =====================================================
 
+import { useMemo } from 'react';
 import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
 import { BaseEntity, EntityState, createEntityId, createTimestamp, normalizeEntities } from './types';
@@ -339,57 +340,102 @@ export const useSessionsStore = create<SessionsState>()(
 );
 
 // =====================================================
-// SELECTOR HOOKS FOR PERFORMANCE
+// SELECTOR HOOKS FOR PERFORMANCE - OPTIMIZED WITH MEMOIZATION
 // =====================================================
 
-export const useSessions = () => useSessionsStore((state) => 
-  state.ids.map(id => state.entities[id])
-);
+export const useSessions = () => {
+  const ids = useSessionsStore((state) => state.ids);
+  const entities = useSessionsStore((state) => state.entities);
+  
+  return useMemo(() => 
+    ids.map(id => entities[id]), 
+    [ids, entities]
+  );
+};
 
 export const useSession = (id: string) => useSessionsStore((state) => 
   state.entities[id]
 );
 
-export const useSessionsByDate = (date: string) => useSessionsStore((state) => 
-  state.getSessionsByDate(date)
-);
+export const useSessionsByDate = (date: string) => {
+  const ids = useSessionsStore((state) => state.ids);
+  const entities = useSessionsStore((state) => state.entities);
+  
+  return useMemo(() => {
+    return ids
+      .map(id => entities[id])
+      .filter(session => session.date === date);
+  }, [ids, entities, date]);
+};
 
-export const useSessionsByDateRange = (startDate: string, endDate: string) => useSessionsStore((state) => 
-  state.getSessionsByDateRange(startDate, endDate)
-);
+export const useSessionsByDateRange = (startDate: string, endDate: string) => {
+  const ids = useSessionsStore((state) => state.ids);
+  const entities = useSessionsStore((state) => state.entities);
+  
+  return useMemo(() => {
+    return ids
+      .map(id => entities[id])
+      .filter(session => session.date >= startDate && session.date <= endDate);
+  }, [ids, entities, startDate, endDate]);
+};
 
 export const useSessionsLoading = () => useSessionsStore((state) => state.isLoading);
 export const useSessionsError = () => useSessionsStore((state) => state.error);
 export const useSessionsCount = () => useSessionsStore((state) => state.totalCount);
 
 // =====================================================
-// ACTION HOOKS
+// ACTION HOOKS - OPTIMIZED WITH MEMOIZATION
 // =====================================================
 
-export const useSessionsActions = () => useSessionsStore((state) => ({
-  addSession: state.addSession,
-  updateSession: state.updateSession,
-  deleteSession: state.deleteSession,
-  setEntities: state.setEntities,
-  setLoading: state.setLoading,
-  setError: state.setError,
-  clearEntities: state.clearEntities,
-}));
+export const useSessionsActions = () => {
+  const addSession = useSessionsStore((state) => state.addSession);
+  const updateSession = useSessionsStore((state) => state.updateSession);
+  const deleteSession = useSessionsStore((state) => state.deleteSession);
+  const setEntities = useSessionsStore((state) => state.setEntities);
+  const setLoading = useSessionsStore((state) => state.setLoading);
+  const setError = useSessionsStore((state) => state.setError);
+  const clearEntities = useSessionsStore((state) => state.clearEntities);
 
-export const useSessionsSelectors = () => useSessionsStore((state) => ({
-  getSessionsByDate: state.getSessionsByDate,
-  getSessionsByDateRange: state.getSessionsByDateRange,
-  getSessionsBySwimmer: state.getSessionsBySwimmer,
-  getSessionsByPhase: state.getSessionsByPhase,
-  getSessionsByType: state.getSessionsByType,
-  getTotalDistance: state.getTotalDistance,
-  getTotalDistanceByDate: state.getTotalDistanceByDate,
-  getTotalDistanceByRange: state.getTotalDistanceByRange,
-  getAverageDistance: state.getAverageDistance,
-  getSessionCount: state.getSessionCount,
-  getZoneDistribution: state.getZoneDistribution,
-  getZoneDistributionByDate: state.getZoneDistributionByDate,
-}));
+  return useMemo(() => ({
+    addSession,
+    updateSession,
+    deleteSession,
+    setEntities,
+    setLoading,
+    setError,
+    clearEntities,
+  }), [addSession, updateSession, deleteSession, setEntities, setLoading, setError, clearEntities]);
+};
+
+export const useSessionsSelectors = () => {
+  const getSessionsByDate = useSessionsStore((state) => state.getSessionsByDate);
+  const getSessionsByDateRange = useSessionsStore((state) => state.getSessionsByDateRange);
+  const getSessionsBySwimmer = useSessionsStore((state) => state.getSessionsBySwimmer);
+  const getSessionsByPhase = useSessionsStore((state) => state.getSessionsByPhase);
+  const getSessionsByType = useSessionsStore((state) => state.getSessionsByType);
+  const getTotalDistance = useSessionsStore((state) => state.getTotalDistance);
+  const getTotalDistanceByDate = useSessionsStore((state) => state.getTotalDistanceByDate);
+  const getTotalDistanceByRange = useSessionsStore((state) => state.getTotalDistanceByRange);
+  const getAverageDistance = useSessionsStore((state) => state.getAverageDistance);
+  const getSessionCount = useSessionsStore((state) => state.getSessionCount);
+  const getZoneDistribution = useSessionsStore((state) => state.getZoneDistribution);
+  const getZoneDistributionByDate = useSessionsStore((state) => state.getZoneDistributionByDate);
+
+  return useMemo(() => ({
+    getSessionsByDate,
+    getSessionsByDateRange,
+    getSessionsBySwimmer,
+    getSessionsByPhase,
+    getSessionsByType,
+    getTotalDistance,
+    getTotalDistanceByDate,
+    getTotalDistanceByRange,
+    getAverageDistance,
+    getSessionCount,
+    getZoneDistribution,
+    getZoneDistributionByDate,
+  }), [getSessionsByDate, getSessionsByDateRange, getSessionsBySwimmer, getSessionsByPhase, getSessionsByType, getTotalDistance, getTotalDistanceByDate, getTotalDistanceByRange, getAverageDistance, getSessionCount, getZoneDistribution, getZoneDistributionByDate]);
+};
 
 // =====================================================
 // MIGRATION ALIASES

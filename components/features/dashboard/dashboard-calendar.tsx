@@ -17,8 +17,8 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import { useSessions } from '@/core/stores/entities/session';
 import { useCompetitionsStore } from '@/core/stores/unified';
-import { getSessions, type Session } from '@/infra/config/actions/sessions';
 import {
     Activity,
     Calendar as CalendarIcon,
@@ -38,10 +38,11 @@ export function DashboardCalendar() {
     year: number;
   } | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [sessions, setSessions] = useState<Session[]>([]);
-  const [selectedTraining, setSelectedTraining] = useState<Session | null>(null);
+  const [selectedTraining, setSelectedTraining] = useState<any | null>(null);
   const [isTrainingModalOpen, setIsTrainingModalOpen] = useState(false);
-  // const [isLoading, setIsLoading] = useState(true);
+
+  // MIGRATED: Use new normalized store instead of legacy getSessions
+  const sessions = useSessions();
 
   // Existing context
   const { getCompetitionsByDate } = useCompetitionsStore();
@@ -78,28 +79,12 @@ export function DashboardCalendar() {
 
   const weekDays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
-  // Load sessions from Supabase
-  useEffect(() => {
-    const loadSessions = async () => {
-      try {
-        const data = await getSessions();
-        setSessions(data);
-      } catch (error) {
-        console.error('Error loading sessions:', error);
-        setSessions([]);
-      } finally {
-        // setIsLoading(false);
-      }
-    };
-
-    loadSessions();
-  }, []);
 
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
   const currentMonthName = months[currentMonth].name;
 
-  // Convert sessions to calendar daily map
+  // Convert new store sessions to calendar daily map
   const dailyTrainingData = sessions.reduce(
     (acc, session) => {
       const dateKey = session.date;
@@ -108,12 +93,12 @@ export function DashboardCalendar() {
       }
 
       acc[dateKey].sessions.push({
-        time: '09:00', // Could add time to sessions later
-        type: session.type,
+        time: session.timeSlot === 'AM' ? '09:00' : '18:00',
+        type: session.sessionType,
         distance: session.distance || 0,
-        duration: session.duration || 0,
+        duration: session.totalVolume || 0,
         stroke: session.stroke || 'Freestyle',
-        rpe: session.rpe || 5,
+        rpe: session.averageRPE || 5,
       });
 
       return acc;
@@ -174,7 +159,7 @@ export function DashboardCalendar() {
     setIsDialogOpen(true);
   };
 
-  const handleTrainingClick = (training: Session) => {
+  const handleTrainingClick = (training: any) => {
     setSelectedTraining(training);
     setIsTrainingModalOpen(true);
   };
@@ -184,7 +169,7 @@ export function DashboardCalendar() {
     setSelectedTraining(null);
   };
 
-  const handleEditTraining = (training: Session) => {
+  const handleEditTraining = (training: any) => {
     // Could navigate to edit page or open edit modal
     console.log('Edit training:', training);
     handleCloseTrainingModal();

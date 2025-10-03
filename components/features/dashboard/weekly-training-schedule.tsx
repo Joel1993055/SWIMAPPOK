@@ -10,11 +10,10 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { getSessions, type Session } from '@/infra/config/actions/sessions';
+import { useSessions } from '@/core/stores/entities/session';
 import { addDays, format, isSameDay, isToday, startOfWeek } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Activity, Calendar, Clock, MapPin, Plus } from 'lucide-react';
-import { useEffect, useState } from 'react';
 
 interface TrainingSession {
   id: string;
@@ -39,7 +38,8 @@ interface WeeklyTrainingScheduleProps {
 export function WeeklyTrainingSchedule({
   weekStart = new Date(),
 }: WeeklyTrainingScheduleProps) {
-  const [sessions, setSessions] = useState<Session[]>([]);
+  // MIGRATED: Use new normalized store instead of legacy getSessions
+  const sessions = useSessions();
 
   const startWeek = startOfWeek(weekStart, { weekStartsOn: 1 }); // Monday
   const days = Array.from({ length: 7 }, (_, i) => addDays(startWeek, i));
@@ -54,24 +54,7 @@ export function WeeklyTrainingSchedule({
     'Sunday',
   ];
 
-  // Load real sessions from Supabase
-  useEffect(() => {
-    const loadSessions = async () => {
-      try {
-        const data = await getSessions();
-        setSessions(data);
-      } catch (error) {
-        console.error('Error loading sessions:', error);
-        setSessions([]);
-      } finally {
-        // Loading completed
-      }
-    };
-
-    loadSessions();
-  }, []);
-
-  // Convert real sessions to weekly schedule format
+  // Convert new store sessions to weekly schedule format
   const weeklyTrainings: TrainingSession[] = sessions.map(session => {
     // Calculate intensity based on RPE
     const getIntensityFromRPE = (
@@ -87,21 +70,21 @@ export function WeeklyTrainingSchedule({
 
     return {
       id: session.id,
-      title: session.title,
+      title: session.mainSet || 'Training Session', // Use mainSet as title
       time:
-        (session as { time_slot?: 'AM' | 'PM' }).time_slot === 'AM'
+        session.timeSlot === 'AM'
           ? '09:00'
-          : '18:00', // Use time_slot to determine time
-      duration: session.duration || 60,
-      type: session.type,
+          : '18:00', // Use timeSlot from new store
+      duration: session.totalVolume || 60, // Use totalVolume as duration
+      type: session.sessionType, // Use sessionType from new store
       location: session.location || 'Not specified',
       coach: session.coach || 'Not specified',
-      group: session.group_name || 'Not specified',
+      group: session.objective || 'Training', // Use objective field for group
       objective: session.objective || 'other',
-      intensity: getIntensityFromRPE(session.rpe || 5),
+      intensity: getIntensityFromRPE(session.averageRPE || 5), // Use averageRPE
       distance: session.distance || 0,
       isCompleted: new Date(session.date) < new Date(),
-      timeSlot: (session as { time_slot?: 'AM' | 'PM' }).time_slot || 'AM', // Agregar timeSlot para filtrar
+      timeSlot: session.timeSlot || 'AM', // Use timeSlot from new store
     };
   });
 
