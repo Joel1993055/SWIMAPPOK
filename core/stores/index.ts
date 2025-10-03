@@ -2,7 +2,19 @@
 // STORE UNIFICADO - PUNTO DE ENTRADA ÚNICO
 // =====================================================
 
-// Exportar solo los stores normalizados
+// NEW ENTITY STORES (MIGRATION IN PROGRESS)
+export {
+    useSessionsStore as useNewSessionsStore, useSession, useSessions, useSessionsActions, useSessionsByDate,
+    useSessionsByDateRange, useSessionsCount, useSessionsError, useSessionsLoading, useSessionsSelectors,
+    type SessionEntity
+} from './entities/session';
+
+// MIGRATION BRIDGES
+export {
+    useSessionsMigration, useSessionsStoreBridge, type MigrationResult
+} from './migration/sessions-bridge';
+
+// LEGACY NORMALIZED STORES (TO BE MIGRATED)
 export { useCompetitionsStore } from './normalized/competitions';
 export { useSessionsStore } from './normalized/sessions';
 export { useTrainingPhasesStore } from './normalized/training-phases';
@@ -14,10 +26,10 @@ export { trainingPhasesSelectors } from './normalized/training-phases';
 
 // Exportar hooks de integración
 export {
-  useSession,
-  useSessions,
-  useSessionsPagination,
-  useSessionsStats,
+    useSession,
+    useSessions,
+    useSessionsPagination,
+    useSessionsStats
 } from '../hooks/use-sessions';
 
 // =====================================================
@@ -26,10 +38,10 @@ export {
 
 // Mantener temporalmente para compatibilidad
 export {
-  useAICoachStore,
-  useAuthStore,
-  useReportsStore,
-  useUIStore,
+    useAICoachStore,
+    useAuthStore,
+    useReportsStore,
+    useUIStore
 } from './unified';
 
 // =====================================================
@@ -37,11 +49,12 @@ export {
 // =====================================================
 
 export type {
-  AICoachAdvice,
-  AICoachAnalysis,
-  Competition,
-  Session,
-  TrainingPhase,
-  TrainingReport,
-  User,
+    AICoachAdvice,
+    AICoachAnalysis,
+    Competition,
+    Session,
+    TrainingPhase,
+    TrainingReport,
+    User
 } from '../types/entities';
+
