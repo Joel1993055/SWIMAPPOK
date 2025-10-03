@@ -4,7 +4,7 @@
 
 import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
-import { BaseEntity, EntityActions, EntityState, createEntityId, createTimestamp, normalizeEntities } from './types';
+import { BaseEntity, EntityState, createEntityId, createTimestamp, normalizeEntities } from './types';
 
 // =====================================================
 // SESSION ENTITY TYPE
@@ -44,11 +44,27 @@ export interface SessionEntity extends BaseEntity {
 // SESSION STORE STATE
 // =====================================================
 
-interface SessionsState extends EntityState<SessionEntity>, EntityActions<SessionEntity> {
+interface SessionsState extends EntityState<SessionEntity> {
   // Additional session-specific state
   selectedDate: string | null;
   selectedSwimmer: string | null;
   selectedPhase: string | null;
+  
+  // CRUD operations (from EntityActions)
+  addEntity: (entity: Omit<SessionEntity, 'id' | 'createdAt' | 'updatedAt'>) => void;
+  updateEntity: (id: string, updates: Partial<SessionEntity>) => void;
+  deleteEntity: (id: string) => void;
+  setEntities: (entities: SessionEntity[]) => void;
+  setLoading: (loading: boolean) => void;
+  setError: (error: string | null) => void;
+  clearEntities: () => void;
+  getEntity: (id: string) => SessionEntity | undefined;
+  hasEntity: (id: string) => boolean;
+  
+  // Legacy aliases
+  addSession: (sessionData: Omit<SessionEntity, 'id' | 'createdAt' | 'updatedAt'>) => void;
+  updateSession: (id: string, updates: Partial<SessionEntity>) => void;
+  deleteSession: (id: string) => void;
   
   // Session-specific actions
   setSelectedDate: (date: string | null) => void;
@@ -78,7 +94,7 @@ interface SessionsState extends EntityState<SessionEntity>, EntityActions<Sessio
 // INITIAL STATE
 // =====================================================
 
-const initialState: Omit<SessionsState, keyof EntityActions<SessionEntity>> = {
+const initialState: Omit<SessionsState, 'addEntity' | 'updateEntity' | 'deleteEntity' | 'setEntities' | 'setLoading' | 'setError' | 'clearEntities' | 'getEntity' | 'hasEntity' | 'addSession' | 'updateSession' | 'deleteSession' | 'setSelectedDate' | 'setSelectedSwimmer' | 'setSelectedPhase' | 'getSessionsByDate' | 'getSessionsByDateRange' | 'getSessionsBySwimmer' | 'getSessionsByPhase' | 'getSessionsByType' | 'getTotalDistance' | 'getTotalDistanceByDate' | 'getTotalDistanceByRange' | 'getAverageDistance' | 'getSessionCount' | 'getZoneDistribution' | 'getZoneDistributionByDate'> = {
   // Entity state
   entities: {},
   ids: [],
@@ -108,7 +124,7 @@ export const useSessionsStore = create<SessionsState>()(
         // CRUD OPERATIONS
         // =====================================================
         
-        addSession: (sessionData) => {
+        addEntity: (sessionData) => {
           const now = createTimestamp();
           const newSession: SessionEntity = {
             ...sessionData,
@@ -126,7 +142,7 @@ export const useSessionsStore = create<SessionsState>()(
           }));
         },
         
-        updateSession: (id, updates) => {
+        updateEntity: (id, updates) => {
           set((state) => {
             const existingSession = state.entities[id];
             if (!existingSession) return state;
@@ -145,7 +161,7 @@ export const useSessionsStore = create<SessionsState>()(
           });
         },
         
-        deleteSession: (id) => {
+        deleteEntity: (id) => {
           set((state) => {
             const { [id]: deleted, ...remainingEntities } = state.entities;
             return {
@@ -158,7 +174,7 @@ export const useSessionsStore = create<SessionsState>()(
           });
         },
         
-        setEntities: (sessions) => {
+        setEntities: (sessions: SessionEntity[]) => {
           const { entities, ids } = normalizeEntities(sessions);
           set({
             entities,
@@ -173,8 +189,8 @@ export const useSessionsStore = create<SessionsState>()(
         // STATE MANAGEMENT
         // =====================================================
         
-        setLoading: (isLoading) => set({ isLoading }),
-        setError: (error) => set({ error }),
+        setLoading: (isLoading: boolean) => set({ isLoading }),
+        setError: (error: string | null) => set({ error }),
         
         clearEntities: () => set({
           entities: {},
@@ -189,8 +205,8 @@ export const useSessionsStore = create<SessionsState>()(
         // UTILITY FUNCTIONS
         // =====================================================
         
-        getEntity: (id) => get().entities[id],
-        hasEntity: (id) => id in get().entities,
+        getEntity: (id: string) => get().entities[id],
+        hasEntity: (id: string) => id in get().entities,
         
         // =====================================================
         // SESSION-SPECIFIC ACTIONS
@@ -229,7 +245,7 @@ export const useSessionsStore = create<SessionsState>()(
           const { entities, ids } = get();
           return ids
             .map(id => entities[id])
-            .filter(session => session.selectedPhase === phase);
+            .filter(session => session.sessionType === phase);
         },
         
         getSessionsByType: (type) => {
@@ -300,6 +316,14 @@ export const useSessionsStore = create<SessionsState>()(
           
           return distribution;
         },
+        
+        // =====================================================
+        // LEGACY ALIASES FOR COMPATIBILITY
+        // =====================================================
+        
+        addSession: (sessionData: Omit<SessionEntity, 'id' | 'createdAt' | 'updatedAt'>) => get().addEntity(sessionData),
+        updateSession: (id: string, updates: Partial<SessionEntity>) => get().updateEntity(id, updates),
+        deleteSession: (id: string) => get().deleteEntity(id),
       }),
       {
         name: 'sessions-store',
@@ -366,3 +390,14 @@ export const useSessionsSelectors = () => useSessionsStore((state) => ({
   getZoneDistribution: state.getZoneDistribution,
   getZoneDistributionByDate: state.getZoneDistributionByDate,
 }));
+
+// =====================================================
+// MIGRATION ALIASES
+// =====================================================
+
+// Alias for migration compatibility
+export { useSessionsStore as useNewSessionsStore };
+
+// Export the state interface for external use
+    export type { SessionsState };
+

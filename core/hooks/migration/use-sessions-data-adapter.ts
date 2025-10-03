@@ -1,91 +1,138 @@
-'use client';
-
 // =====================================================
-// LEGACY SESSIONS DATA HOOK - MIGRATION ADAPTER
+// SESSIONS DATA HOOK ADAPTER - MIGRATION BRIDGE
 // =====================================================
 
-// Re-export the migration adapter hook to maintain API compatibility
-export { useSessionsData } from './migration/use-sessions-data-adapter';
+import { useNewSessionsStore } from '@/core/stores/entities/session';
+import { useSessionsStoreBridge } from '@/core/stores/migration/sessions-bridge';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 // =====================================================
-// DEPRECATED IMPORTS (TO BE REMOVED IN FUTURE COMMITS)
+// LEGACY SESSION TYPE (COMPATIBILITY)
 // =====================================================
 
-// These imports are kept for backward compatibility but will be removed
-// when all components are migrated to the new store architecture
+interface LegacySession {
+  id: string;
+  date: string;
+  swimmer: string;
+  distance: number;
+  stroke: 'freestyle' | 'backstroke' | 'breaststroke' | 'butterfly' | 'mixed';
+  sessionType: 'aerobic' | 'threshold' | 'speed' | 'technique' | 'recovery';
+  mainSet: string;
+  notes?: string;
+  title?: string;
+  content?: string;
+  type?: string;
+  rpe?: number;
+  duration?: number;
+  zone_volumes?: {
+    z1: number;
+    z2: number;
+    z3: number;
+    z4: number;
+    z5: number;
+  };
+}
+
+interface SessionsFilters {
+  startDate?: Date;
+  endDate?: Date;
+  stroke?: string;
+  type?: string;
+  rpe?: number;
+}
 
 // =====================================================
-// DEPRECATED IMPLEMENTATION (COMMENTED OUT FOR MIGRATION)
+// MAIN SESSIONS DATA HOOK ADAPTER
 // =====================================================
 
-/*
-// =====================================================
-// HOOK CENTRALIZADO PARA DATOS DE SESIONES
-// =====================================================
 export function useSessionsData() {
-  const { sessions, setSessions, isLoading, setLoading, setError } =
-    useSessionsStore();
+  const bridge = useSessionsStoreBridge();
+  const newStore = useNewSessionsStore();
   const [lastFetch, setLastFetch] = useState<number>(0);
   const [isInitialized, setIsInitialized] = useState(false);
 
   // =====================================================
-  // CARGAR SESIONES CON CACHÉ INTELIGENTE
+  // DATA TRANSFORMATION
   // =====================================================
+
+  const transformToLegacy = useCallback((session: any): LegacySession => {
+    return {
+      id: session.id,
+      date: session.date,
+      swimmer: session.swimmer,
+      distance: session.distance,
+      stroke: session.stroke,
+      sessionType: session.sessionType,
+      mainSet: session.mainSet,
+      notes: session.notes,
+      title: session.mainSet || 'Session',
+      content: session.notes || '',
+      type: session.sessionType,
+      rpe: session.averageRPE,
+      duration: session.totalVolume,
+      zone_volumes: session.zoneVolumes,
+    };
+  }, []);
+
+  // =====================================================
+  // CACHED DATA LOADING
+  // =====================================================
+
   const loadSessions = useCallback(
     async (forceRefresh = false) => {
       const now = Date.now();
-      const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
+      const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
-      // Si hay datos en caché y no es refresh forzado, no cargar
+      // Check cache validity
       if (
         !forceRefresh &&
-        sessions.length > 0 &&
+        newStore.ids.length > 0 &&
         now - lastFetch < CACHE_DURATION
       ) {
-        return sessions;
+        return newStore.ids.map(id => transformToLegacy(newStore.entities[id]));
       }
 
       try {
-        setLoading(true);
-        setError(null);
+        bridge.setLoading(true);
+        bridge.setError(null);
 
-        const data = await getSessions();
-        setSessions(data);
+        // For now, return existing sessions (API integration will come later)
+        const sessions = newStore.ids.map(id => newStore.entities[id]);
+        const legacySessions = sessions.map(transformToLegacy);
+
         setLastFetch(now);
         setIsInitialized(true);
 
-        return data;
+        return legacySessions;
       } catch (error) {
-        console.error('Error cargando sesiones:', error);
-        setError('Error al cargar las sesiones');
+        console.error('Error loading sessions:', error);
+        bridge.setError('Error loading sessions');
         throw error;
       } finally {
-        setLoading(false);
+        bridge.setLoading(false);
       }
     },
-    [sessions.length, lastFetch, setSessions, setLoading, setError]
+    [bridge, newStore, lastFetch, transformToLegacy]
   );
 
   // =====================================================
-  // CARGAR DATOS AL MONTAR (SOLO UNA VEZ)
+  // AUTO-LOAD ON MOUNT
   // =====================================================
+
   useEffect(() => {
-    if (!isInitialized && !isLoading) {
+    if (!isInitialized && !bridge.isLoading) {
       loadSessions();
     }
-  }, [isInitialized, isLoading]); // Removido loadSessions de las dependencias
+  }, [isInitialized, bridge.isLoading, loadSessions]);
 
   // =====================================================
-  // FILTROS OPTIMIZADOS CON USEMEMO
+  // FILTERED SESSIONS (OPTIMIZED)
   // =====================================================
+
   const getFilteredSessions = useCallback(
-    (filters: {
-      startDate?: Date;
-      endDate?: Date;
-      stroke?: string;
-      type?: string;
-      rpe?: number;
-    }) => {
+    (filters: SessionsFilters) => {
+      const sessions = newStore.ids.map(id => transformToLegacy(newStore.entities[id]));
+
       return sessions.filter(session => {
         if (filters.startDate) {
           const sessionDate = new Date(session.date);
@@ -112,13 +159,16 @@ export function useSessionsData() {
         return true;
       });
     },
-    [sessions]
+    [newStore, transformToLegacy]
   );
 
   // =====================================================
-  // MÉTRICAS OPTIMIZADAS
+  // METRICS CALCULATION (OPTIMIZED)
   // =====================================================
+
   const metrics = useMemo(() => {
+    const sessions = newStore.ids.map(id => transformToLegacy(newStore.entities[id]));
+
     if (sessions.length === 0) {
       return {
         totalDistance: 0,
@@ -148,19 +198,21 @@ export function useSessionsData() {
       avgRPE: totals.sessions > 0 ? totals.rpe / totals.sessions : 0,
       totalTime: totals.duration,
     };
-  }, [sessions]);
+  }, [newStore, transformToLegacy]);
 
   // =====================================================
-  // ANÁLISIS DE ZONAS OPTIMIZADO
+  // ZONE ANALYSIS (OPTIMIZED)
   // =====================================================
+
   const zoneAnalysis = useMemo(() => {
+    const sessions = newStore.ids.map(id => transformToLegacy(newStore.entities[id]));
     const zoneTotals = { z1: 0, z2: 0, z3: 0, z4: 0, z5: 0 };
     let totalDistance = 0;
 
     sessions.forEach(session => {
       if (session.zone_volumes) {
         Object.entries(session.zone_volumes).forEach(([zone, volume]) => {
-          if (zone in zoneTotals) {
+          if (zone in zoneTotals && typeof volume === 'number') {
             zoneTotals[zone as keyof typeof zoneTotals] += volume;
             totalDistance += volume;
           }
@@ -173,12 +225,14 @@ export function useSessionsData() {
       distance,
       percentage: totalDistance > 0 ? (distance / totalDistance) * 100 : 0,
     }));
-  }, [sessions]);
+  }, [newStore, transformToLegacy]);
 
   // =====================================================
-  // ANÁLISIS SEMANAL OPTIMIZADO
+  // WEEKLY ANALYSIS (OPTIMIZED)
   // =====================================================
+
   const weeklyAnalysis = useMemo(() => {
+    const sessions = newStore.ids.map(id => transformToLegacy(newStore.entities[id]));
     const weeklyData: {
       [key: string]: { distance: number; sessions: number; avgRPE: number };
     } = {};
@@ -186,7 +240,7 @@ export function useSessionsData() {
     sessions.forEach(session => {
       const sessionDate = new Date(session.date);
       const weekStart = new Date(sessionDate);
-      weekStart.setDate(sessionDate.getDate() - sessionDate.getDay() + 1); // Lunes
+      weekStart.setDate(sessionDate.getDate() - sessionDate.getDay() + 1); // Monday
       const weekKey = weekStart.toISOString().split('T')[0];
 
       if (!weeklyData[weekKey]) {
@@ -206,17 +260,20 @@ export function useSessionsData() {
         avgRPE: data.sessions > 0 ? data.avgRPE / data.sessions : 0,
       }))
       .sort((a, b) => a.week.localeCompare(b.week));
-  }, [sessions]);
+  }, [newStore, transformToLegacy]);
+
+  // =====================================================
+  // RETURN LEGACY API
+  // =====================================================
 
   return {
-    sessions,
+    sessions: newStore.ids.map(id => transformToLegacy(newStore.entities[id])),
     metrics,
     zoneAnalysis,
     weeklyAnalysis,
-    isLoading,
+    isLoading: bridge.isLoading,
     isInitialized,
     loadSessions,
     getFilteredSessions,
   };
 }
-*/

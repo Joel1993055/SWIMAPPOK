@@ -4,7 +4,7 @@
 
 // Session entity
 export {
-    useSession, useSessions, useSessionsActions, useSessionsByDate,
+    useNewSessionsStore, useSession, useSessions, useSessionsActions, useSessionsByDate,
     useSessionsByDateRange, useSessionsCount, useSessionsError, useSessionsLoading, useSessionsSelectors, useSessionsStore, type SessionEntity,
     type SessionsState
 } from './session';

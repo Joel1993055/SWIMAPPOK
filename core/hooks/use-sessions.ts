@@ -1,9 +1,26 @@
-import { useApiCall } from '@/lib/hooks/use-api-call';
-import { useSessionsApi } from '@/lib/services/sessions-api';
-import { useSessionsStore } from '@/lib/store/normalized/sessions';
-import { Session } from '@/lib/types/entities';
-import { useCallback, useEffect } from 'react';
+// =====================================================
+// LEGACY SESSIONS HOOKS - MIGRATION ADAPTER
+// =====================================================
 
+// Re-export the migration adapter hooks to maintain API compatibility
+export {
+    useSession, useSessions,
+    useSessionsPagination,
+    useSessionsStats
+} from './migration/use-sessions-adapter';
+
+// =====================================================
+// DEPRECATED IMPORTS (TO BE REMOVED IN FUTURE COMMITS)
+// =====================================================
+
+// These imports are kept for backward compatibility but will be removed
+// when all components are migrated to the new store architecture
+
+// =====================================================
+// DEPRECATED IMPLEMENTATION (COMMENTED OUT FOR MIGRATION)
+// =====================================================
+
+/*
 // =====================================================
 // HOOK PRINCIPAL PARA SESIONES
 // =====================================================
@@ -328,3 +345,4 @@ export function useSession(id: string) {
     deleteSession,
   };
 }
+*/

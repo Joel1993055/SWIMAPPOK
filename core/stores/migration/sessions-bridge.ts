@@ -6,8 +6,21 @@ import { useSessionsStore as useNewSessionsStore } from '../entities/session';
 import { useSessionsStore as useLegacySessionsStore } from '../unified';
 
 // =====================================================
-// MIGRATION STATE
+// MIGRATION TYPES
 // =====================================================
+
+export interface MigrationResult {
+  success: boolean;
+  message?: string;
+  error?: string;
+  migrated?: number;
+  validation?: {
+    isConsistent: boolean;
+    newCount: number;
+    legacyCount: number;
+    differences: string[];
+  };
+}
 
 interface MigrationState {
   isMigrating: boolean;

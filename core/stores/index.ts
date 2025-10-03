@@ -4,9 +4,8 @@
 
 // NEW ENTITY STORES (MIGRATION IN PROGRESS)
 export {
-    useSessionsStore as useNewSessionsStore, useSession, useSessions, useSessionsActions, useSessionsByDate,
-    useSessionsByDateRange, useSessionsCount, useSessionsError, useSessionsLoading, useSessionsSelectors,
-    type SessionEntity
+    useNewSessionsStore, useSessionsActions, useSessionsByDate,
+    useSessionsByDateRange, useSessionsCount, useSessionsError, useSessionsLoading, useSessionsSelectors, useSessionsStore, type SessionEntity, type SessionsState
 } from './entities/session';
 
 // MIGRATION BRIDGES
