@@ -22,6 +22,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { useDynamicTheme } from '@/core/hooks/use-dynamic-theme';
 import { createSession } from '@/infra/config/actions/sessions';
 import { Calendar, Plus, Save, X, Zap } from 'lucide-react';
 import { memo, useEffect, useState } from 'react';
@@ -63,6 +64,9 @@ export const QuickCreate = memo(function QuickCreate({
   defaultTimeSlot = 'AM',
   trigger 
 }: QuickCreateProps) {
+  // Usar tema dinámico
+  const { zoneConfig } = useDynamicTheme();
+  
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [session, setSession] = useState<QuickSession>({
@@ -345,62 +349,49 @@ export const QuickCreate = memo(function QuickCreate({
             {/* Compact zones grid */}
             <div className='grid grid-cols-5 gap-2'>
               {[
-                {
-                  zone: 'z1',
-                  label: 'Z1',
-                  color:
-                    'bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800',
-                },
-                {
-                  zone: 'z2',
-                  label: 'Z2',
-                  color:
-                    'bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800',
-                },
-                {
-                  zone: 'z3',
-                  label: 'Z3',
-                  color:
-                    'bg-yellow-50 dark:bg-yellow-950/20 border-yellow-200 dark:border-yellow-800',
-                },
-                {
-                  zone: 'z4',
-                  label: 'Z4',
-                  color:
-                    'bg-orange-50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-800',
-                },
-                {
-                  zone: 'z5',
-                  label: 'Z5',
-                  color:
-                    'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800',
-                },
-              ].map(({ zone, label, color }) => (
-                <div key={zone} className={`p-2 rounded border ${color}`}>
-                  <div className='text-xs text-muted-foreground text-center mb-1'>
-                    {label}
+                { zone: 'z1', zoneKey: 'Z1' },
+                { zone: 'z2', zoneKey: 'Z2' },
+                { zone: 'z3', zoneKey: 'Z3' },
+                { zone: 'z4', zoneKey: 'Z4' },
+                { zone: 'z5', zoneKey: 'Z5' },
+              ].map(({ zone, zoneKey }) => {
+                const zoneData = zoneConfig[zoneKey as keyof typeof zoneConfig];
+                const backgroundColor = `${zoneData.hex}15`; // 15% opacity
+                const borderColor = `${zoneData.hex}30`; // 30% opacity
+                return (
+                  <div 
+                    key={zone} 
+                    className="p-2 rounded border"
+                    style={{ 
+                      backgroundColor: backgroundColor,
+                      borderColor: borderColor
+                    }}
+                  >
+                    <div className='text-xs text-muted-foreground text-center mb-1'>
+                      {zoneKey}
+                    </div>
+                    <Input
+                      id={zone}
+                      type='number'
+                      min='0'
+                      step='50'
+                      placeholder='0'
+                      value={
+                        session.zone_volumes[
+                          zone as keyof typeof session.zone_volumes
+                        ] || ''
+                      }
+                      onChange={e =>
+                        handleZoneVolumeChange(
+                          zone as 'z1' | 'z2' | 'z3' | 'z4' | 'z5',
+                          e.target.value
+                        )
+                      }
+                      className='text-center text-xs font-mono h-8 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]'
+                    />
                   </div>
-                  <Input
-                    id={zone}
-                    type='number'
-                    min='0'
-                    step='50'
-                    placeholder='0'
-                    value={
-                      session.zone_volumes[
-                        zone as keyof typeof session.zone_volumes
-                      ] || ''
-                    }
-                    onChange={e =>
-                      handleZoneVolumeChange(
-                        zone as 'z1' | 'z2' | 'z3' | 'z4' | 'z5',
-                        e.target.value
-                      )
-                    }
-                    className='text-center text-xs font-mono h-8 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]'
-                  />
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

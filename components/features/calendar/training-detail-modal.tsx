@@ -4,23 +4,24 @@ import { PDFExportButton, useTrainingPDFData } from '@/components/features/train
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
 } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
+import { useDynamicTheme } from '@/core/hooks/use-dynamic-theme';
 import type { Session } from '@/lib/types/session';
 import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import {
-  Calendar,
-  Edit,
-  FileText,
-  Target,
-  User,
-  Zap
+    Calendar,
+    Edit,
+    FileText,
+    Target,
+    User,
+    Zap
 } from 'lucide-react';
 
 interface TrainingDetailModalProps {
@@ -36,6 +37,8 @@ export function TrainingDetailModal({
   training, 
   onEdit 
 }: TrainingDetailModalProps) {
+  // Usar tema dinámico
+  const { zoneConfig } = useDynamicTheme();
   const { convertSessionToPDFData } = useTrainingPDFData();
 
   if (!training) return null;
@@ -182,18 +185,32 @@ export function TrainingDetailModal({
               </h4>
               <div className="grid grid-cols-5 gap-2">
                 {[
-                  { zone: 'Z1', name: 'Recovery', color: 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200', key: 'z1' },
-                  { zone: 'Z2', name: 'Aerobic Base', color: 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200', key: 'z2' },
-                  { zone: 'Z3', name: 'Tempo', color: 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200', key: 'z3' },
-                  { zone: 'Z4', name: 'Speed', color: 'bg-orange-100 dark:bg-orange-900/20 text-orange-800 dark:text-orange-200', key: 'z4' },
-                  { zone: 'Z5', name: 'VO2 Max', color: 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200', key: 'z5' },
-                ].map(({ zone, name, color, key }) => {
+                  { zone: 'Z1', key: 'z1' },
+                  { zone: 'Z2', key: 'z2' },
+                  { zone: 'Z3', key: 'z3' },
+                  { zone: 'Z4', key: 'z4' },
+                  { zone: 'Z5', key: 'z5' },
+                ].map(({ zone, key }) => {
+                  const zoneData = zoneConfig[zone as keyof typeof zoneConfig];
+                  const backgroundColor = `${zoneData.hex}20`; // 20% opacity
+                  const borderColor = `${zoneData.hex}40`; // 40% opacity
+                  const textColor = zoneData.hex;
+                  
                   const value = training.zone_volumes?.[key as keyof typeof training.zone_volumes] || 0;
                   return (
-                    <div key={zone} className={`rounded-lg p-3 text-center ${color}`}>
+                    <div 
+                      key={zone} 
+                      className="rounded-lg p-3 text-center border"
+                      style={{ 
+                        backgroundColor: backgroundColor,
+                        borderColor: borderColor
+                      }}
+                    >
                       <div className="text-xs font-medium mb-1">{zone}</div>
                       <div className="text-lg font-bold">{value}m</div>
-                      <div className="text-xs opacity-75">{name}</div>
+                      <div className="text-xs opacity-75" style={{ color: textColor }}>
+                        {zoneData.label}
+                      </div>
                     </div>
                   );
                 })}

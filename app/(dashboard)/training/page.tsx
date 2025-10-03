@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import { useDeviceType } from '@/core/hooks/mobile';
+import { useDynamicTheme } from '@/core/hooks/use-dynamic-theme';
 import { useSessionsData } from '@/core/hooks/use-sessions-data';
 import type { Session } from '@/core/types/session';
 import { createSession, deleteSession, updateSession, type Session as SupabaseSession } from '@/infra/config/actions/sessions';
@@ -387,6 +388,9 @@ function TrainingForm({
   objectiveOptions,
   onRefresh,
 }: TrainingFormProps) {
+  // Usar tema dinámico
+  const { zoneConfig } = useDynamicTheme();
+  
   // Form states
   const [formData, setFormData] = useState<TrainingFormData>(() => ({
     title: '',
@@ -770,22 +774,32 @@ function TrainingForm({
               {/* Single row with 5 cells for zones */}
               <div className="grid grid-cols-5 gap-3">
                 {[
-                  { zone: 'Z1', color: 'bg-green-100 dark:bg-green-900/20', name: 'Recovery', key: 'z1' },
-                  { zone: 'Z2', color: 'bg-blue-100 dark:bg-blue-900/20', name: 'Aerobic Base', key: 'z2' },
-                  { zone: 'Z3', color: 'bg-yellow-100 dark:bg-yellow-900/20', name: 'Aerobic Threshold', key: 'z3' },
-                  { zone: 'Z4', color: 'bg-orange-100 dark:bg-orange-900/20', name: 'Anaerobic Lactic', key: 'z4' },
-                  { zone: 'Z5', color: 'bg-red-100 dark:bg-red-900/20', name: 'Anaerobic Alactic', key: 'z5' },
-                ].map(({ zone, color, name, key }) => {
+                  { zone: 'Z1', key: 'z1' },
+                  { zone: 'Z2', key: 'z2' },
+                  { zone: 'Z3', key: 'z3' },
+                  { zone: 'Z4', key: 'z4' },
+                  { zone: 'Z5', key: 'z5' },
+                ].map(({ zone, key }) => {
+                  const zoneData = zoneConfig[zone as keyof typeof zoneConfig];
+                  const color = `${zoneData.hex}20`; // 20% opacity
+                  const borderColor = `${zoneData.hex}40`; // 40% opacity
                   const total = formData.zoneVolumes.reduce(
                     (sum, row) => sum + row[key as keyof ZoneVolumeRow],
                     0
                   );
                   
                   return (
-                    <div key={zone} className={`p-4 rounded-lg border ${color} hover:shadow-md transition-shadow`}>
+                    <div 
+                      key={zone} 
+                      className="p-4 rounded-lg border hover:shadow-md transition-shadow"
+                      style={{ 
+                        backgroundColor: color,
+                        borderColor: borderColor
+                      }}
+                    >
                       <div className="text-center mb-3">
                         <div className="font-bold text-xl">{zone}</div>
-                        <div className="text-xs text-muted-foreground">{name}</div>
+                        <div className="text-xs text-muted-foreground">{zoneData.label}</div>
                       </div>
                       <Input
                         type="number"
