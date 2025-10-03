@@ -12,6 +12,9 @@ export { NavMain } from './navigation/nav-main';
 export { NavSecondary } from './navigation/nav-secondary';
 
 // Common components
+export {
+    AnalysisCard, ComparisonAnalysisCard, KPIAnalysisCard, ZoneAnalysisCard
+} from './common/analysis-card';
 export { DataTable } from './common/data-table';
 export { LandingSwitch } from './common/landing-switch';
 export { SectionCards } from './common/section-cards';
@@ -25,3 +28,4 @@ export { ErrorBoundary } from './error-boundary';
 
 // Lazy route component
 export { LazyRoute } from './lazy-route';
+
