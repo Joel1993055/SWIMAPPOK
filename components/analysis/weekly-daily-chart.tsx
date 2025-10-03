@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/chart';
 import type { Session } from '@/infra/config/actions/sessions';
 import { addDays } from 'date-fns';
-import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 
 interface WeeklyDailyChartProps {
   sessions: Session[];
@@ -65,16 +65,27 @@ export function WeeklyDailyChart({ sessions, weekStart, onDayHover }: WeeklyDail
     });
   }
 
+  // Calcular el valor máximo y agregar margen superior del 30%
+  const maxVolume = Math.max(...dailyData.map(day => day.volume));
+  const yAxisMax = maxVolume > 0 ? Math.ceil(maxVolume * 1.3) : 5; // Margen del 30% o mínimo 5
+
   return (
     <div className="space-y-2">
       <ChartContainer config={chartConfig} className="h-56 w-full">
-        <BarChart data={dailyData} width="100%" height="100%">
+        <BarChart data={dailyData}>
           <CartesianGrid vertical={false} />
           <XAxis
             dataKey="dayShort"
             tickLine={false}
             tickMargin={10}
             axisLine={false}
+          />
+          <YAxis
+            tickLine={false}
+            axisLine={false}
+            tickMargin={10}
+            tickFormatter={v => `${v}km`}
+            domain={[0, yAxisMax]}
           />
           <ChartTooltip 
             content={<ChartTooltipContent 

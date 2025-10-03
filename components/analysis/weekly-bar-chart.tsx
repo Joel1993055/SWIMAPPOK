@@ -81,6 +81,12 @@ export const WeeklyBarChart = memo(function WeeklyBarChart({ sessions, weeksCoun
   const totalDistance = weeklyData.reduce((sum, week) => sum + week.totalDistance, 0);
   const totalSessions = weeklyData.reduce((sum, week) => sum + week.sessionCount, 0);
 
+  // Calcular el valor máximo y agregar margen superior del 30%
+  const maxDistance = Math.max(...weeklyData.map(week => week.totalDistance));
+  const maxSessions = Math.max(...weeklyData.map(week => week.sessionCount));
+  const yAxisDistanceMax = maxDistance > 0 ? Math.ceil(maxDistance * 1.3) : 5; // Margen del 30% o mínimo 5
+  const yAxisSessionsMax = maxSessions > 0 ? Math.ceil(maxSessions * 1.3) : 5; // Margen del 30% o mínimo 5
+
   return (
     <ChartContainer config={chartConfig} className="h-64 w-full">
       <ComposedChart accessibilityLayer data={weeklyData}>
@@ -97,6 +103,7 @@ export const WeeklyBarChart = memo(function WeeklyBarChart({ sessions, weeksCoun
           axisLine={false}
           tickMargin={10}
           tickFormatter={(value) => `${value.toFixed(1)}km`}
+          domain={[0, yAxisDistanceMax]}
         />
         <YAxis
           yAxisId="sessions"
@@ -104,6 +111,7 @@ export const WeeklyBarChart = memo(function WeeklyBarChart({ sessions, weeksCoun
           tickLine={false}
           axisLine={false}
           tickMargin={10}
+          domain={[0, yAxisSessionsMax]}
         />
         <ChartTooltip content={<ChartTooltipContent hideLabel />} />
         <ChartLegend content={<ChartLegendContent />} />

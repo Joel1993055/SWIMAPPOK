@@ -1,9 +1,8 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { MacrocyclePlanner } from '@/components/macrocycle/MacrocyclePlanner';
 import { useDeviceType } from '@/core/hooks/mobile';
-import { Calendar, Target, TrendingUp } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 
 export default function YearlyPlanningPage() {
   const deviceType = useDeviceType();
@@ -19,80 +18,12 @@ export default function YearlyPlanningPage() {
           <h1 className='text-2xl sm:text-3xl font-bold text-foreground'>Yearly Planning</h1>
         </div>
         <p className='text-sm sm:text-base text-muted-foreground'>
-          Plan your training year with strategic goals and milestones
+          Annual training plan with competition schedule and periodization
         </p>
       </div>
 
-      {/* Coming Soon Content */}
-      <div className="space-y-6">
-        {/* Main Planning Card */}
-        <Card className="bg-muted/50 border-muted">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Target className="h-5 w-5" />
-              Annual Training Plan
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center py-12">
-              <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                <TrendingUp className="h-8 w-8 text-primary" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Coming Soon</h3>
-              <p className="text-muted-foreground max-w-md mx-auto">
-                We're working on a comprehensive yearly planning tool that will help you set annual goals, 
-                plan training phases, and track your progress throughout the year.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Feature Preview Cards */}
-        <div className={`grid gap-4 ${
-          deviceType === 'mobile' 
-            ? 'grid-cols-1' 
-            : 'md:grid-cols-2 lg:grid-cols-3'
-        }`}>
-          <Card className="bg-muted/50 border-muted">
-            <CardHeader>
-              <CardTitle className="text-base">Annual Goals</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-muted/50 border-muted">
-            <CardHeader>
-              <CardTitle className="text-base">Training Phases</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-muted/50 border-muted">
-            <CardHeader>
-              <CardTitle className="text-base">Progress Tracking</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      {/* Macrocycle Planner Content */}
+      <MacrocyclePlanner />
     </div>
   );
 }

@@ -195,6 +195,18 @@ export function VisitorsChart() {
   );
   const dailyAverage = Math.round(totalWeekly / 7);
 
+  // Calcular el valor máximo y agregar margen superior del 30%
+  const maxValue = Math.max(
+    ...finalChartData.map(day => 
+      ((day as any).Z1 || 0) + 
+      ((day as any).Z2 || 0) + 
+      ((day as any).Z3 || 0) + 
+      ((day as any).Z4 || 0) + 
+      ((day as any).Z5 || 0)
+    )
+  );
+  const yAxisMax = maxValue > 0 ? Math.ceil(maxValue * 1.3) : 5; // Margen del 30% o mínimo 5
+
   if (isLoading) {
     return (
       <Card className='col-span-4 bg-muted/50 border-muted'>
@@ -303,7 +315,7 @@ export function VisitorsChart() {
                 <BarChart accessibilityLayer data={finalChartData}>
                   <CartesianGrid vertical={false} />
                   <XAxis dataKey='day' tickLine={false} tickMargin={10} axisLine={false} />
-                  <YAxis tickLine={false} axisLine={false} tickMargin={10} tickFormatter={v => `${v}km`} />
+                  <YAxis tickLine={false} axisLine={false} tickMargin={10} tickFormatter={v => `${v}km`} domain={[0, yAxisMax]} />
                   <ChartTooltip
                     content={
                       <ChartTooltipContent
@@ -340,7 +352,7 @@ export function VisitorsChart() {
                 <AreaChart accessibilityLayer data={finalChartData}>
                   <CartesianGrid vertical={false} />
                   <XAxis dataKey='day' tickLine={false} tickMargin={10} axisLine={false} />
-                  <YAxis tickLine={false} axisLine={false} tickMargin={10} tickFormatter={v => `${v}km`} />
+                  <YAxis tickLine={false} axisLine={false} tickMargin={10} tickFormatter={v => `${v}km`} domain={[0, yAxisMax]} />
                   <ChartTooltip
                     content={
                       <ChartTooltipContent

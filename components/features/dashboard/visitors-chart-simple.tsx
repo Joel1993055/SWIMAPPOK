@@ -126,6 +126,12 @@ export function VisitorsChartSimple() {
     { day: 'Sun', Z1: 0.3, Z2: 0.4, Z3: 0.2, Z4: 0.1, Z5: 0.0 },
   ];
 
+  // Calcular el valor máximo y agregar margen superior del 30%
+  const maxValue = Math.max(
+    ...finalData.map(day => day.Z1 + day.Z2 + day.Z3 + day.Z4 + day.Z5)
+  );
+  const yAxisMax = maxValue > 0 ? Math.ceil(maxValue * 1.3) : 5; // Margen del 30% o mínimo 5
+
   // Stats
   const totalWeekly = finalData.reduce(
     (total, day) => total + day.Z1 + day.Z2 + day.Z3 + day.Z4 + day.Z5,
@@ -147,7 +153,8 @@ export function VisitorsChartSimple() {
                 tickLine={false}
                 axisLine={false}
                 tickMargin={10}
-            tickFormatter={v => `${v}km`}
+                tickFormatter={v => `${v}km`}
+                domain={[0, yAxisMax]}
               />
               <ChartTooltip content={<ChartTooltipContent hideLabel />} />
               <ChartLegend content={<ChartLegendContent />} />
@@ -170,6 +177,7 @@ export function VisitorsChartSimple() {
             axisLine={false}
             tickMargin={10}
             tickFormatter={v => `${v}km`}
+            domain={[0, yAxisMax]}
           />
           <ChartTooltip content={<ChartTooltipContent hideLabel />} />
           <ChartLegend content={<ChartLegendContent />} />

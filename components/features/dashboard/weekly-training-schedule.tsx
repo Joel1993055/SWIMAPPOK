@@ -337,7 +337,7 @@ export function WeeklyTrainingSchedule({
               const isCurrentDay = isToday(day);
 
               return (
-                <div key={`am-${index}`} className='min-h-[200px]'>
+                <div key={`am-${index}`} className='min-h-[120px]'>
                   <div
                     className={`h-full p-2 rounded-lg border ${isCurrentDay ? 'border-primary/50 bg-primary/5 dark:bg-primary/10' : 'border-muted bg-background/50 dark:bg-background/80'}`}
                   >
@@ -396,7 +396,7 @@ export function WeeklyTrainingSchedule({
               const isCurrentDay = isToday(day);
 
               return (
-                <div key={`pm-${index}`} className='min-h-[200px]'>
+                <div key={`pm-${index}`} className='min-h-[120px]'>
                   <div
                     className={`h-full p-2 rounded-lg border ${isCurrentDay ? 'border-primary/50 bg-primary/5 dark:bg-primary/10' : 'border-muted bg-background/50 dark:bg-background/80'}`}
                   >

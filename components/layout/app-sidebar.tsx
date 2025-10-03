@@ -1,13 +1,13 @@
 'use client';
 
 import {
-    BarChartIcon,
-    BookOpenIcon,
-    CalendarIcon,
-    HelpCircleIcon,
-    LayoutDashboardIcon,
-    Plus,
-    Wrench
+  BarChartIcon,
+  BookOpenIcon,
+  CalendarIcon,
+  HelpCircleIcon,
+  LayoutDashboardIcon,
+  Plus,
+  Wrench
 } from 'lucide-react';
 import Image from 'next/image';
 import * as React from 'react';
@@ -18,13 +18,13 @@ import { NavDocuments } from '@/components/navigation/nav-documents';
 import { NavMain } from '@/components/navigation/nav-main';
 import { NavSecondary } from '@/components/navigation/nav-secondary';
 import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
-    SidebarHeader,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { useClubsStore } from '@/core/stores/clubs-store';
 
