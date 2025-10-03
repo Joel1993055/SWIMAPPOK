@@ -1,27 +1,26 @@
 'use client';
 
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
 import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
+    ChartConfig,
+    ChartContainer,
+    ChartTooltip,
+    ChartTooltipContent,
 } from '@/components/ui/chart';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { getSessions, type Session } from '@/infra/config/actions/sessions';
+import { useDynamicTheme } from '@/core/hooks/use-dynamic-theme';
 import {
-  calculateZoneVolumes,
-  metersToKm,
-  zoneColors,
-  zoneLabels,
+    calculateZoneVolumes,
+    metersToKm,
 } from '@/core/utils/zone-detection';
+import { getSessions, type Session } from '@/infra/config/actions/sessions';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Legend, XAxis, YAxis } from 'recharts';
@@ -164,21 +163,41 @@ const fallbackData = [
   // …
 ];
 
-// Chart configuration with 5 zones
-const chartConfig = {
-  Z1: { label: zoneLabels.Z1, color: zoneColors.Z1 },
-  Z2: { label: zoneLabels.Z2, color: zoneColors.Z2 },
-  Z3: { label: zoneLabels.Z3, color: zoneColors.Z3 },
-  Z4: { label: zoneLabels.Z4, color: zoneColors.Z4 },
-  Z5: { label: zoneLabels.Z5, color: zoneColors.Z5 },
-  total: { label: 'Total', color: 'hsl(15, 100%, 50%)' },
-} satisfies ChartConfig;
+// Chart configuration será creada dinámicamente en el componente
 
 export default function VolumeBarchart() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedPeriod, setSelectedPeriod] = useState<string>('year');
   const [selectedView, setSelectedView] = React.useState<string>('all');
+  
+  // Usar tema dinámico
+  const { zoneConfig, isLoading: themeLoading } = useDynamicTheme();
+  
+  // Chart configuration usando tema dinámico
+  const chartConfig = {
+    Z1: { 
+      label: zoneConfig.Z1.label, 
+      color: zoneConfig.Z1.color
+    },
+    Z2: { 
+      label: zoneConfig.Z2.label, 
+      color: zoneConfig.Z2.color
+    },
+    Z3: { 
+      label: zoneConfig.Z3.label, 
+      color: zoneConfig.Z3.color
+    },
+    Z4: { 
+      label: zoneConfig.Z4.label, 
+      color: zoneConfig.Z4.color
+    },
+    Z5: { 
+      label: zoneConfig.Z5.label, 
+      color: zoneConfig.Z5.color
+    },
+    total: { label: 'Total', color: 'hsl(15, 100%, 50%)' },
+  } satisfies ChartConfig;
 
   useEffect(() => {
     const loadSessions = async () => {
@@ -200,14 +219,14 @@ export default function VolumeBarchart() {
 
   const views = React.useMemo(
     () => ({
-      Z1: { label: 'Z1', zones: ['Z1'], description: 'Zone 1 - Recovery' },
-      Z2: { label: 'Z2', zones: ['Z2'], description: 'Zone 2 - Aerobic' },
-      Z3: { label: 'Z3', zones: ['Z3'], description: 'Zone 3 - Tempo' },
-      Z4: { label: 'Z4', zones: ['Z4'], description: 'Zone 4 - Speed' },
-      Z5: { label: 'Z5', zones: ['Z5'], description: 'Zone 5 - VO2 Max' },
+      Z1: { label: 'Z1', zones: ['Z1'], description: zoneConfig.Z1.label },
+      Z2: { label: 'Z2', zones: ['Z2'], description: zoneConfig.Z2.label },
+      Z3: { label: 'Z3', zones: ['Z3'], description: zoneConfig.Z3.label },
+      Z4: { label: 'Z4', zones: ['Z4'], description: zoneConfig.Z4.label },
+      Z5: { label: 'Z5', zones: ['Z5'], description: zoneConfig.Z5.label },
       all: { label: 'All', zones: ['Z1', 'Z2', 'Z3', 'Z4', 'Z5'], description: 'All training zones' },
     }),
-    []
+    [zoneConfig]
   );
 
   const totals = React.useMemo(() => {
@@ -239,7 +258,7 @@ export default function VolumeBarchart() {
 
   const currentView = views[selectedView as keyof typeof views];
 
-  if (isLoading) {
+  if (isLoading || themeLoading) {
     return (
       <Card className='bg-muted/50 border-muted'>
         <CardHeader>

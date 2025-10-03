@@ -35,14 +35,16 @@ interface WeeklyData {
   weekLabel: string;
 }
 
+import { chartConfig as baseChartConfig } from '@/configs/chart';
+
 const chartConfig = {
   distance: {
     label: "Distance (km)",
-    color: "#3b82f6",
+    color: baseChartConfig.colors.zones[1], // Z2 - Blue
   },
   sessions: {
     label: "Sessions Count",
-    color: "#10b981",
+    color: baseChartConfig.colors.zones[0], // Z1 - Green
   },
 } satisfies ChartConfig;
 
@@ -118,16 +120,16 @@ export const WeeklyBarChart = memo(function WeeklyBarChart({ sessions, weeksCoun
         <Bar 
           yAxisId="distance"
           dataKey="totalDistance" 
-          fill="#3b82f6"
+          fill="var(--color-distance)"
           radius={[4, 4, 0, 0]}
         />
         <Line 
           yAxisId="sessions"
           type="monotone"
           dataKey="sessionCount" 
-          stroke="#10b981"
+          stroke="var(--color-sessions)"
           strokeWidth={2}
-          dot={{ fill: "#10b981", strokeWidth: 2, r: 4 }}
+          dot={{ fill: "var(--color-sessions)", strokeWidth: 2, r: 4 }}
           activeDot={{ r: 6 }}
         />
       </ComposedChart>

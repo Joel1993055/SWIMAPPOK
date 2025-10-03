@@ -35,13 +35,15 @@ import {
   YAxis,
 } from 'recharts';
 
-// Colores de zonas
+import { chartConfig as baseChartConfig } from '@/configs/chart';
+
+// Colores de zonas usando configuración centralizada
 const chartConfig = {
-  Z1: { label: 'Zone 1', color: '#3b82f6' },
-  Z2: { label: 'Zone 2', color: '#10b981' },
-  Z3: { label: 'Zone 3', color: '#f59e0b' },
-  Z4: { label: 'Zone 4', color: '#ef4444' },
-  Z5: { label: 'Zone 5', color: '#8b5cf6' },
+  Z1: { label: 'Zone 1', color: baseChartConfig.colors.zones[0] }, // Green - Recovery
+  Z2: { label: 'Zone 2', color: baseChartConfig.colors.zones[1] }, // Blue - Aerobic Base
+  Z3: { label: 'Zone 3', color: baseChartConfig.colors.zones[2] }, // Yellow - Aerobic Threshold
+  Z4: { label: 'Zone 4', color: baseChartConfig.colors.zones[3] }, // Orange - VO2 Max
+  Z5: { label: 'Zone 5', color: baseChartConfig.colors.zones[4] }, // Red - Neuromuscular
 } satisfies ChartConfig;
 
 // Componente helper para evitar duplicar icono + texto

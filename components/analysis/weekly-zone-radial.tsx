@@ -6,6 +6,7 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from '@/components/ui/chart';
+import { chartConfig as baseChartConfig } from '@/configs/chart';
 import type { Session } from '@/infra/config/actions/sessions';
 import { addDays } from 'date-fns';
 import { PolarGrid, RadialBar, RadialBarChart } from 'recharts';
@@ -23,12 +24,13 @@ interface ZoneData {
   fill: string;
 }
 
+// Colores de zonas usando configuración centralizada
 const ZONE_COLORS = {
-  z1: '#3b82f6', // Blue
-  z2: '#10b981', // Green
-  z3: '#f59e0b', // Yellow
-  z4: '#ef4444', // Red
-  z5: '#8b5cf6', // Purple
+  z1: baseChartConfig.colors.zones[0], // Verde - Recovery
+  z2: baseChartConfig.colors.zones[1], // Azul - Aerobic Base
+  z3: baseChartConfig.colors.zones[2], // Amarillo - Aerobic Threshold
+  z4: baseChartConfig.colors.zones[3], // Naranja - VO2 Max
+  z5: baseChartConfig.colors.zones[4], // Rojo - Neuromuscular
 };
 
 const chartConfig = {

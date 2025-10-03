@@ -1,5 +1,6 @@
 'use client';
 
+import { chartConfig as baseChartConfig } from '@/configs/chart';
 import type { Session } from '@/infra/config/actions/sessions';
 import { addDays } from 'date-fns';
 
@@ -17,20 +18,13 @@ interface ZoneData {
   color: string;
 }
 
+// Colores de zonas usando configuración centralizada
 const ZONE_COLORS = {
-  z1: '#6b7280', // Gray-blue
-  z2: '#6b7280', // Gray-green
-  z3: '#6b7280', // Gray-yellow
-  z4: '#6b7280', // Gray-red
-  z5: '#6b7280', // Gray-purple
-};
-
-const ZONE_ACCENT_COLORS = {
-  z1: '#3b82f6', // Blue accent
-  z2: '#10b981', // Green accent
-  z3: '#f59e0b', // Yellow accent
-  z4: '#ef4444', // Red accent
-  z5: '#8b5cf6', // Purple accent
+  z1: baseChartConfig.colors.zones[0], // Verde - Recovery
+  z2: baseChartConfig.colors.zones[1], // Azul - Aerobic Base
+  z3: baseChartConfig.colors.zones[2], // Amarillo - Aerobic Threshold
+  z4: baseChartConfig.colors.zones[3], // Naranja - VO2 Max
+  z5: baseChartConfig.colors.zones[4], // Rojo - Neuromuscular
 };
 
 const ZONE_LABELS = {
@@ -77,7 +71,7 @@ export function WeeklyZoneKPIs({ sessions, weekStart, hoveredDay }: WeeklyZoneKP
       volume: volume,
       volumeKm: volume / 1000,
       percentage: totalVolume > 0 ? (volume / totalVolume) * 100 : 0,
-      color: hasData ? ZONE_ACCENT_COLORS[zone as keyof typeof ZONE_ACCENT_COLORS] : '#9ca3af',
+      color: hasData ? ZONE_COLORS[zone as keyof typeof ZONE_COLORS] : '#9ca3af',
     };
   });
 

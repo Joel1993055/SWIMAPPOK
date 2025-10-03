@@ -1,34 +1,34 @@
 'use client';
 
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from '@/components/ui/card';
 import {
-  ChartConfig,
-  ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
-  ChartTooltip,
-  ChartTooltipContent,
+    ChartConfig,
+    ChartContainer,
+    ChartLegend,
+    ChartLegendContent,
+    ChartTooltip,
+    ChartTooltipContent,
 } from '@/components/ui/chart';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from '@/components/ui/select';
-import { getSessions, type Session } from '@/infra/config/actions/sessions';
+import { chartConfig as baseChartConfig } from '@/configs/chart';
+import { theme } from '@/configs/theme';
 import {
-  calculateZoneVolumes,
-  metersToKm,
-  zoneColors,
-  zoneLabels,
+    calculateZoneVolumes,
+    metersToKm,
 } from '@/core/utils/zone-detection';
+import { getSessions, type Session } from '@/infra/config/actions/sessions';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
@@ -257,27 +257,27 @@ const generateDataUntilToday = () => {
 
 // Generate complete data (done dynamically in component)
 
-// Chart configuration with 5 zones
+// Chart configuration usando configuración centralizada
 const chartConfig = {
   Z1: {
-    label: zoneLabels.Z1,
-    color: zoneColors.Z1,
+    label: `${theme.zones.Z1.name}`,
+    color: baseChartConfig.colors.zones[0], // Verde - Recovery
   },
   Z2: {
-    label: zoneLabels.Z2,
-    color: zoneColors.Z2,
+    label: `${theme.zones.Z2.name}`,
+    color: baseChartConfig.colors.zones[1], // Azul - Aerobic Base
   },
   Z3: {
-    label: zoneLabels.Z3,
-    color: zoneColors.Z3,
+    label: `${theme.zones.Z3.name}`,
+    color: baseChartConfig.colors.zones[2], // Amarillo - Aerobic Threshold
   },
   Z4: {
-    label: zoneLabels.Z4,
-    color: zoneColors.Z4,
+    label: `${theme.zones.Z4.name}`,
+    color: baseChartConfig.colors.zones[3], // Naranja - VO2 Max
   },
   Z5: {
-    label: zoneLabels.Z5,
-    color: zoneColors.Z5,
+    label: `${theme.zones.Z5.name}`,
+    color: baseChartConfig.colors.zones[4], // Rojo - Neuromuscular
   },
 } satisfies ChartConfig;
 

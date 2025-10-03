@@ -1,6 +1,7 @@
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { SiteHeader } from '@/components/layout/site-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { ThemeProvider } from '@/core/contexts/theme-context';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 
@@ -17,14 +18,16 @@ export default async function DashboardLayout({
   }
 
   return (
-    <SidebarProvider>
-      <AppSidebar variant='inset' />
-      <SidebarInset>
-        <SiteHeader />
-        <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>
-          {children}
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+    <ThemeProvider>
+      <SidebarProvider>
+        <AppSidebar variant='inset' />
+        <SidebarInset>
+          <SiteHeader />
+          <div className='flex-1 space-y-4 p-4 md:p-8 pt-6'>
+            {children}
+          </div>
+        </SidebarInset>
+      </SidebarProvider>
+    </ThemeProvider>
   );
 }

@@ -7,10 +7,11 @@ import { NotificationsTab } from '@/components/settings/notifications-tab';
 import { PrivacyTab } from '@/components/settings/privacy-tab';
 import { ProfileTab } from '@/components/settings/profile-tab';
 import { TrainingTab } from '@/components/settings/training-tab';
+import { ZoneCustomizationTab } from '@/components/settings/zone-customization-tab';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useSettings } from '@/core/hooks/use-settings';
-import { Activity, Bell, Building2, Lock, Palette, Settings as SettingsIcon, Shield, User } from 'lucide-react';
+import { Activity, Bell, Building2, Lock, Palette, Settings as SettingsIcon, Shield, User, Zap } from 'lucide-react';
 import React, { useState } from 'react';
 
 function SettingsContent() {
@@ -40,6 +41,7 @@ function SettingsContent() {
     { id: 'privacy', label: 'Privacy', icon: Shield },
     { id: 'appearance', label: 'Appearance', icon: Palette },
     { id: 'training', label: 'Training', icon: Activity },
+    { id: 'zones', label: 'Zone Customization', icon: Zap },
     { id: 'clubs', label: 'Clubs and Teams', icon: Building2 },
     { id: 'account', label: 'Account', icon: Lock },
   ];
@@ -194,6 +196,9 @@ function SettingsContent() {
               isSaving={isSaving}
             />
           )}
+
+          {/* Zone Customization Tab */}
+          {activeTab === 'zones' && <ZoneCustomizationTab />}
 
           {/* Clubs Tab */}
           {activeTab === 'clubs' && <ClubsTab />}
