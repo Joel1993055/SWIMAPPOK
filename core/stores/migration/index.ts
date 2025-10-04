@@ -35,7 +35,14 @@ export interface MigrationState {
 // FUTURE MIGRATION EXPORTS (TO BE IMPLEMENTED)
 // =====================================================
 
+// Clubs migration bridge (NEW - DEPLOYED)
+export { useClubsMigration, useClubsMigrationBridge, useClubsStoreBridge, type ClubsMigrationActions, type ClubsMigrationState } from './clubs-bridge';
+
+// Clubs migration adapter (NEW - DEPLOYED)
+export {
+    useClubsData, useClubsStoreAdapter, useClubsStore as useLegacyClubsStore, useMembersData, useTeamsData
+} from './clubs-adapter';
+
 // TODO: Implement these in future commits
-// export { useClubsStoreBridge, useClubsMigration } from './clubs-bridge';
 // export { useCompetitionsStoreBridge, useCompetitionsMigration } from './competitions-bridge';
 // export { useTrainingStoreBridge, useTrainingMigration } from './training-bridge';

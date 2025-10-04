@@ -20,7 +20,7 @@ import type {
     UpdateClubData,
     UpdateTeamData,
     UpdateTeamMemberData
-} from '@/lib/types/club';
+} from '@/core/types/club';
 import { createClient } from '@/utils/supabase/client';
 
 // =====================================================

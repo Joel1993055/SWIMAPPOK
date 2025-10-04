@@ -20,8 +20,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useClubsStore } from '@/lib/store/clubs-store';
-import type { ClubWithStats } from '@/lib/types/club';
+import { useClubsStore } from '@/core/stores/clubs-store';
+import type { ClubWithStats } from '@/core/types/club';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
     Building2,

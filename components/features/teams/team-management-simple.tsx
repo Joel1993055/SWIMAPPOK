@@ -27,8 +27,8 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useClubsStore } from '@/lib/store/clubs-store';
-import type { TeamWithClub } from '@/lib/types/club';
+import { useClubsStore } from '@/core/stores/clubs-store';
+import type { TeamWithClub } from '@/core/types/club';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
     Edit,

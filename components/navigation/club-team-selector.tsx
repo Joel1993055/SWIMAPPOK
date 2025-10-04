@@ -14,7 +14,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useClubsStore } from '@/lib/store/clubs-store';
+import { useClubsStore } from '@/core/stores/clubs-store';
 import { Building2, ChevronDown, Target, Users } from 'lucide-react';
 
 export function ClubTeamSelector() {

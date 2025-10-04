@@ -3,7 +3,7 @@
  * @fileoverview Hook que carga los datos iniciales de clubes y equipos
  */
 
-import { useClubsStore } from '@/lib/store/clubs-store';
+import { useClubsStore } from '@/core/stores/clubs-store';
 import { useEffect } from 'react';
 
 export function useClubsInit() {

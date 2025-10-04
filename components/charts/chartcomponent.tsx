@@ -195,17 +195,17 @@ export default function ZoneChart() {
                   x2="0"
                   y2="1"
                 >
-                  <stop
+                <stop
                     offset="5%"
                     stopColor={`var(--color-${zone})`}
-                    stopOpacity={0.8}
-                  />
-                  <stop
+                  stopOpacity={0.8}
+                />
+                <stop
                     offset="95%"
                     stopColor={`var(--color-${zone})`}
-                    stopOpacity={0.1}
-                  />
-                </linearGradient>
+                  stopOpacity={0.1}
+                />
+              </linearGradient>
               ))}
             </defs>
             <CartesianGrid vertical={false} />
@@ -227,7 +227,7 @@ export default function ZoneChart() {
               }
             />
             {Object.keys(chartConfig).map((zone) => (
-              <Area
+            <Area
                 key={zone}
                 dataKey={zone}
                 type="natural"
