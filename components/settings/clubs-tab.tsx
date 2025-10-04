@@ -5,13 +5,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useClubsStore } from '@/core/stores/clubs-store';
+import { useClubs, useClubsActions } from '@/core/stores/entities/club';
+import { useTeams, useTeamsActions } from '@/core/stores/entities/team';
 import { Building2, Plus, Trash2, User } from 'lucide-react';
 import { memo, useCallback, useState } from 'react';
 import { toast } from 'sonner';
 
 export const ClubsTab = memo(function ClubsTab() {
-  const { clubs, teams, addClub, removeClub, addTeam, removeTeam } = useClubsStore();
+  // New entity stores
+  const clubs = useClubs();
+  const clubsActions = useClubsActions();
+  const teams = useTeams();
+  const teamsActions = useTeamsActions();
   const [isClubModalOpen, setIsClubModalOpen] = useState(false);
   const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
@@ -26,20 +31,22 @@ export const ClubsTab = memo(function ClubsTab() {
 
     try {
       const newClub = {
-        id: Date.now().toString(),
         name: clubForm.name,
         location: clubForm.location,
-        createdAt: new Date().toISOString()
+        description: '',
+        contactEmail: '',
+        isActive: true,
+        category: 'swimming' as const,
       };
       
-      addClub(newClub);
+      await clubsActions.createNewClub(newClub);
       setClubForm({ name: '', location: '' });
       setIsClubModalOpen(false);
       toast.success('Club created successfully');
     } catch (error) {
       toast.error('Failed to create club');
     }
-  }, [addClub]);
+  }, [clubsActions]);
 
   const handleDeleteClub = useCallback(async (clubId: string) => {
     if (!confirm('Are you sure you want to delete this club? This action cannot be undone.')) {
@@ -48,14 +55,14 @@ export const ClubsTab = memo(function ClubsTab() {
 
     try {
       setIsDeleting(clubId);
-      removeClub(clubId);
+      await clubsActions.deleteExistingClub(clubId);
       toast.success('Club deleted successfully');
     } catch (error) {
       toast.error('Failed to delete club');
     } finally {
       setIsDeleting(null);
     }
-  }, [removeClub]);
+  }, [clubsActions]);
 
   const handleCreateTeam = useCallback(async () => {
     if (!teamForm.name.trim() || !teamForm.category.trim()) {
@@ -65,21 +72,28 @@ export const ClubsTab = memo(function ClubsTab() {
 
     try {
       const newTeam = {
-        id: Date.now().toString(),
-        name: teamForm.name,
-        category: teamForm.category,
         clubId: clubs[0]?.id || 'default',
-        createdAt: new Date().toISOString()
+        name: teamForm.name,
+        description: '',
+        category: teamForm.category as 'senior' | 'junior' | 'masters' | 'youth',
+        gender: 'mixto' as const,
+        ageRange: '',
+        level: 'beginner' as const,
+        practiceDays: [],
+        practiceTimes: [],
+        practiceLocation: '',
+        isActive: true,
+        isAcceptingMembers: true,
       };
       
-      addTeam(newTeam);
+      await teamsActions.createNewTeam(newTeam);
       setTeamForm({ name: '', category: '' });
       setIsTeamModalOpen(false);
       toast.success('Team created successfully');
     } catch (error) {
       toast.error('Failed to create team');
     }
-  }, [addTeam, clubs]);
+  }, [teamsActions, clubs]);
 
   const handleDeleteTeam = useCallback(async (teamId: string) => {
     if (!confirm('Are you sure you want to delete this team? This action cannot be undone.')) {
@@ -88,14 +102,14 @@ export const ClubsTab = memo(function ClubsTab() {
 
     try {
       setIsDeleting(teamId);
-      removeTeam(teamId);
+      await teamsActions.deleteExistingTeam(teamId);
       toast.success('Team deleted successfully');
     } catch (error) {
       toast.error('Failed to delete team');
     } finally {
       setIsDeleting(null);
     }
-  }, [removeTeam]);
+  }, [teamsActions]);
 
   return (
     <div className="space-y-6">
