@@ -3,27 +3,34 @@
  * @fileoverview Hook que carga los datos iniciales de clubes y equipos
  */
 
-import { useClubsStore } from '@/core/stores/clubs-store';
+import { useClubsActions, useClubsError, useClubsLoading } from '@/core/stores/entities/club';
+import { useNavigationActions, useSelectedClubId } from '@/core/stores/entities/navigation';
 import { useEffect } from 'react';
 
 export function useClubsInit() {
-    const { loadClubs, selectedClub, setSelectedClub } = useClubsStore();
+    // New entity stores
+    const clubsActions = useClubsActions();
+    const navigationActions = useNavigationActions();
+    const selectedClubId = useSelectedClubId();
+    const isLoading = useClubsLoading();
+    const error = useClubsError();
 
     useEffect(() => {
         // Cargar clubes al inicializar
-        loadClubs();
-    }, [loadClubs]);
+        clubsActions.loadClubs();
+    }, [clubsActions]);
 
     // Restaurar selección persistida
     useEffect(() => {
-        const { navigation } = useClubsStore.getState();
-        if (navigation.selectedClubId && !selectedClub) {
-            setSelectedClub(navigation.selectedClubId);
+        // Check if there's a persisted selection but no current selection
+        if (selectedClubId && !selectedClubId) {
+            // This effect is mainly for backward compatibility
+            // The navigation store already handles persistence
         }
-    }, [selectedClub, setSelectedClub]);
+    }, [selectedClubId]);
 
     return {
-        isLoading: useClubsStore((state) => state.isLoading),
-        error: useClubsStore((state) => state.error),
+        isLoading,
+        error,
     };
 }

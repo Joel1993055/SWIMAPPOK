@@ -11,27 +11,29 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Textarea } from '@/components/ui/textarea';
-import { useClubsStore } from '@/core/stores/clubs-store';
+import { useClubs, useClubsActions, useClubsError, useClubsLoading } from '@/core/stores/entities/club';
+import { useNavigationActions, useSelectedClubId, useSelectedTeamId } from '@/core/stores/entities/navigation';
+import { useTeams, useTeamsActions } from '@/core/stores/entities/team';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  Building2,
-  ChevronRight,
-  MapPin,
-  Plus,
-  Search,
-  Target
+    Building2,
+    ChevronRight,
+    MapPin,
+    Plus,
+    Search,
+    Target
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -62,20 +64,22 @@ type CreateTeamFormData = z.infer<typeof createTeamSchema>;
 // =====================================================
 
 export default function ClubsPage() {
-  const {
-    clubs,
-    teams,
-    selectedClub,
-    selectedTeam,
-    isLoading,
-    error,
-    loadClubs,
-    loadTeamsByClub,
-    createNewClub,
-    createNewTeam,
-    setSelectedClub,
-    setSelectedTeam,
-  } = useClubsStore();
+  // New entity stores
+  const clubs = useClubs();
+  const clubsActions = useClubsActions();
+  const isLoading = useClubsLoading();
+  const error = useClubsError();
+  
+  const teams = useTeams();
+  const teamsActions = useTeamsActions();
+  
+  const navigationActions = useNavigationActions();
+  const selectedClubId = useSelectedClubId();
+  const selectedTeamId = useSelectedTeamId();
+  
+  // Get selected club and team objects
+  const selectedClub = clubs.find(club => club.id === selectedClubId);
+  const selectedTeam = teams.find(team => team.id === selectedTeamId);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [isCreateClubOpen, setIsCreateClubOpen] = useState(false);
@@ -84,15 +88,16 @@ export default function ClubsPage() {
 
   // Load data on mount
   useEffect(() => {
-    loadClubs();
-  }, [loadClubs]);
+    clubsActions.loadClubs();
+  }, [clubsActions]);
 
   // Load teams when a club is selected
   useEffect(() => {
-    if (selectedClub) {
-      loadTeamsByClub(selectedClub.id);
+    if (selectedClubId) {
+      // Teams are automatically loaded via useTeamsByClub selector
+      // No need for manual loadTeamsByClub call
     }
-  }, [selectedClub, loadTeamsByClub]);
+  }, [selectedClubId]);
 
   // Filter clubs
   const filteredClubs = clubs.filter(club =>
@@ -100,7 +105,7 @@ export default function ClubsPage() {
     club.location.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Filtrar equipos
+  // Filter teams
   const filteredTeams = teams.filter(team =>
     team.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     team.description?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -128,7 +133,14 @@ export default function ClubsPage() {
   });
 
   const handleCreateClub = async (data: CreateClubFormData) => {
-    const success = await createNewClub(data);
+    const success = await clubsActions.createNewClub({
+      name: data.name,
+      location: data.location,
+      description: data.description || '',
+      contactEmail: '',
+      isActive: true,
+      category: 'swimming' as const,
+    });
     if (success) {
       setIsCreateClubOpen(false);
       createClubForm.reset();
@@ -136,7 +148,20 @@ export default function ClubsPage() {
   };
 
   const handleCreateTeam = async (data: CreateTeamFormData) => {
-    const success = await createNewTeam(data);
+    const success = await teamsActions.createNewTeam({
+      clubId: data.club_id,
+      name: data.name,
+      description: data.description || '',
+      category: 'senior' as const, // Default category
+      gender: 'mixto' as const,
+      ageRange: '',
+      level: data.level.toLowerCase() as 'beginner' | 'intermediate' | 'advanced' | 'elite',
+      practiceDays: [],
+      practiceTimes: [],
+      practiceLocation: '',
+      isActive: true,
+      isAcceptingMembers: true,
+    });
     if (success) {
       setIsCreateTeamOpen(false);
       createTeamForm.reset();
@@ -145,11 +170,11 @@ export default function ClubsPage() {
   };
 
   const handleClubSelect = async (clubId: string) => {
-    await setSelectedClub(clubId);
+    navigationActions.setSelectedClub(clubId);
   };
 
   const handleTeamSelect = async (teamId: string) => {
-    await setSelectedTeam(teamId);
+    navigationActions.setSelectedTeam(teamId);
   };
 
   return (
@@ -381,7 +406,7 @@ export default function ClubsPage() {
                         </div>
                         <div className="flex items-center gap-2">
                           <Badge variant="secondary" className="text-xs">
-                            {club.total_teams || 0} equipos
+                            {club.teamCount || 0} equipos
                           </Badge>
                           <ChevronRight className="h-4 w-4 text-muted-foreground" />
                         </div>
@@ -431,23 +456,23 @@ export default function ClubsPage() {
                           <h3 className="font-semibold text-lg">{team.name}</h3>
                           <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
                             <Building2 className="h-4 w-4" />
-                            {team.club_name}
+                            {clubs.find(club => club.id === team.clubId)?.name || 'Unknown Club'}
                           </div>
                           <div className="flex items-center gap-2 mt-2">
                             <Badge 
                               variant="outline" 
                               className={`text-xs ${
-                                team.level === 'Elite' ? 'border-yellow-500 text-yellow-600' :
-                                team.level === 'Advanced' ? 'border-blue-500 text-blue-600' :
-                                team.level === 'Intermediate' ? 'border-green-500 text-green-600' :
-                                team.level === 'Beginner' ? 'border-orange-500 text-orange-600' :
+                                team.level === 'elite' ? 'border-yellow-500 text-yellow-600' :
+                                team.level === 'advanced' ? 'border-blue-500 text-blue-600' :
+                                team.level === 'intermediate' ? 'border-green-500 text-green-600' :
+                                team.level === 'beginner' ? 'border-orange-500 text-orange-600' :
                                 'border-gray-500 text-gray-600'
                               }`}
                             >
-                              {team.level}
+                              {team.level.charAt(0).toUpperCase() + team.level.slice(1)}
                             </Badge>
                             <Badge variant="secondary" className="text-xs">
-                              {team.total_members || 0} miembros
+                              {team.memberCount || 0} miembros
                             </Badge>
                           </div>
                           {team.description && (
