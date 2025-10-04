@@ -48,37 +48,37 @@ interface NavigationState {
 
 interface NavigationActions {
   // Selection actions
-  setSelectedClub? (clubId: string | null) => void;
-  setSelectedTeam? (teamId: string | null) => void;
-  setSelectedMember? (memberId: string | null) => void;
-  setSelection? (clubId: string | null, teamId?: string | null, memberId?: string | null) => void;
-  clearSelection? () => void;
+  setSelectedClub: (clubId: string | null) => void;
+  setSelectedTeam: (teamId: string | null) => void;
+  setSelectedMember: (memberId: string | null) => void;
+  setSelection: (clubId: string | null, teamId?: string | null, memberId?: string | null) => void;
+  clearSelection: () => void;
   
   // Breadcrumb actions
-  addBreadcrumb? (item: Omit<NavigationState['breadcrumb'][0], 'timestamp'>) => void;
-  removeBreadcrumb? (id: string) => void;
-  clearBreadcrumb? () => void;
-  backToPrevious? () => void;
+  addBreadcrumb: (item: Omit<NavigationState['breadcrumb'][0], 'timestamp'>) => void;
+  removeBreadcrumb: (id: string) => void;
+  clearBreadcrumb: () => void;
+  backToPrevious: () => void;
   
   // UI state actions
-  setSidebarCollapsed? (collapsed: boolean) => void;
-  setSidebarWidth? (width: number) => void;
-  toggleSidebar? () => void;
+  setSidebarCollapsed: (collapsed: boolean) => void;
+  setSidebarWidth: (width: number) => void;
+  toggleSidebar: () => void;
   
   // Session actions
-  updateLastActivity? () => void;
-  incrementPageView? () => void;
-  addVisitedPage? (page: string) => void;
+  updateLastActivity: () => void;
+  incrementPageView: () => void;
+  addVisitedPage: (page: string) => void;
   
   // Preference actions
-  setPreference? <K extends keyof NavigationState['preferences']>(
+  setPreference: <K extends keyof NavigationState['preferences']>(
     key: K,
     value: NavigationState['preferences'][K]
   ) => void;
   
   // Utility actions
-  resetNavigation? () => void;
-  exportState? () => NavigationState;
+  resetNavigation: () => void;
+  exportState: () => NavigationState;
 }
 
 type NavigationStore = NavigationState & NavigationActions;
@@ -349,7 +349,7 @@ export const useNavigationActions = () => useNavigationStore((state) => ({
 }));
 
 // Export types
-export type { NavigationState, NavigationActions };
+export type { NavigationActions, NavigationState };
 
 // Legacy compatibility alias - for migration bridge
 export const useNewNavigationStore = useNavigationStore;

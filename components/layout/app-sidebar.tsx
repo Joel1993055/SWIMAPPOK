@@ -1,13 +1,13 @@
 'use client';
 
 import {
-  BarChartIcon,
-  BookOpenIcon,
-  CalendarIcon,
-  HelpCircleIcon,
-  LayoutDashboardIcon,
-  Plus,
-  Wrench
+    BarChartIcon,
+    BookOpenIcon,
+    CalendarIcon,
+    HelpCircleIcon,
+    LayoutDashboardIcon,
+    Plus,
+    Wrench
 } from 'lucide-react';
 import Image from 'next/image';
 import * as React from 'react';
@@ -18,15 +18,15 @@ import { NavDocuments } from '@/components/navigation/nav-documents';
 import { NavMain } from '@/components/navigation/nav-main';
 import { NavSecondary } from '@/components/navigation/nav-secondary';
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { useClubsStore } from '@/core/stores/clubs-store';
+import { useSelectedClubId, useSelectedTeamId } from '@/core/stores/entities/navigation';
 
 const data = {
   navMain: [
@@ -85,18 +85,13 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { navigation } = useClubsStore();
-  const [selectedClub, setSelectedClub] = React.useState(navigation.selectedClubId || 'none');
-  const [selectedGroup, setSelectedGroup] = React.useState(navigation.selectedTeamId || 'none');
-
-  // Sincronizar con el store
-  React.useEffect(() => {
-    setSelectedClub(navigation.selectedClubId || 'none');
-  }, [navigation.selectedClubId]);
-
-  React.useEffect(() => {
-    setSelectedGroup(navigation.selectedTeamId || 'none');
-  }, [navigation.selectedTeamId]);
+  // Use new navigation store directly
+  const selectedClubId = useSelectedClubId();
+  const selectedTeamId = useSelectedTeamId();
+  
+  // Convert to app-specific format (default to 'none' when no selection)
+  const selectedClub = selectedClubId || 'none';
+  const selectedGroup = selectedTeamId || 'none';
 
   return (
     <Sidebar collapsible='offcanvas' {...props}>
