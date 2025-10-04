@@ -803,5 +803,3 @@ export type { TeamsState };
 
 // Legacy compatibility alias
 export const useNewTeamsStore = useTeamsStore;
-<｜tool▁calls▁begin｜><｜tool▁call▁begin｜>
-search_replace

@@ -11,7 +11,9 @@ import {
     SelectItem,
     SelectTrigger,
 } from '@/components/ui/select';
-import { useClubsStore } from '@/core/stores/clubs-store';
+import { useClubs, useClubsActions, useClubsLoading } from '@/core/stores/entities/club';
+import { useNavigationActions } from '@/core/stores/entities/navigation';
+import { useTeamsActions, useTeamsByClub, useTeamsLoading } from '@/core/stores/entities/team';
 import { Building2, Check, Target } from 'lucide-react';
 import * as React from 'react';
 
@@ -28,50 +30,45 @@ export function NavTeamSelectors({
   onClubChange,
   onGroupChange,
 }: NavTeamSelectorsProps) {
-  const {
-    clubs,
-    teams,
-    navigation,
-    loadClubs,
-    loadTeamsByClub,
-    setSelectedClub,
-    setSelectedTeam,
-  } = useClubsStore();
+  // New entity stores
+  const clubs = useClubs();
+  const clubsActions = useClubsActions();
+  const clubsLoading = useClubsLoading();
+  
+  const currentTeams = useTeamsByClub(selectedClub && selectedClub !== 'none' ? selectedClub : null);
+  const teamsActions = useTeamsActions();
+  const teamsLoading = useTeamsLoading();
+  
+  const navigationActions = useNavigationActions();
 
   const [isMounted, setIsMounted] = React.useState(false);
 
   React.useEffect(() => {
     setIsMounted(true);
     // Load clubs on mount
-    loadClubs();
-  }, [loadClubs]);
-
-  // Load teams when the selected club changes
-  React.useEffect(() => {
-    if (selectedClub && selectedClub !== 'none') {
-      loadTeamsByClub(selectedClub);
-    }
-  }, [selectedClub, loadTeamsByClub]);
+    clubsActions.loadClubs();
+  }, [clubsActions]);
 
   const currentClub = clubs.find((club) => club.id === selectedClub);
-  const currentTeams = teams.filter((team) => team.club_id === selectedClub);
 
   const handleClubChange = async (value: string) => {
     if (value === 'none') {
       onClubChange('none');
       onGroupChange('none');
+      navigationActions.clearSelection();
       return;
     }
 
     onClubChange(value);
     // Set the selected club in the store
-    await setSelectedClub(value);
+    navigationActions.setSelectedClub(value);
 
     // Reset team selection when the club changes
-    const newTeams = teams.filter((team) => team.club_id === value);
+    // Use currentTeams which already filters by club_id
+    const newTeams = currentTeams.filter((team) => team.clubId === value);
     if (newTeams && newTeams.length > 0) {
       onGroupChange(newTeams[0].id);
-      await setSelectedTeam(newTeams[0].id);
+      navigationActions.setSelectedTeam(newTeams[0].id);
     } else {
       onGroupChange('none');
     }
@@ -85,7 +82,7 @@ export function NavTeamSelectors({
 
     onGroupChange(value);
     // Set the selected team in the store
-    await setSelectedTeam(value);
+    navigationActions.setSelectedTeam(value);
   };
 
   if (!isMounted) {
